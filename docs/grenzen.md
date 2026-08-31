@@ -55,7 +55,7 @@ curl -sf -F file=@scan.pdf -F engine=docling -F ocr=true \
 
 Zwei Dinge kosten das. Die Texterkennung ist um ein Vielfaches langsamer als das
 Lesen einer Textebene, und ihre Sprachen müssen stimmen: `KAIMARKIT_OCR_LANGS` steht
-auf `deu,eng`, ein französisches Dokument braucht dort seinen eigenen Eintrag.
+auf `de,en`, ein französisches Dokument braucht dort seinen eigenen Eintrag, `fr`.
 
 Läuft der Aufruf mit `engine=auto` und ist Docling noch nicht bereit, nimmt der
 Dienst für das PDF die nächste Engine der Liste — und die findet dann eben keinen
