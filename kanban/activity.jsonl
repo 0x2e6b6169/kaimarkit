@@ -218,3 +218,9 @@
 {"timestamp":"2026-08-31T11:47:43.400353193+02:00","action":"move","task_id":34,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-08-31T11:47:47.998985113+02:00","action":"move","task_id":33,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-08-31T11:47:49.932121282+02:00","action":"edit","task_id":31,"detail":"DOC-5 · def_list in mkdocs.yml nachtragen"}
+{"timestamp":"2026-08-31T11:54:31.796968983+02:00","action":"move","task_id":33,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:54:48.997883979+02:00","action":"edit","task_id":33,"detail":"BE-11 · start_warmup() in den Lifespan von main.py einhaengen"}
+{"timestamp":"2026-08-31T11:54:51.766456375+02:00","action":"edit","task_id":33,"detail":"BE-11 · start_warmup() in den Lifespan von main.py einhaengen"}
+{"timestamp":"2026-08-31T11:54:51.766748145+02:00","action":"release","task_id":33,"detail":"sophie-10"}
+{"timestamp":"2026-08-31T11:56:15.445332232+02:00","action":"create","task_id":36,"detail":"DOC-7 · Ladezeitpunkt von Docling in der Doku nachziehen"}
+{"timestamp":"2026-08-31T11:56:17.087861922+02:00","action":"move","task_id":36,"detail":"backlog -\u003e todo"}

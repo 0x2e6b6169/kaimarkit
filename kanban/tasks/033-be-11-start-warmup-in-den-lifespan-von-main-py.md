@@ -1,17 +1,16 @@
 ---
 id: 33
 title: BE-11 · start_warmup() in den Lifespan von main.py einhaengen
-status: in-progress
+status: done
 priority: medium
 created: 2026-08-31T11:45:36.537469938+02:00
-updated: 2026-08-31T11:47:47.996023738+02:00
+updated: 2026-08-31T11:54:51.762646496+02:00
 started: 2026-08-31T11:46:24.741541958+02:00
+completed: 2026-08-31T11:54:31.795912881+02:00
 assignee: sophie
 tags:
     - backend
     - bug
-claimed_by: sophie-10
-claimed_at: 2026-08-31T11:47:47.996023738+02:00
 class: standard
 ---
 
@@ -56,3 +55,29 @@ schlaegt er fehl. Ein zweiter zeigt, dass der Start ohne installiertes Docling
 gelingt. `pytest -q` und `ruff check .` bleiben gruen.
 
 Erfasst via /findings (Test-Pass 2026-08-31)
+
+
+## Ergebnis (sophie-10)
+
+`main.py` bekommt einen `lifespan`, der `docling.start_warmup()` ruft — ueber das
+Adaptermodul, nicht ueber die Bibliothek (Konvention 2). Der Aufruf startet den
+Daemon-Thread und kehrt sofort zurueck; `/api/health` antwortet waehrend des Ladens.
+
+Rot-gruen-Nachweis: `backend/tests/test_lifespan.py` mit drei Tests gegen den
+unveraenderten Stand gelaufen — alle drei rot (der erste mit
+`AttributeError: module 'app.main' has no attribute 'docling'`, die anderen zwei,
+weil `adapter._INSTANCE` nach dem Start noch `None` war). Nach der Aenderung gruen.
+Suite: 100 -> 103 passed, 3 deselected, `ruff check .` sauber, auf `main` nach dem
+Merge erneut geprueft.
+
+Doku: `docs/grenzen.md` sagte, Docling beginne erst zu laden, wenn jemand nach ihm
+fragt — das stimmte nicht mehr und ist auf das Hochfahren umgestellt (gezielte
+Korrektur in einer DOC-2-Seite, sonst nichts angefasst). `docs/formate.md` und
+`docs/betrieb/lokal.md` beschrieben schon "beim Start" und stimmen jetzt mit dem
+Code ueberein. Keine neue `KAIMARKIT_*`-Variable, also keine Aenderung an
+`.env.example`.
+
+Ungeprueft: das echte Vorladen mit installiertem Docling. Die Bibliothek fehlt in
+der Umgebung `claude-code` absichtlich; alle Tests arbeiten mit Attrappen. Der Pfad
+"Docling fehlt" ist damit real geprueft, der Pfad "Docling laedt wirklich" nur mit
+Attrappe.

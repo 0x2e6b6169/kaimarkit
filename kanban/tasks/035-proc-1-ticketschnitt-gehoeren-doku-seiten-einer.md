@@ -87,3 +87,19 @@ alle Engines stehen — als eigenes Ticket am Ende der Welle, nicht mittendrin.
 
 Welcher der drei Wege in CLAUDE.md landet, entscheidet der Nutzer. Dieses Ticket
 sammelt die Faelle, bis er entschieden hat.
+
+## Dritter Fall, waehrend dieses Ticket offen lag
+
+BE-11 (#33, sophies Lane) hat `docs/grenzen.md` korrigiert — die Seite behauptete,
+Docling lade erst beim ersten Zugriff, was nach dem Einhaengen des Lifespan nicht
+mehr stimmte. `grenzen.md` gehoert dem Schnitt nach DOC-2 (#21).
+
+Die Korrektur war richtig. Eine Seite, die nach dem Merge etwas Falsches ueber
+das Verhalten sagt, ist schlimmer als eine Regelverletzung, und wer die Aenderung
+gebaut hat, weiss als Einziger, dass die Aussage gekippt ist. Genau darin liegt
+der Punkt: Die Regel verlangt hier etwas, das dem Ticket schadet.
+
+Damit stehen drei Faelle nebeneinander, und alle drei zeigen dasselbe. Wer Code
+aendert, weiss zuerst, was in der Doku nicht mehr stimmt. Wer die Doku besitzt,
+erfaehrt es zuletzt. Der Schnitt stellt es andersherum.
+
