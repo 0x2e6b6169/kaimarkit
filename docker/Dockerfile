@@ -55,6 +55,13 @@ FROM builder AS models
 # und der soll neben den uebrigen Modellen liegen, nicht in /root.
 ENV HF_HOME=/opt/docling-models
 
+# Docling zieht ueber rapidocr das OpenCV-Rad herein, und dessen Bibliothek
+# erwartet drei Systembibliotheken, die python:3.12-slim nicht mitbringt. Ohne sie
+# scheitert schon das Herunterladen der Modelle an "import cv2".
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgl1 libglib2.0-0t64 libxcb1 \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN docling-tools models download --output-dir /opt/docling-models
 
 
@@ -107,12 +114,16 @@ ENV PYTHONUNBUFFERED=1 \
     HF_HOME=/opt/docling-models \
     HF_HUB_OFFLINE=1
 
-# Tesseract fuer die Texterkennung, Pandoc als .deb aus dem Release. curl wird nur
-# zum Holen gebraucht und danach wieder entfernt.
+# Tesseract fuer die Texterkennung, Pandoc als .deb aus dem Release. libgl1,
+# libglib2.0-0t64 und libxcb1 braucht das OpenCV-Rad, das mit docling hereinkommt.
+# curl wird nur zum Holen des .deb gebraucht und danach wieder entfernt.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
+        libgl1 \
+        libglib2.0-0t64 \
+        libxcb1 \
         tesseract-ocr \
         tesseract-ocr-deu \
         tesseract-ocr-eng \
