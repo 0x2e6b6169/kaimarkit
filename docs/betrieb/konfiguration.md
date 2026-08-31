@@ -17,7 +17,9 @@ sich alle relativen Pfade darin auf `docker/`.
     Stelle. Deshalb hat in `docker/.env.example` jede Variable einen Wert.
 
 Diese Seite und `docker/.env.example` beschreiben dieselben Variablen. Wer eine
-ergänzt, umbenennt oder streicht, ändert beide zugleich.
+ergänzt, umbenennt oder streicht, ändert beide zugleich. Ausgenommen ist der Abschnitt
+[Was das Abbild fest setzt](#was-das-abbild-fest-setzt): Diese Variablen stehen im
+Dockerfile und nicht in der Umgebungsdatei.
 
 ## Quellen und Build
 
@@ -65,6 +67,27 @@ erst erhöhen, wenn genug RAM da ist, und `KAIMARKIT_MEM_LIMIT` mit anheben.
 
 Fehlt eines der beiden Verzeichnisse, hängt das Backend es nicht ein und läuft
 trotzdem: ohne gebautes Frontend und ohne Dokumentation, aber mit vollständiger API.
+
+## Was das Abbild fest setzt
+
+Drei Variablen für Docling stehen nicht in `docker/.env`, sondern im `ENV`-Block des
+Dockerfiles. Compose reicht sie nicht durch. Wer sie ändern will, baut das Abbild neu.
+
+| Variable | Wert im Abbild | Wirkung |
+| --- | --- | --- |
+| `DOCLING_ARTIFACTS_PATH` | `/opt/docling-models` | Das Verzeichnis, in dem Docling seine Layout- und Tabellenmodelle sucht. Die Build-Stufe `models` legt sie dort ab. |
+| `HF_HOME` | `/opt/docling-models` | Der Hugging-Face-Cache. Einen Teil der Gewichte holt Docling über ihn, deshalb liegt er neben den übrigen Modellen. |
+| `HF_HUB_OFFLINE` | `1` | Verbietet zur Laufzeit jeden Zugriff auf den Hugging-Face-Hub. |
+
+Die drei gehören zusammen. Ohne `DOCLING_ARTIFACTS_PATH` sucht Docling die Modelle im
+Home-Verzeichnis des Benutzers, findet nichts und lädt sie beim ersten Aufruf nach.
+`HF_HUB_OFFLINE=1` verhindert genau das: Der Download scheitert, Docling meldet sich
+als nicht verfügbar, und `engine=auto` nimmt die nächste Engine. Der Dienst antwortet
+weiter, aber ohne Doclings Tabellenerkennung.
+
+Wer eigene Modelle einhängt, setzt `DOCLING_ARTIFACTS_PATH` auf das eingehängte
+Verzeichnis und lässt `HF_HUB_OFFLINE=1` stehen. Dann kommt zur Laufzeit nichts aus
+dem Netz.
 
 ## Container
 
