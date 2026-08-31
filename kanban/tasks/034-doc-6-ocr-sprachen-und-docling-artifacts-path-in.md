@@ -1,10 +1,10 @@
 ---
 id: 34
 title: DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite
-status: todo
+status: in-progress
 priority: medium
 created: 2026-08-31T11:45:54.471902201+02:00
-updated: 2026-08-31T12:05:26.115243161+02:00
+updated: 2026-08-31T12:20:10.242511219+02:00
 started: 2026-08-31T11:46:25.433276163+02:00
 assignee: akar
 tags:
@@ -12,8 +12,8 @@ tags:
     - bug
 depends_on:
     - 37
-blocked: true
-block_reason: 'Wartet auf BE-12 (#37): der Adapter setzt EasyOCR ausdruecklich, erst danach steht die Schreibweise (ISO 639-1, de/en) fest. Vorher waere jeder Wert in .env.example fiktiv.'
+claimed_by: akar-16
+claimed_at: 2026-08-31T12:20:10.242511219+02:00
 class: standard
 ---
 

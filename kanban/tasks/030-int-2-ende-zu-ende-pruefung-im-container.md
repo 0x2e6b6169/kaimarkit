@@ -1,10 +1,10 @@
 ---
 id: 30
 title: INT-2 · Ende-zu-Ende-Pruefung im Container
-status: in-progress
+status: todo
 priority: medium
 created: 2026-08-31T10:21:44.348462086+02:00
-updated: 2026-08-31T11:59:23.43955269+02:00
+updated: 2026-08-31T13:38:08.535461426+02:00
 assignee: akar
 tags:
     - infra
@@ -12,8 +12,8 @@ depends_on:
     - 29
     - 26
     - 27
-claimed_by: akar-13
-claimed_at: 2026-08-31T11:59:23.43955269+02:00
+    - 34
+    - 38
 class: standard
 ---
 
@@ -56,3 +56,6 @@ nicht stillschweigend uebergangen.
   gehoert der Kasten weg.
 - Die Anmeldung im Browser gegen ein echtes Authelia ist nie gelaufen. IN-4 hatte
   weder Image noch Netz dafuer und hat den Nachweis hierher uebergeben.
+
+[[2026-08-31]] Mon 13:38
+PO: depends_on um #34 und #38 ergaenzt. INT-2 prueft das Abbild, das IN-6 gerade veraendert, und die OCR-Sprachen, die DOC-6 gerade korrigiert. Die Reihenfolge steht damit im Board statt in einer Absprache. Entschieden auf akars Meldung hin.

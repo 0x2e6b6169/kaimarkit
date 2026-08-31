@@ -1,16 +1,18 @@
 ---
 id: 38
 title: IN-6 · tesseract-Pakete aus dem Abbild entfernen, EasyOCR-Gewichte sicherstellen
-status: todo
+status: in-progress
 priority: medium
 created: 2026-08-31T12:04:18.074654123+02:00
-updated: 2026-08-31T12:04:52.807301673+02:00
+updated: 2026-08-31T12:17:11.155603394+02:00
 started: 2026-08-31T12:04:52.815073313+02:00
 assignee: akar
 tags:
     - infra
 depends_on:
     - 37
+claimed_by: akar-15
+claimed_at: 2026-08-31T12:17:11.155603394+02:00
 class: standard
 ---
 

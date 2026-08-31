@@ -1,11 +1,12 @@
 ---
 id: 37
 title: 'BE-12 · OCR-Maschine ausdruecklich setzen: EasyOCR mit de,en'
-status: todo
+status: done
 priority: high
 created: 2026-08-31T12:03:54.39201469+02:00
-updated: 2026-08-31T12:04:51.15275163+02:00
+updated: 2026-08-31T12:15:28.454927034+02:00
 started: 2026-08-31T12:04:51.169484447+02:00
+completed: 2026-08-31T12:15:24.848130815+02:00
 assignee: sophie
 tags:
     - backend
@@ -69,3 +70,67 @@ Ticket.
 Ein Test zeigt, dass der gebaute Konverter `EasyOcrOptions` mit genau den
 Sprachen aus `KAIMARKIT_OCR_LANGS` fuehrt — vor der Aenderung ist er rot, weil
 die Sprachliste nicht ankommt. `pytest -q` und `ruff check .` bleiben gruen.
+
+
+## Ergebnis (sophie-11, Branch task/37-easyocr-explizit, merge 1266f4a)
+
+Der Adapter setzt `options.ocr_options = EasyOcrOptions(lang=langs)` — kein
+nachtraegliches `lang` mehr auf dem Vorgabeobjekt. `config.py` steht auf
+`ocr_langs = "de,en"` (ISO 639-1). Suite auf `main`: 107 passed / 3 deselected,
+`ruff check .` sauber.
+
+### Untergrenze fuer docling: `docling[easyocr]>=2.56.0`, mit Beleg
+
+Belegt aus den Paketmetadaten und den Radern von PyPI, nicht geraten:
+
+- `EasyOcrOptions` mit dem Feld `lang: List[str]` steht seit **2.0.0** in
+  `docling/datamodel/pipeline_options.py` (aus dem Rad 2.0.0 gelesen). Die Klasse
+  allein rechtfertigt also keine neue Untergrenze.
+- Die Untergrenze kommt vom Paketschnitt: Ab **2.56.0** ist `easyocr` ein Extra.
+  Vorher stand `easyocr>=1.7,<2.0` als feste Abhaengigkeit in den Metadaten
+  (nachgelesen in `docling-2.0.0.dist-info/METADATA`), ab 2.56.0 steht dort
+  `Provides-Extra: easyocr`. Ermittelt per binaerer Suche ueber die
+  PEP-658-Metadaten aller 164 Fassungen der Reihe 2.x: 2.55.1 ohne Extra,
+  2.56.0 mit. Ein blosses `docling>=…` liefert die Maschine seit 2.56.0 also
+  nicht mehr mit — deshalb `docling[easyocr]`.
+- Gegenprobe oben: In der neuesten Fassung **2.123.1** existiert
+  `EasyOcrOptions` unveraendert (mit `lang`, ISO 639-1 in der Feldbeschreibung).
+  Das Rad `docling` ist dort nur noch eine Huelle um `docling-slim[standard]`;
+  der Quelltext steckt in `docling-slim`, gelesen aus dessen Rad.
+- Ebenfalls in 2.123.1 gegengeprueft und damit der Befund des Tickets bestaetigt:
+  `PdfPipelineOptions.ocr_options` steht auf `OcrAutoOptions()`, dessen `lang`
+  ausdruecklich leer bleibt ("The `lang` field is intentionally defaulted to an
+  empty list. To control language selection, specify an explicit OCR engine
+  option class instead.").
+
+### Rot vor Gruen
+
+`backend/tests/test_docling_ocr.py` haengt Attrappen der Docling-Module in
+`sys.modules` und ruft `_build_pipeline(True)` auf. Beide Tests liefen gegen den
+unveraenderten Stand und waren rot:
+`assert isinstance(FakeOcrAutoOptions(lang=['de','en']), FakeEasyOcrOptions)` —
+die Sprachen landeten auf dem Vorgabeobjekt, die Maschine wurde nie gewaehlt.
+Nach der Aenderung gruen.
+
+### Was ungeprueft blieb
+
+Docling ist in der Umgebung `claude-code` nicht installiert und wurde bewusst
+nicht nachinstalliert (Torch samt Modellen in einer geteilten Umgebung). Der Test
+prueft deshalb nur, welche Options-Klasse der Adapter baut und welche Sprachen er
+hineinreicht — nicht, ob EasyOCR mit `de,en` tatsaechlich erkennt und ob die
+Gewichte im Abbild liegen. Das entscheidet sich in INT-2 (#30) im Container.
+
+### Nachzuziehen in anderen Lanes
+
+- **DOC-6 (#34):** `docker/.env.example:65` und `docs/betrieb/konfiguration.md:50`
+  fuehren beide `deu,eng`. Richtig ist jetzt `de,en` (ISO 639-1, EasyOCR).
+- **DOC-2 (#21)** besitzt zwei weitere Seiten, die dadurch falsch werden — von
+  sophie-11 nicht angefasst, weil sie einem offenen Ticket gehoeren:
+  `docs/grenzen.md:57-58` ("`KAIMARKIT_OCR_LANGS` steht auf `deu,eng`") und
+  `docs/formate.md:63` (Kuerzel muessen zur Maschine passen — die Maschine steht
+  jetzt fest und heisst EasyOCR).
+- **IN-6 (#38):** neben den drei toten `tesseract-*`-Paketen ist im Dockerfile zu
+  pruefen, dass `pip install /src/backend` das Extra `easyocr` mitnimmt (es steht
+  jetzt in `pyproject.toml`) und dass `docling-tools models download` die
+  EasyOCR-Gewichte fuer `de` und `en` mitbringt.
+- Der Schnittstellen-Dreiklang ist nicht beruehrt.

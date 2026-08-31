@@ -253,3 +253,23 @@
 {"timestamp":"2026-08-31T12:06:04.451456073+02:00","action":"move","task_id":40,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-08-31T12:07:47.59565857+02:00","action":"move","task_id":39,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-08-31T12:07:49.714959051+02:00","action":"create","task_id":41,"detail":"PROC-2 · Sperrbegruendungen pruefbar machen"}
+{"timestamp":"2026-08-31T12:08:31.354706481+02:00","action":"move","task_id":37,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T12:09:15.767487103+02:00","action":"move","task_id":40,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T12:09:37.835250502+02:00","action":"edit","task_id":40,"detail":"DOC-8 · Dark Mode und Farbpalette in docs/entwicklung.md"}
+{"timestamp":"2026-08-31T12:09:39.163020856+02:00","action":"edit","task_id":40,"detail":"DOC-8 · Dark Mode und Farbpalette in docs/entwicklung.md"}
+{"timestamp":"2026-08-31T12:09:39.16747198+02:00","action":"release","task_id":40,"detail":"akar-14"}
+{"timestamp":"2026-08-31T12:11:37.919645106+02:00","action":"move","task_id":39,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T12:12:09.776721068+02:00","action":"edit","task_id":39,"detail":"FE-8 · Favicon fuer frontend/index.html"}
+{"timestamp":"2026-08-31T12:12:18.841886659+02:00","action":"edit","task_id":39,"detail":"FE-8 · Favicon fuer frontend/index.html"}
+{"timestamp":"2026-08-31T12:12:18.842414977+02:00","action":"release","task_id":39,"detail":"benny-09"}
+{"timestamp":"2026-08-31T12:15:21.582174655+02:00","action":"edit","task_id":37,"detail":"BE-12 · OCR-Maschine ausdruecklich setzen: EasyOCR mit de,en"}
+{"timestamp":"2026-08-31T12:15:24.858383687+02:00","action":"move","task_id":37,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T12:15:28.460116764+02:00","action":"edit","task_id":37,"detail":"BE-12 · OCR-Maschine ausdruecklich setzen: EasyOCR mit de,en"}
+{"timestamp":"2026-08-31T12:15:28.4604757+02:00","action":"release","task_id":37,"detail":"sophie-11"}
+{"timestamp":"2026-08-31T12:17:11.176477177+02:00","action":"move","task_id":38,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T12:19:21.702123645+02:00","action":"edit","task_id":34,"detail":"DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite"}
+{"timestamp":"2026-08-31T12:19:21.702520487+02:00","action":"unblock","task_id":34,"detail":"DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite"}
+{"timestamp":"2026-08-31T12:20:10.252485812+02:00","action":"move","task_id":34,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T13:36:16.786717247+02:00","action":"move","task_id":30,"detail":"in-progress -\u003e todo"}
+{"timestamp":"2026-08-31T13:36:17.577854636+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T13:38:08.537421655+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
