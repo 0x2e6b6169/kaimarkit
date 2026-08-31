@@ -212,3 +212,9 @@
 {"timestamp":"2026-08-31T11:46:24.74179636+02:00","action":"move","task_id":33,"detail":"backlog -\u003e todo"}
 {"timestamp":"2026-08-31T11:46:25.107546327+02:00","action":"edit","task_id":31,"detail":"DOC-5 · def_list in mkdocs.yml nachtragen"}
 {"timestamp":"2026-08-31T11:46:25.433580998+02:00","action":"move","task_id":34,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T11:46:30.210394073+02:00","action":"move","task_id":31,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:46:35.649947328+02:00","action":"edit","task_id":31,"detail":"DOC-5 · def_list in mkdocs.yml nachtragen"}
+{"timestamp":"2026-08-31T11:46:35.651360307+02:00","action":"release","task_id":31,"detail":"akar-10"}
+{"timestamp":"2026-08-31T11:47:43.400353193+02:00","action":"move","task_id":34,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:47:47.998985113+02:00","action":"move","task_id":33,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:47:49.932121282+02:00","action":"edit","task_id":31,"detail":"DOC-5 · def_list in mkdocs.yml nachtragen"}

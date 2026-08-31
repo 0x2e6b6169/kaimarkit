@@ -1,15 +1,17 @@
 ---
 id: 34
 title: DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite
-status: todo
+status: in-progress
 priority: medium
 created: 2026-08-31T11:45:54.471902201+02:00
-updated: 2026-08-31T11:46:25.42929791+02:00
+updated: 2026-08-31T11:47:43.391917327+02:00
 started: 2026-08-31T11:46:25.433276163+02:00
 assignee: akar
 tags:
     - docs
     - bug
+claimed_by: akar-11
+claimed_at: 2026-08-31T11:47:43.391917327+02:00
 class: standard
 ---
 

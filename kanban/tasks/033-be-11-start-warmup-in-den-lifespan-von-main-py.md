@@ -1,15 +1,17 @@
 ---
 id: 33
 title: BE-11 · start_warmup() in den Lifespan von main.py einhaengen
-status: todo
+status: in-progress
 priority: medium
 created: 2026-08-31T11:45:36.537469938+02:00
-updated: 2026-08-31T11:46:24.737683487+02:00
+updated: 2026-08-31T11:47:47.996023738+02:00
 started: 2026-08-31T11:46:24.741541958+02:00
 assignee: sophie
 tags:
     - backend
     - bug
+claimed_by: sophie-10
+claimed_at: 2026-08-31T11:47:47.996023738+02:00
 class: standard
 ---
 

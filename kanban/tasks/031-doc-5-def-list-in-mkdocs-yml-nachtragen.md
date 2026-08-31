@@ -1,16 +1,15 @@
 ---
 id: 31
 title: DOC-5 · def_list in mkdocs.yml nachtragen
-status: in-progress
+status: done
 priority: low
 created: 2026-08-31T11:16:04.308070874+02:00
-updated: 2026-08-31T11:46:25.106523476+02:00
+updated: 2026-08-31T11:47:49.930792644+02:00
 started: 2026-08-31T11:41:56.427926704+02:00
+completed: 2026-08-31T11:46:30.210103797+02:00
 assignee: akar
 tags:
     - docs
-claimed_by: akar-10
-claimed_at: 2026-08-31T11:46:25.106998685+02:00
 class: standard
 ---
 
@@ -78,3 +77,18 @@ deshalb nur gemeldet: `docs/betrieb/konfiguration.md` Zeile 118-124 — die Erkl
 zu `AUTHELIA_VERIFY_URL` und `KAIMARKIT_API_MIDDLEWARES` steht als Fliesstext hinter
 der Tabelle, weil DOC-3 die Definitionsliste aufloesen musste. Sonst faellt nichts
 auf; die uebrigen Aufzaehlungen sind als Tabelle oder Liste richtig aufgehoben.
+
+
+## Muster fuer kuenftige Doku-Pruefungen
+
+Ein Nachweis, der den Fehler schon einmal durchgelassen hat, ist kein Nachweis.
+`mkdocs build --strict` endet bei fehlendem `def_list` mit 0 und ohne Warnung —
+wer damit prueft, prueft das Werkzeug statt der Sache.
+
+Richtig ist, im erzeugten HTML unter `site/` nach dem erwarteten Element zu
+greppen, hier `<dl>`. Dazu gehoert die Negativkontrolle: einmal ohne die
+Erweiterung bauen und zeigen, dass `--strict` weiterhin schweigt. Erst beides
+zusammen belegt, dass die Aenderung wirkt.
+
+Uebertragbar auf jede Doku-Pruefung, deren Fehlerbild sich erst beim Rendern
+zeigt.
