@@ -68,3 +68,140 @@
 {"timestamp":"2026-08-31T10:30:46.285541042+02:00","action":"edit","task_id":28,"detail":"DOC-4 · Wurzel-README.md"}
 {"timestamp":"2026-08-31T10:30:46.286806094+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
 {"timestamp":"2026-08-31T10:30:46.827503077+02:00","action":"edit","task_id":3,"detail":"SETUP-1 · Verzeichnisgeruest und Schnittstellenvertrag festschreiben"}
+{"timestamp":"2026-08-31T10:45:03.903850226+02:00","action":"move","task_id":13,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:45:11.269036018+02:00","action":"move","task_id":4,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:45:24.420820387+02:00","action":"move","task_id":20,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:45:38.746061637+02:00","action":"move","task_id":22,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:48:33.498840684+02:00","action":"edit","task_id":20,"detail":"DOC-1 · MkDocs, Material-Theme und mike: mkdocs.yml, Navigation, Seitengeruest"}
+{"timestamp":"2026-08-31T10:48:33.499163648+02:00","action":"release","task_id":20,"detail":"akar-01"}
+{"timestamp":"2026-08-31T10:48:35.348052583+02:00","action":"edit","task_id":22,"detail":"IN-2 · Compose-Basis und .env.example mit Quellenverweis ueber Variablen"}
+{"timestamp":"2026-08-31T10:48:36.02048911+02:00","action":"move","task_id":22,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T10:48:41.980997167+02:00","action":"edit","task_id":22,"detail":"IN-2 · Compose-Basis und .env.example mit Quellenverweis ueber Variablen"}
+{"timestamp":"2026-08-31T10:48:41.981165941+02:00","action":"release","task_id":22,"detail":"akar-02"}
+{"timestamp":"2026-08-31T10:48:44.56134123+02:00","action":"edit","task_id":20,"detail":"DOC-1 · MkDocs, Material-Theme und mike: mkdocs.yml, Navigation, Seitengeruest"}
+{"timestamp":"2026-08-31T10:48:44.561478259+02:00","action":"claim","task_id":20,"detail":"akar-01"}
+{"timestamp":"2026-08-31T10:48:45.234815188+02:00","action":"move","task_id":20,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T10:48:45.960853454+02:00","action":"edit","task_id":20,"detail":"DOC-1 · MkDocs, Material-Theme und mike: mkdocs.yml, Navigation, Seitengeruest"}
+{"timestamp":"2026-08-31T10:48:45.961022604+02:00","action":"release","task_id":20,"detail":"akar-01"}
+{"timestamp":"2026-08-31T10:49:34.905396609+02:00","action":"move","task_id":4,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T10:49:35.651459504+02:00","action":"edit","task_id":4,"detail":"BE-1 · FastAPI-Geruest, config.py, /api/health, Einhaengen von SPA und /docs"}
+{"timestamp":"2026-08-31T10:49:35.651812337+02:00","action":"release","task_id":4,"detail":"sophie-01"}
+{"timestamp":"2026-08-31T10:49:53.267214868+02:00","action":"move","task_id":24,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:49:59.682395422+02:00","action":"edit","task_id":4,"detail":"BE-1 · FastAPI-Geruest, config.py, /api/health, Einhaengen von SPA und /docs"}
+{"timestamp":"2026-08-31T10:50:18.556638983+02:00","action":"move","task_id":26,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:51:47.796710434+02:00","action":"move","task_id":9,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:52:55.227615078+02:00","action":"move","task_id":13,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T10:53:05.715506664+02:00","action":"move","task_id":5,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:53:52.855640964+02:00","action":"edit","task_id":13,"detail":"FE-1 · Vite, Vue 3, TypeScript, Tailwind und ein Mock-Server fuer /api"}
+{"timestamp":"2026-08-31T10:53:56.980310575+02:00","action":"edit","task_id":24,"detail":"IN-3 · Traefik-Ergaenzung: Labels in Map-Form, externes Netz, ports reset"}
+{"timestamp":"2026-08-31T10:53:57.504393604+02:00","action":"edit","task_id":13,"detail":"FE-1 · Vite, Vue 3, TypeScript, Tailwind und ein Mock-Server fuer /api"}
+{"timestamp":"2026-08-31T10:53:57.50470381+02:00","action":"release","task_id":13,"detail":"benny-01"}
+{"timestamp":"2026-08-31T10:53:57.710682493+02:00","action":"move","task_id":24,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T10:53:58.429925855+02:00","action":"edit","task_id":24,"detail":"IN-3 · Traefik-Ergaenzung: Labels in Map-Form, externes Netz, ports reset"}
+{"timestamp":"2026-08-31T10:53:58.430080287+02:00","action":"release","task_id":24,"detail":"akar-03"}
+{"timestamp":"2026-08-31T10:54:49.2541151+02:00","action":"edit","task_id":27,"detail":"DOC-3 · Inhalte Betrieb: Konfiguration, lokal, Traefik, Authelia"}
+{"timestamp":"2026-08-31T10:55:08.508611005+02:00","action":"move","task_id":14,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:55:27.541408514+02:00","action":"move","task_id":23,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:55:50.133466598+02:00","action":"move","task_id":25,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:57:09.832256144+02:00","action":"edit","task_id":5,"detail":"BE-2 · Converter-Protokoll, Faehigkeitsmatrix, Auswahl und Fallback"}
+{"timestamp":"2026-08-31T10:57:10.621985459+02:00","action":"move","task_id":5,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T10:57:11.388464037+02:00","action":"edit","task_id":5,"detail":"BE-2 · Converter-Protokoll, Faehigkeitsmatrix, Auswahl und Fallback"}
+{"timestamp":"2026-08-31T10:57:11.388666848+02:00","action":"release","task_id":5,"detail":"sophie-02"}
+{"timestamp":"2026-08-31T10:57:52.360060193+02:00","action":"move","task_id":9,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T10:58:08.588756051+02:00","action":"edit","task_id":9,"detail":"BE-6 · Upload-Strom mit Groessenlimit, Tempfiles, Semaphor, Zeitgrenze"}
+{"timestamp":"2026-08-31T10:58:13.176406149+02:00","action":"edit","task_id":9,"detail":"BE-6 · Upload-Strom mit Groessenlimit, Tempfiles, Semaphor, Zeitgrenze"}
+{"timestamp":"2026-08-31T10:58:13.176553647+02:00","action":"release","task_id":9,"detail":"sophie-03"}
+{"timestamp":"2026-08-31T10:59:01.359737918+02:00","action":"move","task_id":6,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:59:02.278013731+02:00","action":"edit","task_id":26,"detail":"IN-5 · Makefile mit allen Zielen einschliesslich docs-serve und docs-release"}
+{"timestamp":"2026-08-31T10:59:02.922392846+02:00","action":"move","task_id":26,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T10:59:03.63371631+02:00","action":"edit","task_id":26,"detail":"IN-5 · Makefile mit allen Zielen einschliesslich docs-serve und docs-release"}
+{"timestamp":"2026-08-31T10:59:03.633844237+02:00","action":"release","task_id":26,"detail":"akar-04"}
+{"timestamp":"2026-08-31T10:59:58.945025617+02:00","action":"move","task_id":10,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:00:00.249360496+02:00","action":"move","task_id":14,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:00:10.855014037+02:00","action":"move","task_id":7,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:00:45.359501513+02:00","action":"edit","task_id":14,"detail":"FE-2 · API-Client und die Composables useConversion und useCapabilities"}
+{"timestamp":"2026-08-31T11:00:46.781147168+02:00","action":"edit","task_id":14,"detail":"FE-2 · API-Client und die Composables useConversion und useCapabilities"}
+{"timestamp":"2026-08-31T11:00:46.781524078+02:00","action":"release","task_id":14,"detail":"benny-02"}
+{"timestamp":"2026-08-31T11:02:38.918479111+02:00","action":"move","task_id":15,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:02:38.945162854+02:00","action":"move","task_id":16,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:03:23.910218269+02:00","action":"move","task_id":17,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:03:26.582943996+02:00","action":"move","task_id":25,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:03:53.541542288+02:00","action":"move","task_id":7,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:04:09.632160112+02:00","action":"edit","task_id":25,"detail":"IN-4 · Authelia-Ergaenzung: ForwardAuth-Middleware und API-Router"}
+{"timestamp":"2026-08-31T11:04:10.397643216+02:00","action":"edit","task_id":25,"detail":"IN-4 · Authelia-Ergaenzung: ForwardAuth-Middleware und API-Router"}
+{"timestamp":"2026-08-31T11:04:10.397794931+02:00","action":"release","task_id":25,"detail":"akar-06"}
+{"timestamp":"2026-08-31T11:04:15.481811736+02:00","action":"edit","task_id":7,"detail":"BE-4 · Docling-Adapter mit vorgeladenem Konverter und OCR-Schalter"}
+{"timestamp":"2026-08-31T11:04:16.22179679+02:00","action":"edit","task_id":7,"detail":"BE-4 · Docling-Adapter mit vorgeladenem Konverter und OCR-Schalter"}
+{"timestamp":"2026-08-31T11:04:16.221989607+02:00","action":"release","task_id":7,"detail":"sophie-04"}
+{"timestamp":"2026-08-31T11:04:52.266001637+02:00","action":"edit","task_id":27,"detail":"DOC-3 · Inhalte Betrieb: Konfiguration, lokal, Traefik, Authelia"}
+{"timestamp":"2026-08-31T11:05:10.131023015+02:00","action":"move","task_id":6,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:05:11.086481372+02:00","action":"edit","task_id":6,"detail":"BE-3 · MarkItDown-Adapter"}
+{"timestamp":"2026-08-31T11:05:17.339070832+02:00","action":"edit","task_id":6,"detail":"BE-3 · MarkItDown-Adapter"}
+{"timestamp":"2026-08-31T11:05:17.339287632+02:00","action":"release","task_id":6,"detail":"sophie-05"}
+{"timestamp":"2026-08-31T11:05:45.05616942+02:00","action":"move","task_id":8,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:05:46.5982087+02:00","action":"move","task_id":27,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:06:16.670679371+02:00","action":"move","task_id":10,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:06:28.136704724+02:00","action":"edit","task_id":10,"detail":"BE-7 · Endpunkte /api/convert und /api/capabilities"}
+{"timestamp":"2026-08-31T11:06:28.719085734+02:00","action":"edit","task_id":10,"detail":"BE-7 · Endpunkte /api/convert und /api/capabilities"}
+{"timestamp":"2026-08-31T11:06:28.719272124+02:00","action":"release","task_id":10,"detail":"sophie-06"}
+{"timestamp":"2026-08-31T11:06:37.368251336+02:00","action":"edit","task_id":16,"detail":"FE-4 · Vorschau mit markdown-it und DOMPurify, Rohtext, Kopieren"}
+{"timestamp":"2026-08-31T11:06:38.456082619+02:00","action":"move","task_id":16,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:06:45.651528086+02:00","action":"edit","task_id":16,"detail":"FE-4 · Vorschau mit markdown-it und DOMPurify, Rohtext, Kopieren"}
+{"timestamp":"2026-08-31T11:06:45.651999485+02:00","action":"release","task_id":16,"detail":"benny-04"}
+{"timestamp":"2026-08-31T11:08:05.172773465+02:00","action":"move","task_id":11,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:08:48.803522958+02:00","action":"edit","task_id":17,"detail":"FE-5 · Optionen: Enginewahl und OCR-Schalter aus /api/capabilities"}
+{"timestamp":"2026-08-31T11:08:50.718876862+02:00","action":"move","task_id":17,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:08:56.695353564+02:00","action":"edit","task_id":17,"detail":"FE-5 · Optionen: Enginewahl und OCR-Schalter aus /api/capabilities"}
+{"timestamp":"2026-08-31T11:08:56.69564312+02:00","action":"release","task_id":17,"detail":"benny-05"}
+{"timestamp":"2026-08-31T11:12:31.850792869+02:00","action":"move","task_id":8,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:12:56.801324715+02:00","action":"edit","task_id":8,"detail":"BE-5 · Pandoc-Adapter mit --sandbox und Zeitgrenze"}
+{"timestamp":"2026-08-31T11:12:59.012399584+02:00","action":"edit","task_id":8,"detail":"BE-5 · Pandoc-Adapter mit --sandbox und Zeitgrenze"}
+{"timestamp":"2026-08-31T11:12:59.01274148+02:00","action":"release","task_id":8,"detail":"sophie-07"}
+{"timestamp":"2026-08-31T11:13:56.045130825+02:00","action":"move","task_id":11,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:14:10.164631768+02:00","action":"edit","task_id":11,"detail":"BE-8 · Endpunkt /api/convert/batch und ZIP-Bau"}
+{"timestamp":"2026-08-31T11:14:10.933617554+02:00","action":"edit","task_id":11,"detail":"BE-8 · Endpunkt /api/convert/batch und ZIP-Bau"}
+{"timestamp":"2026-08-31T11:14:10.933928519+02:00","action":"release","task_id":11,"detail":"sophie-08"}
+{"timestamp":"2026-08-31T11:14:38.273884702+02:00","action":"move","task_id":27,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:14:39.983746828+02:00","action":"move","task_id":12,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:14:51.111495302+02:00","action":"edit","task_id":15,"detail":"FE-3 · Dropzone und Warteschlange mit Status je Datei"}
+{"timestamp":"2026-08-31T11:14:51.729271152+02:00","action":"move","task_id":15,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:14:56.741565068+02:00","action":"edit","task_id":15,"detail":"FE-3 · Dropzone und Warteschlange mit Status je Datei"}
+{"timestamp":"2026-08-31T11:14:56.741653098+02:00","action":"release","task_id":15,"detail":"benny-03"}
+{"timestamp":"2026-08-31T11:15:15.781354609+02:00","action":"edit","task_id":27,"detail":"DOC-3 · Inhalte Betrieb: Konfiguration, lokal, Traefik, Authelia"}
+{"timestamp":"2026-08-31T11:15:16.867010932+02:00","action":"edit","task_id":27,"detail":"DOC-3 · Inhalte Betrieb: Konfiguration, lokal, Traefik, Authelia"}
+{"timestamp":"2026-08-31T11:15:16.867188073+02:00","action":"release","task_id":27,"detail":"akar-07"}
+{"timestamp":"2026-08-31T11:16:04.313829561+02:00","action":"create","task_id":31,"detail":"DOC-5 · def_list in mkdocs.yml nachtragen"}
+{"timestamp":"2026-08-31T11:16:42.305900887+02:00","action":"move","task_id":21,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:16:58.924064945+02:00","action":"move","task_id":18,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:18:43.733200232+02:00","action":"move","task_id":23,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:19:18.570080509+02:00","action":"edit","task_id":23,"detail":"IN-1 · docker/Dockerfile: fuenf Stufen, Torch aus dem CPU-Index, Modelle vorgebacken"}
+{"timestamp":"2026-08-31T11:19:19.431422777+02:00","action":"edit","task_id":23,"detail":"IN-1 · docker/Dockerfile: fuenf Stufen, Torch aus dem CPU-Index, Modelle vorgebacken"}
+{"timestamp":"2026-08-31T11:19:19.432800736+02:00","action":"release","task_id":23,"detail":"akar-05"}
+{"timestamp":"2026-08-31T11:19:29.104364607+02:00","action":"move","task_id":19,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:21:59.669405977+02:00","action":"edit","task_id":18,"detail":"FE-6 · Download einzeln und als ZIP ueber jszip"}
+{"timestamp":"2026-08-31T11:22:01.598699486+02:00","action":"move","task_id":18,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:22:03.650162204+02:00","action":"edit","task_id":18,"detail":"FE-6 · Download einzeln und als ZIP ueber jszip"}
+{"timestamp":"2026-08-31T11:22:03.652131807+02:00","action":"release","task_id":18,"detail":"benny-06"}
+{"timestamp":"2026-08-31T11:22:55.940799504+02:00","action":"move","task_id":12,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:23:25.716538595+02:00","action":"edit","task_id":12,"detail":"BE-9 · Testfixtures und Engine-Smoketests"}
+{"timestamp":"2026-08-31T11:23:26.369399479+02:00","action":"edit","task_id":12,"detail":"BE-9 · Testfixtures und Engine-Smoketests"}
+{"timestamp":"2026-08-31T11:23:26.369587259+02:00","action":"release","task_id":12,"detail":"sophie-09"}
+{"timestamp":"2026-08-31T11:27:20.790223168+02:00","action":"move","task_id":21,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:28:09.699253563+02:00","action":"edit","task_id":21,"detail":"DOC-2 · Inhalte: Schnellstart, Formate, API, Entwicklung, Grenzen"}
+{"timestamp":"2026-08-31T11:28:10.224445515+02:00","action":"edit","task_id":21,"detail":"DOC-2 · Inhalte: Schnellstart, Formate, API, Entwicklung, Grenzen"}
+{"timestamp":"2026-08-31T11:28:10.224620233+02:00","action":"release","task_id":21,"detail":"akar-08"}
+{"timestamp":"2026-08-31T11:28:58.155649337+02:00","action":"create","task_id":32,"detail":"BE-10 · Drei Befunde aus DOC-2: meta-Status, Fehlertext, passthrough"}
+{"timestamp":"2026-08-31T11:28:58.792686368+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T11:29:33.4530827+02:00","action":"move","task_id":28,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:32:01.139214229+02:00","action":"move","task_id":28,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:32:12.437322609+02:00","action":"edit","task_id":28,"detail":"DOC-4 · Wurzel-README.md"}
+{"timestamp":"2026-08-31T11:32:13.101646105+02:00","action":"edit","task_id":28,"detail":"DOC-4 · Wurzel-README.md"}
+{"timestamp":"2026-08-31T11:32:13.101777577+02:00","action":"release","task_id":28,"detail":"akar-09"}
+{"timestamp":"2026-08-31T11:33:40.681741315+02:00","action":"edit","task_id":19,"detail":"FE-7 · Gestaltung, Dark Mode, Tastaturbedienung, aria-live"}
+{"timestamp":"2026-08-31T11:33:41.819027066+02:00","action":"move","task_id":19,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:33:48.706005173+02:00","action":"edit","task_id":19,"detail":"FE-7 · Gestaltung, Dark Mode, Tastaturbedienung, aria-live"}
+{"timestamp":"2026-08-31T11:33:48.706537079+02:00","action":"release","task_id":19,"detail":"benny-07"}
+{"timestamp":"2026-08-31T11:35:15.320667744+02:00","action":"move","task_id":29,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:41:56.428232671+02:00","action":"move","task_id":31,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T11:41:57.129233731+02:00","action":"move","task_id":32,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T11:41:57.695118867+02:00","action":"edit","task_id":32,"detail":"BE-10 · Drei Befunde aus DOC-2: meta-Status, Fehlertext, passthrough"}

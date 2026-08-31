@@ -4,7 +4,7 @@ title: INT-2 · Ende-zu-Ende-Pruefung im Container
 status: todo
 priority: medium
 created: 2026-08-31T10:21:44.348462086+02:00
-updated: 2026-08-31T10:30:46.285586612+02:00
+updated: 2026-08-31T11:28:58.790508419+02:00
 assignee: akar
 tags:
     - infra
@@ -45,3 +45,12 @@ pruefen, dass die Links auf `/docs/<version>/` zeigen und nicht auf die Wurzel.
 
 Jeder Punkt oben abgehakt. Was nicht gelingt, wird als eigenes Ticket angelegt,
 nicht stillschweigend uebergangen.
+
+
+## Nachtrag aus DOC-2 (#21) und IN-4 (#25)
+
+- `docs/schnellstart.md` enthaelt einen `!!! info`-Kasten, der sagt, dass die
+  Oberfläche noch das Geruest ist. Sobald INT-1 (#29) `App.vue` verdrahtet hat,
+  gehoert der Kasten weg.
+- Die Anmeldung im Browser gegen ein echtes Authelia ist nie gelaufen. IN-4 hatte
+  weder Image noch Netz dafuer und hat den Nachweis hierher uebergeben.
