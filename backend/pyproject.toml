@@ -16,7 +16,9 @@ dependencies = [
     # Die Engines. Torch steht hier nicht: es kommt ueber docling und wird im
     # Dockerfile aus dem CPU-Index geholt.
     "markitdown[all]>=0.1",
-    "docling>=2.0",
+    # Untergrenze 2.56.0: ab dort ist EasyOCR ein Extra und kommt nur noch mit,
+    # wenn man es anfordert. Der Adapter setzt ``EasyOcrOptions`` ausdruecklich.
+    "docling[easyocr]>=2.56.0",
 ]
 
 [project.optional-dependencies]

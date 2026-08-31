@@ -31,7 +31,9 @@ class Settings(BaseSettings):
     default_engine: str = "auto"
     enable_fallback: bool = True
     ocr_enabled: bool = True
-    ocr_langs: str = "deu,eng"
+    # ISO 639-1: der Docling-Adapter ruft EasyOCR auf, und die erwartet diese
+    # Kuerzel. Tesseracts ``deu,eng`` erkennt sie nicht.
+    ocr_langs: str = "de,en"
 
     # Betrieb
     log_level: str = "info"
