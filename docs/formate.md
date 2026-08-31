@@ -66,3 +66,13 @@ der Texterkennung passen, die Docling benutzt.
 Wo die vorgebackenen Modelle liegen, sagt `DOCLING_ARTIFACTS_PATH`. Die Variable
 gehört Docling, nicht kaimarkit; das Container-Abbild setzt sie, damit zur Laufzeit
 nichts aus dem Netz nachgeladen wird.
+
+## MarkItDown
+
+MarkItDown kommt ohne Modelle und ohne OCR aus und ist deshalb die schnelle Engine.
+Einen LLM-Client setzt der Dienst bewusst nicht ein: Bilder erscheinen im Markdown
+nur als Alt-Text, nicht als beschriebener Inhalt.
+
+Findet MarkItDown in einer Datei keinen Text — bei einem gescannten PDF etwa —, ist
+das kein Fehler. Das Ergebnis bleibt leer und die Antwort nennt den Grund in
+`warnings`. Wer aus solchen Dateien Text braucht, wählt Docling mit OCR.
