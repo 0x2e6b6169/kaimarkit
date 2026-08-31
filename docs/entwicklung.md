@@ -144,7 +144,11 @@ Fehler dringen nicht bis in die API.
 **4. `available()` darf nicht werfen.** Die Registry fragt damit ab, ob die Engine
 jetzt einsatzbereit ist, und `/api/capabilities` baut darauf seine Auskunft. Braucht
 die Engine eine Vorbereitung wie Docling seine Modelle, meldet sie so lange `False`
-und lädt im Hintergrund.
+und lädt im Hintergrund. Der Lifespan in `main.py` stößt dieses Laden beim Hochfahren
+an: Er ruft `start_warmup()` im Adaptermodul auf, und der Aufruf kehrt sofort zurück,
+weil er nur einen Daemon-Thread startet. `/api/health` wartet deshalb nie auf die
+Modelle, und `state()` meldet `warming`, bis der Konverter steht. Wer eine Engine mit
+Vorbereitung ergänzt, hängt sie ebenso in den Lifespan ein.
 
 **5. Sich in die Registry eintragen.** In `backend/app/converters/registry.py` kommt
 der Name in `ENGINE_NAMES`, und in `PREFERENCES` steht er bei jeder Endung, die er
