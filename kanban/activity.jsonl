@@ -205,3 +205,10 @@
 {"timestamp":"2026-08-31T11:41:56.428232671+02:00","action":"move","task_id":31,"detail":"backlog -\u003e todo"}
 {"timestamp":"2026-08-31T11:41:57.129233731+02:00","action":"move","task_id":32,"detail":"backlog -\u003e todo"}
 {"timestamp":"2026-08-31T11:41:57.695118867+02:00","action":"edit","task_id":32,"detail":"BE-10 · Drei Befunde aus DOC-2: meta-Status, Fehlertext, passthrough"}
+{"timestamp":"2026-08-31T11:43:26.690172766+02:00","action":"move","task_id":31,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:45:36.556378158+02:00","action":"create","task_id":33,"detail":"BE-11 · start_warmup() in den Lifespan von main.py einhaengen"}
+{"timestamp":"2026-08-31T11:45:54.476791455+02:00","action":"create","task_id":34,"detail":"DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite"}
+{"timestamp":"2026-08-31T11:46:15.815374495+02:00","action":"create","task_id":35,"detail":"PROC-1 · Ticketschnitt: gehoeren Doku-Seiten einer Lane?"}
+{"timestamp":"2026-08-31T11:46:24.74179636+02:00","action":"move","task_id":33,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T11:46:25.107546327+02:00","action":"edit","task_id":31,"detail":"DOC-5 · def_list in mkdocs.yml nachtragen"}
+{"timestamp":"2026-08-31T11:46:25.433580998+02:00","action":"move","task_id":34,"detail":"backlog -\u003e todo"}
