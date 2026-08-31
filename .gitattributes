@@ -2,3 +2,8 @@
 # parallele Anhaenge aus mehreren Lanes beim Merge nicht kollidieren (jede Zeile
 # bleibt erhalten, statt dass zwei Seiten um denselben Hunk streiten).
 kanban/activity.jsonl merge=union
+
+# Die Beispieldateien der Tests muessen Byte fuer Byte so bleiben, wie sie gebaut
+# wurden. Das PDF ist unkomprimiert und sieht deshalb wie Text aus; wandelt jemand
+# darin die Zeilenenden um, stimmen die Offsets der xref-Tabelle nicht mehr.
+backend/tests/fixtures/** binary

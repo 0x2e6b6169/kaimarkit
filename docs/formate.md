@@ -94,3 +94,9 @@ Pandoc auf stderr schreibt und trotzdem weiterarbeitet, stehen danach in `warnin
 
 Fehlt das Programm im PATH, meldet `GET /api/capabilities` die Engine als
 `unavailable`; wer sie ausdrücklich verlangt, bekommt 400 (`engine_unavailable`).
+
+## Weiter
+
+Wie man eine Engine im Aufruf verlangt und was die Auskunft im Einzelnen enthält,
+steht unter [API](api.md). Wo diese Engines an ihre Grenze kommen — gescannte
+Seiten, Bilder, Speicher —, steht unter [Grenzen](grenzen.md).
