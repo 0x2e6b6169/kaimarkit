@@ -57,3 +57,54 @@ Scheitert die Umwandlung, gibt es einen Fehlercode und keine leere Antwort:
 | 400 | `engine_unavailable` | die verlangte Engine ist nicht installiert |
 | 500 | `conversion_failed` | die Engine ist an der Datei gescheitert |
 | 504 | `conversion_timeout` | über `KAIMARKIT_CONVERSION_TIMEOUT` |
+
+## Mehrere Dateien wandeln — `POST /api/convert/batch`
+
+Dieselben Felder, nur `file` mehrfach. Höchstens `KAIMARKIT_MAX_FILES` Dateien je
+Aufruf. Der Endpunkt ist für Skripte gedacht; das Frontend ruft `/api/convert` je
+Datei auf, weil es Fortschritt und Vorschau einzeln zeigt.
+
+Ohne `Accept` kommt ein ZIP mit je einer `.md`-Datei:
+
+```bash
+curl -sf -F file=@a.pdf -F file=@b.epub -F file=@c.docx \
+     localhost:8000/api/convert/batch -o ergebnis.zip
+```
+
+Im Archiv steht nur der blanke Name, nie ein Verzeichnis davor. Zwei gleich benannte
+Dateien aus verschiedenen Ordnern überschreiben einander deshalb nicht: Die zweite
+heißt `bericht-2.md`, die dritte `bericht-3.md`.
+
+Eine gescheiterte Datei nimmt die übrigen nicht mit. Sie fehlt im Archiv und
+bekommt stattdessen eine Zeile in `_errors.txt`, die nur dann darin liegt, wenn
+wirklich etwas schieflief:
+
+```text
+kaputt.epub: Archiv unlesbar
+```
+
+Mit `Accept: application/json` kommt dieselbe Auskunft als Liste von Einträgen,
+dazu die Zählung:
+
+```bash
+curl -sf -F file=@a.pdf -F file=@b.epub \
+     -H 'Accept: application/json' localhost:8000/api/convert/batch
+```
+
+```json
+{
+  "entries": [
+    { "filename": "a.pdf", "status": "ok", "markdown": "# A", "engine": "docling",
+      "warnings": [], "duration_ms": 3120, "error": null },
+    { "filename": "b.epub", "status": "failed", "markdown": null, "engine": null,
+      "warnings": [], "duration_ms": 88, "error": "Archiv unlesbar" }
+  ],
+  "total": 2,
+  "succeeded": 1,
+  "failed": 1
+}
+```
+
+Der Aufruf antwortet mit 200, auch wenn jede einzelne Datei scheiterte — die Anfrage
+selbst war ja in Ordnung. Als Anfrage scheitert nur ein zu großer Stapel: mehr als
+`KAIMARKIT_MAX_FILES` Dateien enden mit 413 und `too_many_files`.

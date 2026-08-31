@@ -1,7 +1,7 @@
 """Die Konvertierungsendpunkte.
 
-Hier steht ``/api/convert`` fuer eine einzelne Datei; ``/api/convert/batch`` kommt
-aus BE-8 und haengt sich an denselben Router.
+Hier stehen ``/api/convert`` fuer eine einzelne Datei und ``/api/convert/batch``
+fuer den Stapel.
 
 Der Endpunkt kennt keine Engine. Er nimmt den Upload entgegen, laesst die Registry
 waehlen und wandeln und formt das Ergebnis in die Antwort, die der Aufrufer im
@@ -11,22 +11,30 @@ waehlen und wandeln und formt das Ergebnis in die Antwort, die der Aufrufer im
 
 from __future__ import annotations
 
+import time
 from pathlib import PurePosixPath
 from typing import Annotated
 from urllib.parse import quote
 
 from fastapi import APIRouter, File, Form, Header, Response, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 
+from ..config import get_settings
 from ..converters.base import ConvertOptions
 from ..converters.registry import convert_with_fallback
-from ..models import ConversionEntry, ConversionStatus
-from ..uploads import run_conversion, stored_upload
+from ..errors import ConversionError, TooManyFiles
+from ..models import BatchResponse, ConversionEntry, ConversionStatus
+from ..packaging import build_archive
+from ..uploads import run_conversion, sanitize_filename, stored_upload
 
 router = APIRouter(tags=["convert"])
 
 #: Medientyp der Markdown-Antwort.
 MARKDOWN_MEDIA_TYPE = "text/markdown; charset=utf-8"
+
+#: Medientyp und Name des Stapelarchivs.
+ZIP_MEDIA_TYPE = "application/zip"
+ARCHIVE_NAME = "markdown.zip"
 
 
 @router.post("/convert", response_model=None)
@@ -69,6 +77,76 @@ async def convert(
     if result.warnings:
         headers["X-Warnings"] = _header_safe(" | ".join(result.warnings))
     return Response(content=result.markdown, media_type=MARKDOWN_MEDIA_TYPE, headers=headers)
+
+
+@router.post("/convert/batch", response_model=None)
+async def convert_batch(
+    file: Annotated[list[UploadFile], File(description="Die Eingabedateien.")],
+    engine: Annotated[str | None, Form(description="Enginename oder auto.")] = None,
+    ocr: Annotated[bool | None, Form(description="Ueberschreibt KAIMARKIT_OCR_ENABLED.")] = None,
+    accept: Annotated[str, Header()] = "",
+) -> Response:
+    """Wandelt mehrere Dateien in einem Aufruf.
+
+    Eine gescheiterte Datei nimmt die uebrigen nicht mit: Sie bekommt einen Eintrag
+    mit ``status: "failed"``, und im Archiv steht ihr Grund in ``_errors.txt``. Der
+    Aufruf antwortet also auch dann mit 200, wenn jede einzelne Datei scheiterte.
+    Nur zu viele Dateien scheitern als Anfrage.
+
+    Ohne ``Accept: application/json`` kommt das ZIP.
+    """
+    settings = get_settings()
+    if len(file) > settings.max_files:
+        raise TooManyFiles(
+            f"Hoechstens {settings.max_files} Dateien je Aufruf, angekommen sind {len(file)}"
+        )
+
+    options = ConvertOptions(engine=engine or None, ocr=ocr)
+    entries = [await _convert_entry(upload, options) for upload in file]
+
+    if "application/json" in accept:
+        succeeded = sum(1 for entry in entries if entry.status == ConversionStatus.OK)
+        body = BatchResponse(
+            entries=entries,
+            total=len(entries),
+            succeeded=succeeded,
+            failed=len(entries) - succeeded,
+        )
+        return JSONResponse(content=body.model_dump(mode="json"))
+
+    return StreamingResponse(
+        build_archive(entries),
+        media_type=ZIP_MEDIA_TYPE,
+        headers={"Content-Disposition": _content_disposition(ARCHIVE_NAME)},
+    )
+
+
+async def _convert_entry(upload: UploadFile, options: ConvertOptions) -> ConversionEntry:
+    """Wandelt eine Datei des Stapels und faengt ihren Fehler ein.
+
+    Der Kontextmanager loescht die temporaere Datei auch dann, wenn die Engine
+    scheitert — jede Datei des Stapels raeumt sich selbst weg.
+    """
+    started = time.perf_counter()
+    try:
+        async with stored_upload(upload) as stored:
+            result = await run_conversion(lambda: convert_with_fallback(stored.path, options))
+            filename = stored.filename
+    except ConversionError as exc:
+        return ConversionEntry(
+            filename=sanitize_filename(upload.filename),
+            status=ConversionStatus.FAILED,
+            duration_ms=int((time.perf_counter() - started) * 1000),
+            error=exc.detail,
+        )
+    return ConversionEntry(
+        filename=filename,
+        status=ConversionStatus.OK,
+        markdown=result.markdown,
+        engine=result.engine,
+        warnings=result.warnings,
+        duration_ms=result.duration_ms,
+    )
 
 
 def _markdown_name(filename: str) -> str:
