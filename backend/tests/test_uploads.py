@@ -121,7 +121,22 @@ async def test_upload_filename_has_no_path(tmp_spool: Path, limits) -> None:
 
     async with stored_upload(upload) as stored:
         assert stored.filename == "bericht.pdf"
-        assert stored.path.parent == tmp_spool
+        # Jede Datei bekommt ein eigenes Verzeichnis im Spool.
+        assert stored.path.parent.parent == tmp_spool
+
+
+async def test_stored_file_keeps_the_name_it_arrived_under(tmp_spool: Path, limits) -> None:
+    """Die Engines nennen in ihren Meldungen ``path.name``.
+
+    Hiesse die Datei auf der Platte ``tmpqwhm57ia.epub``, staende dieser Name in
+    der Fehlermeldung und damit in der Oberflaeche — ein Name, den der Nutzer nie
+    vergeben hat.
+    """
+    limits(max_file_size_mb="1")
+    upload, _ = make_upload(b"kein zip", "roman.epub")
+
+    async with stored_upload(upload) as stored:
+        assert stored.path.name == "roman.epub"
 
 
 async def test_run_conversion_passes_the_result_through(limits) -> None:

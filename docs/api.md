@@ -53,6 +53,10 @@ Frontend bietet deshalb nichts an, was ohnehin scheitern würde. Steht Docling a
 `warming`, laden gerade die Modelle; ein paar Sekunden später steht `.pdf` wieder in
 der Liste.
 
+In `engines` stehen nur die drei wählbaren Engines. Markdown reicht der Dienst
+durch, und dafür gibt es nichts zu wählen: `formats` führt `.md` mit dem Namen
+`passthrough`, und derselbe Name steht danach im Feld `engine` des Ergebnisses.
+
 ## Eine Datei wandeln — `POST /api/convert`
 
 `multipart/form-data` mit dem Feld `file`. Dazu wahlweise `engine` (ein Enginename

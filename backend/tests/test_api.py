@@ -97,11 +97,12 @@ def test_capabilities_lists_only_ready_engines(client: TestClient) -> None:
     assert body["formats"][".pdf"] == ["markitdown"]
     # Nur Pandoc kann .odt, und Pandoc waermt noch: die Endung faellt weg.
     assert ".odt" not in body["formats"]
+    # ``passthrough`` steht nicht in ``engines``: Markdown wird durchgereicht,
+    # gewaehlt wird dort nichts. Siehe contracts/api.md.
     assert body["engines"] == {
         "markitdown": "ready",
         "docling": "warming",
         "pandoc": "warming",
-        "passthrough": "ready",
     }
 
 
@@ -135,10 +136,29 @@ def test_engine_that_cannot_be_loaded_counts_as_unavailable(
         "markitdown": "unavailable",
         "docling": "unavailable",
         "pandoc": "unavailable",
-        "passthrough": "ready",
     }
     # Uebrig bleibt, was ohne Engine geht: Markdown wird durchgereicht.
     assert set(body["formats"]) == {".md", ".markdown"}
+
+
+def test_engine_reports_its_own_state(client: TestClient) -> None:
+    """Eine Engine, die ``state()`` anbietet, bestimmt ihren Zustand selbst.
+
+    Docling braucht das: Sein Modul laedt auch ohne die Bibliothek, damit ein
+    fehlendes ``docling`` nicht als ``ImportError`` endet. ``available()`` meldet
+    dann False — genau wie beim Vorladen. Ohne die Rueckfrage bliebe eine nicht
+    installierte Engine dauerhaft ``warming``, und das Frontend boete sie an.
+    """
+
+    class SelfReporting(DummyEngine):
+        def state(self) -> str:
+            return "unavailable"
+
+    install(DummyEngine("markitdown"), SelfReporting("docling", ready=False))
+
+    body = client.get("/api/capabilities").json()
+
+    assert body["engines"]["docling"] == "unavailable"
 
 
 def test_convert_answers_markdown_by_default(client: TestClient) -> None:

@@ -34,7 +34,11 @@ async def capabilities() -> CapabilitiesResponse:
     """
     settings = get_settings()
     formats = {ext: names for ext in registry.PREFERENCES if (names := registry.engines_for(ext))}
-    engines = {name: _state(name) for name in (*registry.ENGINE_NAMES, registry.PASSTHROUGH)}
+    # ``engines`` nennt, wozwischen der Nutzer waehlen kann. ``passthrough`` steht
+    # deshalb nicht darin: Markdown wird durchgereicht, nicht gewandelt, und eine
+    # Wahl gibt es dort nicht. Als ``engine`` eines Ergebnisses erscheint der Name
+    # sehr wohl — siehe ``contracts/api.md``.
+    engines = {name: _state(name) for name in registry.ENGINE_NAMES}
     return CapabilitiesResponse(
         formats=formats,
         engines=engines,
@@ -53,9 +57,19 @@ def _state(name: str) -> EngineState:
 
     ``warming`` heisst: Das Modul ist da, die Engine arbeitet aber noch nicht —
     bei Docling laden dann gerade die Modelle.
+
+    Eine Engine darf ihren Zustand selbst melden, und Docling tut es. Der Grund:
+    Sein Modul laedt auch ohne die Bibliothek, damit ein fehlendes ``docling``
+    nicht als ``ImportError`` endet. ``get_converter()`` gelingt dann, und
+    ``available()`` allein kann nicht mehr unterscheiden, ob die Modelle noch
+    laden oder die Bibliothek fehlt. Ohne diese Rueckfrage bliebe eine gar nicht
+    installierte Engine dauerhaft ``warming``, und das Frontend boete sie an.
     """
     try:
         converter = registry.get_converter(name)
     except EngineUnavailable:
         return EngineState.UNAVAILABLE
+    reported = getattr(converter, "state", None)
+    if reported is not None:
+        return EngineState(reported())
     return EngineState.READY if converter.available() else EngineState.WARMING

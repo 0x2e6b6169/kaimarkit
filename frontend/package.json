@@ -18,12 +18,10 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "@types/busboy": "^1.5.4",
     "@types/markdown-it": "^14.2.0",
     "@types/node": "^26.4.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/test-utils": "^2.5.0",
-    "busboy": "^1.6.0",
     "jsdom": "^30.0.1",
     "tailwindcss": "^4.3.3",
     "typescript": "~5.9",

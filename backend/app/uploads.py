@@ -17,7 +17,7 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path, PurePosixPath
-from tempfile import NamedTemporaryFile
+from tempfile import TemporaryDirectory
 
 import anyio
 import anyio.to_thread
@@ -71,24 +71,28 @@ async def stored_upload(upload: UploadFile) -> AsyncIterator[StoredUpload]:
     Die Groesse wird waehrend des Empfangs geprueft, nicht danach: Wer erst nach
     dem vollstaendigen Einlesen misst, hat die Datei bereits im Speicher. Sobald
     ``KAIMARKIT_MAX_FILE_SIZE_MB`` ueberschritten ist, bricht der Empfang ab.
+
+    Die Datei behaelt ihren gesaeuberten Namen und bekommt dafuer ein eigenes
+    Verzeichnis. Der Grund steht in den Meldungen der Engines: Sie nennen die
+    Datei, an der sie gescheitert sind, und ``tmpqwhm57ia.epub`` beantwortet dem
+    Nutzer keine Frage. Das Verzeichnis faellt im ``finally`` mitsamt Inhalt weg —
+    der Dienst speichert nichts.
     """
     settings = get_settings()
     filename = sanitize_filename(upload.filename)
-    tmp = NamedTemporaryFile(suffix=PurePosixPath(filename).suffix, delete=False)
-    path = Path(tmp.name)
+    spool = TemporaryDirectory()
+    path = Path(spool.name) / filename
     try:
-        try:
+        with path.open("wb") as sink:
             written = 0
             while chunk := await upload.read(CHUNK_SIZE):
                 written += len(chunk)
                 if written > settings.max_file_size_bytes:
                     raise FileTooLarge(f"{filename} ueberschreitet {settings.max_file_size_mb} MB")
-                tmp.write(chunk)
-        finally:
-            tmp.close()
+                sink.write(chunk)
         yield StoredUpload(path=path, filename=filename)
     finally:
-        path.unlink(missing_ok=True)
+        spool.cleanup()
 
 
 @lru_cache

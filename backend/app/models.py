@@ -43,6 +43,10 @@ class ConversionEntry(BaseModel):
 
     ``markdown`` und ``error`` sind immer vorhanden, damit ein Client nicht auf ihr
     Fehlen pruefen muss: bei ``ok`` ist ``error`` None, bei ``failed`` ``markdown``.
+
+    In ``engine`` steht neben den drei waehlbaren Engines auch ``passthrough``:
+    Markdown wird durchgereicht, nicht gewandelt. In ``CapabilitiesResponse.engines``
+    fehlt der Name dagegen — dort steht, wozwischen sich waehlen laesst.
     """
 
     filename: str
@@ -72,6 +76,10 @@ class CapabilitiesResponse(BaseModel):
 
     In ``formats`` ist die Reihenfolge die Praeferenz: Der erste Eintrag wird bei
     ``engine=auto`` genommen. Engines im Zustand ``unavailable`` erscheinen hier nicht.
+
+    ``engines`` nennt nur die waehlbaren Engines. ``formats`` fuehrt ``.md`` mit
+    ``passthrough``, und dieser Name fehlt in ``engines`` — dort gibt es nichts zu
+    waehlen.
     """
 
     formats: dict[str, list[str]]

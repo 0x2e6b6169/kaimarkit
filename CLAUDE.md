@@ -25,8 +25,8 @@ pytest -q -m slow                               # mit Docling, dauert
 ruff check .
 
 # Frontend
-cd frontend && npm run dev                      # Proxy auf localhost:8000
-VITE_KAIMARKIT_MOCK=1 npm run dev               # Mock statt Proxy, kein Backend noetig
+cd frontend && npm run dev                      # Proxy auf localhost:8000, Backend noetig
+npm run test                                    # vitest
 npm run build
 npm run typecheck
 
@@ -64,8 +64,9 @@ die API.
 über `config.py`. Keine Konstante wird im Code festgeschrieben, die im Betrieb
 umgestellt werden soll.
 
-**5. Der Dienst speichert nichts.** Hochgeladene Dateien leben in einer
-`NamedTemporaryFile` und werden im `finally` gelöscht — auch im Fehlerfall.
+**5. Der Dienst speichert nichts.** Jede hochgeladene Datei bekommt ein eigenes
+`TemporaryDirectory`, das im `finally` mitsamt Inhalt verschwindet — auch im
+Fehlerfall.
 
 **6. Eine Quelle für den Betrieb.** `docker/.env.example` und
 `docs/betrieb/konfiguration.md` beschreiben dieselben Variablen und werden gemeinsam
