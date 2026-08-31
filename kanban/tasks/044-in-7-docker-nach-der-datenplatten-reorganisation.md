@@ -1,10 +1,10 @@
 ---
 id: 44
-title: 'IN-7 · Docker-Datenplatte von C: loesen, WSL-Reorganisation'
+title: IN-7 · Docker nach der Datenplatten-Reorganisation belegen
 status: todo
 priority: high
 created: 2026-08-31T14:42:10.57703712+02:00
-updated: 2026-08-31T14:42:10.57703712+02:00
+updated: 2026-08-31T14:43:35.927726037+02:00
 assignee: akar
 tags:
     - infra
@@ -71,3 +71,6 @@ dann die kleinere Datei um.
 Aufgefallen waehrend INT-2 (#30), als der Nutzer `apt clean` gegen einen
 vermuteten Platzmangel laufen liess und `/` daraufhin 854 GB frei meldete. Der
 Widerspruch fuehrte auf die richtige Platte.
+
+[[2026-08-31]] Mon 14:43
+Zuschnitt geschaerft (31.08.2026): **Der Nutzer fuehrt die Reorganisation selbst und parallel durch** — Umzug oder Kompaktierung auf der Windows-Seite, danach ein WSL-Neustart. Fuer die Agenten ist das transparent: Nach dem Neustart liegen dieselben Pfade und dieselbe Docker-Schnittstelle vor, nur mit Platz. Dieses Ticket ist deshalb **kein Auftrag zum Umziehen**, sondern der Beleg danach: Ein Subagent fuehrt allein den Abschnitt Pruefung aus und meldet das Ergebnis. Faellt dabei etwas aus dem Bestand (ein Abbild, ein Volume, ein Container), gehoert das als eigenes Ticket ins Board, nicht in eine stille Reparatur. Die Wege unter Vorgaben bleiben als Beschreibung dessen stehen, was geschehen ist — nicht als Arbeitsanweisung.

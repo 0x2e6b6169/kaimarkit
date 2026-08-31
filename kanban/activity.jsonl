@@ -297,3 +297,4 @@
 {"timestamp":"2026-08-31T14:42:39.432294064+02:00","action":"release","task_id":30,"detail":"akar-18"}
 {"timestamp":"2026-08-31T14:42:55.039195362+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
 {"timestamp":"2026-08-31T14:43:11.228375688+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T14:43:35.928757516+02:00","action":"edit","task_id":44,"detail":"IN-7 · Docker nach der Datenplatten-Reorganisation belegen"}
