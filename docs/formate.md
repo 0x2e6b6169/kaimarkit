@@ -42,3 +42,13 @@ scheitert. Der Grund des Fehlschlags steht danach in `warnings` des Ergebnisses.
 sofern sie die Endung überhaupt bedient.
 
 Eine Endung außerhalb der Tabelle lehnt der Dienst mit 415 (`unsupported_format`) ab.
+
+## MarkItDown
+
+MarkItDown kommt ohne Modelle und ohne OCR aus und ist deshalb die schnelle Engine.
+Einen LLM-Client setzt der Dienst bewusst nicht ein: Bilder erscheinen im Markdown
+nur als Alt-Text, nicht als beschriebener Inhalt.
+
+Findet MarkItDown in einer Datei keinen Text — bei einem gescannten PDF etwa —, ist
+das kein Fehler. Das Ergebnis bleibt leer und die Antwort nennt den Grund in
+`warnings`. Wer aus solchen Dateien Text braucht, wählt Docling mit OCR.
