@@ -62,7 +62,14 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends libgl1 libglib2.0-0t64 libxcb1 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN docling-tools models download --output-dir /opt/docling-models
+# Der vorgegebene Satz bringt EasyOCR nicht mit; seit docling 2.56 ist es ein
+# Extra. Der Adapter waehlt es aber ausdruecklich, deshalb der zweite Aufruf: ohne
+# ihn fehlt craft_mlt_25k.pth, und jede Wandlung mit Texterkennung scheitert im
+# Betrieb an HF_HUB_OFFLINE=1. Die Sprachen sind die Voreinstellung von
+# KAIMARKIT_OCR_LANGS.
+RUN docling-tools models download --output-dir /opt/docling-models \
+    && docling-tools models download --output-dir /opt/docling-models easyocr \
+        --easyocr-lang de --easyocr-lang en
 
 
 # ── 4. Dokumentation ───────────────────────────────────────────────────────────
@@ -114,9 +121,10 @@ ENV PYTHONUNBUFFERED=1 \
     HF_HOME=/opt/docling-models \
     HF_HUB_OFFLINE=1
 
-# Tesseract fuer die Texterkennung, Pandoc als .deb aus dem Release. libgl1,
-# libglib2.0-0t64 und libxcb1 braucht das OpenCV-Rad, das mit docling hereinkommt.
-# curl wird nur zum Holen des .deb gebraucht und danach wieder entfernt.
+# Pandoc als .deb aus dem Release. libgl1, libglib2.0-0t64 und libxcb1 braucht das
+# OpenCV-Rad, das mit docling hereinkommt. curl wird nur zum Holen des .deb
+# gebraucht und danach wieder entfernt. Die Texterkennung braucht kein
+# Systempaket: EasyOCR liegt als Gewichte in /opt/docling-models.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -124,9 +132,6 @@ RUN apt-get update \
         libgl1 \
         libglib2.0-0t64 \
         libxcb1 \
-        tesseract-ocr \
-        tesseract-ocr-deu \
-        tesseract-ocr-eng \
     && curl -fsSL -o /tmp/pandoc.deb \
         "https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-amd64.deb" \
     && dpkg -i /tmp/pandoc.deb \
