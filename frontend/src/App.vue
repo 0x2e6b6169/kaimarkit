@@ -1,120 +1,126 @@
 <script setup lang="ts">
 /**
- * Geruestseite. Sie zeigt, dass Vue, Tailwind und die Schnittstelle
- * zusammenspielen, und loest die drei Faelle des Mocks aus. FE-3 bis FE-7
- * ersetzen sie durch Dropzone, Warteschlange, Optionen und Vorschau.
+ * Die Seite. Sie haelt die Bausteine zusammen und entscheidet nichts selbst:
+ * Die Warteschlange gehoert `useConversion`, die Faehigkeiten `useCapabilities`,
+ * die Darstellung den Komponenten.
+ *
+ * Was hier zusammenlaeuft:
+ *
+ * - Die Dropzone meldet Dateien, die Warteschlange nimmt sie an.
+ * - Die Optionen gelten fuer den naechsten Start; die Dateinamen schraenken die
+ *   Enginewahl ein.
+ * - Jede Zeile bekommt ihre Vorschau ueber den Slot `preview` der
+ *   Warteschlange.
+ *
+ * **Die Warteschlange bleibt immer eingehaengt**, auch ohne Dateien. `FileQueue`
+ * merkt sich beim Einhaengen den Zustand jeder Zeile, um nur Aenderungen
+ * anzusagen. Wuerde sie erst mit der ersten Datei erscheinen, saehe sie deren
+ * Start als Ausgangszustand und sagte ihn nie an.
  */
-import { onMounted, ref } from 'vue'
-import type { CapabilitiesResponse, ConversionEntry, ErrorResponse } from './types'
+import { computed, onMounted, ref, watch } from 'vue'
+import FileDropZone from './components/FileDropZone.vue'
+import FileQueue from './components/FileQueue.vue'
+import MarkdownPreview from './components/MarkdownPreview.vue'
+import OptionsPanel from './components/OptionsPanel.vue'
+import { useCapabilities } from './composables/useCapabilities'
+import { useConversion } from './composables/useConversion'
 
-const capabilities = ref<CapabilitiesResponse | null>(null)
-const capabilitiesError = ref<string | null>(null)
+const { entries, options, busy, enqueue, remove } = useConversion()
+const { extensions, error: capabilitiesError, load, reload } = useCapabilities()
 
-const running = ref(false)
-const entry = ref<ConversionEntry | null>(null)
-const failure = ref<ErrorResponse | null>(null)
+onMounted(() => void load())
 
-const cases: { label: string; filename: string }[] = [
-  { label: 'Erfolg', filename: 'bericht.pdf' },
-  { label: 'Erfolg mit Warnungen', filename: 'bericht-warnung.pdf' },
-  { label: 'Fehlschlag', filename: 'bericht-fehler.pdf' },
-]
+/** Die Dateinamen schraenken die Enginewahl ein — siehe `OptionsPanel`. */
+const filenames = computed(() => entries.value.map((entry) => entry.filename))
 
-onMounted(async () => {
-  try {
-    const response = await fetch('/api/capabilities', {
-      headers: { Accept: 'application/json' },
-    })
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    capabilities.value = (await response.json()) as CapabilitiesResponse
-  } catch (cause) {
-    capabilitiesError.value = cause instanceof Error ? cause.message : String(cause)
-  }
+const formats = computed(() => extensions.value.join(' · '))
+
+const succeeded = computed(() => entries.value.filter((entry) => entry.status === 'ok').length)
+const failed = computed(() => entries.value.filter((entry) => entry.status === 'failed').length)
+
+/**
+ * Die Ansage am Ende eines Laufs. `FileQueue` meldet jede einzelne Zeile; was
+ * dort fehlt, ist der Augenblick, in dem nichts mehr laeuft — genau dann kann
+ * der Nutzer weiterarbeiten. Die Ansagen sammeln sich, damit zwei Laeufe kurz
+ * hintereinander nicht einander ueberschreiben.
+ */
+const announcements = ref<{ id: number; text: string }[]>([])
+let nextAnnouncement = 1
+
+watch(busy, (running, before) => {
+  if (running || !before || !entries.value.length) return
+  const parts = [`${succeeded.value} gelungen`]
+  if (failed.value) parts.push(`${failed.value} fehlgeschlagen`)
+  announcements.value.push({
+    id: nextAnnouncement++,
+    text: `Alle Dateien sind fertig: ${parts.join(', ')}.`,
+  })
+  if (announcements.value.length > 5) announcements.value.shift()
 })
-
-async function convert(filename: string): Promise<void> {
-  running.value = true
-  entry.value = null
-  failure.value = null
-  try {
-    const body = new FormData()
-    body.append('file', new File(['Beispielinhalt'], filename), filename)
-    body.append('engine', 'auto')
-    const response = await fetch('/api/convert', {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body,
-    })
-    const payload: unknown = await response.json()
-    if (response.ok) {
-      entry.value = payload as ConversionEntry
-    } else {
-      failure.value = payload as ErrorResponse
-    }
-  } catch (cause) {
-    failure.value = {
-      detail: cause instanceof Error ? cause.message : String(cause),
-      code: 'conversion_failed',
-    }
-  } finally {
-    running.value = false
-  }
-}
 </script>
 
 <template>
-  <main class="mx-auto max-w-3xl space-y-8 p-8 font-sans">
-    <header>
-      <h1 class="text-3xl font-semibold">kaimarkit</h1>
-      <p class="text-slate-600">
-        Dokumente nach Markdown wandeln, um den Kontext zu sehen, den man einem LLM gibt.
-      </p>
-    </header>
-
-    <section class="space-y-2">
-      <h2 class="text-xl font-medium">Faehigkeiten</h2>
-      <p v-if="capabilitiesError" class="text-red-700">
-        /api/capabilities nicht erreichbar: {{ capabilitiesError }}
-      </p>
-      <ul v-else-if="capabilities" class="space-y-1">
-        <li v-for="(state, name) in capabilities.engines" :key="name">
-          <span class="font-mono">{{ name }}</span> — {{ state }}
-        </li>
-      </ul>
-      <p v-else class="text-slate-500">wird geladen …</p>
-    </section>
-
-    <section class="space-y-3">
-      <h2 class="text-xl font-medium">Die drei Faelle des Mocks</h2>
-      <div class="flex flex-wrap gap-2">
-        <button
-          v-for="item in cases"
-          :key="item.filename"
-          type="button"
-          class="rounded border border-slate-400 px-3 py-1.5 hover:bg-slate-100 disabled:opacity-50"
-          :disabled="running"
-          @click="convert(item.filename)"
-        >
-          {{ item.label }}
-        </button>
-      </div>
-
-      <p v-if="running" class="text-slate-500">konvertiert …</p>
-
-      <div v-if="failure" class="rounded border border-red-300 bg-red-50 p-3">
-        <p class="font-mono text-sm">{{ failure.code }}</p>
-        <p>{{ failure.detail }}</p>
-      </div>
-
-      <div v-if="entry" class="space-y-2">
-        <p class="text-sm text-slate-600">
-          {{ entry.filename }} · {{ entry.engine }} · {{ entry.duration_ms }} ms
+  <div class="min-h-dvh">
+    <main class="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-8 sm:px-6">
+      <header class="flex flex-col gap-2">
+        <h1 class="text-2xl font-semibold sm:text-3xl">kaimarkit</h1>
+        <p class="text-slate-600">
+          kaimarkit wandelt Dokumente nach Markdown, damit man den Kontext liest, den man
+          einem Sprachmodell gibt.<template v-if="formats">
+            Angenommen werden {{ formats }}.</template>
         </p>
-        <ul v-if="entry.warnings.length" class="rounded border border-amber-300 bg-amber-50 p-3">
-          <li v-for="warning in entry.warnings" :key="warning">{{ warning }}</li>
-        </ul>
-        <pre class="overflow-x-auto rounded bg-slate-100 p-3 text-sm">{{ entry.markdown }}</pre>
-      </div>
-    </section>
-  </main>
+      </header>
+
+      <!--
+        Der Ausfall der Faehigkeiten trifft die ganze Seite: Ohne sie kennt die
+        Dropzone keine Endungen und die Auswahl keine Engine. Deshalb `alert` und
+        nicht die stille Ansage weiter unten.
+      -->
+      <p
+        v-if="capabilitiesError"
+        role="alert"
+        class="flex flex-wrap items-center gap-x-3 gap-y-2 rounded border border-red-300 bg-red-50 p-3 text-red-900"
+        data-test="capabilities-error"
+      >
+        <span class="flex-1">
+          Der Dienst antwortet nicht: {{ capabilitiesError }} Ohne ihn steht keine Engine
+          zur Wahl.
+        </span>
+        <button
+          type="button"
+          class="rounded border border-red-300 px-3 py-1 text-sm font-medium"
+          @click="void reload()"
+        >
+          Erneut versuchen
+        </button>
+      </p>
+
+      <OptionsPanel v-model="options" :filenames="filenames" />
+
+      <FileDropZone :extensions="extensions" @files="enqueue" />
+
+      <section aria-labelledby="queue-heading" class="flex flex-col gap-3">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h2 id="queue-heading" class="text-lg font-medium">Warteschlange</h2>
+          <p v-if="entries.length" class="text-sm text-slate-500" data-test="progress">
+            {{ succeeded }} von {{ entries.length }} fertig<span v-if="failed">
+              · {{ failed }} fehlgeschlagen</span
+            >
+          </p>
+        </div>
+
+        <!-- Hier haengt FE-6 (#18) den Download ein: je Zeile und als ZIP. -->
+
+        <FileQueue :entries="entries" @remove="remove">
+          <template #preview="{ entry }">
+            <MarkdownPreview :markdown="entry.markdown" :open="true" />
+          </template>
+        </FileQueue>
+      </section>
+    </main>
+
+    <div class="sr-only" role="log" aria-live="polite" data-test="app-log">
+      <p v-for="item in announcements" :key="item.id">{{ item.text }}</p>
+    </div>
+  </div>
 </template>
