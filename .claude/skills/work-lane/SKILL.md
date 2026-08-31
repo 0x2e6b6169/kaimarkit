@@ -109,6 +109,9 @@ Repeat until your lane is empty **and** no subagent of yours is still running:
      user-visible behaviour or architecture/convention change. Note that
      `docker/.env.example` and `docs/betrieb/konfiguration.md` are a pair
      (CLAUDE.md convention 6) — a new variable touches both.
+   - **Docs are owned per section, not per page.** Fix what your change made
+     false — even on a page another ticket created — and report what was already
+     false instead of fixing it. The PO turns reports into tickets.
    - Honour the **interface triad**: a change to `contracts/api.md`,
      `backend/app/models.py` or `frontend/src/types.ts` touches all three in the
      same commit. This one crosses lanes — say so in the ticket note so the other

@@ -100,7 +100,10 @@ Kontext schlank bleibt. Die Sitzung wird beim Start benannt (`claude -n <name>`)
   nichts und hat keine eigene Lane. Als PO-Pflicht läuft ein leichtes
   **Board-Sync**: von Zeit zu Zeit *nur* das Board committen
   (`git add kanban/ && git commit -m "chore(board): sync"`), damit das Fenster
-  nicht committeter gemeinsamer Board-Zustände klein bleibt.
+  nicht committeter gemeinsamer Board-Zustände klein bleibt. Dazu gehört,
+  **Befunde aufzufangen**: Was ein Subagent meldet, statt es selbst zu ändern,
+  wird ein Ticket. Sonst hängt der Befund daran, dass zufällig ein Ticket auf
+  dieser Datei offen steht.
 
 **Lane ist das Feld `assignee`, keine Spalte.** Die Status bleiben der Lebenszyklus
 (backlog → todo → in-progress → review → done). Jede Sitzung arbeitet nur ihre
@@ -184,6 +187,19 @@ bleibt:
 offenen Tickets besitzen dieselbe Datei.** Das ist die Regel, auf der das parallele
 Arbeiten ruht — ohne sie kollidieren genau die Tickets, die gleichzeitig laufen
 sollen.
+
+**In `docs/` gilt das Eigentum je Abschnitt, nicht je Seite.** Eine Doku-Seite ist
+nach Lesern gegliedert, nicht nach Erbauern; jede Lane braucht ein Stück davon. Ein
+Ticket nennt deshalb den Abschnitt mit: `docs/formate.md` (Abschnitt „Docling").
+Wer eine Seite anlegt, besitzt ihren Aufbau; wer den Gegenstand baut, besitzt die
+Aussagen über ihn. Zwei offene Tickets im selben Abschnitt bleiben ein Schnittfehler.
+Ein Abschnitt, den jedes Ticket anfassen müsste, folgt der Engpassdatei, zu der er
+gehört: `docs/formate.md` (Abschnitt „Die Matrix") gehört `BE-2`, so wie `registry.py`.
+
+**Wer ein Verhalten ändert, berichtigt im selben Merge, was dadurch falsch wird** —
+auch auf einer Seite, die ein anderes Ticket angelegt hat. Was schon vorher falsch
+war, wird gemeldet statt geändert. Eine Seite, die nach dem Merge etwas Unwahres
+über das Verhalten sagt, ist schlimmer als eine Regelverletzung.
 
 Drei Stellen sind gegen den naheliegenden Schnitt gebaut, damit das aufgeht:
 
