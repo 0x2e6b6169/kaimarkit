@@ -6,6 +6,7 @@ den Cache der Registry und stellen die Einstellungen ueber die Umgebung.
 
 from __future__ import annotations
 
+import tempfile
 import time
 from collections.abc import Iterator
 from pathlib import Path
@@ -255,3 +256,61 @@ def test_conversion_over_the_time_limit_is_504(
 
     assert response.status_code == 504
     assert response.json()["code"] == "conversion_timeout"
+
+
+def test_engine_that_cannot_be_loaded_is_400(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Eine ausdruecklich verlangte, aber nicht ladbare Engine endet als 400."""
+
+    def no_module(name: str) -> None:
+        raise ImportError(name)
+
+    monkeypatch.setattr(registry.importlib, "import_module", no_module)
+
+    response = client.post("/api/convert", files=upload(), data={"engine": "docling"})
+
+    assert response.status_code == 400
+    assert response.json()["code"] == "engine_unavailable"
+
+
+def test_unknown_engine_name_is_400(client: TestClient) -> None:
+    """Ein Name, den es gar nicht gibt, kommt nicht bis zu einer Engine."""
+    install(DummyEngine("markitdown"))
+
+    response = client.post("/api/convert", files=upload(), data={"engine": "phantasie"})
+
+    assert response.status_code == 400
+    assert response.json()["code"] == "engine_unsuitable"
+
+
+def test_file_without_extension_is_415(client: TestClient) -> None:
+    """Ohne Endung waehlt die Matrix nichts aus — das ist kein 500."""
+    install(DummyEngine("markitdown"))
+
+    response = client.post("/api/convert", files=upload("LIESMICH"))
+
+    assert response.status_code == 415
+    assert response.json()["code"] == "unsupported_format"
+
+
+def test_nothing_stays_behind_after_a_conversion(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Der Dienst speichert nichts: Die temporaere Datei ist danach weg."""
+    monkeypatch.setattr(tempfile, "tempdir", str(tmp_path))
+    install(DummyEngine("markitdown"))
+
+    assert client.post("/api/convert", files=upload()).status_code == 200
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_nothing_stays_behind_after_a_failure(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Auch im Fehlerfall raeumt der ``finally``-Zweig auf."""
+    monkeypatch.setattr(tempfile, "tempdir", str(tmp_path))
+    install(DummyEngine("markitdown", fails="Datei ist beschaedigt"))
+
+    assert client.post("/api/convert", files=upload()).status_code == 500
+    assert list(tmp_path.iterdir()) == []

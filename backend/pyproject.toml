@@ -47,3 +47,6 @@ select = ["E", "F", "I", "UP", "B"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = ["slow: braucht die Docling-Modelle und dauert"]
+# Der Standardlauf laesst die Docling-Tests aus; "pytest -m slow" holt sie zurueck,
+# weil die spaetere Angabe auf der Kommandozeile diese hier ueberschreibt.
+addopts = ["-m", "not slow"]

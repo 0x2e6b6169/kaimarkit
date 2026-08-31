@@ -1,0 +1,26 @@
+# Build-Kontext ist die Projektwurzel.
+#
+# .git bleibt ausdruecklich drin: Die Docs-Stufe holt sich die veroeffentlichte
+# Dokumentation mit "git archive gh-pages" aus dem Repo. Ohne .git faellt sie auf
+# "mkdocs build" zurueck und liefert nur die aktuelle Fassung.
+
+# Was im Container neu entsteht
+node_modules/
+frontend/dist/
+site/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+*.tsbuildinfo
+
+# Was den Betrieb nichts angeht
+kanban/
+.worktrees/
+docker/.env
+.env
+.DS_Store
+*.swp
