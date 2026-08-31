@@ -4,7 +4,7 @@ title: INT-2 · Ende-zu-Ende-Pruefung im Container
 status: todo
 priority: medium
 created: 2026-08-31T10:21:44.348462086+02:00
-updated: 2026-08-31T14:44:52.685098578+02:00
+updated: 2026-08-31T15:02:49.630711073+02:00
 assignee: akar
 tags:
     - infra
@@ -80,3 +80,6 @@ damit bekannt ist, wie weit es getragen hatte und wo es zuletzt stand: Der Rest
 der Kette hatte offenbar funktioniert, der Abbruch kam am letzten Pruefpunkt.
 
 Ankercommit des Laufs: 87ed9d9. Worktree `.worktrees/task-30` bleibt stehen.
+
+[[2026-08-31]] Mon 15:02
+Verweis nachgezogen: Der "Abschnitt 'Pruefung am Ende' des Plans" aus den Vorgaben liegt jetzt im Repo, in `ENTWURF.md` (merge c2900a7). Vorher zeigte er auf `~/.claude/plans/…`, also auf eine Datei ausserhalb des Repos und ausserhalb jeder Sicherung. Der Abschnitt selbst ist unveraendert.
