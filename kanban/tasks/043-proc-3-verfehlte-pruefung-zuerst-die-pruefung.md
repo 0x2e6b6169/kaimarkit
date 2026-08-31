@@ -4,7 +4,7 @@ title: 'PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen'
 status: backlog
 priority: low
 created: 2026-08-31T14:05:10.07801012+02:00
-updated: 2026-08-31T14:05:10.07801012+02:00
+updated: 2026-08-31T14:07:04.307892979+02:00
 assignee: akar
 tags:
     - process
@@ -69,3 +69,6 @@ PROC-2 (#41).
 Der Nutzer hat sich fuer eine Form entschieden, und die Stelle, die den
 Ticketrumpf beschreibt, sagt danach ausdruecklich, was bei einer verfehlten
 Pruefung zu tun ist.
+
+[[2026-08-31]] Mon 14:07
+Kein vierter Datenpunkt, sondern eine andere Frage — deshalb getrennt gehalten. akar meldet zwei Gewohnheiten, die er heute ad hoc in seinen Subagenten-Auftraegen eingefuehrt hat: (1) am Gegenstand pruefen statt am Werkzeug — im erzeugten HTML nach `<dl>` greppen statt `--strict` zu glauben, auf den Textinhalt pruefen statt auf HTTP 200; (2) jede Aussage ueber fremden Code nennt Anker aus Datei, Zeile und Commit. Beides ist Handwerk am Ticketrumpf, keine Verhaltensregel — und beides ist unstrittig, dreimal benutzt und einmal ausschlaggebend gewesen (DOC-6). Es steht deshalb bereits im Skill `/agent-orchestration` (dot-claude 28f5af4), im Abschnitt zur Pruefung und in der CLAUDE.md-Vorlage. **Offen bleibt allein die Frage dieses Tickets:** ob "melden statt schliessen" als Regel gilt. Die steht in der Vorlage bewusst nicht, weil sie hier zur Entscheidung liegt.
