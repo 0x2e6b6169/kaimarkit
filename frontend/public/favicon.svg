@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="kaimarkit">
+  <title>kaimarkit</title>
+  <rect width="64" height="64" rx="13" fill="#0284c7"/>
+  <g fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 46V20l10 12 10-12v26"/>
+    <path d="M48 19v25"/>
+    <path d="M41 37l7 7 7-7"/>
+  </g>
+</svg>
