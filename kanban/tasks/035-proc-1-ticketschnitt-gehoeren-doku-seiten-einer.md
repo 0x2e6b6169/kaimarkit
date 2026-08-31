@@ -103,3 +103,32 @@ Damit stehen drei Faelle nebeneinander, und alle drei zeigen dasselbe. Wer Code
 aendert, weiss zuerst, was in der Doku nicht mehr stimmt. Wer die Doku besitzt,
 erfaehrt es zuletzt. Der Schnitt stellt es andersherum.
 
+
+## Vierter Fall: die Bedingung, unter der die Regel funktioniert
+
+DOC-7 (#36) hat beim wiederholten Grep eine zweite Stelle gefunden —
+`docs/betrieb/konfiguration.md:83` sagt weiterhin, Docling lade die Modelle „beim
+ersten Aufruf". Die Datei gehoert DOC-6 (#34). akar-12 hat sie nicht angefasst,
+sondern gemeldet.
+
+Das ist regelkonform, und es hat funktioniert. Aber es hat nur funktioniert, weil
+#34 offen war und den Befund aufnehmen konnte. Haette es kein offenes Ticket auf
+dieser Datei gegeben, waere die einzige regelkonforme Handlung „melden und
+hoffen" gewesen — und ein Befund, der niemandem gehoert, verfaellt.
+
+Die ersten drei Faelle zeigen, dass Wissen und Dateieigentum auseinanderfallen.
+Dieser zeigt, woran die Regel haengt: dass jemand den Befund auffaengt. Solange
+ein PO die Meldungen liest und daraus Tickets schneidet, geht es auf. Ohne diese
+Stelle ist die Regel eine Sackgasse, kein Weg.
+
+## Stand der Faelle
+
+Vier Faelle, vier Formen desselben Problems:
+
+1. `docs/entwicklung.md` — fremdes Ticket schreibt hinein (BE-9), Merge-Konflikt.
+2. `docs/formate.md` — eine Datei, die sieben Tickets anfassen mussten (BE-2..BE-9).
+3. `docs/grenzen.md` — Code-Ticket korrigiert eine Aussage, die es selbst
+   ungueltig gemacht hat (BE-11). Die Regel haette verlangt, die falsche Aussage
+   stehen zu lassen.
+4. `docs/betrieb/konfiguration.md` — Doku-Ticket findet und meldet; getragen hat
+   es nur der Zufall eines offenen Zieltickets.
