@@ -4,7 +4,7 @@ title: 'BE-12 · OCR-Maschine ausdruecklich setzen: EasyOCR mit de,en'
 status: done
 priority: high
 created: 2026-08-31T12:03:54.39201469+02:00
-updated: 2026-08-31T12:15:28.454927034+02:00
+updated: 2026-08-31T14:03:42.654950744+02:00
 started: 2026-08-31T12:04:51.169484447+02:00
 completed: 2026-08-31T12:15:24.848130815+02:00
 assignee: sophie
@@ -134,3 +134,6 @@ Gewichte im Abbild liegen. Das entscheidet sich in INT-2 (#30) im Container.
   jetzt in `pyproject.toml`) und dass `docling-tools models download` die
   EasyOCR-Gewichte fuer `de` und `en` mitbringt.
 - Der Schnittstellen-Dreiklang ist nicht beruehrt.
+
+[[2026-08-31]] Mon 14:03
+Nachtrag zur Entscheidung, nach IN-6 (#38, merge 87ed9d9). Die Annahme, die Gewichte laegen schon im Modellsatz, war falsch: `docling-tools models download` liefert EasyOCR seit docling 2.56 nicht mehr mit, das Abbild konnte offline gar kein OCR (500, fehlende craft_mlt_25k.pth). IN-6 holt sie jetzt ausdruecklich. Damit waechst das Abbild netto um 24 MB, statt zu schrumpfen: apt -89 MB, Modellstufe +109 MB. Dem Nutzer am 31.08.2026 erneut vorgelegt, weil sich die Ausgangslage geaendert hatte. **Entscheidung: es bleibt bei EasyOCR.** Die Begruendung stand nie auf der Bildgroesse, sondern auf der Erkennungsqualitaet, und 109 MB sind 2,7 Prozent eines 4,1-GB-Abbilds. RapidOcr laege als einzige Maschine ohne Zusatzschritt im Standardsatz — festgehalten, falls die Bildgroesse spaeter einmal zaehlt. Gemeldet von akar.
