@@ -1,1 +1,132 @@
 @import "tailwindcss";
+
+/*
+ * Die Gestaltung der ganzen Seite: eine Flaeche, ein Akzentton, zwei
+ * Helligkeiten. Das Werkzeug zeigt Text, und der soll lesbar sein.
+ *
+ * ## Dark Mode ohne Umschaltung und ohne Eingriff in die Komponenten
+ *
+ * Tailwind 4 uebersetzt jede Farbklasse in eine Variable: aus `bg-white` wird
+ * `background-color: var(--color-white)`, aus `text-slate-600` wird
+ * `color: var(--color-slate-600)`. Wer diese Variablen unter
+ * `prefers-color-scheme: dark` neu belegt, kippt damit jede Flaeche und jede
+ * Schrift der Anwendung — ohne eine einzige Komponente anzufassen.
+ *
+ * Das ist hier der Weg, weil die Komponenten aus FE-3 bis FE-5 abgeschlossenen
+ * Tickets gehoeren. Die Alternative hiesse, in sieben Dateien neben jede
+ * Farbklasse ihr `dark:`-Gegenstueck zu schreiben und bei jeder neuen Klasse
+ * daran zu denken.
+ *
+ * Die Belegung dreht die Skala um: Was hell war, wird dunkel, und was dunkel
+ * war, hell. Sie steht ausserhalb jeder `@layer` und schlaegt deshalb die
+ * Vorgaben aus `@layer theme`, ganz gleich wie spezifisch die sind.
+ *
+ * **Eine Bedingung.** Jede Stufe der Skala darf nur einer Sache dienen —
+ * entweder Flaeche oder Schrift. `slate-800` ist die einzige Stufe, die beides
+ * tut (`text-slate-800` in der Dropzone, `dark:bg-slate-800` am gewaehlten
+ * Reiter der Vorschau); dieser eine Fall steht unten als Ausnahme. Wer eine
+ * Farbklasse neu einfuehrt, prueft, ob ihre Stufe hier schon anders belegt ist.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Der Grund, auf dem die Karten liegen. */
+  --kmk-page: #f1f5f9;
+  --kmk-ink: #1e293b;
+  --kmk-focus: #0369a1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --kmk-page: #020617;
+    --kmk-ink: #e2e8f0;
+    --kmk-focus: #38bdf8;
+
+    /* Flaechen */
+    --color-white: #0f172a;
+    --color-slate-50: #1e293b;
+    --color-slate-100: #1e293b;
+    --color-slate-200: #334155;
+
+    /* Linien */
+    --color-slate-300: #334155;
+    --color-slate-400: #475569;
+    --color-slate-700: #475569;
+
+    /* Schrift */
+    --color-slate-500: #94a3b8;
+    --color-slate-600: #cbd5e1;
+    --color-slate-800: #e2e8f0;
+
+    /* Akzent und Zustaende. Fuellung dunkel, Linie mittel, Schrift hell. */
+    --color-sky-50: #0c4a6e;
+    --color-sky-500: #0ea5e9;
+    --color-sky-700: #7dd3fc;
+    --color-sky-900: #e0f2fe;
+
+    --color-red-50: #450a0a;
+    --color-red-300: #b91c1c;
+    --color-red-700: #fca5a5;
+    --color-red-900: #fecaca;
+
+    --color-amber-50: #451a03;
+    --color-amber-300: #b45309;
+    --color-amber-900: #fde68a;
+
+    --color-emerald-700: #6ee7b7;
+  }
+}
+
+body {
+  background-color: var(--kmk-page);
+  color: var(--kmk-ink);
+  font-family: var(--font-sans);
+
+  /*
+   * Ein Dateiname ohne Leerzeichen ist bei 360 px breiter als der Bildschirm.
+   * `anywhere` bricht ihn und haelt zugleich die Mindestbreite des Kastens
+   * klein — sonst schiebt ein einziger Name die ganze Seite waagerecht.
+   * Auf `pre` wirkt die Regel nicht; dort scrollt der Block fuer sich.
+   */
+  overflow-wrap: anywhere;
+}
+
+/*
+ * Ein sichtbarer Rahmen auf allem, was sich bedienen laesst. Er liegt
+ * ausserhalb des Elements, damit er auch auf gefuellten Schaltflaechen zu sehen
+ * ist, und gilt nur bei Tastaturbedienung — ein Mausklick zeichnet nichts.
+ */
+*:focus-visible {
+  outline: 3px solid var(--kmk-focus);
+  outline-offset: 2px;
+}
+
+/*
+ * Auf schmalen Geraeten bekommt der Dateiname eine eigene Zeile.
+ *
+ * Die Kopfzeile einer Warteschlangenzeile umbricht zwar, aber der Name traegt
+ * `flex-1` und damit die Ausgangsbreite null: Er schrumpft, statt umzubrechen,
+ * und bei 360 px bleibt von `bericht.pdf` ein „b." uebrig. Zustand, Engine und
+ * Dauer stehen dann vollstaendig da und die Datei, um die es geht, nicht.
+ *
+ * Der Name ist ein `span`, die Ueberschrift der Vorschau eine `button` — nur so
+ * lassen sich die beiden hier auseinanderhalten, ohne `FileRow.vue` anzufassen.
+ */
+@media (width <= 26rem) {
+  span.flex-1.truncate {
+    /* Die volle Zeile, abzueglich des Zustandssymbols davor. */
+    flex-basis: calc(100% - 2.5rem);
+  }
+}
+
+/*
+ * Die eine Ausnahme zur Palette oben. Der gewaehlte Reiter der Vorschau nimmt
+ * `dark:bg-slate-800`, und `slate-800` ist im dunklen Modus die Schriftfarbe.
+ * Ohne diese Regel bekaeme der Reiter eine helle Fuellung unter heller Schrift.
+ */
+@media (prefers-color-scheme: dark) {
+  [role="tab"][aria-selected="true"] {
+    background-color: #334155;
+  }
+}

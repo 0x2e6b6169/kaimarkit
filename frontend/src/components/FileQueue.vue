@@ -100,7 +100,16 @@ watch(
         :expanded="expanded.includes(entry.id)"
         @toggle="toggle"
         @remove="emit('remove', $event)"
-      />
+      >
+        <!--
+          Durchgereicht, nicht gefuellt: Die Warteschlange kennt keine Vorschau.
+          `v-if` haelt den Rueckfall aus `FileRow` am Leben — ein Slot, den
+          niemand fuellt, wuerde ihn sonst durch nichts ersetzen.
+        -->
+        <template v-if="$slots.preview" #preview="slotProps">
+          <slot name="preview" v-bind="slotProps" />
+        </template>
+      </FileRow>
     </ul>
   </div>
 </template>

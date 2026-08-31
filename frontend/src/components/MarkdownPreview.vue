@@ -121,6 +121,14 @@ const copyLabel = computed(() =>
       </div>
 
       <template v-else>
+        <!--
+          Beide Reiter stehen in der Tabreihenfolge. Der ARIA-Entwurf laesst
+          dafuer zwei Wege: wandernder Fokus mit Pfeiltasten, oder jeder Reiter
+          einzeln per Tabulator erreichbar. Der erste Weg stand hier ohne die
+          Pfeiltasten, die er braucht — „Rohtext" trug `tabindex="-1"` und war
+          damit fuer die Tastatur nicht erreichbar. Bei zwei Reitern ist der
+          zweite Weg der kuerzere.
+        -->
         <div role="tablist" aria-label="Darstellung" class="flex gap-1 px-3 pt-2">
           <button
             id="tab-rendered"
@@ -128,7 +136,6 @@ const copyLabel = computed(() =>
             role="tab"
             aria-controls="panel-rendered"
             :aria-selected="tab === 'rendered'"
-            :tabindex="tab === 'rendered' ? 0 : -1"
             class="rounded-t px-3 py-1 text-sm"
             :class="tab === 'rendered' ? 'bg-slate-200 dark:bg-slate-800' : ''"
             @click="tab = 'rendered'"
@@ -141,7 +148,6 @@ const copyLabel = computed(() =>
             role="tab"
             aria-controls="panel-raw"
             :aria-selected="tab === 'raw'"
-            :tabindex="tab === 'raw' ? 0 : -1"
             class="rounded-t px-3 py-1 text-sm"
             :class="tab === 'raw' ? 'bg-slate-200 dark:bg-slate-800' : ''"
             @click="tab = 'raw'"
