@@ -58,10 +58,11 @@ Markdown, Engine, Warnungen und Dauer in einem Objekt. Alle Aufrufe stehen unter
 Die Oberfläche liegt unter <http://127.0.0.1:8080>, die Dokumentation daneben unter
 `/docs`, die maschinenlesbare Beschreibung der Schnittstelle unter `/api/docs`.
 
-!!! info "Die Oberfläche wird noch zusammengesetzt"
-    Dropzone, Warteschlange, Optionen und Vorschau stehen als einzelne Bausteine
-    bereit, die Startseite zeigt aber bisher nur den Gerüstzustand. Der Weg über
-    curl oben ist der, der jetzt vollständig funktioniert.
+Dateien kommen per Ablegen oder über die Dateiauswahl hinein. Die Warteschlange
+führt jede einzeln auf und nennt nach dem Durchlauf Engine und Dauer; eine
+gescheiterte Datei hält die übrigen nicht auf, sondern zeigt ihre Meldung in der
+eigenen Zeile. Die Vorschau klappt das gewandelte Markdown auf, herunterladen
+lässt es sich einzeln oder als ZIP über alle gelungenen Dateien.
 
 ## Welche Engine kommt zum Zug?
 
