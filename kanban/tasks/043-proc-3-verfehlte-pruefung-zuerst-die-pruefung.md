@@ -4,7 +4,7 @@ title: 'PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen'
 status: backlog
 priority: low
 created: 2026-08-31T14:05:10.07801012+02:00
-updated: 2026-08-31T14:07:04.307892979+02:00
+updated: 2026-08-31T14:44:17.092283762+02:00
 assignee: akar
 tags:
     - process
@@ -72,3 +72,6 @@ Pruefung zu tun ist.
 
 [[2026-08-31]] Mon 14:07
 Kein vierter Datenpunkt, sondern eine andere Frage — deshalb getrennt gehalten. akar meldet zwei Gewohnheiten, die er heute ad hoc in seinen Subagenten-Auftraegen eingefuehrt hat: (1) am Gegenstand pruefen statt am Werkzeug — im erzeugten HTML nach `<dl>` greppen statt `--strict` zu glauben, auf den Textinhalt pruefen statt auf HTTP 200; (2) jede Aussage ueber fremden Code nennt Anker aus Datei, Zeile und Commit. Beides ist Handwerk am Ticketrumpf, keine Verhaltensregel — und beides ist unstrittig, dreimal benutzt und einmal ausschlaggebend gewesen (DOC-6). Es steht deshalb bereits im Skill `/agent-orchestration` (dot-claude 28f5af4), im Abschnitt zur Pruefung und in der CLAUDE.md-Vorlage. **Offen bleibt allein die Frage dieses Tickets:** ob "melden statt schliessen" als Regel gilt. Die steht in der Vorlage bewusst nicht, weil sie hier zur Entscheidung liegt.
+
+[[2026-08-31]] Mon 14:44
+Vierter Fall, und der erste, der nicht einem Subagenten unterlief, sondern uns beiden. Bei der Suche nach Plattenplatz las akar `df -h /` und meldete 854 GB frei — die Zahl stimmte, sie gehoerte nur zum falschen Dateisystem. Docker Desktop legt seine Datenplatte auf `C:` ab, und `C:` war zu 97 Prozent voll. Die Pruefung war unter der Annahme geschrieben, Docker liege im Wurzeldateisystem; sie hat sauber gemessen und nichts belegt. Verschaerfend: akar hatte bemerkt, dass `/var/lib/docker` gar nicht existiert, und daraus keinen Verdacht gezogen. Dazu ein zweites Werkzeug, das dasselbe bestaetigte: `docker system df` meldet 8,6 GB — den **Inhalt**, nicht den belegten Platz. Die VHDX war 82,5 GB gross, rund 74 GB toter Raum. **Das Neue an diesem Fall:** Zwei Sitzungen haben denselben falschen Befund unabhaengig bestaetigt und sich damit gegenseitig plausibel gemacht. Eine zweite Messung mit demselben blinden Fleck ist keine Bestaetigung. Gemeldet von akar, aufgeloest ueber IN-7 (#44).
