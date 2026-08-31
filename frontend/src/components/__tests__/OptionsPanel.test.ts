@@ -4,8 +4,9 @@
  * Die Optionen gegen eine gesetzte Faehigkeitsmatrix.
  *
  * Geprueft wird der Leitsatz des Tickets: Angeboten wird nur, was gelingen kann.
- * Die Faelle stehen so nicht im Browser zur Verfuegung — der Mock meldet immer
- * dieselbe Matrix —, deshalb setzt der Test sie hier direkt.
+ * Die Faelle haengen davon ab, welche Engines gerade installiert sind, und lassen
+ * sich im Browser nicht der Reihe nach herstellen — deshalb setzt der Test die
+ * Faehigkeitsmatrix hier direkt.
  */
 
 import { beforeEach, describe, expect, it } from 'vitest'
@@ -82,6 +83,15 @@ describe('OptionsPanel', () => {
     given({ engines: { markitdown: 'ready', docling: 'unavailable', pandoc: 'ready' } })
     const wrapper = render(['bericht.pdf'])
     expect(offeredEngines(wrapper)).toEqual(['markitdown'])
+  })
+
+  it('bietet nicht an, was in engines gar nicht steht', () => {
+    // `.md` fuehrt `passthrough`, und `engines` nennt den Namen nicht: Markdown
+    // wird durchgereicht, gewaehlt wird dort nichts. Ohne diese Pruefung stuende
+    // `passthrough` in der Auswahl, obwohl der Dienst es nicht anbietet.
+    given({ formats: { ...baseCapabilities.formats, '.md': ['passthrough'] } })
+    const wrapper = render(['notizen.md'])
+    expect(offeredEngines(wrapper)).toEqual([])
   })
 
   it('faellt auf automatisch zurueck, wenn die gewaehlte Engine das Format nicht kann', async () => {

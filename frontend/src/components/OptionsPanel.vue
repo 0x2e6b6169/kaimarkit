@@ -14,7 +14,10 @@
  *    Engines uebrig, die *jede* dieser Endungen lesen koennen. Bei einer
  *    einzelnen `.epub` faellt docling deshalb heraus.
  * 2. **Der Zustand.** `warming` bleibt waehlbar und wird gekennzeichnet — das
- *    Modell laedt noch, die erste Anfrage wartet. `unavailable` erscheint nicht.
+ *    Modell laedt noch, die erste Anfrage wartet. `unavailable` erscheint nicht,
+ *    und wer in `engines` gar nicht steht, ebenfalls nicht: `formats` fuehrt
+ *    `.md` mit `passthrough`, aber durchgereicht wird Markdown ohnehin — eine
+ *    Wahl gibt es dort nicht.
  *
  * Faellt die gewaehlte Engine durch einen dieser Filter, springt die Auswahl auf
  * `automatisch` zurueck. Sonst stuende dort ein Name, den der Dienst mit 400
@@ -52,7 +55,7 @@ onMounted(() => void load())
  * leere Liste wuerde sonst jede Engine wegschneiden.
  */
 const offered = computed<string[]>(() => {
-  const usable = (name: string) => engines.value[name] !== 'unavailable'
+  const usable = (name: string) => name in engines.value && engines.value[name] !== 'unavailable'
   const known = props.filenames.filter((filename) => supports(filename))
 
   if (known.length === 0) return Object.keys(engines.value).filter(usable)

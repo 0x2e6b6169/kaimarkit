@@ -29,6 +29,10 @@ Das Ergebnis für **eine** Datei. Tritt einzeln und in Listen auf.
 `markdown` ist bei `status: "failed"` null, `error` bei `status: "ok"` null. Beide
 Felder sind immer vorhanden, damit ein Client nicht auf ihr Fehlen prüfen muss.
 
+In `engine` steht neben `markitdown`, `docling` und `pandoc` auch `passthrough`:
+Markdown wird durchgereicht, nicht gewandelt. Wählen lässt sich dieser Weg nicht,
+er ergibt sich aus der Endung (siehe `GET /api/capabilities`).
+
 ### `EngineState`
 
 `"ready"` — nutzbar. `"warming"` — lädt noch, eine Anfrage wartet.
@@ -80,7 +84,8 @@ was ohnehin scheitern würde.
   "formats": {
     ".pdf":  ["docling", "markitdown"],
     ".docx": ["markitdown", "docling", "pandoc"],
-    ".epub": ["pandoc", "markitdown"]
+    ".epub": ["pandoc", "markitdown"],
+    ".md":   ["passthrough"]
   },
   "engines": {
     "markitdown": "ready",
@@ -100,6 +105,12 @@ was ohnehin scheitern würde.
 Die Reihenfolge in `formats` ist die Präferenz: Der erste Eintrag wird bei
 `engine: auto` genommen. Eine Engine im Zustand `unavailable` taucht in `formats`
 nicht auf.
+
+**`engines` nennt nur, wozwischen sich wählen lässt:** `markitdown`, `docling`,
+`pandoc`. Markdown braucht keine davon — es wird gelesen und unverändert
+zurückgegeben. `formats` führt `.md` deshalb mit dem Namen `passthrough`, und
+derselbe Name steht anschließend im Feld `engine` des Ergebnisses. In `engines`
+taucht er nicht auf, weil es dort nichts zu wählen gibt.
 
 ```bash
 curl -sf localhost:8000/api/capabilities | jq .

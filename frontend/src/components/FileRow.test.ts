@@ -8,9 +8,17 @@
  */
 
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import FileRow from './FileRow.vue'
 import type { QueueEntry } from '../composables/useConversion'
+
+// Nur das Ablegen der Datei ist attrappiert; `hasResult` bleibt echt, denn genau
+// daran haengt, ob der Knopf ueberhaupt dasteht.
+const downloads = vi.hoisted(() => ({ downloadMarkdown: vi.fn() }))
+vi.mock('../download', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../download')>()),
+  downloadMarkdown: downloads.downloadMarkdown,
+}))
 
 function entry(overrides: Partial<QueueEntry> = {}): QueueEntry {
   return {
@@ -115,5 +123,26 @@ describe('FileRow', () => {
     await buttons[buttons.length - 1]!.trigger('click')
 
     expect(wrapper.emitted('remove')).toEqual([[7]])
+  })
+
+  it('bietet den Download erst an, wenn ein Ergebnis vorliegt', async () => {
+    downloads.downloadMarkdown.mockClear()
+
+    for (const status of ['queued', 'running', 'failed'] as const) {
+      const wrapper = mount(FileRow, { props: { entry: entry({ status }) } })
+      expect(wrapper.find('[data-test="download-row"]').exists()).toBe(false)
+    }
+
+    const done = entry({ status: 'ok', markdown: '# Bericht' })
+    const wrapper = mount(FileRow, { props: { entry: done } })
+    const button = wrapper.get('[data-test="download-row"]')
+    expect(button.text()).toContain('Herunterladen')
+    // Der Name steht fuer Screenreader am Knopf: Zehn Zeilen tragen sonst
+    // zehnmal dieselbe Beschriftung.
+    expect(button.text()).toContain('bericht.pdf')
+
+    await button.trigger('click')
+
+    expect(downloads.downloadMarkdown).toHaveBeenCalledWith(done)
   })
 })

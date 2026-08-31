@@ -30,6 +30,14 @@ vi.mock('./api', () => ({
     cause instanceof Error && cause.message ? cause.message : String(cause),
 }))
 
+// Das Packen selbst ist in `download.spec.ts` geprueft. Hier zaehlt nur, ob der
+// Knopf im richtigen Augenblick greifbar ist und was er uebergibt.
+const downloads = vi.hoisted(() => ({ downloadArchive: vi.fn() }))
+vi.mock('./download', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./download')>()),
+  downloadArchive: downloads.downloadArchive,
+}))
+
 const CAPABILITIES: CapabilitiesResponse = {
   formats: {
     '.pdf': ['docling', 'markitdown'],
@@ -143,6 +151,68 @@ describe('App', () => {
     expect(wrapper.find('[data-test="app-log"]').text()).toContain(
       'Alle Dateien sind fertig: 1 gelungen, 1 fehlgeschlagen.',
     )
+  })
+
+  it('gibt das Archiv erst frei, wenn ein Ergebnis vorliegt, und sagt es an', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    downloads.downloadArchive.mockResolvedValue(undefined)
+    let finish: (entry: ConversionEntry) => void = () => {}
+    api.convertFile.mockImplementation(
+      (file: File) =>
+        new Promise<ConversionEntry>((resolve) => {
+          finish = () => resolve(result(file.name, '# Titel'))
+        }),
+    )
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    // Ohne Dateien steht der Knopf gar nicht da.
+    expect(wrapper.find('[data-test="download-all"]').exists()).toBe(false)
+
+    wrapper.findComponent(FileDropZone).vm.$emit('files', [new File(['x'], 'bericht.pdf')])
+    await nextTick()
+    await flushPromises()
+
+    // Solange etwas laeuft, waere das Archiv unvollstaendig.
+    const button = wrapper.get('[data-test="download-all"]')
+    expect(button.attributes('disabled')).toBeDefined()
+
+    finish(result('bericht.pdf', '# Titel'))
+    await flushPromises()
+    await nextTick()
+
+    expect(button.attributes('disabled')).toBeUndefined()
+    await button.trigger('click')
+    await flushPromises()
+    await nextTick()
+
+    expect(downloads.downloadArchive).toHaveBeenCalledTimes(1)
+    expect(downloads.downloadArchive.mock.calls[0]![0]).toHaveLength(1)
+    expect(wrapper.find('[data-test="app-log"]').text()).toContain('kaimarkit.zip steht bereit.')
+  })
+
+  it('meldet einen gescheiterten Archivbau als alert', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    api.convertFile.mockImplementation(async (file: File) => result(file.name, '# Titel'))
+    downloads.downloadArchive.mockRejectedValue(new Error('Der Speicher reichte nicht.'))
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    wrapper.findComponent(FileDropZone).vm.$emit('files', [new File(['x'], 'bericht.pdf')])
+    await nextTick()
+    await flushPromises()
+
+    await wrapper.get('[data-test="download-all"]').trigger('click')
+    await flushPromises()
+    await nextTick()
+
+    const alert = wrapper.get('[data-test="archive-error"]')
+    expect(alert.attributes('role')).toBe('alert')
+    expect(alert.text()).toContain('Der Speicher reichte nicht.')
   })
 
   it('meldet den Ausfall der Faehigkeiten als alert und laesst es erneut versuchen', async () => {

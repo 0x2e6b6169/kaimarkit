@@ -11,8 +11,13 @@
  *
  * Aufgeklappt zeigt die Zeile den Slot `preview`. FE-4 haengt dort
  * `MarkdownPreview` ein; ohne Fuellung steht ein Platzhalter.
+ *
+ * Der Knopf „Herunterladen" steht erst da, wenn ein Ergebnis vorliegt. Er legt
+ * die Datei unmittelbar ab, statt den Wunsch nach oben zu melden: Was
+ * heruntergeladen wird, steht vollstaendig im Eintrag dieser Zeile.
  */
 import { computed } from 'vue'
+import { downloadMarkdown, hasResult } from '../download'
 import type { QueueEntry, QueueStatus } from '../composables/useConversion'
 
 const props = defineProps<{
@@ -51,6 +56,9 @@ const meta = computed(() => {
 
 const canExpand = computed(() => props.entry.markdown !== null)
 
+/** Nur ein gelungener Eintrag laesst sich herunterladen. */
+const canDownload = computed(() => hasResult(props.entry))
+
 const previewId = computed(() => `file-row-${props.entry.id}-preview`)
 </script>
 
@@ -73,6 +81,16 @@ const previewId = computed(() => `file-row-${props.entry.id}-preview`)
         @click="emit('toggle', entry.id)"
       >
         {{ expanded ? 'Zuklappen' : 'Aufklappen' }}
+      </button>
+
+      <button
+        v-if="canDownload"
+        type="button"
+        class="rounded border border-slate-400 px-2 py-1 text-sm hover:bg-slate-100"
+        data-test="download-row"
+        @click="downloadMarkdown(entry)"
+      >
+        Herunterladen<span class="sr-only"> — {{ entry.filename }}</span>
       </button>
 
       <button

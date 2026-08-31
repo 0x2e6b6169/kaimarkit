@@ -12,7 +12,7 @@ das gebaute Frontend und diese Dokumentation als statische Dateien daneben ein.
 | --- | --- |
 | `backend/app/` | Die FastAPI-Anwendung: `main.py`, `config.py`, `models.py`, `errors.py`, die Router unter `api/` und die Engines unter `converters/`. |
 | `backend/tests/` | pytest. Was die Docling-Modelle braucht, ist mit `slow` markiert. |
-| `frontend/src/` | Vue 3 mit TypeScript und Tailwind. Komponenten, Composables, der API-Client und der Mock für die Entwicklung. |
+| `frontend/src/` | Vue 3 mit TypeScript und Tailwind. Komponenten, Composables, der API-Client und der Download. |
 | `contracts/` | `api.md`, der verbindliche Wortlaut der Schnittstelle. |
 | `docker/` | Dockerfile, die drei Compose-Schichten und `.env.example`. |
 | `docs/` | Diese Seiten. `mkdocs.yml` steht in der Wurzel. |
@@ -51,17 +51,24 @@ make docs-serve     # Vorschau dieser Seiten auf :8001
 ```
 
 Im Frontend kommen `npm run typecheck` und `npm run test` dazu. Der Dev-Server
-schickt `/api` per Proxy an `localhost:8000`.
-
-Wer am Frontend arbeitet und kein Backend starten will, nimmt den Mock:
+schickt `/api` per Proxy an `localhost:8000`; das Frontend braucht also ein
+laufendes Backend.
 
 ```bash
-cd frontend && VITE_KAIMARKIT_MOCK=1 npm run dev
+cd backend && uvicorn app.main:app --reload    # in einem Fenster
+cd frontend && npm run dev                     # im anderen
 ```
 
-Der Mock hängt sich als Middleware in den Dev-Server und beantwortet `/api` selbst.
-In dieser Betriebsart richtet Vite den Proxy gar nicht erst ein — sonst liefe jede
-Anfrage, die der Mock nicht kennt, still in ein Backend, das niemand gestartet hat.
+Welche Engines dabei zur Wahl stehen, hängt daran, was in der Umgebung installiert
+ist. Fehlt eine, meldet `/api/capabilities` sie als `unavailable`, und die Auswahl
+bietet sie nicht an — die Oberfläche verspricht nie mehr, als der Dienst halten
+kann.
+
+Das Archiv baut das Frontend selbst, im Browser und nicht über
+`/api/convert/batch`. Die Ergebnisse liegen dort ohnehin schon; sie für das Paket
+ein zweites Mal durch eine Engine zu schicken wäre doppelte Arbeit. Die Namensregeln
+im Archiv sind deshalb in `frontend/src/download.ts` nachgebaut und stammen aus
+`backend/app/packaging.py`.
 
 ## Tests
 

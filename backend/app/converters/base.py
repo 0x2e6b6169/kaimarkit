@@ -49,6 +49,11 @@ class Converter(Protocol):
     ``available()`` beantwortet die Frage, ob die Engine jetzt arbeiten kann — bei
     Docling also erst, wenn die Modelle geladen sind. ``convert()`` wandelt jede
     eigene Ausnahme in einen ``ConversionError`` um.
+
+    Wahlweise darf eine Engine zusaetzlich ``state() -> str`` anbieten und damit
+    ``ready``, ``warming`` oder ``unavailable`` selbst melden. Das braucht, wer
+    zwischen „laedt noch" und „Bibliothek fehlt" unterscheiden kann; ohne die
+    Methode leitet ``/api/capabilities`` den Zustand aus ``available()`` ab.
     """
 
     name: str

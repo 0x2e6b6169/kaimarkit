@@ -11,6 +11,9 @@
  *   Enginewahl ein.
  * - Jede Zeile bekommt ihre Vorschau ueber den Slot `preview` der
  *   Warteschlange.
+ * - „Alles herunterladen" packt die fertigen Ergebnisse zu einem Archiv. Der
+ *   Einzeldownload sitzt in der Zeile, weil er nur deren Eintrag braucht; das
+ *   Archiv steht hier, weil es alle Zeilen sieht.
  *
  * **Die Warteschlange bleibt immer eingehaengt**, auch ohne Dateien. `FileQueue`
  * merkt sich beim Einhaengen den Zustand jeder Zeile, um nur Aenderungen
@@ -24,6 +27,8 @@ import MarkdownPreview from './components/MarkdownPreview.vue'
 import OptionsPanel from './components/OptionsPanel.vue'
 import { useCapabilities } from './composables/useCapabilities'
 import { useConversion } from './composables/useConversion'
+import { messageFromError } from './api'
+import { ARCHIVE_FILENAME, downloadArchive, hasResult } from './download'
 
 const { entries, options, busy, enqueue, remove } = useConversion()
 const { extensions, error: capabilitiesError, load, reload } = useCapabilities()
@@ -47,16 +52,42 @@ const failed = computed(() => entries.value.filter((entry) => entry.status === '
 const announcements = ref<{ id: number; text: string }[]>([])
 let nextAnnouncement = 1
 
+function announce(text: string): void {
+  announcements.value.push({ id: nextAnnouncement++, text })
+  if (announcements.value.length > 5) announcements.value.shift()
+}
+
 watch(busy, (running, before) => {
   if (running || !before || !entries.value.length) return
   const parts = [`${succeeded.value} gelungen`]
   if (failed.value) parts.push(`${failed.value} fehlgeschlagen`)
-  announcements.value.push({
-    id: nextAnnouncement++,
-    text: `Alle Dateien sind fertig: ${parts.join(', ')}.`,
-  })
-  if (announcements.value.length > 5) announcements.value.shift()
+  announce(`Alle Dateien sind fertig: ${parts.join(', ')}.`)
 })
+
+/**
+ * Das Archiv. Es entsteht im Browser aus den Ergebnissen, die ohnehin schon da
+ * sind — siehe `download.ts`.
+ *
+ * Das Packen dauert und zeigt von sich aus nichts an. Deshalb sagt der Knopf,
+ * dass er arbeitet, und der Ausgang wird angesagt: Wer nicht auf den Bildschirm
+ * sieht, erfaehrt sonst nie, dass die Datei bereitsteht.
+ */
+const results = computed(() => entries.value.filter((entry) => hasResult(entry)))
+const packing = ref(false)
+const archiveError = ref<string | null>(null)
+
+async function downloadAll(): Promise<void> {
+  packing.value = true
+  archiveError.value = null
+  try {
+    await downloadArchive(entries.value)
+    announce(`${ARCHIVE_FILENAME} steht bereit.`)
+  } catch (cause) {
+    archiveError.value = messageFromError(cause)
+  } finally {
+    packing.value = false
+  }
+}
 </script>
 
 <template>
@@ -109,7 +140,29 @@ watch(busy, (running, before) => {
           </p>
         </div>
 
-        <!-- Hier haengt FE-6 (#18) den Download ein: je Zeile und als ZIP. -->
+        <div v-if="entries.length" class="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <button
+            type="button"
+            class="rounded border border-slate-400 px-3 py-1 text-sm font-medium hover:bg-slate-100 disabled:opacity-50"
+            data-test="download-all"
+            :disabled="busy || packing || !results.length"
+            @click="void downloadAll()"
+          >
+            {{ packing ? 'Archiv wird gepackt …' : 'Alles herunterladen' }}
+          </button>
+          <span v-if="busy" class="text-sm text-slate-600">
+            Das Archiv steht bereit, sobald nichts mehr laeuft.
+          </span>
+        </div>
+
+        <p
+          v-if="archiveError"
+          role="alert"
+          class="rounded border border-red-300 bg-red-50 p-3 text-red-900"
+          data-test="archive-error"
+        >
+          Das Archiv liess sich nicht bauen: {{ archiveError }}
+        </p>
 
         <FileQueue :entries="entries" @remove="remove">
           <template #preview="{ entry }">
