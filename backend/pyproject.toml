@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kaimarkit"
+description = "Wandelt Dokumente nach Markdown, damit man den Kontext sieht, den man einem LLM gibt."
+requires-python = ">=3.12"
+dynamic = ["version"]
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "python-multipart>=0.0.9",
+    # Die Engines. Torch steht hier nicht: es kommt ueber docling und wird im
+    # Dockerfile aus dem CPU-Index geholt.
+    "markitdown[all]>=0.1",
+    "docling>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+    "ruff>=0.6",
+]
+# Getrennt von der Laufzeit, damit MkDocs nicht im Container landet.
+docs = [
+    "mkdocs-material>=9.5",
+    "mike>=2.1",
+]
+
+[tool.hatch.version]
+path = "app/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: braucht die Docling-Modelle und dauert"]
