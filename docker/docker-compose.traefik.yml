@@ -1,0 +1,53 @@
+# kaimarkit — Betrieb hinter Traefik.
+#
+# Ergaenzung zur Basisdatei, nie allein aufrufen:
+#   docker compose -f docker/docker-compose.yml \
+#                  -f docker/docker-compose.traefik.yml up -d
+#
+# Traefik erreicht den Container ueber das gemeinsame Netz. Der Port aus der
+# Basisdatei entfaellt dabei; nichts wird mehr auf dem Host veroeffentlicht.
+
+services:
+  kaimarkit:
+    # !reset nimmt die Veroeffentlichung aus der Basisdatei zurueck. Ohne den
+    # Tag fuehrt Compose die beiden Portlisten zusammen, und der Dienst haengt
+    # weiter am Host-Port. Der Tag verlangt Compose 2.24 oder neuer.
+    #
+    # Fehlt diese Version im Zielsystem: den Port aus der Basisdatei nehmen und
+    # ihn in einer eigenen docker-compose.local.yml veroeffentlichen. Die
+    # Traefik-Schicht braucht dann kein !reset. Siehe docs/betrieb/traefik.md.
+    ports: !reset []
+
+    networks:
+      - proxy
+
+    # Map-Form, nicht Liste. Compose fuehrt Listen additiv zusammen — die
+    # Authelia-Schicht koennte einen einzelnen Schluessel dann nicht mehr
+    # ersetzen, sondern haengte ein zweites Label daneben.
+    #
+    # Der Preis dafuer steht in der naechsten Zeile: Compose setzt Variablen nur
+    # in Werte ein, nicht in Schluessel. Der Routername muss deshalb woertlich
+    # dastehen. Er lautet "kaimarkit" wie der Container und ist damit auf dem
+    # Host so eindeutig wie dieser. Wer ihn aendert, aendert ihn hier und in der
+    # Authelia-Schicht gemeinsam.
+    labels:
+      traefik.enable: "true"
+
+      # Bei mehreren Netzen am Container waehlt Traefik sonst unter Umstaenden
+      # das falsche und laeuft in eine Adresse, die es nicht erreicht.
+      traefik.docker.network: ${TRAEFIK_NETWORK}
+
+      traefik.http.routers.kaimarkit.rule: Host(`${KAIMARKIT_DOMAIN}`)
+      traefik.http.routers.kaimarkit.entrypoints: ${TRAEFIK_ENTRYPOINT}
+      traefik.http.routers.kaimarkit.tls: "true"
+      traefik.http.routers.kaimarkit.tls.certresolver: ${TRAEFIK_CERTRESOLVER}
+
+      # Der Port im Container, nicht auf dem Host: Traefik spricht den Dienst
+      # unmittelbar im gemeinsamen Netz an.
+      traefik.http.services.kaimarkit.loadbalancer.server.port: "8000"
+
+networks:
+  proxy:
+    # Traefik bringt dieses Netz mit; Compose legt es nicht an.
+    external: true
+    name: ${TRAEFIK_NETWORK}
