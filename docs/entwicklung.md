@@ -166,6 +166,40 @@ statt der echten Bibliothek; was die echten Modelle braucht, bekommt die Markier
 `slow`. Und die Matrix in [Formate](formate.md) nennt danach die neue Engine, sonst
 weiß niemand, dass es sie gibt.
 
+## Dark Mode und die Farbpalette
+
+Der dunkle Modus hat keinen Schalter. Er folgt der Einstellung des Systems, und
+alles dazu steht in `frontend/src/style.css`. Dort steht keine zweite Gestaltung,
+sondern eine neue Belegung: Tailwind 4 übersetzt jede Farbklasse in eine Variable —
+aus `bg-white` wird `var(--color-white)`, aus `text-slate-600` wird
+`var(--color-slate-600)` —, und der Block unter `prefers-color-scheme: dark` belegt
+diese Variablen um. Damit kippen alle Flächen und alle Schriften auf einmal, ohne
+dass eine Komponente davon weiß. Der Block steht außerhalb jeder `@layer` und
+schlägt deshalb die Vorgaben aus `@layer theme`. Wer eine Ansicht ergänzt, schreibt
+also gewöhnliche Farbklassen, und der dunkle Modus stellt sich von selbst ein. Eine
+`dark:`-Klasse braucht nur, wer dort etwas anderes will als das Gegenstück der
+hellen Ansicht; im ganzen Frontend tut das bisher allein `MarkdownPreview.vue`.
+
+Dafür gilt eine Bedingung. Wer eine Farbklasse ergänzt, liest vorher
+`frontend/src/style.css`, denn jede Stufe der Skala dient dort genau einer Sache.
+`white`, `slate-50`, `slate-100` und `slate-200` füllen Flächen. `slate-300`,
+`slate-400` und `slate-700` zeichnen Linien. `slate-500` und `slate-600` setzen
+Schrift. Die Akzentfarben sind ebenso aufgeteilt: `sky-50`, `red-50` und `amber-50`
+füllen, `sky-500`, `red-300` und `amber-300` zeichnen, `sky-700`, `sky-900`,
+`red-700`, `red-900`, `amber-900` und `emerald-700` schreiben. Der Grund ist die
+Umbelegung selbst: Eine Stufe bekommt im dunklen Modus einen einzigen neuen Wert,
+und der passt entweder als Fläche oder als Schrift, nie als beides. Wer eine neue
+Farbklasse einführt, prüft deshalb erst, ob ihre Stufe schon anders belegt ist, und
+weicht im Zweifel auf eine freie Stufe aus.
+
+`slate-800` ist die einzige Ausnahme und zeigt, was ein Verstoß kostet.
+`FileDropZone.vue` nimmt `text-slate-800` für die Schrift der Dropzone,
+`MarkdownPreview.vue` nimmt `dark:bg-slate-800` für den gewählten Reiter. Im
+dunklen Modus ist `slate-800` die helle Schriftfarbe — der Reiter bekäme eine helle
+Füllung unter heller Schrift. Deshalb steht am Ende von `style.css` eine Sonderregel,
+die `[role="tab"][aria-selected="true"]` im dunklen Modus wieder dunkel füllt. Es soll bei
+dieser einen Ausnahme bleiben.
+
 ## Das Board
 
 Die Arbeit steht in `kanban/` und wird mit `kanban-md` bewegt. Das Programm liegt
