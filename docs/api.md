@@ -4,7 +4,39 @@ Die Endpunkte unter `/api` mit Beispielaufrufen für curl.
 
 Der verbindliche Wortlaut steht in `contracts/api.md`; diese Seite zeigt, wie man die
 Endpunkte benutzt. Jede Anfrage steht für sich: Der Dienst legt nichts ab, und die
-hochgeladene Datei ist gelöscht, sobald die Antwort steht.
+hochgeladene Datei ist gelöscht, sobald die Antwort steht. Eine Authentifizierung
+gibt es nicht; wer eine braucht, setzt [Authelia](betrieb/authelia.md) davor.
+
+!!! note "Der Port in den Beispielen"
+    Alle Aufrufe hier nennen `localhost:8000`, den Port des Backends in der
+    Entwicklung. Im Container liegt der Dienst auf `KAIMARKIT_HOST_PORT`,
+    standardmäßig also auf `localhost:8080`. Im Container hört er unverändert auf
+    8000 — veröffentlicht wird 8080.
+
+Die Antwort auf einen Fehler hat immer denselben Rumpf, unabhängig vom Endpunkt:
+
+```json
+{ "detail": "Fuer .xyz gibt es keine Engine.", "code": "unsupported_format" }
+```
+
+`curl -sf` verschluckt diesen Rumpf. Wer die Meldung sehen will, lässt `-f` weg.
+
+## Lebt der Dienst? — `GET /api/health`
+
+Antwortet sofort mit 200, auch während Docling im Hintergrund lädt. Der
+Container-Healthcheck hängt daran: Käme die Antwort erst nach den Modellen, gälte
+der Start als Fehlschlag.
+
+```bash
+curl -sf localhost:8000/api/health
+```
+
+```json
+{ "status": "ok", "version": "0.1.0" }
+```
+
+Die Auskunft sagt nichts darüber, ob eine Engine schon arbeiten kann. Das steht in
+`/api/capabilities`.
 
 ## Was der Dienst kann — `GET /api/capabilities`
 
@@ -77,7 +109,8 @@ heißt `bericht-2.md`, die dritte `bericht-3.md`.
 
 Eine gescheiterte Datei nimmt die übrigen nicht mit. Sie fehlt im Archiv und
 bekommt stattdessen eine Zeile in `_errors.txt`, die nur dann darin liegt, wenn
-wirklich etwas schieflief:
+wirklich etwas schieflief. Jede Zeile nennt den Dateinamen und den Grund, den die
+Engine gemeldet hat:
 
 ```text
 kaputt.epub: Archiv unlesbar
@@ -108,3 +141,16 @@ curl -sf -F file=@a.pdf -F file=@b.epub \
 Der Aufruf antwortet mit 200, auch wenn jede einzelne Datei scheiterte — die Anfrage
 selbst war ja in Ordnung. Als Anfrage scheitert nur ein zu großer Stapel: mehr als
 `KAIMARKIT_MAX_FILES` Dateien enden mit 413 und `too_many_files`.
+
+## Die Schnittstelle maschinenlesbar
+
+FastAPI erzeugt die Beschreibung selbst. Sie liegt unter `/api/openapi.json`, die
+Oberfläche dazu unter `/api/docs` und `/api/redoc`. Alles Maschinelle liegt unter
+`/api`, weil `/docs` dieser Dokumentation gehört.
+
+```bash
+curl -sf localhost:8000/api/openapi.json | jq '.paths | keys'
+```
+
+Verbindlich ist trotzdem `contracts/api.md`. Die erzeugte Beschreibung folgt dem
+Code; weichen beide voneinander ab, ist der Code falsch und nicht der Vertrag.

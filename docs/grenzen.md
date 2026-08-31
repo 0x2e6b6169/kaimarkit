@@ -36,3 +36,63 @@ Dienst nach `KAIMARKIT_PANDOC_TIMEOUT` tatsächlich.
 
 Wer regelmäßig an die Zeitgrenze stößt, setzt sie besser hoch, statt es mehrfach
 zu versuchen: Jeder Versuch legt einen weiteren Lauf obendrauf.
+
+## Gescannte Seiten ohne OCR bleiben leer
+
+Ein PDF aus dem Scanner enthält Bilder und keinen Text. MarkItDown liest darin
+nichts, weil es nichts zu lesen findet, und Pandoc kommt für PDF ohnehin nicht in
+Frage. Das ist kein Fehler: Die Umwandlung gelingt, das Markdown bleibt leer, und
+die Antwort nennt den Grund in `warnings`.
+
+Text aus solchen Dateien holt allein Docling, und nur mit eingeschalteter
+Texterkennung. `KAIMARKIT_OCR_ENABLED` setzt den Standard, das Feld `ocr` einer
+einzelnen Anfrage überschreibt ihn:
+
+```bash
+curl -sf -F file=@scan.pdf -F engine=docling -F ocr=true \
+     localhost:8000/api/convert -o scan.md
+```
+
+Zwei Dinge kosten das. Die Texterkennung ist um ein Vielfaches langsamer als das
+Lesen einer Textebene, und ihre Sprachen müssen stimmen: `KAIMARKIT_OCR_LANGS` steht
+auf `deu,eng`, ein französisches Dokument braucht dort seinen eigenen Eintrag.
+
+Läuft der Aufruf mit `engine=auto` und ist Docling noch nicht bereit, nimmt der
+Dienst für das PDF die nächste Engine der Liste — und die findet dann eben keinen
+Text. Wer sicher OCR will, nennt Docling ausdrücklich und wartet.
+
+## Bilder werden nicht beschrieben
+
+Ein Bild im Dokument erscheint im Markdown als Platzhalter oder als Alt-Text, nie
+als Beschreibung seines Inhalts. Der Dienst schickt bewusst nichts an ein
+Sprachmodell — er soll den Kontext zeigen, den man einem Modell gibt, und ihn nicht
+selbst erzeugen. Ein Diagramm, dessen Aussage nur im Bild steht, geht dabei
+verloren.
+
+## Jeder Worker hält eigene Docling-Modelle
+
+Die Modelle liegen im Speicher des Prozesses, nicht daneben. Zwei Uvicorn-Worker
+halten sie deshalb zweimal, mit jeweils rund 2 GB. `KAIMARKIT_WORKERS` erst
+hochsetzen, wenn genug RAM da ist, und `KAIMARKIT_MEM_LIMIT` mit anheben — sonst
+schießt der Kernel den Container beim ersten großen PDF ab. Dass es das war, zeigt
+`docker inspect` als `OOMKilled`.
+
+Gleichzeitige Anfragen sind der falsche Grund für mehr Worker. Wie viele
+Umwandlungen nebeneinander laufen, regelt `KAIMARKIT_MAX_CONCURRENT` innerhalb eines
+Prozesses; das kostet keinen zweiten Satz Modelle.
+
+Wartezeit kostet auch der erste Aufruf. Docling beginnt seine Modelle zu laden,
+sobald der Dienst zum ersten Mal nach ihm gefragt wird — durch `GET /api/capabilities` oder
+durch die erste Umwandlung. Bis das fertig ist, meldet die Auskunft `warming` und
+`engine=auto` nimmt für ein PDF MarkItDown.
+
+## Was der Dienst gar nicht tut
+
+- **Nichts aufheben.** Es gibt keine Historie und keinen Zwischenspeicher. Wer ein
+  Ergebnis behalten will, lädt es herunter.
+- **Niemanden erkennen.** Die API kennt keine Anmeldung und keine Kennungen. Eine
+  Anmeldung kommt von außen davor, siehe [Authelia](betrieb/authelia.md).
+- **Nichts nachladen.** Zur Laufzeit holt der Dienst nichts aus dem Netz. Alle
+  Modelle stecken im Abbild.
+- **Nichts zurückschreiben.** Der Weg führt nur in eine Richtung: nach Markdown.
+  Aus Markdown wieder ein PDF zu machen, ist nicht Aufgabe dieses Dienstes.
