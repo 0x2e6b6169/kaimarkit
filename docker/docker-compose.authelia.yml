@@ -1,0 +1,73 @@
+# kaimarkit — Betrieb hinter Traefik mit Authelia davor.
+#
+# Dritte Schicht, nie allein aufrufen:
+#   docker compose -f docker/docker-compose.yml \
+#                  -f docker/docker-compose.traefik.yml \
+#                  -f docker/docker-compose.authelia.yml up -d
+#
+# Diese Datei startet Authelia nicht mit. Sie erwartet einen laufenden
+# Authelia-Dienst im Traefik-Netz und verweist nur auf ihn.
+
+services:
+  kaimarkit:
+    # Map-Form wie in der Traefik-Schicht: Compose ersetzt einzelne Schluessel
+    # und haengt neue an, statt zwei Listen aneinanderzureihen.
+    #
+    # Alle Namen in den Schluesseln stehen woertlich da — "kaimarkit-auth" fuer
+    # die Middleware, "kaimarkit" und "kaimarkit-api" fuer die Router. Compose
+    # setzt Variablen nur in Werte ein, nicht in Schluessel; ein ${...} links vom
+    # Doppelpunkt bliebe unveraendert stehen und ergaebe einen Namen mit
+    # Dollarzeichen darin. Wer einen dieser Namen aendert, aendert ihn hier und
+    # in docker-compose.traefik.yml gemeinsam.
+    labels:
+      # Die Middleware definiert sich am eigenen Dienst und steht damit fuer
+      # sich: Traefik findet sie ueber den Docker-Anbieter, ohne dass eine
+      # zweite Datei sie beisteuern muss. Daher der Zusatz "@docker" ueberall
+      # dort, wo sie benannt wird.
+      traefik.http.middlewares.kaimarkit-auth.forwardauth.address: ${AUTHELIA_VERIFY_URL}
+
+      # Authelia braucht die urspruengliche Anfrage, um Schema, Host und Pfad zu
+      # pruefen und danach zurueckzuleiten. Ohne diesen Schalter sieht Authelia
+      # nur Traefik.
+      traefik.http.middlewares.kaimarkit-auth.forwardauth.trustForwardHeader: "true"
+
+      # Was Authelia ueber die angemeldete Person zurueckgibt, reicht Traefik an
+      # die Anwendung weiter. kaimarkit wertet die Kopfzeilen nicht aus; sie
+      # stehen bereit, falls spaeter jemand danach unterscheiden will.
+      traefik.http.middlewares.kaimarkit-auth.forwardauth.authResponseHeaders: ${AUTHELIA_RESPONSE_HEADERS}
+
+      # Der Router aus der Traefik-Schicht bekommt die Middleware vorgeschaltet.
+      # Neuer Schluessel in derselben Map, deshalb bleibt dort alles ungeaendert.
+      traefik.http.routers.kaimarkit.middlewares: kaimarkit-auth@docker
+
+      # Zweiter Router allein fuer /api. Hinter Authelia bekommt ein Aufruf ohne
+      # Browser-Sitzung sonst eine Weiterleitung zum Login. curl und jedes
+      # Skript bekaemen dann die Anmeldeseite statt Markdown.
+      traefik.http.routers.kaimarkit-api.rule: Host(`${KAIMARKIT_DOMAIN}`) && PathPrefix(`/api`)
+      traefik.http.routers.kaimarkit-api.entrypoints: ${TRAEFIK_ENTRYPOINT}
+      traefik.http.routers.kaimarkit-api.tls: "true"
+      traefik.http.routers.kaimarkit-api.tls.certresolver: ${TRAEFIK_CERTRESOLVER}
+
+      # Traefik ordnet Regeln sonst nach Laenge. Das genuegt hier zwar, weil die
+      # /api-Regel die laengere ist, haengt aber am Wortlaut der anderen Regel.
+      # Die feste Zahl macht den Vorrang unabhaengig davon.
+      traefik.http.routers.kaimarkit-api.priority: "100"
+
+      # Ein Router ohne eigenen Dienst nimmt den einzigen des Containers. Hier
+      # steht er trotzdem, damit niemand diese Regel nachschlagen muss.
+      traefik.http.routers.kaimarkit-api.service: kaimarkit
+
+      # Der Schalter, um den es geht. Der Vorgabewert schuetzt auch /api.
+      #
+      # Ein leerer Wert gibt die API frei: Traefik nimmt ihn als "keine
+      # Middleware" an, der Router bleibt aktiv und meldet keinen Fehler.
+      # Geprueft mit Traefik 3.6.7 — der Router stand auf "enabled", die
+      # Middlewareliste war leer, und ein Aufruf kam durch, waehrend derselbe
+      # Aufruf auf "/" an Authelia haengenblieb.
+      #
+      # Die Anfuehrungszeichen schreiben die leere Zeichenkette hin, statt sie
+      # YAML zu ueberlassen — dort steht ein blanker Wert fuer null.
+      #
+      # Statt ganz freizugeben laesst sich hier auch eine engere Middleware
+      # eintragen, etwa eine IP-Allowlist. Siehe docs/betrieb/authelia.md.
+      traefik.http.routers.kaimarkit-api.middlewares: "${KAIMARKIT_API_MIDDLEWARES}"
