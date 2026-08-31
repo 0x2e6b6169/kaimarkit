@@ -1,0 +1,62 @@
+# kaimarkit — lokaler Betrieb.
+#
+# Compose leitet das Projektverzeichnis aus der ersten -f-Datei ab. Es liest
+# deshalb docker/.env, und jeder relative Pfad hier bezieht sich auf docker/.
+# Ohne den Top-Level-Namen hiesse das Projekt "docker".
+#
+# Aufruf: docker compose -f docker/docker-compose.yml up -d --build
+
+name: ${KAIMARKIT_PROJECT_NAME}
+
+services:
+  kaimarkit:
+    build:
+      # Standard ".." ist die Projektwurzel. Fuer einen Build aus einem zweiten
+      # Checkout beide Variablen auf absolute Pfade setzen; diese Datei bleibt
+      # dann unveraendert. Siehe docker/.env.example.
+      context: ${KAIMARKIT_BUILD_CONTEXT}
+      dockerfile: ${KAIMARKIT_DOCKERFILE}
+      args:
+        PANDOC_VERSION: ${PANDOC_VERSION}
+    image: ${KAIMARKIT_IMAGE}:${KAIMARKIT_TAG}
+    container_name: ${KAIMARKIT_CONTAINER_NAME}
+    restart: ${KAIMARKIT_RESTART_POLICY}
+
+    # Map-Form, nicht Liste: Compose fuehrt Listen additiv zusammen, Maps
+    # ersetzen einzelne Schluessel. Nur so kann eine Ergaenzungsdatei einen
+    # einzelnen Wert ueberschreiben.
+    environment:
+      KAIMARKIT_MAX_FILE_SIZE_MB: ${KAIMARKIT_MAX_FILE_SIZE_MB}
+      KAIMARKIT_MAX_FILES: ${KAIMARKIT_MAX_FILES}
+      KAIMARKIT_MAX_CONCURRENT: ${KAIMARKIT_MAX_CONCURRENT}
+      KAIMARKIT_CONVERSION_TIMEOUT: ${KAIMARKIT_CONVERSION_TIMEOUT}
+      KAIMARKIT_PANDOC_TIMEOUT: ${KAIMARKIT_PANDOC_TIMEOUT}
+      KAIMARKIT_DEFAULT_ENGINE: ${KAIMARKIT_DEFAULT_ENGINE}
+      KAIMARKIT_ENABLE_FALLBACK: ${KAIMARKIT_ENABLE_FALLBACK}
+      KAIMARKIT_OCR_ENABLED: ${KAIMARKIT_OCR_ENABLED}
+      KAIMARKIT_OCR_LANGS: ${KAIMARKIT_OCR_LANGS}
+      KAIMARKIT_LOG_LEVEL: ${KAIMARKIT_LOG_LEVEL}
+      KAIMARKIT_WORKERS: ${KAIMARKIT_WORKERS}
+      KAIMARKIT_STATIC_DIR: ${KAIMARKIT_STATIC_DIR}
+      KAIMARKIT_DOCS_DIR: ${KAIMARKIT_DOCS_DIR}
+
+    # Die Bindeadresse haelt den Dienst standardmaessig auf dem eigenen Rechner.
+    # docker-compose.traefik.yml nimmt diese Veroeffentlichung wieder zurueck.
+    ports:
+      - "${KAIMARKIT_BIND_ADDR}:${KAIMARKIT_HOST_PORT}:8000"
+
+    # Docling laedt seine Modelle beim Start. Die start_period deckt das ab:
+    # Fehlschlaege darin zaehlen nicht als ungesund.
+    healthcheck:
+      test:
+        - CMD
+        - python3
+        - -c
+        - import urllib.request; urllib.request.urlopen("http://127.0.0.1:8000/api/health", timeout=5)
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: ${KAIMARKIT_HEALTH_START_PERIOD}
+
+    # Jeder Worker haelt eigene Docling-Modelle im Speicher.
+    mem_limit: ${KAIMARKIT_MEM_LIMIT}
