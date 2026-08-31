@@ -311,3 +311,15 @@
 {"timestamp":"2026-08-31T16:38:58.331755698+02:00","action":"move","task_id":43,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-08-31T16:38:59.144969599+02:00","action":"edit","task_id":43,"detail":"PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen"}
 {"timestamp":"2026-08-31T16:38:59.146355356+02:00","action":"release","task_id":43,"detail":"katche-01"}
+{"timestamp":"2026-08-31T17:07:30.829056103+02:00","action":"create","task_id":45,"detail":"IN-8 · Docs-Stufe scheitert, wenn der Bau aus einem Worktree laeuft"}
+{"timestamp":"2026-08-31T17:07:51.413675947+02:00","action":"move","task_id":35,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T17:07:52.189447528+02:00","action":"edit","task_id":35,"detail":"PROC-1 · Ticketschnitt: gehoeren Doku-Seiten einer Lane?"}
+{"timestamp":"2026-08-31T17:07:52.947150222+02:00","action":"move","task_id":35,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T17:07:58.413794862+02:00","action":"create","task_id":46,"detail":"BE-13 · OCR-Schalter und Sprachen wirken nicht auf Bilder"}
+{"timestamp":"2026-08-31T17:08:22.247941805+02:00","action":"create","task_id":47,"detail":"BE-14 · Ein Platzhalter statt Inhalt bleibt ohne Warnung"}
+{"timestamp":"2026-08-31T17:08:52.680662564+02:00","action":"create","task_id":48,"detail":"BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad"}
+{"timestamp":"2026-08-31T17:08:53.520925636+02:00","action":"create","task_id":49,"detail":"PROC-4 · pytest -m slow ueberspringt auf dem Entwicklungsrechner still"}
+{"timestamp":"2026-08-31T17:09:28.199779025+02:00","action":"edit","task_id":35,"detail":"PROC-1 · Ticketschnitt: gehoeren Doku-Seiten einer Lane?"}
+{"timestamp":"2026-08-31T17:09:47.952077185+02:00","action":"move","task_id":35,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T17:09:48.561407526+02:00","action":"edit","task_id":35,"detail":"PROC-1 · Ticketschnitt: gehoeren Doku-Seiten einer Lane?"}
+{"timestamp":"2026-08-31T17:09:48.561642736+02:00","action":"release","task_id":35,"detail":"katche-02"}
