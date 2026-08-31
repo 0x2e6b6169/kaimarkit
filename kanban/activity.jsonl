@@ -308,3 +308,6 @@
 {"timestamp":"2026-08-31T16:36:48.215295682+02:00","action":"edit","task_id":43,"detail":"PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen"}
 {"timestamp":"2026-08-31T16:36:49.090887186+02:00","action":"move","task_id":43,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-08-31T16:38:17.357480073+02:00","action":"edit","task_id":43,"detail":"PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen"}
+{"timestamp":"2026-08-31T16:38:58.331755698+02:00","action":"move","task_id":43,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T16:38:59.144969599+02:00","action":"edit","task_id":43,"detail":"PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen"}
+{"timestamp":"2026-08-31T16:38:59.146355356+02:00","action":"release","task_id":43,"detail":"katche-01"}

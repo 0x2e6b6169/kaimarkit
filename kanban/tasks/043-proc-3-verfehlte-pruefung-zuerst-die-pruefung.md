@@ -1,16 +1,15 @@
 ---
 id: 43
 title: 'PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen'
-status: in-progress
+status: done
 priority: low
 created: 2026-08-31T14:05:10.07801012+02:00
-updated: 2026-08-31T16:38:17.356615244+02:00
+updated: 2026-08-31T16:38:59.143407547+02:00
 started: 2026-08-31T16:36:47.388039309+02:00
+completed: 2026-08-31T16:38:58.330755595+02:00
 assignee: katche
 tags:
     - process
-claimed_by: katche-01
-claimed_at: 2026-08-31T16:38:17.35704306+02:00
 class: standard
 ---
 
