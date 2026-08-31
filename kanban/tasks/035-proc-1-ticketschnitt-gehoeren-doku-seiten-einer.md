@@ -4,7 +4,7 @@ title: 'PROC-1 · Ticketschnitt: gehoeren Doku-Seiten einer Lane?'
 status: backlog
 priority: low
 created: 2026-08-31T11:46:15.810335482+02:00
-updated: 2026-08-31T11:46:15.810335482+02:00
+updated: 2026-08-31T13:41:43.320766361+02:00
 assignee: akar
 tags:
     - process
@@ -132,3 +132,6 @@ Vier Faelle, vier Formen desselben Problems:
    stehen zu lassen.
 4. `docs/betrieb/konfiguration.md` — Doku-Ticket findet und meldet; getragen hat
    es nur der Zufall eines offenen Zieltickets.
+
+[[2026-08-31]] Mon 13:41
+Fuenfter Fall, und er zeigt die Kehrseite des vierten. DOC-6 (#34) foerderte einen Fehler in `docs/grenzen.md:58` zutage — dieselbe falsche OCR-Schreibweise. Diesmal gab es kein offenes Ticket, das den Befund haette auffangen koennen: `grenzen.md` gehoert DOC-2 (#21), und das ist geschlossen. Der Subagent liess die Stelle richtigerweise stehen, weil die Datei ihm nicht gehoert. Ohne die Meldung an den PO waere der Befund verloren gewesen; er liegt jetzt als DOC-9 (#42) vor. Fall vier zeigte, dass ein offenes Nachbarticket den Befund auffaengt; Fall fuenf zeigt, dass es das nur zufaellig tut. Gemeldet von akar.

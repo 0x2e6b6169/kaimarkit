@@ -1,19 +1,18 @@
 ---
 id: 34
 title: DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite
-status: in-progress
+status: done
 priority: medium
 created: 2026-08-31T11:45:54.471902201+02:00
-updated: 2026-08-31T12:20:10.242511219+02:00
+updated: 2026-08-31T13:40:07.679303053+02:00
 started: 2026-08-31T11:46:25.433276163+02:00
+completed: 2026-08-31T13:40:06.574169592+02:00
 assignee: akar
 tags:
     - docs
     - bug
 depends_on:
     - 37
-claimed_by: akar-16
-claimed_at: 2026-08-31T12:20:10.242511219+02:00
 class: standard
 ---
 
@@ -148,3 +147,65 @@ Die Entscheidung steht jetzt: **EasyOCR mit ISO 639-1**, umgesetzt in BE-12
   (#36) und dort liegen gelassen, weil die Datei diesem Ticket gehoert. Kein
   eigenes Ticket — zwei Tickets auf derselben Datei waeren der Schnittfehler aus
   PROC-1 (#35).
+
+**Rest geliefert und gemergt** — Merge `72a1b8f`, Commit `b49cede`, Branch
+`task/34-ocr-schreibweise` (akar-16). Beide Dateien im selben Commit,
+Konvention 6.
+
+## Nachweis aus dem gemergten Code (Stand `7079d3e`)
+
+Die Schreibweise ist **ISO 639-1**, die Maschine ist **EasyOCR** — im Code
+belegt, nicht aus dem Auftrag uebernommen:
+
+- `backend/app/converters/docling.py:58` — importiert `EasyOcrOptions`.
+- `backend/app/converters/docling.py:78` —
+  `options.ocr_options = EasyOcrOptions(lang=langs) if langs else EasyOcrOptions()`.
+  Die Engine steht damit fest; `OcrAutoOptions` waehlt nichts mehr aus.
+- `backend/app/config.py:36` — `ocr_langs: str = "de,en"`, mit Kommentar in
+  Zeile 34-35: „ISO 639-1 ... Tesseracts ``deu,eng`` erkennt sie nicht."
+
+Der Befund deckt sich mit BE-12 (#37). Keine Abweichung, also `de,en`
+eingetragen.
+
+## Geaendert
+
+- `docker/.env.example:65-69` — `KAIMARKIT_OCR_LANGS=de,en` statt `deu,eng`,
+  dazu drei Kommentarzeilen: ISO-639-1-Kuerzel, EasyOCR liest nur die
+  zweibuchstabige Form, Tesseracts `deu,eng` passt nicht.
+- `docs/betrieb/konfiguration.md:50` — Tabellenzeile auf `de,en` und
+  „als ISO-639-1-Kuerzel und durch Komma getrennt".
+- `docs/betrieb/konfiguration.md:65-67` — neuer Absatz, der die Maschine nennt:
+  der Adapter ruft ausdruecklich EasyOCR auf.
+- `docs/betrieb/konfiguration.md:86-88` — „laedt sie beim ersten Aufruf nach"
+  ersetzt durch „laedt sie nach. Das Nachladen beginnt schon beim Hochfahren,
+  nicht erst bei der ersten Anfrage." Der Warmlauf steht in
+  `backend/app/main.py:53` (`docling.start_warmup()` im Lifespan) und
+  `backend/app/converters/docling.py:112-128`. Wortwahl an `docs/entwicklung.md:147`
+  angeglichen („beim Hochfahren").
+
+Das Dockerfile blieb unberuehrt — gehoert IN-6 (#38).
+
+## Pruefung — bestanden
+
+Maschineller Abgleich, nicht nach Augenmass (`grep -oP` auf `^[A-Z_]+=` bzw.
+Tabellenzeilen, dann `comm`):
+
+- `docker/.env.example`: **32** Variablen.
+- `docs/betrieb/konfiguration.md` ausserhalb des Abschnitts „Was das Abbild fest
+  setzt": **32** Variablen.
+- `comm -23` leer, `comm -13` leer. Beide Differenzmengen leer.
+- Zusaetzlich alle `${...}` aus `docker/docker-compose*.yml`: **32**, beide
+  Differenzen gegen `.env.example` ebenfalls leer.
+- Die drei Abbild-Variablen (`DOCLING_ARTIFACTS_PATH`, `HF_HOME`,
+  `HF_HUB_OFFLINE`) stehen bewusst nur im eigenen Abschnitt und nicht in
+  `.env.example` — so von akar-11 angelegt, Compose reicht sie nicht durch.
+- `mkdocs build --strict` → **exit 0**, keine Warnung (nur der Material-Hinweis
+  zu MkDocs 2.0, unabhaengig von dieser Seite).
+- `grep -inE "tr(ä|a|u)g"` ueber die Seite: ein Treffer, `Datenträgern` in
+  Zeile 116 — Substantiv, kein Verlegenheitsverb.
+
+## Nebenbefund fuer den PO — nicht in diesem Ticket geaendert
+
+`docs/grenzen.md:58` sagt weiterhin: „`KAIMARKIT_OCR_LANGS` steht auf `deu,eng`".
+Die Seite gehoert diesem Ticket nicht (Dateieigentum), deshalb liegen gelassen.
+Braucht ein eigenes kleines Ticket: Wert auf `de,en` ziehen.

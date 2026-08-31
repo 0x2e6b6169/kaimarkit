@@ -273,3 +273,7 @@
 {"timestamp":"2026-08-31T13:36:16.786717247+02:00","action":"move","task_id":30,"detail":"in-progress -\u003e todo"}
 {"timestamp":"2026-08-31T13:36:17.577854636+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
 {"timestamp":"2026-08-31T13:38:08.537421655+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T13:40:06.576477795+02:00","action":"move","task_id":34,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T13:40:07.681866311+02:00","action":"edit","task_id":34,"detail":"DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite"}
+{"timestamp":"2026-08-31T13:41:32.604735945+02:00","action":"create","task_id":42,"detail":"DOC-9 · grenzen.md nennt die alte OCR-Schreibweise deu,eng"}
+{"timestamp":"2026-08-31T13:41:43.321792346+02:00","action":"edit","task_id":35,"detail":"PROC-1 · Ticketschnitt: gehoeren Doku-Seiten einer Lane?"}
