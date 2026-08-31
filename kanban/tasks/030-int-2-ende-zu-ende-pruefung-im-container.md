@@ -4,7 +4,7 @@ title: INT-2 · Ende-zu-Ende-Pruefung im Container
 status: todo
 priority: medium
 created: 2026-08-31T10:21:44.348462086+02:00
-updated: 2026-08-31T14:43:11.226297714+02:00
+updated: 2026-08-31T14:44:52.685098578+02:00
 assignee: akar
 tags:
     - infra
@@ -63,3 +63,20 @@ PO: depends_on um #34 und #38 ergaenzt. INT-2 prueft das Abbild, das IN-6 gerade
 
 [[2026-08-31]] Mon 14:43
 Abgebrochen am 31.08.2026 gegen 14:45 auf Wunsch des Nutzers, nicht wegen eines Fehlers. akar-18 stand beim zweiten vollstaendigen Imagebau (Pruefpunkt "zweites make docs-release, zwischen den Versionen umschalten"), Worktree `.worktrees/task-30` auf Branch `task/30-e2e`, Ankercommit 87ed9d9. Der Build lief nachweislich — der Build-Cache wuchs in 25 Sekunden von 5,3 auf 8,4 GB —, er hing nicht. Grund des Abbruchs ist IN-7 (#44): Dockers Datenplatte liegt auf einem zu 97 Prozent vollen C:, und die Reorganisation haelt Docker an. Deshalb haengt INT-2 jetzt auch per depends_on an #44. **Beim Wiederaufsetzen laeuft INT-2 vollstaendig neu**, nicht ab der Abbruchstelle: Ein Ende-zu-Ende-Bericht ueber einen halb geprueften Zustand belegt nichts. Vorher `git worktree list` pruefen — steht `.worktrees/task-30` noch, laesst er sich weiterverwenden, sonst neu anlegen. Bis zum Abbruch waren gelaufen: pytest mit und ohne -m slow, die curl-Fehlerpfade, `make up`, drei `compose config`-Laeufe und ein Durchgang der Traefik/Authelia-Schicht (Container `kaimarkit` healthy, ohne veroeffentlichten Port — die beabsichtigte Wirkung von IN-3). Keiner dieser Punkte wurde als bestanden gemeldet; alle sind erneut zu belegen.
+
+
+## Was der abgebrochene Lauf gemeldet hat (kein Nachweis)
+
+akar-18 wurde auf Wunsch des Nutzers gestoppt, nicht wegen eines Fehlers. Seine
+letzte Meldung, woertlich sinngemaess: Abbild gebaut, Stack lief durch (`make up`,
+alle curl-Pfade, OCR mit und ohne, Browser-Durchlauf, **Authelia-Anmeldung im
+Browser erfolgreich**); offen war allein der letzte Punkt, die Pruefung der zwei
+`make docs-release`-Versionen im Container.
+
+**Das ist ein Bericht, kein Beleg.** Die Einzelheiten stehen nirgends — keine
+Ausgaben, keine Zeilen, kein Anker. Der naechste Lauf faengt vollstaendig neu an
+und belegt alles selbst, auch die Authelia-Anmeldung. Der Vermerk steht hier nur,
+damit bekannt ist, wie weit es getragen hatte und wo es zuletzt stand: Der Rest
+der Kette hatte offenbar funktioniert, der Abbruch kam am letzten Pruefpunkt.
+
+Ankercommit des Laufs: 87ed9d9. Worktree `.worktrees/task-30` bleibt stehen.

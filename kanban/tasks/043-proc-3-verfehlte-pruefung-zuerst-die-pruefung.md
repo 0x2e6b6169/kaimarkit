@@ -4,7 +4,7 @@ title: 'PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen'
 status: backlog
 priority: low
 created: 2026-08-31T14:05:10.07801012+02:00
-updated: 2026-08-31T14:44:17.092283762+02:00
+updated: 2026-08-31T14:45:35.471309206+02:00
 assignee: akar
 tags:
     - process
@@ -75,3 +75,6 @@ Kein vierter Datenpunkt, sondern eine andere Frage — deshalb getrennt gehalten
 
 [[2026-08-31]] Mon 14:44
 Vierter Fall, und der erste, der nicht einem Subagenten unterlief, sondern uns beiden. Bei der Suche nach Plattenplatz las akar `df -h /` und meldete 854 GB frei — die Zahl stimmte, sie gehoerte nur zum falschen Dateisystem. Docker Desktop legt seine Datenplatte auf `C:` ab, und `C:` war zu 97 Prozent voll. Die Pruefung war unter der Annahme geschrieben, Docker liege im Wurzeldateisystem; sie hat sauber gemessen und nichts belegt. Verschaerfend: akar hatte bemerkt, dass `/var/lib/docker` gar nicht existiert, und daraus keinen Verdacht gezogen. Dazu ein zweites Werkzeug, das dasselbe bestaetigte: `docker system df` meldet 8,6 GB — den **Inhalt**, nicht den belegten Platz. Die VHDX war 82,5 GB gross, rund 74 GB toter Raum. **Das Neue an diesem Fall:** Zwei Sitzungen haben denselben falschen Befund unabhaengig bestaetigt und sich damit gegenseitig plausibel gemacht. Eine zweite Messung mit demselben blinden Fleck ist keine Bestaetigung. Gemeldet von akar, aufgeloest ueber IN-7 (#44).
+
+[[2026-08-31]] Mon 14:45
+Die pruefbare Fassung des vierten Falls, von akar: **Ein fehlender Pfad ist kein Nebenbefund, sondern die Auskunft, dass man am falschen Ort misst.** Er hatte gesehen, dass `/var/lib/docker` nicht existiert, und daraus keinen Verdacht gezogen, sondern die uebrigen Zahlen genommen. Das ist der Punkt, an dem die Regel dieses Tickets gegriffen haette — und der einzige der vier Faelle, in dem ein einzelner Blick genuegt haette.
