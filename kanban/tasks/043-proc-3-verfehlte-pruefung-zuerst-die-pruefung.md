@@ -1,13 +1,16 @@
 ---
 id: 43
 title: 'PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen'
-status: backlog
+status: in-progress
 priority: low
 created: 2026-08-31T14:05:10.07801012+02:00
-updated: 2026-08-31T14:45:35.471309206+02:00
-assignee: akar
+updated: 2026-08-31T16:38:17.356615244+02:00
+started: 2026-08-31T16:36:47.388039309+02:00
+assignee: katche
 tags:
     - process
+claimed_by: katche-01
+claimed_at: 2026-08-31T16:38:17.35704306+02:00
 class: standard
 ---
 
@@ -78,3 +81,17 @@ Vierter Fall, und der erste, der nicht einem Subagenten unterlief, sondern uns b
 
 [[2026-08-31]] Mon 14:45
 Die pruefbare Fassung des vierten Falls, von akar: **Ein fehlender Pfad ist kein Nebenbefund, sondern die Auskunft, dass man am falschen Ort misst.** Er hatte gesehen, dass `/var/lib/docker` nicht existiert, und daraus keinen Verdacht gezogen, sondern die uebrigen Zahlen genommen. Das ist der Punkt, an dem die Regel dieses Tickets gegriffen haette — und der einzige der vier Faelle, in dem ein einzelner Blick genuegt haette.
+
+[[2026-08-31]] Mon 16:38
+Entscheidung des Nutzers: **Form 1** — die Regel steht in CLAUDE.md und gilt fuer jedes Ticket.
+
+Umgesetzt an vier Stellen in zwei Repos:
+
+1. **kaimarkit `CLAUDE.md`**, Abschnitt "Der Ticketschnitt", hinter den vier Rumpfabschnitten und vor dem `handoff`-Block. Der Satz, der den Block einleitet, ist mitgeaendert: Eine verfehlte Pruefung und ein fehlendes Stueck aus einer anderen Lane benutzen dasselbe Werkzeug.
+2. **kaimarkit `.claude/skills/work-lane/SKILL.md`**, "Definition of done", als zweiter Punkt hinter dem Pruefungs-Punkt.
+3. **dot-claude `skills/agent-orchestration/SKILL.md`** — die bisherige Fassung galt nur fuer Pruefungen, die eine Zahl vorhersagen. Jetzt allgemein.
+4. **dot-claude `assets/claude-md-abschnitte.md` und `assets/work-lane.SKILL.md`**, damit neue Projekte die Regel mitbekommen.
+
+Der dritte Satz ist eine Abgrenzung und stand so nicht im Vorschlag: Gemeint ist die Annahme hinter der Pruefung; ein Fehler im eigenen Code bleibt ein Fehler im eigenen Code und wird behoben. Ohne ihn liest ein Subagent die Regel als Freibrief, bei jedem roten Test zu uebergeben.
+
+Der **vierte Fall** (`df -h /`) faellt nicht unter diese Regel: Dort lag der Fehler im Messen, nicht im Melden. Seine beiden Lehren stehen bereits als Gewohnheiten im Pruefungs-Abschnitt von `/agent-orchestration`.

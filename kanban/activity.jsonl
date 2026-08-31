@@ -302,3 +302,9 @@
 {"timestamp":"2026-08-31T14:44:52.686916755+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
 {"timestamp":"2026-08-31T14:45:35.471838761+02:00","action":"edit","task_id":43,"detail":"PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen"}
 {"timestamp":"2026-08-31T15:02:49.633021098+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T16:30:53.296739751+02:00","action":"move","task_id":44,"detail":"todo -\u003e archived"}
+{"timestamp":"2026-08-31T16:35:01.760746727+02:00","action":"move","task_id":30,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T16:36:47.388458168+02:00","action":"move","task_id":43,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T16:36:48.215295682+02:00","action":"edit","task_id":43,"detail":"PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen"}
+{"timestamp":"2026-08-31T16:36:49.090887186+02:00","action":"move","task_id":43,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T16:38:17.357480073+02:00","action":"edit","task_id":43,"detail":"PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen"}

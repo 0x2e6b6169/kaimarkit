@@ -199,8 +199,13 @@ Jeder Ticketrumpf hat denselben Aufbau: **Ziel**, **Eigene Dateien**, **Vorgaben
 **Prüfung**. Der letzte Abschnitt ist der wichtigste: Er ist es, der einen Subagenten
 allein entscheiden lässt, ob er fertig ist, statt zurückzufragen.
 
-Fehlt einem Ticket etwas aus einer anderen Lane, endet die Arbeit nicht im
-Stillstand, sondern mit einer Übergabe:
+**Weicht die Prüfung ab, ist zuerst die Prüfung verdächtig, nicht die Arbeit.** Wer
+eine Vorgabe nicht erfüllen kann, meldet die Abweichung und übergibt das Ticket,
+statt die Zahl passend zu machen. Gemeint ist die Annahme hinter der Prüfung; ein
+Fehler im eigenen Code bleibt ein Fehler im eigenen Code und wird behoben.
+
+Eine verfehlte Prüfung und ein fehlendes Stück aus einer anderen Lane enden beide
+nicht im Stillstand, sondern mit einer Übergabe:
 
 ```bash
 ~/go/bin/kanban-md handoff <ID> --claim <self>-NN \

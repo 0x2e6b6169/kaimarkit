@@ -100,6 +100,11 @@ Repeat until your lane is empty **and** no subagent of yours is still running:
    - Run the **Pruefung** section from its own ticket body and actually pass it.
      Every ticket carries one; it is what lets the subagent decide "done" without
      asking back.
+   - **If the Pruefung does not come out as specified, suspect the Pruefung before
+     the work.** Report the deviation and hand the ticket back
+     (`handoff <ID> --block "..." --note "..."`) instead of adjusting until the
+     number fits. This concerns the *assumption* behind the check — a bug in the
+     subagent's own code is still its bug and gets fixed.
    - Update the **documentation** (`docs/` pages + `CLAUDE.md`) for any
      user-visible behaviour or architecture/convention change. Note that
      `docker/.env.example` and `docs/betrieb/konfiguration.md` are a pair
