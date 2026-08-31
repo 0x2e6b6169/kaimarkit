@@ -1,11 +1,12 @@
 ---
 id: 32
 title: 'BE-10 · Drei Befunde aus DOC-2: meta-Status, Fehlertext, passthrough'
-status: todo
+status: done
 priority: medium
 created: 2026-08-31T11:28:58.151721591+02:00
-updated: 2026-08-31T11:41:57.694669142+02:00
+updated: 2026-08-31T12:04:46.393452106+02:00
 started: 2026-08-31T11:41:57.129004125+02:00
+completed: 2026-08-31T12:04:46.405841382+02:00
 assignee: sophie
 tags:
     - backend
@@ -56,3 +57,27 @@ Dieses Ticket haengt an INT-1 (#29). Grund ist kein fachlicher Vorlauf, sondern
 Dateieigentum: INT-1 korrigiert Abweichungen in beiden Straengen und arbeitet
 gerade in `backend/app/api/meta.py` — derselben Datei wie Befund 1. Erst nach dem
 Merge von INT-1 ziehen.
+
+## Geschlossen ohne eigene Arbeit (PO, 2026-08-31)
+
+Alle drei Befunde sind in INT-1 (#29) miterledigt worden, das denselben Code
+angefasst hat. Nachgeprueft auf `main`:
+
+1. `meta.py:41` bildet die Engines nur noch ueber `ENGINE_NAMES`, `_state()`
+   fragt den Adapter nach seinem eigenen Zustand. INT-1 hat die Ursache tiefer
+   gefunden als dieses Ticket sie beschrieb: `docling.py` laedt sein Modul auch
+   ohne die Bibliothek, deshalb kann `available()` Vorladen und dauerhaftes
+   Fehlen nicht unterscheiden. `converters/base.py` nennt `state()` jetzt als
+   optionalen Teil des Protokolls, Regressionstest
+   `test_engine_reports_its_own_state`.
+2. Fehlermeldungen nennen die hochgeladene Datei. `uploads.py` legt den Upload
+   unter seinem gesaeuberten Namen in ein eigenes `TemporaryDirectory` — das
+   repariert alle drei Engines, ohne eine davon anzufassen. Konvention 5 in
+   CLAUDE.md nachgezogen.
+3. `passthrough` ist aus `capabilities.engines` entfernt, `formats` behaelt
+   `.md -> ["passthrough"]`, der Name bleibt als `engine` eines Ergebnisses.
+   Umgesetzt wie in der PO-Entscheidung oben. Der Dreiklang wurde im selben
+   Commit angefasst, `OptionsPanel` filtert auf `name in engines`.
+
+Es bleibt nichts zu bauen. Das Ticket wird geschlossen, statt einen Subagenten
+auf eine leere Aufgabe zu schicken.

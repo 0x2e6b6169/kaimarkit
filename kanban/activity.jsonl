@@ -224,3 +224,29 @@
 {"timestamp":"2026-08-31T11:54:51.766748145+02:00","action":"release","task_id":33,"detail":"sophie-10"}
 {"timestamp":"2026-08-31T11:56:15.445332232+02:00","action":"create","task_id":36,"detail":"DOC-7 · Ladezeitpunkt von Docling in der Doku nachziehen"}
 {"timestamp":"2026-08-31T11:56:17.087861922+02:00","action":"move","task_id":36,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T11:57:40.005495235+02:00","action":"move","task_id":34,"detail":"in-progress -\u003e review"}
+{"timestamp":"2026-08-31T11:57:40.005834865+02:00","action":"handoff","task_id":34,"detail":"DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite"}
+{"timestamp":"2026-08-31T11:57:40.00622163+02:00","action":"block","task_id":34,"detail":"OCR-Sprachkuerzel erst dokumentierbar, wenn BE-11 (#33) in docling.py eine OCR-Engine ausdruecklich setzt; derzeit wirkt KAIMARKIT_OCR_LANGS nicht"}
+{"timestamp":"2026-08-31T11:57:40.006491756+02:00","action":"release","task_id":34,"detail":"DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite"}
+{"timestamp":"2026-08-31T11:57:46.409909184+02:00","action":"move","task_id":29,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T11:57:49.635771054+02:00","action":"move","task_id":36,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T11:57:52.208989557+02:00","action":"edit","task_id":29,"detail":"INT-1 · Frontend gegen das echte Backend, Mock entfernen"}
+{"timestamp":"2026-08-31T11:57:52.209251765+02:00","action":"release","task_id":29,"detail":"benny-08"}
+{"timestamp":"2026-08-31T11:58:41.347126259+02:00","action":"edit","task_id":29,"detail":"INT-1 · Frontend gegen das echte Backend, Mock entfernen"}
+{"timestamp":"2026-08-31T11:59:23.443873381+02:00","action":"move","task_id":30,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T12:01:13.631236393+02:00","action":"move","task_id":36,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T12:01:51.058368607+02:00","action":"edit","task_id":36,"detail":"DOC-7 · Ladezeitpunkt von Docling in der Doku nachziehen"}
+{"timestamp":"2026-08-31T12:01:57.492683129+02:00","action":"edit","task_id":36,"detail":"DOC-7 · Ladezeitpunkt von Docling in der Doku nachziehen"}
+{"timestamp":"2026-08-31T12:01:57.493617161+02:00","action":"release","task_id":36,"detail":"akar-12"}
+{"timestamp":"2026-08-31T12:03:54.399700294+02:00","action":"create","task_id":37,"detail":"BE-12 · OCR-Maschine ausdruecklich setzen: EasyOCR mit de,en"}
+{"timestamp":"2026-08-31T12:04:18.085658824+02:00","action":"create","task_id":38,"detail":"IN-6 · tesseract-Pakete aus dem Abbild entfernen, EasyOCR-Gewichte sicherstellen"}
+{"timestamp":"2026-08-31T12:04:19.227656727+02:00","action":"create","task_id":39,"detail":"FE-8 · Favicon fuer frontend/index.html"}
+{"timestamp":"2026-08-31T12:04:20.655415009+02:00","action":"create","task_id":40,"detail":"DOC-8 · Dark Mode und Farbpalette in docs/entwicklung.md"}
+{"timestamp":"2026-08-31T12:04:46.406289777+02:00","action":"move","task_id":32,"detail":"todo -\u003e done"}
+{"timestamp":"2026-08-31T12:04:49.495570659+02:00","action":"move","task_id":34,"detail":"review -\u003e todo"}
+{"timestamp":"2026-08-31T12:04:51.169926576+02:00","action":"move","task_id":37,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T12:04:52.815550578+02:00","action":"move","task_id":38,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T12:04:54.101283259+02:00","action":"move","task_id":39,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T12:04:55.135336563+02:00","action":"move","task_id":40,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-08-31T12:05:24.277976848+02:00","action":"edit","task_id":34,"detail":"DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite"}
+{"timestamp":"2026-08-31T12:05:26.117130733+02:00","action":"edit","task_id":34,"detail":"DOC-6 · OCR-Sprachen und DOCLING_ARTIFACTS_PATH in .env.example und Konfigurationsseite"}

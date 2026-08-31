@@ -1,10 +1,10 @@
 ---
 id: 30
 title: INT-2 · Ende-zu-Ende-Pruefung im Container
-status: todo
+status: in-progress
 priority: medium
 created: 2026-08-31T10:21:44.348462086+02:00
-updated: 2026-08-31T11:28:58.790508419+02:00
+updated: 2026-08-31T11:59:23.43955269+02:00
 assignee: akar
 tags:
     - infra
@@ -12,6 +12,8 @@ depends_on:
     - 29
     - 26
     - 27
+claimed_by: akar-13
+claimed_at: 2026-08-31T11:59:23.43955269+02:00
 class: standard
 ---
 
