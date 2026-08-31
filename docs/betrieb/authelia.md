@@ -139,8 +139,9 @@ curl -si https://kaimarkit.example.com/ | head -1    # 302 zur Anmeldeseite
 curl -sf https://kaimarkit.example.com/api/health    # bei leerer Variable: 200
 ```
 
-!!! info "Die Anmeldung im Browser ist noch nicht erprobt"
-    Was hier steht, beschreibt den Aufbau. Der vollständige Durchlauf gegen ein
-    echtes Authelia — Weiterleitung, Anmeldeformular, Rücksprung mit gültiger
-    Sitzung — wurde bisher nicht durchgespielt. Er gehört zur Ende-zu-Ende-Prüfung
-    im Container und steht dort noch aus.
+Der vollständige Durchlauf ist gegen Authelia 4.38.19 hinter Traefik 3.6 gelaufen.
+Ein Aufruf ohne Sitzung endete mit 302 auf der Anmeldeseite, und zwar mit dem
+Rücksprungziel im Parameter `rd`. Nach der Anmeldung stand die Oberfläche unter
+`KAIMARKIT_DOMAIN` und füllte ihre Enginewahl aus `/api/capabilities` — der Aufruf
+kam also durch dieselbe Middleware. Nach dem Löschen des Sitzungscookies führte
+derselbe Weg wieder zur Anmeldeseite.
