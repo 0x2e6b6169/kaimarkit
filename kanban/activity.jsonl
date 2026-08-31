@@ -289,3 +289,11 @@
 {"timestamp":"2026-08-31T14:05:10.08824608+02:00","action":"create","task_id":43,"detail":"PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen"}
 {"timestamp":"2026-08-31T14:05:11.337479996+02:00","action":"edit","task_id":35,"detail":"PROC-1 · Ticketschnitt: gehoeren Doku-Seiten einer Lane?"}
 {"timestamp":"2026-08-31T14:07:04.309110109+02:00","action":"edit","task_id":43,"detail":"PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen"}
+{"timestamp":"2026-08-31T14:42:10.581012978+02:00","action":"create","task_id":44,"detail":"IN-7 · Docker-Datenplatte von C: loesen, WSL-Reorganisation"}
+{"timestamp":"2026-08-31T14:42:27.284506305+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T14:42:27.284693057+02:00","action":"release","task_id":30,"detail":"akar-18"}
+{"timestamp":"2026-08-31T14:42:38.680870954+02:00","action":"move","task_id":30,"detail":"in-progress -\u003e todo"}
+{"timestamp":"2026-08-31T14:42:39.431962208+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T14:42:39.432294064+02:00","action":"release","task_id":30,"detail":"akar-18"}
+{"timestamp":"2026-08-31T14:42:55.039195362+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T14:43:11.228375688+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}

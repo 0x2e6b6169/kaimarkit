@@ -1,10 +1,10 @@
 ---
 id: 30
 title: INT-2 · Ende-zu-Ende-Pruefung im Container
-status: in-progress
+status: todo
 priority: medium
 created: 2026-08-31T10:21:44.348462086+02:00
-updated: 2026-08-31T13:56:30.641541377+02:00
+updated: 2026-08-31T14:43:11.226297714+02:00
 assignee: akar
 tags:
     - infra
@@ -14,8 +14,7 @@ depends_on:
     - 27
     - 34
     - 38
-claimed_by: akar-18
-claimed_at: 2026-08-31T13:56:30.641541377+02:00
+    - 44
 class: standard
 ---
 
@@ -61,3 +60,6 @@ nicht stillschweigend uebergangen.
 
 [[2026-08-31]] Mon 13:38
 PO: depends_on um #34 und #38 ergaenzt. INT-2 prueft das Abbild, das IN-6 gerade veraendert, und die OCR-Sprachen, die DOC-6 gerade korrigiert. Die Reihenfolge steht damit im Board statt in einer Absprache. Entschieden auf akars Meldung hin.
+
+[[2026-08-31]] Mon 14:43
+Abgebrochen am 31.08.2026 gegen 14:45 auf Wunsch des Nutzers, nicht wegen eines Fehlers. akar-18 stand beim zweiten vollstaendigen Imagebau (Pruefpunkt "zweites make docs-release, zwischen den Versionen umschalten"), Worktree `.worktrees/task-30` auf Branch `task/30-e2e`, Ankercommit 87ed9d9. Der Build lief nachweislich — der Build-Cache wuchs in 25 Sekunden von 5,3 auf 8,4 GB —, er hing nicht. Grund des Abbruchs ist IN-7 (#44): Dockers Datenplatte liegt auf einem zu 97 Prozent vollen C:, und die Reorganisation haelt Docker an. Deshalb haengt INT-2 jetzt auch per depends_on an #44. **Beim Wiederaufsetzen laeuft INT-2 vollstaendig neu**, nicht ab der Abbruchstelle: Ein Ende-zu-Ende-Bericht ueber einen halb geprueften Zustand belegt nichts. Vorher `git worktree list` pruefen — steht `.worktrees/task-30` noch, laesst er sich weiterverwenden, sonst neu anlegen. Bis zum Abbruch waren gelaufen: pytest mit und ohne -m slow, die curl-Fehlerpfade, `make up`, drei `compose config`-Laeufe und ein Durchgang der Traefik/Authelia-Schicht (Container `kaimarkit` healthy, ohne veroeffentlichten Port — die beabsichtigte Wirkung von IN-3). Keiner dieser Punkte wurde als bestanden gemeldet; alle sind erneut zu belegen.
