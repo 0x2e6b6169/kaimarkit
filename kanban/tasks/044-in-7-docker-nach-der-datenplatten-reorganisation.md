@@ -1,10 +1,12 @@
 ---
 id: 44
 title: IN-7 · Docker nach der Datenplatten-Reorganisation belegen
-status: todo
+status: archived
 priority: high
 created: 2026-08-31T14:42:10.57703712+02:00
-updated: 2026-08-31T14:43:35.927726037+02:00
+updated: 2026-08-31T16:30:53.293807682+02:00
+started: 2026-08-31T16:30:53.296441911+02:00
+completed: 2026-08-31T16:30:53.296441911+02:00
 assignee: akar
 tags:
     - infra

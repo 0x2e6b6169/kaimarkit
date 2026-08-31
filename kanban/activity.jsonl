@@ -323,3 +323,9 @@
 {"timestamp":"2026-08-31T17:09:47.952077185+02:00","action":"move","task_id":35,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-08-31T17:09:48.561407526+02:00","action":"edit","task_id":35,"detail":"PROC-1 · Ticketschnitt: gehoeren Doku-Seiten einer Lane?"}
 {"timestamp":"2026-08-31T17:09:48.561642736+02:00","action":"release","task_id":35,"detail":"katche-02"}
+{"timestamp":"2026-08-31T17:14:30.247344372+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T17:14:36.965410004+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T17:14:36.965615977+02:00","action":"release","task_id":30,"detail":"akar-19"}
+{"timestamp":"2026-08-31T17:14:43.375316276+02:00","action":"move","task_id":30,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T17:14:43.93023346+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T17:14:43.930520363+02:00","action":"release","task_id":30,"detail":"akar-19"}
