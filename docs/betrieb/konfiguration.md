@@ -47,7 +47,7 @@ die `.dockerignore` in der Wurzel des dortigen Baums.
 | `KAIMARKIT_DEFAULT_ENGINE` | `auto` | `auto` folgt der Präferenzliste im Code. Ein Enginename (`markitdown`, `docling`, `pandoc`) zieht diese Engine überall nach vorn. |
 | `KAIMARKIT_ENABLE_FALLBACK` | `true` | Bei `auto` die nächste geeignete Engine nehmen, wenn die erste scheitert. |
 | `KAIMARKIT_OCR_ENABLED` | `true` | Docling schickt gescannte Seiten und Bilder durch die Texterkennung. |
-| `KAIMARKIT_OCR_LANGS` | `deu,eng` | Sprachen der Texterkennung. Die Kürzel müssen zu der passen, die Docling benutzt. |
+| `KAIMARKIT_OCR_LANGS` | `de,en` | Sprachen der Texterkennung, als ISO-639-1-Kürzel und durch Komma getrennt. |
 | `KAIMARKIT_LOG_LEVEL` | `info` | Ausführlichkeit der Ausgabe. |
 | `KAIMARKIT_WORKERS` | `1` | Zahl der Uvicorn-Worker. |
 | `KAIMARKIT_STATIC_DIR` | `/opt/kaimarkit/static` | Das gebaute Frontend im Container. |
@@ -61,6 +61,10 @@ Anzahl, Gleichzeitigkeit und Dauer im Einzelnen bewirken, steht unter
 `KAIMARKIT_ENABLE_FALLBACK` gilt nur für `engine=auto`. Eine im Aufruf ausdrücklich
 genannte Engine ersetzt der Dienst nie durch eine andere. `KAIMARKIT_OCR_ENABLED`
 setzt den Standard; eine einzelne Anfrage überschreibt ihn mit dem Feld `ocr`.
+
+`KAIMARKIT_OCR_LANGS` erwartet ISO-639-1-Kürzel. Der Docling-Adapter ruft
+ausdrücklich EasyOCR auf, und EasyOCR liest nur die zweibuchstabige Form. Tesseracts
+`deu,eng` gehört hier nicht hin.
 
 Jeder Worker hält eigene Docling-Modelle im Speicher, rund 2 GB. `KAIMARKIT_WORKERS`
 erst erhöhen, wenn genug RAM da ist, und `KAIMARKIT_MEM_LIMIT` mit anheben.
@@ -80,7 +84,8 @@ Dockerfiles. Compose reicht sie nicht durch. Wer sie ändern will, baut das Abbi
 | `HF_HUB_OFFLINE` | `1` | Verbietet zur Laufzeit jeden Zugriff auf den Hugging-Face-Hub. |
 
 Die drei gehören zusammen. Ohne `DOCLING_ARTIFACTS_PATH` sucht Docling die Modelle im
-Home-Verzeichnis des Benutzers, findet nichts und lädt sie beim ersten Aufruf nach.
+Home-Verzeichnis des Benutzers, findet nichts und lädt sie nach. Das Nachladen
+beginnt schon beim Hochfahren, nicht erst bei der ersten Anfrage.
 `HF_HUB_OFFLINE=1` verhindert genau das: Der Download scheitert, Docling meldet sich
 als nicht verfügbar, und `engine=auto` nimmt die nächste Engine. Der Dienst antwortet
 weiter, aber ohne Doclings Tabellenerkennung.
