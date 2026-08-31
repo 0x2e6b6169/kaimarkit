@@ -26,6 +26,7 @@ ruff check .
 
 # Frontend
 cd frontend && npm run dev                      # Proxy auf localhost:8000
+VITE_KAIMARKIT_MOCK=1 npm run dev               # Mock statt Proxy, kein Backend noetig
 npm run build
 npm run typecheck
 
