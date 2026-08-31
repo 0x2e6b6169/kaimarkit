@@ -1,0 +1,70 @@
+{"timestamp":"2026-08-31T10:16:04.848194785+02:00","action":"create","task_id":1,"detail":"PROBE A"}
+{"timestamp":"2026-08-31T10:16:05.43467498+02:00","action":"create","task_id":2,"detail":"PROBE B"}
+{"timestamp":"2026-08-31T10:16:06.017768366+02:00","action":"claim","task_id":1,"detail":"probe-agent"}
+{"timestamp":"2026-08-31T10:16:06.017881098+02:00","action":"move","task_id":1,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:16:15.68386098+02:00","action":"delete","task_id":2,"detail":"PROBE B"}
+{"timestamp":"2026-08-31T10:16:21.324978284+02:00","action":"edit","task_id":1,"detail":"PROBE A"}
+{"timestamp":"2026-08-31T10:16:21.32504832+02:00","action":"release","task_id":1,"detail":"probe-agent"}
+{"timestamp":"2026-08-31T10:16:21.860135423+02:00","action":"delete","task_id":1,"detail":"PROBE A"}
+{"timestamp":"2026-08-31T10:20:12.490252279+02:00","action":"create","task_id":3,"detail":"SETUP-1 · Verzeichnisgeruest und Schnittstellenvertrag festschreiben"}
+{"timestamp":"2026-08-31T10:20:13.082086138+02:00","action":"create","task_id":4,"detail":"BE-1 · FastAPI-Geruest, config.py, /api/health, Einhaengen von SPA und /docs"}
+{"timestamp":"2026-08-31T10:20:13.906546902+02:00","action":"create","task_id":5,"detail":"BE-2 · Converter-Protokoll, Faehigkeitsmatrix, Auswahl und Fallback"}
+{"timestamp":"2026-08-31T10:20:14.618142378+02:00","action":"create","task_id":6,"detail":"BE-3 · MarkItDown-Adapter"}
+{"timestamp":"2026-08-31T10:20:15.30327585+02:00","action":"create","task_id":7,"detail":"BE-4 · Docling-Adapter mit vorgeladenem Konverter und OCR-Schalter"}
+{"timestamp":"2026-08-31T10:20:15.92823026+02:00","action":"create","task_id":8,"detail":"BE-5 · Pandoc-Adapter mit --sandbox und Zeitgrenze"}
+{"timestamp":"2026-08-31T10:20:16.570999904+02:00","action":"create","task_id":9,"detail":"BE-6 · Upload-Strom mit Groessenlimit, Tempfiles, Semaphor, Zeitgrenze"}
+{"timestamp":"2026-08-31T10:20:17.134112756+02:00","action":"create","task_id":10,"detail":"BE-7 · Endpunkte /api/convert und /api/capabilities"}
+{"timestamp":"2026-08-31T10:20:17.833582947+02:00","action":"create","task_id":11,"detail":"BE-8 · Endpunkt /api/convert/batch und ZIP-Bau"}
+{"timestamp":"2026-08-31T10:20:18.428850603+02:00","action":"create","task_id":12,"detail":"BE-9 · Testfixtures und Engine-Smoketests"}
+{"timestamp":"2026-08-31T10:20:19.072356107+02:00","action":"create","task_id":13,"detail":"FE-1 · Vite, Vue 3, TypeScript, Tailwind und ein Mock-Server fuer /api"}
+{"timestamp":"2026-08-31T10:20:19.636181906+02:00","action":"create","task_id":14,"detail":"FE-2 · API-Client und die Composables useConversion und useCapabilities"}
+{"timestamp":"2026-08-31T10:20:20.287706435+02:00","action":"create","task_id":15,"detail":"FE-3 · Dropzone und Warteschlange mit Status je Datei"}
+{"timestamp":"2026-08-31T10:20:20.873784621+02:00","action":"create","task_id":16,"detail":"FE-4 · Vorschau mit markdown-it und DOMPurify, Rohtext, Kopieren"}
+{"timestamp":"2026-08-31T10:20:21.576089745+02:00","action":"create","task_id":17,"detail":"FE-5 · Optionen: Enginewahl und OCR-Schalter aus /api/capabilities"}
+{"timestamp":"2026-08-31T10:20:22.181570645+02:00","action":"create","task_id":18,"detail":"FE-6 · Download einzeln und als ZIP ueber jszip"}
+{"timestamp":"2026-08-31T10:20:22.89844669+02:00","action":"create","task_id":19,"detail":"FE-7 · Gestaltung, Dark Mode, Tastaturbedienung, aria-live"}
+{"timestamp":"2026-08-31T10:20:23.566536322+02:00","action":"create","task_id":20,"detail":"DOC-1 · MkDocs, Material-Theme und mike: mkdocs.yml, Navigation, Seitengeruest"}
+{"timestamp":"2026-08-31T10:20:24.249676955+02:00","action":"create","task_id":21,"detail":"DOC-2 · Inhalte: Schnellstart, Formate, API, Entwicklung, Grenzen"}
+{"timestamp":"2026-08-31T10:21:37.946403803+02:00","action":"create","task_id":22,"detail":"IN-2 · Compose-Basis und .env.example mit Quellenverweis ueber Variablen"}
+{"timestamp":"2026-08-31T10:21:38.708705821+02:00","action":"create","task_id":23,"detail":"IN-1 · docker/Dockerfile: fuenf Stufen, Torch aus dem CPU-Index, Modelle vorgebacken"}
+{"timestamp":"2026-08-31T10:21:39.549833868+02:00","action":"create","task_id":24,"detail":"IN-3 · Traefik-Ergaenzung: Labels in Map-Form, externes Netz, ports reset"}
+{"timestamp":"2026-08-31T10:21:40.309523801+02:00","action":"create","task_id":25,"detail":"IN-4 · Authelia-Ergaenzung: ForwardAuth-Middleware und API-Router"}
+{"timestamp":"2026-08-31T10:21:41.182673422+02:00","action":"create","task_id":26,"detail":"IN-5 · Makefile mit allen Zielen einschliesslich docs-serve und docs-release"}
+{"timestamp":"2026-08-31T10:21:42.020081974+02:00","action":"create","task_id":27,"detail":"DOC-3 · Inhalte Betrieb: Konfiguration, lokal, Traefik, Authelia"}
+{"timestamp":"2026-08-31T10:21:42.817262788+02:00","action":"create","task_id":28,"detail":"DOC-4 · Wurzel-README.md"}
+{"timestamp":"2026-08-31T10:21:43.648144942+02:00","action":"create","task_id":29,"detail":"INT-1 · Frontend gegen das echte Backend, Mock entfernen"}
+{"timestamp":"2026-08-31T10:21:44.353549585+02:00","action":"create","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T10:22:05.431681276+02:00","action":"claim","task_id":3,"detail":"flux-steel"}
+{"timestamp":"2026-08-31T10:22:05.431818654+02:00","action":"move","task_id":3,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-08-31T10:24:54.116435865+02:00","action":"edit","task_id":3,"detail":"SETUP-1 · Verzeichnisgeruest und Schnittstellenvertrag festschreiben"}
+{"timestamp":"2026-08-31T10:24:54.710447135+02:00","action":"edit","task_id":3,"detail":"SETUP-1 · Verzeichnisgeruest und Schnittstellenvertrag festschreiben"}
+{"timestamp":"2026-08-31T10:24:54.710532384+02:00","action":"release","task_id":3,"detail":"flux-steel"}
+{"timestamp":"2026-08-31T10:24:55.290996301+02:00","action":"move","task_id":3,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-08-31T10:30:45.060113934+02:00","action":"edit","task_id":4,"detail":"BE-1 · FastAPI-Geruest, config.py, /api/health, Einhaengen von SPA und /docs"}
+{"timestamp":"2026-08-31T10:30:45.060710827+02:00","action":"edit","task_id":5,"detail":"BE-2 · Converter-Protokoll, Faehigkeitsmatrix, Auswahl und Fallback"}
+{"timestamp":"2026-08-31T10:30:45.061234561+02:00","action":"edit","task_id":6,"detail":"BE-3 · MarkItDown-Adapter"}
+{"timestamp":"2026-08-31T10:30:45.063701304+02:00","action":"edit","task_id":7,"detail":"BE-4 · Docling-Adapter mit vorgeladenem Konverter und OCR-Schalter"}
+{"timestamp":"2026-08-31T10:30:45.064434592+02:00","action":"edit","task_id":8,"detail":"BE-5 · Pandoc-Adapter mit --sandbox und Zeitgrenze"}
+{"timestamp":"2026-08-31T10:30:45.065111858+02:00","action":"edit","task_id":9,"detail":"BE-6 · Upload-Strom mit Groessenlimit, Tempfiles, Semaphor, Zeitgrenze"}
+{"timestamp":"2026-08-31T10:30:45.06583292+02:00","action":"edit","task_id":10,"detail":"BE-7 · Endpunkte /api/convert und /api/capabilities"}
+{"timestamp":"2026-08-31T10:30:45.066604491+02:00","action":"edit","task_id":11,"detail":"BE-8 · Endpunkt /api/convert/batch und ZIP-Bau"}
+{"timestamp":"2026-08-31T10:30:45.067482292+02:00","action":"edit","task_id":12,"detail":"BE-9 · Testfixtures und Engine-Smoketests"}
+{"timestamp":"2026-08-31T10:30:45.656484726+02:00","action":"edit","task_id":13,"detail":"FE-1 · Vite, Vue 3, TypeScript, Tailwind und ein Mock-Server fuer /api"}
+{"timestamp":"2026-08-31T10:30:45.657028804+02:00","action":"edit","task_id":14,"detail":"FE-2 · API-Client und die Composables useConversion und useCapabilities"}
+{"timestamp":"2026-08-31T10:30:45.65756707+02:00","action":"edit","task_id":15,"detail":"FE-3 · Dropzone und Warteschlange mit Status je Datei"}
+{"timestamp":"2026-08-31T10:30:45.658253056+02:00","action":"edit","task_id":16,"detail":"FE-4 · Vorschau mit markdown-it und DOMPurify, Rohtext, Kopieren"}
+{"timestamp":"2026-08-31T10:30:45.658835918+02:00","action":"edit","task_id":17,"detail":"FE-5 · Optionen: Enginewahl und OCR-Schalter aus /api/capabilities"}
+{"timestamp":"2026-08-31T10:30:45.659277274+02:00","action":"edit","task_id":18,"detail":"FE-6 · Download einzeln und als ZIP ueber jszip"}
+{"timestamp":"2026-08-31T10:30:45.661443866+02:00","action":"edit","task_id":19,"detail":"FE-7 · Gestaltung, Dark Mode, Tastaturbedienung, aria-live"}
+{"timestamp":"2026-08-31T10:30:45.662453754+02:00","action":"edit","task_id":29,"detail":"INT-1 · Frontend gegen das echte Backend, Mock entfernen"}
+{"timestamp":"2026-08-31T10:30:46.278808454+02:00","action":"edit","task_id":20,"detail":"DOC-1 · MkDocs, Material-Theme und mike: mkdocs.yml, Navigation, Seitengeruest"}
+{"timestamp":"2026-08-31T10:30:46.279442432+02:00","action":"edit","task_id":21,"detail":"DOC-2 · Inhalte: Schnellstart, Formate, API, Entwicklung, Grenzen"}
+{"timestamp":"2026-08-31T10:30:46.279910054+02:00","action":"edit","task_id":22,"detail":"IN-2 · Compose-Basis und .env.example mit Quellenverweis ueber Variablen"}
+{"timestamp":"2026-08-31T10:30:46.281881896+02:00","action":"edit","task_id":23,"detail":"IN-1 · docker/Dockerfile: fuenf Stufen, Torch aus dem CPU-Index, Modelle vorgebacken"}
+{"timestamp":"2026-08-31T10:30:46.282628648+02:00","action":"edit","task_id":24,"detail":"IN-3 · Traefik-Ergaenzung: Labels in Map-Form, externes Netz, ports reset"}
+{"timestamp":"2026-08-31T10:30:46.283444407+02:00","action":"edit","task_id":25,"detail":"IN-4 · Authelia-Ergaenzung: ForwardAuth-Middleware und API-Router"}
+{"timestamp":"2026-08-31T10:30:46.284244542+02:00","action":"edit","task_id":26,"detail":"IN-5 · Makefile mit allen Zielen einschliesslich docs-serve und docs-release"}
+{"timestamp":"2026-08-31T10:30:46.284971764+02:00","action":"edit","task_id":27,"detail":"DOC-3 · Inhalte Betrieb: Konfiguration, lokal, Traefik, Authelia"}
+{"timestamp":"2026-08-31T10:30:46.285541042+02:00","action":"edit","task_id":28,"detail":"DOC-4 · Wurzel-README.md"}
+{"timestamp":"2026-08-31T10:30:46.286806094+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
+{"timestamp":"2026-08-31T10:30:46.827503077+02:00","action":"edit","task_id":3,"detail":"SETUP-1 · Verzeichnisgeruest und Schnittstellenvertrag festschreiben"}

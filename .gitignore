@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+# MkDocs
+site/
+
+# Board: Sperrdatei ist laufzeitlokal, das Board selbst gehoert ins Repo
+kanban/.lock
+
+# Betrieb
+docker/.env
+.env
+
+# Werkzeuge
+.DS_Store
+*.swp
+
+# Das Board gehoert ins Repo: kanban/ wird bewusst NICHT ausgeschlossen.
+
+# Per-Ticket-Worktrees (git worktree add .worktrees/task-NN)
+.worktrees/

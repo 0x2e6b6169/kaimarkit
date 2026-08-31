@@ -1,0 +1,4 @@
+# activity.jsonl ist ein reines Anhaenge-Protokoll; union-merge sorgt dafuer, dass
+# parallele Anhaenge aus mehreren Lanes beim Merge nicht kollidieren (jede Zeile
+# bleibt erhalten, statt dass zwei Seiten um denselben Hunk streiten).
+kanban/activity.jsonl merge=union
