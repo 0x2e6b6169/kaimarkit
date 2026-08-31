@@ -1,3 +1,124 @@
 # Konfiguration
 
-Jede `KAIMARKIT_*`-Variable aus `docker/.env.example` mit ihrer Wirkung.
+Alles, was sich im Betrieb umstellen lässt, kommt aus der Umgebung. Die Vorlage steht
+in `docker/.env.example`. Kopieren, anpassen, fertig:
+
+```bash
+cp docker/.env.example docker/.env
+```
+
+Compose leitet sein Projektverzeichnis aus der ersten `-f`-Datei ab und liest deshalb
+`docker/.env` von selbst. Niemand muss die Datei angeben. Aus demselben Grund beziehen
+sich alle relativen Pfade darin auf `docker/`.
+
+!!! warning "Eine leere Variable bricht nichts ab"
+    Für eine fehlende oder leer gelassene Variable setzt Compose still eine leere
+    Zeichenkette ein. Der Aufruf läuft weiter und scheitert erst an ganz anderer
+    Stelle. Deshalb hat in `docker/.env.example` jede Variable einen Wert.
+
+Diese Seite und `docker/.env.example` beschreiben dieselben Variablen. Wer eine
+ergänzt, umbenennt oder streicht, ändert beide zugleich.
+
+## Quellen und Build
+
+| Variable | Standard | Wirkung |
+| --- | --- | --- |
+| `KAIMARKIT_BUILD_CONTEXT` | `..` | Verzeichnis, aus dem gebaut wird. Relativ zu `docker/`, also die Projektwurzel. |
+| `KAIMARKIT_DOCKERFILE` | `docker/Dockerfile` | Das Dockerfile, relativ zum Build-Kontext. |
+| `KAIMARKIT_PROJECT_NAME` | `kaimarkit` | Name des Compose-Projekts. Ohne ihn hieße es `docker`, nach dem Verzeichnis der Compose-Datei. |
+| `PANDOC_VERSION` | `3.6.4` | Pandoc kommt als `.deb` von GitHub, die Version steht fest. |
+
+Wer aus einem zweiten Checkout baut, setzt die beiden ersten Variablen auf absolute
+Pfade; die Compose-Dateien bleiben dann unverändert. Zwei Feinheiten dabei:
+`KAIMARKIT_DOCKERFILE` muss relativ zu genau diesem Kontext liegen, und Docker sucht
+die `.dockerignore` in der Wurzel des dortigen Baums.
+
+## Anwendung
+
+| Variable | Standard | Wirkung |
+| --- | --- | --- |
+| `KAIMARKIT_MAX_FILE_SIZE_MB` | `50` | Größe einer einzelnen Datei. |
+| `KAIMARKIT_MAX_FILES` | `20` | Dateien je Stapelaufruf. |
+| `KAIMARKIT_MAX_CONCURRENT` | `2` | Gleichzeitige Umwandlungen. |
+| `KAIMARKIT_CONVERSION_TIMEOUT` | `120` | Zeitgrenze je Datei in Sekunden. |
+| `KAIMARKIT_PANDOC_TIMEOUT` | `60` | Zeitgrenze für den Pandoc-Unterprozess in Sekunden. |
+| `KAIMARKIT_DEFAULT_ENGINE` | `auto` | `auto` folgt der Präferenzliste im Code. Ein Enginename (`markitdown`, `docling`, `pandoc`) zieht diese Engine überall nach vorn. |
+| `KAIMARKIT_ENABLE_FALLBACK` | `true` | Bei `auto` die nächste geeignete Engine nehmen, wenn die erste scheitert. |
+| `KAIMARKIT_OCR_ENABLED` | `true` | Docling schickt gescannte Seiten und Bilder durch die Texterkennung. |
+| `KAIMARKIT_OCR_LANGS` | `deu,eng` | Sprachen der Texterkennung. Die Kürzel müssen zu der passen, die Docling benutzt. |
+| `KAIMARKIT_LOG_LEVEL` | `info` | Ausführlichkeit der Ausgabe. |
+| `KAIMARKIT_WORKERS` | `1` | Zahl der Uvicorn-Worker. |
+| `KAIMARKIT_STATIC_DIR` | `/opt/kaimarkit/static` | Das gebaute Frontend im Container. |
+| `KAIMARKIT_DOCS_DIR` | `/opt/kaimarkit/docs` | Diese Dokumentation im Container. |
+
+Die Größe prüft der Dienst schon während des Empfangs. Eine Prüfung danach käme zu
+spät — dann läge die Datei bereits vollständig im Speicher. Was die Grenzen für Größe,
+Anzahl, Gleichzeitigkeit und Dauer im Einzelnen bewirken, steht unter
+[Grenzen](../grenzen.md).
+
+`KAIMARKIT_ENABLE_FALLBACK` gilt nur für `engine=auto`. Eine im Aufruf ausdrücklich
+genannte Engine ersetzt der Dienst nie durch eine andere. `KAIMARKIT_OCR_ENABLED`
+setzt den Standard; eine einzelne Anfrage überschreibt ihn mit dem Feld `ocr`.
+
+Jeder Worker hält eigene Docling-Modelle im Speicher, rund 2 GB. `KAIMARKIT_WORKERS`
+erst erhöhen, wenn genug RAM da ist, und `KAIMARKIT_MEM_LIMIT` mit anheben.
+
+Fehlt eines der beiden Verzeichnisse, hängt das Backend es nicht ein und läuft
+trotzdem: ohne gebautes Frontend und ohne Dokumentation, aber mit vollständiger API.
+
+## Container
+
+| Variable | Standard | Wirkung |
+| --- | --- | --- |
+| `KAIMARKIT_IMAGE` | `kaimarkit` | Name des Abbilds. |
+| `KAIMARKIT_TAG` | `local` | Version des Abbilds, der Docker-Tag. |
+| `KAIMARKIT_CONTAINER_NAME` | `kaimarkit` | Name des Containers. |
+| `KAIMARKIT_RESTART_POLICY` | `unless-stopped` | Wann Docker den Container neu startet. |
+| `KAIMARKIT_BIND_ADDR` | `127.0.0.1` | Adresse, auf der der Host-Port liegt. |
+| `KAIMARKIT_HOST_PORT` | `8080` | Host-Port. Im Container hört der Dienst immer auf 8000. |
+| `KAIMARKIT_MEM_LIMIT` | `6g` | Speichergrenze des Containers. Unter `4g` wird es eng. |
+| `KAIMARKIT_HEALTH_START_PERIOD` | `180s` | Anlaufzeit des Healthchecks. |
+
+`KAIMARKIT_BIND_ADDR=127.0.0.1` hält den Dienst auf dem eigenen Rechner. Für Zugriff
+aus dem Netz gibt es zwei Wege: `0.0.0.0` setzen, oder — besser — den
+[Traefik-Aufbau](traefik.md) nehmen. Dort entfällt die Veröffentlichung auf dem Host
+ganz.
+
+Solange die Anlaufzeit läuft, zählt ein fehlgeschlagener Healthcheck nicht als
+ungesund. Docling lädt in dieser Zeit seine Modelle. Auf langsamen Datenträgern
+`KAIMARKIT_HEALTH_START_PERIOD` hochsetzen, sonst gilt der Container als ungesund,
+bevor er überhaupt fertig gestartet ist.
+
+## Traefik
+
+Diese vier Variablen braucht nur, wer `docker-compose.traefik.yml` mitgibt.
+
+| Variable | Standard | Wirkung |
+| --- | --- | --- |
+| `TRAEFIK_NETWORK` | `traefik-web` | Das Docker-Netz, in dem Traefik läuft. Es muss bereits existieren. |
+| `TRAEFIK_ENTRYPOINT` | `websecure` | Der Traefik-Entrypoint, an dem der Router hängt. |
+| `TRAEFIK_CERTRESOLVER` | `myresolver` | Der Certresolver für das Zertifikat. |
+| `KAIMARKIT_DOMAIN` | `kaimarkit.example.com` | Der Hostname, unter dem der Dienst antwortet. |
+
+Die Namen der Router stehen nicht in der Umgebung. Sie lauten fest `kaimarkit` und
+`kaimarkit-api`; warum das so ist und was zu tun ist, wenn sie auf dem Host mit
+anderen kollidieren, steht unter [Traefik](traefik.md).
+
+## Authelia
+
+Diese drei Variablen braucht nur, wer zusätzlich `docker-compose.authelia.yml`
+mitgibt.
+
+| Variable | Standard | Wirkung |
+| --- | --- | --- |
+| `AUTHELIA_VERIFY_URL` | `http://authelia:9091/api/verify?rd=https://auth.example.com` | Die Adresse, an der die ForwardAuth-Middleware jede Anfrage prüfen lässt. |
+| `AUTHELIA_RESPONSE_HEADERS` | `Remote-User,Remote-Groups,Remote-Name,Remote-Email` | Kopfzeilen, die Traefik von Authelia an die Anwendung durchreicht. |
+| `KAIMARKIT_API_MIDDLEWARES` | `kaimarkit-auth@docker` | Die Middlewares des `/api`-Routers. Leer lassen gibt die API frei. |
+
+Der Hostname in `AUTHELIA_VERIFY_URL` ist der Containername von Authelia im
+Traefik-Netz, der `rd`-Parameter dagegen die von außen erreichbare Anmeldeseite.
+Beide zeigen auf denselben Dienst, aber aus verschiedenen Blickwinkeln.
+
+Der Name der Middleware steht ebenfalls fest, nämlich `kaimarkit-auth`. Was
+`KAIMARKIT_API_MIDDLEWARES` bewirkt und wann man es leert, steht unter
+[Authelia](authelia.md).
