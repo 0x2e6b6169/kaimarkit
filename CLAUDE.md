@@ -4,8 +4,11 @@ Wandelt Dokumente (PDF, ePub, docx und weitere) nach Markdown, damit man den Kon
 sieht und prüfen kann, den man einem LLM gibt. FastAPI-Backend mit drei
 austauschbaren Engines, Vue-Frontend, ein Docker-Image, das beides ausliefert.
 
-Der vollständige Entwurf liegt in `~/.claude/plans/ich-m-chte-eine-webanwendung-vivid-noodle.md`.
-Der verbindliche Schnittstellenvertrag steht in `contracts/api.md`.
+Alles, was dieses Projekt braucht, liegt im Repo. Verbindlich sind
+`contracts/api.md` für die Schnittstelle, diese Datei für Befehle und
+Konventionen, das Board unter `kanban/` für die Arbeit und `docs/` für Betrieb und
+Bedienung. `ENTWURF.md` hält den ursprünglichen Entwurf fest — die Herkunft, nicht
+die Vorschrift: Wo er und der Quelltext auseinandergehen, gilt der Quelltext.
 
 ---
 
