@@ -1,10 +1,12 @@
 ---
 id: 23
 title: 'IN-1 · docker/Dockerfile: fuenf Stufen, Torch aus dem CPU-Index, Modelle vorgebacken'
-status: todo
+status: done
 priority: high
 created: 2026-08-31T10:21:38.706562102+02:00
-updated: 2026-08-31T10:30:46.279971749+02:00
+updated: 2026-08-31T11:19:19.429926142+02:00
+started: 2026-08-31T11:18:43.732387269+02:00
+completed: 2026-08-31T11:18:43.732387269+02:00
 assignee: akar
 tags:
     - infra
@@ -60,3 +62,47 @@ Fuenf Stufen:
 `gh-pages`-Zweig durch. `docker run` antwortet auf `/api/health` und liefert
 `/docs/`. Eine Docling-Konvertierung gelingt bei gesetztem `HF_HUB_OFFLINE=1`.
 `docker image ls` zeigt die Groesse; erwartet werden 3 bis 4 GB.
+
+
+## Ergebnis (akar-05)
+
+`docker/Dockerfile` mit fuenf Stufen und `.dockerignore` liegen auf main
+(Merge 8f8d72f).
+
+**Pruefung vollstaendig gelaufen, alles gruen.** Gebaut wurde aus einem frischen
+Klon ohne `gh-pages`-Zweig:
+
+- `docker build -f docker/Dockerfile .` — durchgelaufen. Die Docs-Stufe fiel wie
+  vorgesehen auf `mkdocs build` zurueck.
+- `docker run` — `/api/health` antwortet mit Status ok und Version 0.1.0,
+  `/docs/` und `/` liefern 200. Der Prozess laeuft als `kaimarkit`, nicht als root.
+- Docling-Konvertierung eines PDF mit `HF_HUB_OFFLINE=1` und `--network none`:
+  gelungen, die Modelle kamen aus `/opt/docling-models`.
+- `docker image ls`: **3,94 GB** — im erwarteten Bereich. Installiert wurden
+  `torch-2.13.0+cpu` und `torchvision-0.28.0+cpu`, der CPU-Index greift also.
+- `pandoc 3.6.4`, Tesseract mit `deu` und `eng`.
+
+**Ein Fund waehrend des Baus.** Docling zieht ueber rapidocr das OpenCV-Rad
+herein, und `import cv2` scheitert auf `python:3.12-slim` an fehlenden
+Systembibliotheken. Ohne sie bricht schon `docling-tools models download` ab.
+Die Modell- und die Laufzeitstufe installieren deshalb `libgl1`,
+`libglib2.0-0t64` und `libxcb1`. Der Name `libglib2.0-0t64` gilt fuer Debian
+trixie; auf bookworm hiesse das Paket `libglib2.0-0`.
+
+**Keine neuen Variablen.** `PANDOC_VERSION` stand schon in
+`docker/.env.example`; der `ARG`-Standard im Dockerfile ist auf denselben Wert
+`3.6.4` gesetzt. `docker/.env.example` und `docs/betrieb/konfiguration.md`
+blieben unberuehrt.
+
+**Zwei Entscheidungen, die eine Nachfrage wert sein koennten.**
+
+1. Die Anwendung steckt im venv — pip hat sie beim Installieren der
+   Abhaengigkeiten mitgenommen. Der Quelltext wird nicht ein zweites Mal ins
+   Abbild kopiert; sonst waere unklar, welche der beiden Fassungen laeuft.
+2. Die Docs-Stufe liest die Abhaengigkeiten der Gruppe `docs` per `tomllib` aus
+   `backend/pyproject.toml`, statt Versionen zu wiederholen. So bleibt
+   `pyproject.toml` die einzige Quelle dafuer.
+
+`.dockerignore` schliesst `.git` nicht aus (die Docs-Stufe braucht den Zweig),
+wohl aber `.worktrees/` — sonst wandert jeder Per-Ticket-Checkout in den
+Build-Kontext.

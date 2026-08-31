@@ -82,9 +82,9 @@ Umwandlungen nebeneinander laufen, regelt `KAIMARKIT_MAX_CONCURRENT` innerhalb e
 Prozesses; das kostet keinen zweiten Satz Modelle.
 
 Wartezeit kostet auch der erste Aufruf. Docling beginnt seine Modelle zu laden,
-sobald der Dienst zum ersten Mal nach ihm gefragt wird — durch `GET /api/capabilities` oder
-durch die erste Umwandlung. Bis das fertig ist, meldet die Auskunft `warming` und
-`engine=auto` nimmt für ein PDF MarkItDown.
+sobald der Dienst hochfährt, und lädt sie im Hintergrund; jeder Neustart fängt damit
+von vorn an. Bis das fertig ist, meldet die Auskunft `warming` und `engine=auto`
+nimmt für ein PDF MarkItDown.
 
 ## Was der Dienst gar nicht tut
 

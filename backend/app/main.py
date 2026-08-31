@@ -10,12 +10,17 @@ faengt alles ab, was uebrig bleibt.
 Weil ``/docs`` der Dokumentation gehoert, zieht FastAPIs eigene Oberflaeche nach
 ``/api/docs`` um. Alles Maschinelle liegt damit unter ``/api``.
 
+Beim Hochfahren stoesst der Lifespan das Vorladen von Docling an. Er wartet nicht
+darauf: Der Dienst ist sofort bedienbar, Docling kommt hinterher.
+
 CORS bleibt aus: ein Container, eine Herkunft.
 """
 
 from __future__ import annotations
 
 import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -26,10 +31,28 @@ from starlette.types import Scope
 from . import __version__
 from .api import convert, meta
 from .config import get_settings
+from .converters import docling
 from .errors import register_error_handlers
 
 settings = get_settings()
 logging.basicConfig(level=settings.log_level.upper())
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    """Stoesst beim Hochfahren das Vorladen von Docling an.
+
+    Der Aufruf kehrt sofort zurueck: Er startet einen Daemon-Thread, der Modelle
+    laedt. Ohne ihn begaenne das Laden erst mit der ersten Wandlung, und der erste
+    Nutzer wartete minutenlang. Fehlt die Bibliothek, bleibt es folgenlos — der
+    Thread faengt den ``ImportError`` selbst ab, ``/api/capabilities`` meldet
+    Docling danach als ``unavailable``.
+
+    Der Weg fuehrt ueber das Adaptermodul; ``main.py`` kennt Docling nicht.
+    """
+    docling.start_warmup()
+    yield
+
 
 app = FastAPI(
     title="kaimarkit",
@@ -37,6 +60,7 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
+    lifespan=lifespan,
 )
 
 register_error_handlers(app)

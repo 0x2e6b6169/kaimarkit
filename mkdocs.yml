@@ -48,6 +48,9 @@ plugins:
 markdown_extensions:
   - admonition
   - attr_list
+  # Ohne def_list rendert eine Definitionsliste als Absatz mit fuehrendem
+  # Doppelpunkt. mkdocs build --strict meldet das nicht.
+  - def_list
   - tables
   - pymdownx.highlight:
       anchor_linenums: true
