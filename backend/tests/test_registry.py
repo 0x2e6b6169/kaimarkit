@@ -68,8 +68,14 @@ def test_pandoc_is_absent_for_pdf() -> None:
 
 
 def test_engines_for_skips_unready_and_missing() -> None:
-    install(DummyEngine("markitdown"), DummyEngine("docling", ready=False))
-    # pandoc bleibt ungeladen: das Modul gibt es noch nicht.
+    # Seit BE-5 gibt es das Pandoc-Modul, und ob es bereit ist, haengt daran, ob
+    # pandoc auf dieser Maschine im PATH liegt. Eine dritte Attrappe haelt den Test
+    # davon unabhaengig.
+    install(
+        DummyEngine("markitdown"),
+        DummyEngine("docling", ready=False),
+        DummyEngine("pandoc", ready=False),
+    )
     assert registry.engines_for(".docx") == ["markitdown"]
 
 

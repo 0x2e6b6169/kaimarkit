@@ -31,5 +31,8 @@ bis sie von selbst fertig ist, und verbraucht so lange Rechenzeit. Häufen sich 
 Zeitüberschreitungen, sammeln sich diese Läufe an und der Dienst wird langsam;
 dann hilft nur ein Neustart des Containers.
 
+Eine Ausnahme ist Pandoc: Es läuft als eigener Prozess, und den beendet der
+Dienst nach `KAIMARKIT_PANDOC_TIMEOUT` tatsächlich.
+
 Wer regelmäßig an die Zeitgrenze stößt, setzt sie besser hoch, statt es mehrfach
 zu versuchen: Jeder Versuch legt einen weiteren Lauf obendrauf.

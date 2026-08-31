@@ -76,3 +76,21 @@ nur als Alt-Text, nicht als beschriebener Inhalt.
 Findet MarkItDown in einer Datei keinen Text — bei einem gescannten PDF etwa —, ist
 das kein Fehler. Das Ergebnis bleibt leer und die Antwort nennt den Grund in
 `warnings`. Wer aus solchen Dateien Text braucht, wählt Docling mit OCR.
+
+## Pandoc
+
+Pandoc ist kein Python-Modul, sondern ein Programm im Container. Es bedient die
+Formate, die sonst niemand liest: `.odt`, `.rtf`, `.tex`, `.rst` und `.org`. Für
+`.epub` ist es die erste Wahl. PDF liest Pandoc nicht.
+
+Jeder Aufruf läuft mit `--sandbox`. Damit liest und schreibt Pandoc nur die Datei,
+die auf der Kommandozeile steht. Ein ePub oder eine LaTeX-Datei kann sonst auf
+beliebige Pfade des Servers zeigen — dieser Schalter ist der Grund, warum der
+Dienst fremde Dateien überhaupt durch Pandoc schicken darf.
+
+`KAIMARKIT_PANDOC_TIMEOUT` begrenzt den Unterprozess. Läuft die Zeit ab, beendet der
+Dienst den Prozess und antwortet mit 504 (`conversion_timeout`). Meldungen, die
+Pandoc auf stderr schreibt und trotzdem weiterarbeitet, stehen danach in `warnings`.
+
+Fehlt das Programm im PATH, meldet `GET /api/capabilities` die Engine als
+`unavailable`; wer sie ausdrücklich verlangt, bekommt 400 (`engine_unavailable`).
