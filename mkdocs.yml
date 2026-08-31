@@ -1,0 +1,69 @@
+site_name: kaimarkit
+site_description: Dokumente nach Markdown wandeln und den Kontext sehen, den ein LLM bekommt
+# Nur der Pfad zaehlt: Die Dokumentation liegt unter /docs/, nicht in der Wurzel.
+# Steht dort die Wurzel, verlinkt der Versions-Dropdown auf /0.3/ statt /docs/0.3/
+# und laeuft ins Leere. MkDocs verlangt ein Schema, deshalb der Platzhalter-Host.
+site_url: https://kaimarkit.example.com/docs/
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  language: de
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Auf helle Darstellung umschalten
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Auf dunkle Darstellung umschalten
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Der Systemeinstellung folgen
+
+extra:
+  version:
+    provider: mike
+    default: latest
+
+plugins:
+  - search:
+      lang: de
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Start: index.md
+  - Schnellstart: schnellstart.md
+  - Formate: formate.md
+  - API: api.md
+  - Betrieb:
+      - Konfiguration: betrieb/konfiguration.md
+      - Lokaler Betrieb: betrieb/lokal.md
+      - Traefik: betrieb/traefik.md
+      - Authelia: betrieb/authelia.md
+  - Entwicklung: entwicklung.md
+  - Grenzen: grenzen.md
