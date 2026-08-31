@@ -286,3 +286,5 @@
 {"timestamp":"2026-08-31T13:55:09.294021004+02:00","action":"edit","task_id":38,"detail":"IN-6 · tesseract-Pakete aus dem Abbild entfernen, EasyOCR-Gewichte sicherstellen"}
 {"timestamp":"2026-08-31T13:56:30.645939913+02:00","action":"move","task_id":30,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-08-31T14:03:42.655874309+02:00","action":"edit","task_id":37,"detail":"BE-12 · OCR-Maschine ausdruecklich setzen: EasyOCR mit de,en"}
+{"timestamp":"2026-08-31T14:05:10.08824608+02:00","action":"create","task_id":43,"detail":"PROC-3 · Verfehlte Pruefung: zuerst die Pruefung verdaechtigen"}
+{"timestamp":"2026-08-31T14:05:11.337479996+02:00","action":"edit","task_id":35,"detail":"PROC-1 · Ticketschnitt: gehoeren Doku-Seiten einer Lane?"}
