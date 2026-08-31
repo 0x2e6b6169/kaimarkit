@@ -55,7 +55,7 @@ def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
     wiederverwendet. Die Tests ersetzen diese Funktion.
     """
     from docling.datamodel.base_models import InputFormat
-    from docling.datamodel.pipeline_options import PdfPipelineOptions
+    from docling.datamodel.pipeline_options import EasyOcrOptions, PdfPipelineOptions
     from docling.document_converter import DocumentConverter, PdfFormatOption
     from docling_core.types.doc import ImageRefMode
 
@@ -70,9 +70,12 @@ def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
     if artifacts:
         options.artifacts_path = artifacts
 
+    # Die OCR-Maschine steht hier ausdruecklich. Ueberlaesst man sie der Bibliothek,
+    # waehlt ``OcrAutoOptions`` selbst eine aus und startet sie mit deren
+    # Voreinstellungen — ein vorher gesetztes ``lang`` faellt dabei weg und
+    # ``KAIMARKIT_OCR_LANGS`` bliebe wirkungslos. EasyOCR erwartet ISO 639-1.
     langs = [lang.strip() for lang in settings.ocr_langs.split(",") if lang.strip()]
-    if langs:
-        options.ocr_options.lang = langs
+    options.ocr_options = EasyOcrOptions(lang=langs) if langs else EasyOcrOptions()
 
     converter = DocumentConverter(
         format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=options)}
