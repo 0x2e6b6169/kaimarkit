@@ -1,10 +1,11 @@
 ---
 id: 76
 title: IN-12 · Die zwei neuen slow-Tests im Container fahren
-status: backlog
+status: todo
 priority: medium
 created: 2026-09-01T13:16:13.857772486+02:00
-updated: 2026-09-01T13:25:41.955321729+02:00
+updated: 2026-09-01T14:00:16.316801786+02:00
+started: 2026-09-01T14:00:15.714875061+02:00
 assignee: akar
 tags:
     - infra
@@ -71,3 +72,10 @@ ein eigener 29-Minuten-Bau für zwei Tests.
 Protokollieren als Nebenwirkung des Erzeugens ist trotzdem ungewöhnlich: **Jede** erzeugte `ConversionError` schreibt, auch eine, die gleich darauf abgefangen und ordentlich behandelt wird. Ob das im Betrieb Rauschen erzeugt, sagt erst ein Lauf mit vielen Fehlern.
 
 Beim Container-Lauf deshalb mit ansehen: einen Stapel mit mehreren fehlschlagenden Dateien schicken und zählen, wie viele Zeilen dabei entstehen. Das Ergebnis gehört als Notiz an #48. Ist es Rauschen, wird es ein eigenes Ticket — hier wird nichts geändert.
+
+[[2026-09-01]] Tue 14:00
+Nach `todo` gezogen (01.09.2026). Voraussetzung erfüllt: Das Abbild ist aus `bbf7180` gebaut und aktuell, der Container läuft.
+
+**Auflage: Der laufende Dienst des Nutzers bleibt stehen.** Er testet gerade auf `127.0.0.1:8080`. Dieses Ticket fährt Tests **im** Abbild und baut nichts — es darf den Container weder ersetzen noch abräumen. Seit #49 gibt es dafür `make test-slow-image`: Es startet einen eigenen Container aus dem Abbild, hängt `backend/` lesend hinein und wirft ihn danach weg. Das ist der Weg.
+
+#77 (IN-13) bleibt derweil im Backlog — es baut und würde den Dienst ersetzen.

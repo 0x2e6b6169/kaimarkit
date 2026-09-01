@@ -1,19 +1,18 @@
 ---
 id: 49
 title: PROC-4 · pytest -m slow ueberspringt auf dem Entwicklungsrechner still
-status: in-progress
+status: done
 priority: medium
 created: 2026-08-31T17:08:53.51522673+02:00
-updated: 2026-09-01T13:50:07.107364906+02:00
+updated: 2026-09-01T13:58:58.95370702+02:00
 started: 2026-09-01T13:02:59.351411003+02:00
+completed: 2026-09-01T13:58:52.590308962+02:00
 assignee: akar
 tags:
     - docs
     - process
 depends_on:
     - 55
-claimed_by: akar-25
-claimed_at: 2026-09-01T13:50:07.107364906+02:00
 class: standard
 ---
 
@@ -132,3 +131,65 @@ Hängt an #55 (IN-10), auf Meldung von akar — aus zwei Gründen, von denen der
 **Die Maschine.** akar-24 misst in #55 Bauzeiten. Der Rechner hat zwei physische Kerne (gemessen in #59), und die Streuung auf identischer Eingabe liegt schon ohne Fremdlast bei Faktor 1,8. Ein paralleler `pytest`-Lauf über 120 Tests samt Gegenprobe im Container nimmt sich einen guten Teil davon. Eine Bauzeit unter fremder Last belegt nichts — und sähe trotzdem aus wie eine Messung.
 
 **Das bedingte Eigentum.** `docs/entwicklung.md` steht in beiden Rümpfen, beide Male unter einer Bedingung: #55 „falls die Bauzeiten dort genannt sind", #49 „nur, falls dort ein Prüfbefehl steht, der unwahr wird". Zwei Tickets, die dieselbe Datei bedingt besitzen, kollidieren erst beim Merge — und dann beim Zweiten. Nach #55 ist außerdem entschieden, ob die Datei überhaupt angefasst wurde.
+
+## Erledigt (01.09.2026, akar-25) — Merge b7c4611, Commit f8d6fd1
+
+### Was gebaut wurde
+
+**Ein eigenes Make-Ziel, nicht der Halbsatz.** `test-slow-image` (Makefile:78–86)
+startet das gebaute Abbild, haengt `backend/` lesend hinein, installiert dort pytest
+und httpx und wirft den Container danach weg. Bild- und Tagname kommen aus
+`docker/.env` (`KAIMARKIT_IMAGE`, `KAIMARKIT_TAG`) statt fest im Makefile zu stehen —
+Konvention 4. `docker run --rm` statt `compose run`: Ein laufender Dienst bleibt
+unberuehrt, und der Container des Nutzers auf 127.0.0.1:8080 wurde nicht angefasst.
+
+`test-slow` bleibt und laeuft weiter lokal, sagt aber jetzt in `make help`, was es
+tut: „Die slow-Tests lokal; ohne Docling ueberspringen sie sich". Die Spaltenbreite
+in `help` musste von `%-14s` auf `%-16s`, sonst haette der neue Name die
+Beschreibung verschoben.
+
+**`pytest -q -rs` ist der dokumentierte Befehl** in `CLAUDE.md`, `Makefile`,
+`.claude/skills/work-lane/SKILL.md` und `docs/entwicklung.md`.
+
+**Die Definition of done verlangt die Sammelzahl** (SKILL.md:103–107, ein Punkt
+vor „suspect the Pruefung"). Der Text ist englisch wie der Rest des Skills und nennt
+den Grund in einem Satz, damit ein Subagent in fremder Lane ihn ohne Rueckfrage
+befolgt.
+
+### Pruefung
+
+- `make help` nennt `test-slow-image` mit Beschreibung; `CLAUDE.md` (Abschnitt
+  Befehle) nennt denselben Weg samt Begruendung. Vorher: kein Treffer fuer `-rs` in
+  allen vier Dateien, `make help` ohne den Abbild-Weg — die Pruefung war rot.
+- `make test-slow-image` laeuft durch: **6 passed, 137 deselected in 67.95s**.
+- Gegenprobe ohne markitdown (meta_path-Finder, der `ModuleNotFoundError` wirft —
+  ein Stub, der `ImportError` wirft, taugt nicht: `importorskip` faengt seit pytest
+  9.1 nur `ModuleNotFoundError`, siehe `_pytest/outcomes.py`):
+  `122 passed, 8 skipped, 6 deselected`, und `-rs` nennt
+  `SKIPPED [1] tests/test_markitdown.py:19: MarkItDown ist nicht installiert`.
+  Ohne `-rs` waere nur die Sammelzahl von 143 auf 136 gefallen.
+- Normallauf: **143 gesammelt, 137 ausgewaehlt, 137 bestanden**; `ruff check .`
+  sauber; `mkdocs build --strict` sauber.
+
+### Abweichung von der Pruefung — die Zahl, nicht die Sache
+
+Der Rumpf verlangt `3 passed`. Gemessen wurden **6 passed**. Die Zahl stammt aus
+INT-2 vom 31.08.; seither sind vier `slow`-Tests dazugekommen
+(`tests/test_docling.py:265, 286, 304, 331` neben `tests/test_converters.py:113, 123`).
+Die Annahme hinter der Pruefung ist erfuellt — die langsamen Tests laufen im Abbild
+wirklich und bestehen alle. Deshalb keine Uebergabe. Aus demselben Grund steht in
+`CLAUDE.md` und `docs/entwicklung.md` keine Testanzahl mehr, sondern „lauter
+Uebersprungenes und Rueckgabewert 0": Eine Zahl in der Prosa veraltet mit dem
+naechsten Test.
+
+### Gemeldet, nicht geaendert
+
+- `ENTWURF.md`, Abschnitt „Pruefung am Ende", nennt weiter `pytest -q -m slow`. Nicht
+  angefasst: Das Dokument haelt die Herkunft fest, nicht die Vorschrift (CLAUDE.md,
+  Kopfabschnitt). Wer den Entwurf spaeter nachzieht, findet die Stelle hier.
+- `docs/entwicklung.md` wurde angefasst — die Befehlsliste (Zeile 47) und der
+  Abschnitt „Tests" waeren sonst unwahr geworden. Der Konflikt mit dem bedingten
+  Eigentum aus #55 bestand nicht mehr: #55 war beim Start bereits `done`.
+- Der Codeblock unter „Befehle" in `CLAUDE.md` schreibt weiter ASCII-Umschrift
+  (`laeuft`, `noetig`) in den bestehenden Zeilen. Nicht geaendert, weil ausserhalb
+  dieses Tickets; die neue Prosa darunter schreibt Umlaute.

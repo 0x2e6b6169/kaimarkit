@@ -552,3 +552,9 @@
 {"timestamp":"2026-09-01T13:48:14.359774113+02:00","action":"release","task_id":55,"detail":"akar-24"}
 {"timestamp":"2026-09-01T13:50:07.115728796+02:00","action":"move","task_id":49,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-01T13:50:30.701119836+02:00","action":"create","task_id":77,"detail":"IN-13 · Die Docs-Stufe laeuft nach jedem Commit neu"}
+{"timestamp":"2026-09-01T13:58:52.111350801+02:00","action":"edit","task_id":49,"detail":"PROC-4 · pytest -m slow ueberspringt auf dem Entwicklungsrechner still"}
+{"timestamp":"2026-09-01T13:58:52.590551745+02:00","action":"move","task_id":49,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T13:58:58.955059949+02:00","action":"edit","task_id":49,"detail":"PROC-4 · pytest -m slow ueberspringt auf dem Entwicklungsrechner still"}
+{"timestamp":"2026-09-01T13:58:58.955287921+02:00","action":"release","task_id":49,"detail":"akar-25"}
+{"timestamp":"2026-09-01T14:00:15.715567648+02:00","action":"move","task_id":76,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T14:00:16.317253643+02:00","action":"edit","task_id":76,"detail":"IN-12 · Die zwei neuen slow-Tests im Container fahren"}
