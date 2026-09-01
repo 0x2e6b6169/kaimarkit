@@ -571,3 +571,5 @@
 {"timestamp":"2026-09-01T16:00:28.985057512+02:00","action":"create","task_id":78,"detail":"BE-29 · Passthrough beschaedigt fremde Kodierungen lautlos"}
 {"timestamp":"2026-09-01T16:01:34.1828814+02:00","action":"create","task_id":79,"detail":"FE-14 · Eine laufende Umwandlung laesst sich nicht abbrechen"}
 {"timestamp":"2026-09-01T16:01:34.889540224+02:00","action":"create","task_id":80,"detail":"BE-30 · Gibt ein abgebrochener Aufruf seinen Semaphor-Platz frei?"}
+{"timestamp":"2026-09-01T16:18:04.117179473+02:00","action":"move","task_id":80,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T16:18:39.328704866+02:00","action":"move","task_id":78,"detail":"todo -\u003e in-progress"}

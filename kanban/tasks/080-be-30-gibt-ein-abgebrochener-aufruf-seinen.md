@@ -1,14 +1,16 @@
 ---
 id: 80
 title: BE-30 · Gibt ein abgebrochener Aufruf seinen Semaphor-Platz frei?
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-01T16:01:34.880218284+02:00
-updated: 2026-09-01T16:01:34.880218284+02:00
+updated: 2026-09-01T16:18:04.110228222+02:00
 assignee: sophie
 tags:
     - backend
     - bug
+claimed_by: sophie-29
+claimed_at: 2026-09-01T16:18:04.110228222+02:00
 class: standard
 ---
 

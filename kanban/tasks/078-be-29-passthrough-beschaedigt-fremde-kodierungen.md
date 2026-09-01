@@ -1,14 +1,16 @@
 ---
 id: 78
 title: BE-29 · Passthrough beschaedigt fremde Kodierungen lautlos
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-01T16:00:28.971140298+02:00
-updated: 2026-09-01T16:00:28.971140298+02:00
+updated: 2026-09-01T16:18:39.318841721+02:00
 assignee: sophie
 tags:
     - backend
     - bug
+claimed_by: sophie-30
+claimed_at: 2026-09-01T16:18:39.318841721+02:00
 class: standard
 ---
 
