@@ -199,7 +199,11 @@ gehört: `docs/formate.md` (Abschnitt „Die Matrix") gehört `BE-2`, so wie `re
 **Ein Textticket besitzt selten nur den Test seiner eigenen Datei.** Zusicherungen auf
 einen Wortlaut stehen oft auch im Test der Elternkomponente, die ihn durch das Kind
 hindurch prüft. Vor dem Festlegen der Dateiliste deshalb den Wortlaut über alle Tests
-greppen, nicht nur die Datei danebenlegen.
+greppen, nicht nur die Datei danebenlegen. Und wer eine Fundstellenliste aus `grep`
+gewinnt, nennt Kommentare und Docstrings mit: Zweimal hat ein Ticket dieser Art
+Dateien aufgeführt, die gar keine Meldung enthielten (`errors.py`, `pandoc.py`), und
+einmal eine übersehen, deren Text über zwei Zeilen umbrach. Ein Lauf über den
+Syntaxbaum unterscheidet Zeichenkette von Kommentar; `grep` kann es nicht.
 
 **Wer ein Verhalten ändert, berichtigt im selben Merge, was dadurch falsch wird** —
 auch auf einer Seite, die ein anderes Ticket angelegt hat. Was schon vorher falsch

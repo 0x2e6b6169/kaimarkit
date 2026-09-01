@@ -1,10 +1,11 @@
 ---
 id: 66
 title: 'BE-23 · OpenAPI-Felderklaerungen: Umschrift im Schnittstellen-Dreiklang'
-status: backlog
+status: todo
 priority: low
 created: 2026-09-01T12:19:21.276601172+02:00
-updated: 2026-09-01T12:19:21.276601172+02:00
+updated: 2026-09-01T12:27:38.884146294+02:00
+started: 2026-09-01T12:27:38.899745151+02:00
 assignee: sophie
 tags:
     - backend

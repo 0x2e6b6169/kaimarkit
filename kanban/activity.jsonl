@@ -446,3 +446,5 @@
 {"timestamp":"2026-09-01T12:26:23.881441531+02:00","action":"edit","task_id":65,"detail":"BE-22 · Umschrift in den uebrigen Fehlermeldungen des Backends"}
 {"timestamp":"2026-09-01T12:26:23.881893133+02:00","action":"release","task_id":65,"detail":"sophie-17"}
 {"timestamp":"2026-09-01T12:26:28.874872687+02:00","action":"create","task_id":68,"detail":"FE-12 · Die Warteschlange sagt nicht, wie lange etwas schon laeuft"}
+{"timestamp":"2026-09-01T12:27:38.900268544+02:00","action":"move","task_id":66,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T12:27:39.720759282+02:00","action":"create","task_id":69,"detail":"PROC-7 · In welcher Sprache schreiben die Logzeilen?"}
