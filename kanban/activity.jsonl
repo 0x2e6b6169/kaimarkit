@@ -593,3 +593,4 @@
 {"timestamp":"2026-09-01T16:30:54.675901136+02:00","action":"release","task_id":81,"detail":"sophie-31"}
 {"timestamp":"2026-09-01T16:31:20.239283576+02:00","action":"create","task_id":82,"detail":"FE-15 · Die Abschlussansage zaehlt abgebrochene Dateien nicht mit"}
 {"timestamp":"2026-09-01T16:31:20.788343347+02:00","action":"create","task_id":83,"detail":"IN-14 · Jeder Frontend-Worktree installiert node_modules neu"}
+{"timestamp":"2026-09-01T16:32:20.159956249+02:00","action":"edit","task_id":81,"detail":"BE-31 · Die Kodierungswarnung trifft auch echte Ersetzungszeichen"}

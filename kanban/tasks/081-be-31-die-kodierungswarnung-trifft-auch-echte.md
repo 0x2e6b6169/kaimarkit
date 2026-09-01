@@ -4,7 +4,7 @@ title: BE-31 · Die Kodierungswarnung trifft auch echte Ersetzungszeichen
 status: done
 priority: medium
 created: 2026-09-01T16:24:41.480901999+02:00
-updated: 2026-09-01T16:30:54.674688216+02:00
+updated: 2026-09-01T16:32:20.159036081+02:00
 started: 2026-09-01T16:30:53.818861932+02:00
 completed: 2026-09-01T16:30:53.818861932+02:00
 assignee: sophie
@@ -113,3 +113,22 @@ Warnung und hält fest, dass ein echtes U+FFFD nichts meldet.
 Sammelzahl vorher 146 gesammelt / 140 ausgewählt, nachher 148 / 142 — 142 bestanden,
 0 übersprungen (`-rs`), 6 deselected (slow). `ruff check .` sauber.
 Branch `task/81-echte-ersetzungszeichen`, Commit `2bee5e9`, `--no-ff` nach main.
+
+[[2026-09-01]] Tue 16:32
+## Zwei Nachträge des PO (01.09.2026)
+
+**1. Die CRLF-Änderung wird angenommen — geprüft, nicht nur gebilligt.** `read_bytes()` statt `read_text()` nimmt die Zeilenenden-Normalisierung mit; CRLF bleibt jetzt CRLF. Das Argument des Subagenten ist richtig: Eine Engine, deren Zusage „durchreichen" lautet, sollte keine Zeilenenden umschreiben.
+
+Die Sorge dahinter — irgendwo könnte eine Erwartung an LF hängen — habe ich nachgesehen statt abgetan:
+
+- `frontend/src` und `backend/app`: kein `split("\n")`, kein `splitlines()` auf Umwandlungsergebnissen. Der einzige Treffer ist `pandoc.py:116` und betrifft Fehlerausgaben von pandoc, nicht Inhalte.
+- `packaging.py:40` legt das Markdown mit `writestr` unverändert ins ZIP; die Bytes gehen durch.
+- Die Vorschau benutzt markdown-it, das CRLF verarbeitet.
+
+Kein Fundort, an dem es auffiele. Die Änderung bleibt.
+
+**2. Die Genauigkeitsgrenze der Zahl wird festgehalten, aber nicht geändert.** `errors="replace"` zählt Ersetzungen, nicht zerstörte Bytes: `b"\xe4\xb8"` wird zu **einem** `�`. Die gemeldete Zahl kann also unter der Zahl der tatsächlich verlorenen Stellen liegen — die Warnung untertreibt im Zweifel.
+
+Der Satz „N Zeichen wurden ersetzt" ist dadurch **nicht falsch**: Er ist wahr über das Ergebnis. Ungenau wäre er nur, wenn ihn jemand als Schadensmessung an der Vorlage liest. Für den Zweck der Warnung — „hier ist etwas verloren gegangen, sieh nach" — genügt er, und untertreiben ist die richtige Richtung für eine Warnung: Sie behauptet nie mehr Schaden, als es gibt.
+
+Kein Folgeticket. Eine weitere Runde auf der Engpassdatei für eine Formulierung, die niemanden in die Irre führt, lohnt nicht.
