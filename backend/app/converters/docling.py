@@ -56,7 +56,11 @@ def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
     """
     from docling.datamodel.base_models import InputFormat
     from docling.datamodel.pipeline_options import EasyOcrOptions, PdfPipelineOptions
-    from docling.document_converter import DocumentConverter, PdfFormatOption
+    from docling.document_converter import (
+        DocumentConverter,
+        ImageFormatOption,
+        PdfFormatOption,
+    )
     from docling_core.types.doc import ImageRefMode
 
     settings = get_settings()
@@ -77,8 +81,16 @@ def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
     langs = [lang.strip() for lang in settings.ocr_langs.split(",") if lang.strip()]
     options.ocr_options = EasyOcrOptions(lang=langs) if langs else EasyOcrOptions()
 
+    # Bilder brauchen denselben Eintrag wie PDF. Ohne ihn legt Docling fuer
+    # ``InputFormat.IMAGE`` seine eigene Vorgabe an: Die Texterkennung liefe dort
+    # immer, ``KAIMARKIT_OCR_LANGS`` bliebe wirkungslos, und statt EasyOCR startete
+    # die von der Bibliothek gewaehlte Maschine. Beide Eintraege teilen sich
+    # ``options`` — dieselbe Pipeline, nur ein anderer Zugang zur Datei.
     converter = DocumentConverter(
-        format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=options)}
+        format_options={
+            InputFormat.PDF: PdfFormatOption(pipeline_options=options),
+            InputFormat.IMAGE: ImageFormatOption(pipeline_options=options),
+        }
     )
 
     def run(path: Path) -> str:
