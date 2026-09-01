@@ -95,6 +95,11 @@ Unter `backend/tests/fixtures/` liegt je eine möglichst kleine Datei für PDF, 
 epub, pptx, xlsx, HTML, CSV, odt und PNG. Alle enthalten den Baustein
 `Kaimarkit Fixture`, auf den sich die Smoketests verlassen.
 
+Ein zweites PDF kommt dazu: `breit.pdf` setzt elf Spalten auf vierzehn Zeilen.
+Diese Form ordnet Docling als Bild ein und ersetzt sie durch einen Platzhalter —
+der Fall, den der Adapter meldet. Der Test dazu braucht die Modelle und steht
+deshalb hinter der Marke `slow`.
+
 Die Dateien sind selbst erzeugt, keine fremden Inhalte. `build_fixtures.py` im selben
 Verzeichnis baut sie neu:
 
@@ -102,10 +107,10 @@ Verzeichnis baut sie neu:
 python tests/fixtures/build_fixtures.py
 ```
 
-Sieben der neun Dateien entstehen mit der Standardbibliothek — die OOXML- und
-ODF-Formate sind von Hand geschriebene ZIP-Archive, das PDF ein von Hand gesetzter
-Inhaltsstrom mit gezeichneter Tabelle. Nur `tabelle.xlsx` braucht openpyxl und
-`bild.png` braucht Pillow; beide Pakete kommen mit `markitdown[all]`.
+Acht der zehn Dateien entstehen mit der Standardbibliothek — die OOXML- und
+ODF-Formate sind von Hand geschriebene ZIP-Archive, die beiden PDF ein von Hand
+gesetzter Inhaltsstrom mit gezeichneter Tabelle. Nur `tabelle.xlsx` braucht openpyxl
+und `bild.png` braucht Pillow; beide Pakete kommen mit `markitdown[all]`.
 
 Fehlt ein Paket aus `markitdown[all]`, überspringt sich der betroffene Smoketest,
 statt zu scheitern — im Skelett ohne Extras bleibt so nur die Prüfung übrig, die

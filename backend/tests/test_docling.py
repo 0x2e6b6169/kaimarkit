@@ -26,6 +26,7 @@ from app.errors import EngineFailed, EngineUnavailable
 
 FIXTURES = Path(__file__).parent / "fixtures"
 FIXTURE = FIXTURES / "tabelle.pdf"
+BREIT = FIXTURES / "breit.pdf"
 BILD = FIXTURES / "bild.png"
 
 
@@ -257,6 +258,51 @@ def test_real_docling_converts_a_table() -> None:
 @pytest.mark.skipif(
     importlib.util.find_spec("docling") is None, reason="docling ist nicht installiert"
 )
+@pytest.mark.skipif(not FIXTURE.exists(), reason="fixtures/tabelle.pdf fehlt")
+def test_a_plain_table_produces_no_warning() -> None:
+    """Die Gegenprobe zu ``breit.pdf``: drei Spalten kommen als Tabelle durch.
+
+    Eine Warnung, die auch bei einer gewoehnlichen Tabelle erscheint, sagt nichts
+    mehr. Diese Vorlage hat im Abnahmelauf vom 01.09.2026 keinen Platzhalter
+    erzeugt, und dabei soll es bleiben.
+    """
+    result = adapter.DoclingConverter().convert(FIXTURE, ConvertOptions(ocr=False))
+
+    assert adapter.PLACEHOLDER not in result.markdown
+    assert result.warnings == []
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(
+    importlib.util.find_spec("docling") is None, reason="docling ist nicht installiert"
+)
+@pytest.mark.skipif(not BREIT.exists(), reason="fixtures/breit.pdf fehlt")
+def test_a_wide_table_becomes_a_placeholder_with_a_warning() -> None:
+    """Die eine Vorlage im Bestand, die den Platzhalterfall herstellt.
+
+    Elf Spalten auf vierzehn Zeilen: Doclings Modell ordnet das als Bild ein, der
+    Export setzt ``<!-- image -->`` an seine Stelle, und der Adapter meldet, was
+    dabei fehlt. Ohne diesen Fall waere die Warnung aus ``docling.py`` gebaut, aber
+    nie wieder gefahren.
+
+    Was das Modell aus dieser Seite macht, ist keine Zusage der Engine. Deshalb
+    prueft der Test nur, dass Platzhalter und Warnung zusammengehoeren: Wo einer
+    steht, steht auch die Meldung, und sie nennt Datei und Zahl.
+    """
+    result = adapter.DoclingConverter().convert(BREIT, ConvertOptions(ocr=False))
+
+    count = result.markdown.count(adapter.PLACEHOLDER)
+    assert count >= 1
+    assert len(result.warnings) == 1
+    warning = result.warnings[0]
+    assert "breit.pdf" in warning
+    assert ("ein Bild" if count == 1 else f"{count} Bilder") in warning
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(
+    importlib.util.find_spec("docling") is None, reason="docling ist nicht installiert"
+)
 @pytest.mark.skipif(not BILD.exists(), reason="fixtures/bild.png fehlt")
 def test_the_ocr_switch_works_on_images() -> None:
     """Dasselbe Bild, zweimal: ohne Texterkennung bleibt es leer, mit ihr nicht.
@@ -388,11 +434,10 @@ def test_placeholders_become_a_warning_with_their_count(
 
     result = converter.convert(tmp_path / "bericht.pdf", ConvertOptions())
 
-    assert len(result.warnings) == 1
-    warning = result.warnings[0]
-    assert "3" in warning
-    assert "Platzhalter" in warning
-    assert "bericht.pdf" in warning
+    assert result.warnings == [
+        "Docling hat in bericht.pdf 3 Bilder durch Platzhalter ersetzt."
+        " Ihr Inhalt fehlt im Markdown."
+    ]
 
 
 def test_a_single_placeholder_is_counted_as_one(
@@ -403,9 +448,10 @@ def test_a_single_placeholder_is_counted_as_one(
 
     result = converter.convert(tmp_path / "bericht.pdf", ConvertOptions())
 
-    assert len(result.warnings) == 1
-    assert "ein Bild" in result.warnings[0]
-    assert "Platzhalter" in result.warnings[0]
+    assert result.warnings == [
+        "Docling hat in bericht.pdf ein Bild durch einen Platzhalter ersetzt."
+        " Sein Inhalt fehlt im Markdown."
+    ]
 
 
 def test_markdown_without_placeholders_stays_without_warnings(

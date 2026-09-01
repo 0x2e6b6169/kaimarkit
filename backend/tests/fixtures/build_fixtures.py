@@ -8,7 +8,7 @@ Alle Inhalte entstehen hier, nichts stammt aus fremden Quellen. Jede Datei traeg
 den Baustein ``Kaimarkit Fixture``; darauf verlassen sich die Smoketests in
 ``tests/test_converters.py``.
 
-Sieben der neun Dateien baut die Standardbibliothek. Nur ``tabelle.xlsx`` braucht
+Acht der zehn Dateien baut die Standardbibliothek. Nur ``tabelle.xlsx`` braucht
 openpyxl und ``bild.png`` Pillow; beide kommen mit ``markitdown[all]`` ohnehin in die
 Entwicklungsumgebung.
 """
@@ -160,30 +160,13 @@ def build_odt() -> None:
         archive.writestr("styles.xml", styles)
 
 
-def build_pdf() -> None:
-    """Ein einseitiges PDF mit einer gezeichneten Tabelle, von Hand gesetzt.
+def _write_pdf(name: str, stream: str) -> None:
+    """Setzt einen Inhaltsstrom in ein einseitiges PDF und schreibt es.
 
-    Die Linien stehen im Inhaltsstrom, damit Docling die Tabelle als Tabelle
-    erkennt und nicht als drei Textzeilen.
+    Der Behaelter ist von Hand gesetzt und unkomprimiert: fuenf Objekte, eine
+    Schrift, eine xref-Tabelle mit gezaehlten Offsets. Beide PDF-Fixtures teilen ihn
+    sich, denn sie unterscheiden sich nur im Inhaltsstrom.
     """
-    left, right, top = 72, 380, 720
-    row_height, columns = 28, (72, 226, 380)
-    lines = []
-    for index in range(len(TABLE) + 1):
-        y = top - index * row_height
-        lines.append(f"{left} {y} m {right} {y} l S")
-    bottom = top - len(TABLE) * row_height
-    for x in columns:
-        lines.append(f"{x} {top} m {x} {bottom} l S")
-
-    text = [f"BT /F1 16 Tf {left} {top + 30} Td ({MARKER}) Tj ET"]
-    for row_index, row in enumerate(TABLE):
-        baseline = top - row_index * row_height - 19
-        for column_index, cell in enumerate(row):
-            x = columns[column_index] + 6
-            text.append(f"BT /F1 11 Tf {x} {baseline} Td ({cell}) Tj ET")
-
-    stream = "0.6 w\n" + "\n".join(lines) + "\n" + "\n".join(text) + "\n"
     body = stream.encode("ascii")
 
     objects = [
@@ -209,7 +192,75 @@ def build_pdf() -> None:
         len(objects) + 1,
         xref,
     )
-    (HERE / "tabelle.pdf").write_bytes(bytes(out))
+    (HERE / name).write_bytes(bytes(out))
+
+
+def _grid(left: int, top: int, columns: int, rows: int, width: int, height: int) -> list[str]:
+    """Die Linien eines Gitters als Zeichenbefehle.
+
+    Docling erkennt eine Tabelle an ihren Linien. Stuenden nur die Zellen da, saehe
+    das Modell Textzeilen.
+    """
+    right, bottom = left + columns * width, top - rows * height
+    lines = [f"{left} {top - i * height} m {right} {top - i * height} l S" for i in range(rows + 1)]
+    lines += [
+        f"{left + j * width} {top} m {left + j * width} {bottom} l S" for j in range(columns + 1)
+    ]
+    return lines
+
+
+def build_pdf() -> None:
+    """Ein einseitiges PDF mit einer gezeichneten Tabelle, von Hand gesetzt.
+
+    Die Linien stehen im Inhaltsstrom, damit Docling die Tabelle als Tabelle
+    erkennt und nicht als drei Textzeilen.
+    """
+    left, right, top = 72, 380, 720
+    row_height, columns = 28, (72, 226, 380)
+    lines = []
+    for index in range(len(TABLE) + 1):
+        y = top - index * row_height
+        lines.append(f"{left} {y} m {right} {y} l S")
+    bottom = top - len(TABLE) * row_height
+    for x in columns:
+        lines.append(f"{x} {top} m {x} {bottom} l S")
+
+    text = [f"BT /F1 16 Tf {left} {top + 30} Td ({MARKER}) Tj ET"]
+    for row_index, row in enumerate(TABLE):
+        baseline = top - row_index * row_height - 19
+        for column_index, cell in enumerate(row):
+            x = columns[column_index] + 6
+            text.append(f"BT /F1 11 Tf {x} {baseline} Td ({cell}) Tj ET")
+
+    _write_pdf("tabelle.pdf", "0.6 w\n" + "\n".join(lines) + "\n" + "\n".join(text) + "\n")
+
+
+def build_breit_pdf() -> None:
+    """Ein PDF mit einer breiten, engen Tabelle — die Vorlage fuer den Platzhalterfall.
+
+    Elf Spalten auf vierzehn Zeilen, in Sieben-Punkt-Schrift. Diese Form hat Docling
+    im Abnahmelauf vom 01.09.2026 als Bild eingeordnet und durch ``<!-- image -->``
+    ersetzt; ``tabelle.pdf`` mit seinen drei Spalten tut das nicht. Ohne eine solche
+    Vorlage im Bestand ist die Platzhalter-Warnung aus ``docling.py`` nirgends mehr
+    nachzufahren.
+
+    Ob eine bestimmte Fassung von Docling hier wirklich einen Platzhalter setzt,
+    entscheidet das Modell und nicht diese Datei. Der zugehoerige Test steht deshalb
+    hinter der Marke ``slow`` und laeuft nur dort, wo Docling installiert ist.
+    """
+    left, top = 30, 780
+    columns, rows = 11, 14
+    width, height = 50, 22
+
+    text = [f"BT /F1 14 Tf {left} {top + 24} Td ({MARKER}) Tj ET"]
+    for row in range(rows):
+        baseline = top - row * height - 15
+        for column in range(columns):
+            cell = f"Spalte {column + 1}" if row == 0 else f"Z{row:02d}S{column + 1:02d}"
+            text.append(f"BT /F1 7 Tf {left + column * width + 3} {baseline} Td ({cell}) Tj ET")
+
+    lines = _grid(left, top, columns, rows, width, height)
+    _write_pdf("breit.pdf", "0.6 w\n" + "\n".join(lines) + "\n" + "\n".join(text) + "\n")
 
 
 def build_xlsx() -> None:
@@ -309,6 +360,7 @@ def main() -> None:
         build_epub,
         build_odt,
         build_pdf,
+        build_breit_pdf,
         build_xlsx,
         build_pptx,
         build_png,
