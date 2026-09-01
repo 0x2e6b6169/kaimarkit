@@ -180,7 +180,7 @@ class DoclingConverter:
         try:
             run = self._pipeline(ocr)
         except Exception as exc:  # noqa: BLE001 — jede Ausnahme der Bibliothek
-            raise EngineUnavailable(f"Docling ist nicht verfuegbar: {exc}") from exc
+            raise EngineUnavailable(f"Docling ist nicht verfügbar: {exc}") from exc
         try:
             markdown = run(path)
         except Exception as exc:  # noqa: BLE001 — jede Ausnahme der Bibliothek

@@ -91,7 +91,7 @@ def get_converter(name: str) -> Converter:
         module = importlib.import_module(f"{__package__}.{name}")
         converter = module.get_converter()
     except Exception as exc:  # ImportError der Bibliothek, Fehler beim Aufbau
-        raise EngineUnavailable(f"Engine {name} ist nicht verfuegbar: {exc}") from exc
+        raise EngineUnavailable(f"Engine {name} ist nicht verfügbar: {exc}") from exc
     _INSTANCES[name] = converter
     return converter
 
@@ -127,7 +127,7 @@ def select(ext: str, requested: str | None = None) -> Converter:
     """
     prefs = preferences_for(ext)
     if not prefs:
-        raise UnsupportedFormat(f"Fuer {ext or 'Dateien ohne Endung'} gibt es keine Engine.")
+        raise UnsupportedFormat(f"Für {ext or 'Dateien ohne Endung'} gibt es keine Engine.")
     if requested and requested != "auto":
         if requested not in prefs:
             raise EngineUnsuitable(f"Engine {requested} kann {ext} nicht wandeln.")
@@ -135,7 +135,7 @@ def select(ext: str, requested: str | None = None) -> Converter:
     for name in prefs:
         if _is_ready(name):
             return get_converter(name)
-    raise EngineUnavailable(f"Fuer {ext} ist zurzeit keine Engine verfuegbar.")
+    raise EngineUnavailable(f"Für {ext} ist zurzeit keine Engine verfügbar.")
 
 
 def convert_with_fallback(path: Path, opts: ConvertOptions | None = None) -> ConversionResult:
@@ -170,7 +170,7 @@ def convert_with_fallback(path: Path, opts: ConvertOptions | None = None) -> Con
             continue
         result.warnings = [*warnings, *result.warnings]
         return _finish(result, started)
-    raise last if last is not None else EngineUnavailable(f"Fuer {ext} ist keine Engine da.")
+    raise last if last is not None else EngineUnavailable(f"Für {ext} ist keine Engine da.")
 
 
 def _is_ready(name: str) -> bool:

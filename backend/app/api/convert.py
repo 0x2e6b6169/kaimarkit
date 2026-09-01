@@ -98,7 +98,7 @@ async def convert_batch(
     settings = get_settings()
     if len(file) > settings.max_files:
         raise TooManyFiles(
-            f"Hoechstens {settings.max_files} Dateien je Aufruf, angekommen sind {len(file)}"
+            f"Höchstens {settings.max_files} Dateien je Aufruf, angekommen sind {len(file)}"
         )
 
     options = ConvertOptions(engine=engine or None, ocr=ocr)

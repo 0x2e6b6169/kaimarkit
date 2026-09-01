@@ -116,7 +116,7 @@ def test_pdf_warnt_vor_weggelassenen_bildern(tmp_path: Path) -> None:
     result = get_converter().convert(_write_pdf(tmp_path / "bericht.pdf"), ConvertOptions())
     assert _PDF_TEXT in result.markdown
     assert result.warnings == [
-        "MarkItDown uebernimmt keine Bilder aus PDF. "
+        "MarkItDown übernimmt keine Bilder aus PDF. "
         "Enthielt bericht.pdf Bilder, fehlt ihr Inhalt hier."
     ]
 

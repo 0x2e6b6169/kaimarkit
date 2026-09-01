@@ -1,14 +1,14 @@
 """MarkItDown hinter dem Converter-Protokoll.
 
-MarkItDown ist die schnelle Engine: keine Modelle, kein OCR, dafuer breite
+MarkItDown ist die schnelle Engine: keine Modelle, kein OCR, dafür breite
 Formatabdeckung. Einen LLM-Client setzt der Adapter bewusst nicht ein: Kein Bild
 wird beschrieben. In ``.docx``, ``.html`` und ``.epub`` bleibt davon der Alt-Text
-stehen. Aus einem PDF uebernimmt MarkItDown dagegen gar nichts — dort faellt jedes
-Bild ersatzlos weg, und ``convert()`` legt dafuer eine Warnung dazu.
+stehen. Aus einem PDF übernimmt MarkItDown dagegen gar nichts — dort fällt jedes
+Bild ersatzlos weg, und ``convert()`` legt dafür eine Warnung dazu.
 
-Achtung beim Lesen: Diese Datei heisst wie die Bibliothek. ``from markitdown import
+Achtung beim Lesen: Diese Datei heißt wie die Bibliothek. ``from markitdown import
 MarkItDown`` meint trotzdem die Bibliothek, denn Python 3 importiert absolut; das
-Nachbarmodul erreicht man nur ueber ``from . import markitdown``.
+Nachbarmodul erreicht man nur über ``from . import markitdown``.
 """
 
 from __future__ import annotations
@@ -57,7 +57,7 @@ def _pdf_image_warnings(path: Path) -> list[str]:
     if path.suffix.lower() != ".pdf":
         return []
     return [
-        "MarkItDown uebernimmt keine Bilder aus PDF. "
+        "MarkItDown übernimmt keine Bilder aus PDF. "
         f"Enthielt {path.name} Bilder, fehlt ihr Inhalt hier."
     ]
 
