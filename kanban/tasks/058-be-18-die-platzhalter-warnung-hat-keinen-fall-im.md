@@ -4,7 +4,7 @@ title: BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo
 status: backlog
 priority: medium
 created: 2026-09-01T10:25:37.13806965+02:00
-updated: 2026-09-01T11:19:07.291959513+02:00
+updated: 2026-09-01T11:22:59.486421009+02:00
 assignee: sophie
 tags:
     - backend
@@ -79,3 +79,11 @@ Dasselbe Dokument enthaelt einen Platzhalter an anderer Stelle: `<!-- image -->`
 Halbe Entwarnung zum zweiten Punkt (Quelltext nachgesehen, 01.09.2026): **`_placeholder_warnings()` bildet sehr wohl eine Zahl.** Bei `count == 1` heisst es "ein Bild durch einen Platzhalter", ab zwei `f"{count} Bilder durch Platzhalter"`. Die Vorgabe aus BE-14 ist also erfuellt; akars Beobachtung galt dem gepruefen Einzelfall, in dem tatsaechlich nur ein Platzhalter vorkam.
 
 Was bleibt, ist der Test: Der Mehrzahlfall ist nirgends gefahren. Dieses Ticket braucht dafuer keine Korrektur mehr, nur die Abdeckung — ein Fall mit zwei oder mehr Platzhaltern, der den Wortlaut festhaelt.
+
+[[2026-09-01]] Tue 11:22
+Der Mehrzahlfall ist am echten Dokument belegt (01.09.2026, Abnahme des Nutzers): Dieselbe Anmeldung liefert
+
+    Docling hat in TeleTrusT-T.I.S.P._T.P.S.S.E._CM_2026_Anmeldung.pdf
+    3 Bilder durch Platzhalter ersetzt. Ihr Inhalt fehlt im Markdown.
+
+Zahl, Mehrzahl und Wortlaut stimmen. Der zweite Punkt dieses Tickets ist damit erledigt — es bleibt der erste: ein Fixture im Repo, das den Fall festhaelt, damit er nicht nur einmal in einer Abnahme gesehen wurde.

@@ -376,3 +376,6 @@
 {"timestamp":"2026-09-01T11:07:41.779391054+02:00","action":"edit","task_id":59,"detail":"IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp"}
 {"timestamp":"2026-09-01T11:19:02.074152574+02:00","action":"edit","task_id":59,"detail":"IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp"}
 {"timestamp":"2026-09-01T11:19:07.294882079+02:00","action":"edit","task_id":58,"detail":"BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo"}
+{"timestamp":"2026-09-01T11:22:57.774071038+02:00","action":"edit","task_id":59,"detail":"IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp"}
+{"timestamp":"2026-09-01T11:22:59.48731283+02:00","action":"edit","task_id":58,"detail":"BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo"}
+{"timestamp":"2026-09-01T11:23:01.265751409+02:00","action":"create","task_id":60,"detail":"BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst"}

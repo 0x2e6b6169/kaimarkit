@@ -4,7 +4,7 @@ title: IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp
 status: backlog
 priority: high
 created: 2026-09-01T10:40:33.636401513+02:00
-updated: 2026-09-01T11:19:02.07260601+02:00
+updated: 2026-09-01T11:22:57.772287382+02:00
 assignee: akar
 tags:
     - infra
@@ -89,3 +89,10 @@ Zwei Messungen zur Ursache, damit das Ticket nicht nur die Grenze hochsetzt (01.
 Damit hat dieses Ticket zwei Wege, und der zweite ist der bessere: die Grenze hochsetzen behandelt das Symptom, mehr Threads die Sache. Beide messen, dann entscheiden.
 
 Nicht die Ursache sind die Anreicherungsmodelle: `_build_pipeline` schaltet weder Code- noch Formel- noch Bildklassifikation ein. `CodeFormulaV2` und `DocumentFigureClassifier` liegen im Abbild, laufen aber nicht — das ist Ballast in der Groesse, nicht in der Zeit.
+
+[[2026-09-01]] Tue 11:22
+Die fehlende Zahl ist da (01.09.2026, nach dem Quick-Fix des Nutzers auf 600 s): **`TeleTrusT-T.I.S.P._T.P.S.S.E._CM_2026_Anmeldung.pdf` brauchte 326 062 ms — 5 Minuten 26 Sekunden.** Mit `docling`, OCR aus.
+
+Die Voreinstellung von 120 Sekunden liegt damit bei **37 Prozent** dessen, was dieses Dokument braucht. Es war nicht knapp daneben, sondern um das Zweieinhalbfache zu klein.
+
+Damit steht die Entscheidungsgrundlage: Eine Voreinstellung, die alltaegliche Dokumente durchlaesst, liegt oberhalb von fuenf Minuten — oder die Sache wird an der Ursache angefasst (Threads, Enginewahl), statt die Grenze immer weiter hochzusetzen. Beide Wege stehen im Ticket; diese Zahl sagt, dass der zweite der wichtigere ist.
