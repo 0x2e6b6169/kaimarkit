@@ -9,8 +9,9 @@
  * Warnungen stehen an der Zeile und nicht erst in der Vorschau. Genau dort
  * entscheidet sich, ob das Ergebnis taugt.
  *
- * Aufgeklappt zeigt die Zeile den Slot `preview`. FE-4 haengt dort
- * `MarkdownPreview` ein; ohne Fuellung steht ein Platzhalter.
+ * Aufgeklappt zeigt die Zeile den Slot `preview`; die Anwendung haengt dort
+ * `MarkdownPreview` ein. Fuellt ihn niemand, nennt die Zeile den Umfang des
+ * Markdown — sonst stuende die aufgeklappte Zeile leer da.
  *
  * Der Knopf „Herunterladen" steht erst da, wenn ein Ergebnis vorliegt. Er legt
  * die Datei unmittelbar ab, statt den Wunsch nach oben zu melden: Was
@@ -121,8 +122,7 @@ const previewId = computed(() => `file-row-${props.entry.id}-preview`)
     <div v-if="canExpand && expanded" :id="previewId" class="mt-2">
       <slot name="preview" :entry="entry">
         <p class="rounded bg-slate-100 p-2 text-sm text-slate-600">
-          Die Vorschau folgt mit FE-4. Bis dahin steht hier nur, dass
-          {{ entry.markdown?.length ?? 0 }} Zeichen Markdown vorliegen.
+          Das Ergebnis umfasst {{ entry.markdown?.length ?? 0 }} Zeichen Markdown.
         </p>
       </slot>
     </div>

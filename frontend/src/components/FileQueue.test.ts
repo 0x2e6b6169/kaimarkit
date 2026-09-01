@@ -134,7 +134,7 @@ describe('FileQueue', () => {
 
     await toggle.trigger('click')
     expect(wrapper.get('[aria-expanded]').attributes('aria-expanded')).toBe('true')
-    expect(wrapper.text()).toContain('Vorschau folgt mit FE-4')
+    expect(wrapper.text()).toContain('Das Ergebnis umfasst 3 Zeichen Markdown.')
 
     await wrapper.get('[aria-expanded]').trigger('click')
     expect(wrapper.get('[aria-expanded]').attributes('aria-expanded')).toBe('false')

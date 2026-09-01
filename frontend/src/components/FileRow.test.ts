@@ -104,16 +104,18 @@ describe('FileRow', () => {
     // Aufgeklappt wird die Zeile von aussen; die Zeile selbst haelt den Zustand nicht.
     await wrapper.setProps({ expanded: true })
     expect(wrapper.get('[aria-expanded]').attributes('aria-expanded')).toBe('true')
-    expect(wrapper.get('#file-row-1-preview').text()).toContain('Vorschau folgt mit FE-4')
+    expect(wrapper.get('#file-row-1-preview').text()).toContain('Das Ergebnis umfasst 9 Zeichen Markdown.')
   })
 
   it('ueberlaesst den aufgeklappten Inhalt dem Slot preview', async () => {
     const wrapper = mount(FileRow, {
       props: { entry: entry({ status: 'ok', markdown: '# Bericht' }), expanded: true },
-      slots: { preview: '<p>Hier steht spaeter MarkdownPreview.</p>' },
+      slots: { preview: '<p>Vorschau aus dem Elternteil.</p>' },
     })
 
-    expect(wrapper.get('#file-row-1-preview').text()).toBe('Hier steht spaeter MarkdownPreview.')
+    // Der gefuellte Slot ersetzt den Rueckfall vollstaendig.
+    expect(wrapper.get('#file-row-1-preview').text()).toBe('Vorschau aus dem Elternteil.')
+    expect(wrapper.text()).not.toContain('Zeichen Markdown')
   })
 
   it('meldet den Wunsch, die Zeile zu entfernen', async () => {
