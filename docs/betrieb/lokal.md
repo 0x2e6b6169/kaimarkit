@@ -47,6 +47,26 @@ Sobald dort `healthy` steht, antwortet die Oberfläche unter
 <http://127.0.0.1:8080>. Die API steht schon vorher bereit — `GET /api/health`
 antwortet sofort, und `GET /api/capabilities` meldet Docling so lange als `warming`.
 
+## Docker Desktop unter Windows
+
+Wer den Dienst in einer WSL-Distribution startet und ihn im Browser unter Windows
+bedienen will, muss nichts weiter einstellen. Docker Desktop veröffentlicht den Port
+nicht in der Distribution, sondern auf Windows selbst: `com.docker.backend` hört dort
+auf `127.0.0.1:8080` und reicht jede Verbindung an den Container weiter. Die
+Oberfläche steht deshalb unter <http://127.0.0.1:8080> — unter derselben Adresse wie
+auf einem Linux-Rechner.
+
+`localhost` löst Windows auf zwei Adressen auf, `127.0.0.1` und `::1`. Veröffentlicht
+ist nur die erste; eine Verbindung nach `[::1]:8080` weist Windows ab.
+`http://localhost:8080` kommt also nur an, solange das aufrufende Programm die
+abgewiesene Adresse überspringt. Wer die Zahlen tippt, lässt die Frage gar nicht erst
+aufkommen.
+
+`KAIMARKIT_BIND_ADDR=127.0.0.1` meint hier den Windows-Rechner, nicht die
+Distribution: Über die IP-Adresse der Distribution ist der Dienst nicht erreichbar,
+auch nicht von Windows aus. Für den Zugriff von anderen Rechnern gilt darum dasselbe
+wie sonst, siehe [Traefik](traefik.md).
+
 ## Prüfen, ob der Dienst antwortet
 
 ```bash
