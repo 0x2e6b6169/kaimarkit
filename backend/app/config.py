@@ -24,7 +24,13 @@ class Settings(BaseSettings):
     max_file_size_mb: int = 50
     max_files: int = 20
     max_concurrent: int = 2
-    conversion_timeout: int = 120
+    # 600 s ist gemessen, nicht geschaetzt: Das langsamste bekannte Dokument
+    # brauchte 326 s, die Streuung auf gleicher Eingabe betraegt Faktor 1,8; 326
+    # mal 1,8 sind 587, aufgerundet 600. Zeit kostet nicht die Seitenzahl, sondern
+    # die fehlende Textschicht — gescannt mit OCR rund zwei Minuten je Seite, mit
+    # Textschicht drei Sekunden. ``docker/.env.example`` nennt denselben Wert,
+    # damit ein nackt gestartetes Backend sich verhaelt wie die Auslieferung.
+    conversion_timeout: int = 600
     pandoc_timeout: int = 60
 
     # Engines
