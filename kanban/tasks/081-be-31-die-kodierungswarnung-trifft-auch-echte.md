@@ -1,14 +1,16 @@
 ---
 id: 81
 title: BE-31 · Die Kodierungswarnung trifft auch echte Ersetzungszeichen
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-01T16:24:41.480901999+02:00
-updated: 2026-09-01T16:24:41.480901999+02:00
+updated: 2026-09-01T16:26:01.984785619+02:00
 assignee: sophie
 tags:
     - backend
     - bug
+claimed_by: sophie-31
+claimed_at: 2026-09-01T16:26:01.984785619+02:00
 class: standard
 ---
 

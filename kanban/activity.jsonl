@@ -579,3 +579,9 @@
 {"timestamp":"2026-09-01T16:23:06.735050076+02:00","action":"release","task_id":78,"detail":"sophie-30"}
 {"timestamp":"2026-09-01T16:23:26.75491743+02:00","action":"edit","task_id":78,"detail":"BE-29 · Passthrough beschaedigt fremde Kodierungen lautlos"}
 {"timestamp":"2026-09-01T16:24:41.487894824+02:00","action":"create","task_id":81,"detail":"BE-31 · Die Kodierungswarnung trifft auch echte Ersetzungszeichen"}
+{"timestamp":"2026-09-01T16:25:24.491871189+02:00","action":"edit","task_id":80,"detail":"BE-30 · Gibt ein abgebrochener Aufruf seinen Semaphor-Platz frei?"}
+{"timestamp":"2026-09-01T16:25:25.024114511+02:00","action":"move","task_id":80,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T16:25:32.478867725+02:00","action":"edit","task_id":80,"detail":"BE-30 · Gibt ein abgebrochener Aufruf seinen Semaphor-Platz frei?"}
+{"timestamp":"2026-09-01T16:25:32.479080522+02:00","action":"release","task_id":80,"detail":"sophie-29"}
+{"timestamp":"2026-09-01T16:26:01.990615009+02:00","action":"move","task_id":81,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T16:26:56.085641465+02:00","action":"edit","task_id":80,"detail":"BE-30 · Gibt ein abgebrochener Aufruf seinen Semaphor-Platz frei?"}
