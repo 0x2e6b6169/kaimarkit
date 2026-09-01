@@ -569,3 +569,5 @@
 {"timestamp":"2026-09-01T14:09:29.756939609+02:00","action":"edit","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}
 {"timestamp":"2026-09-01T14:10:45.241269163+02:00","action":"edit","task_id":77,"detail":"IN-13 · Die Docs-Stufe laeuft nach jedem Commit neu"}
 {"timestamp":"2026-09-01T16:00:28.985057512+02:00","action":"create","task_id":78,"detail":"BE-29 · Passthrough beschaedigt fremde Kodierungen lautlos"}
+{"timestamp":"2026-09-01T16:01:34.1828814+02:00","action":"create","task_id":79,"detail":"FE-14 · Eine laufende Umwandlung laesst sich nicht abbrechen"}
+{"timestamp":"2026-09-01T16:01:34.889540224+02:00","action":"create","task_id":80,"detail":"BE-30 · Gibt ein abgebrochener Aufruf seinen Semaphor-Platz frei?"}
