@@ -23,7 +23,7 @@ from ..config import get_settings
 from ..converters.base import ConvertOptions
 from ..converters.registry import convert_with_fallback
 from ..errors import ConversionError, TooManyFiles
-from ..models import BatchResponse, ConversionEntry, ConversionStatus
+from ..models import BatchResponse, ConversionEntry, ConversionStatus, ErrorResponse
 from ..packaging import build_archive
 from ..uploads import run_conversion, sanitize_filename, stored_upload
 
@@ -36,22 +36,52 @@ MARKDOWN_MEDIA_TYPE = "text/markdown; charset=utf-8"
 ZIP_MEDIA_TYPE = "application/zip"
 ARCHIVE_NAME = "markdown.zip"
 
-#: Der zweite Rumpf je Endpunkt, damit die OpenAPI-Fassung beide Zweige nennt.
+#: Was ein Endpunkt neben seinem ``response_model`` noch antwortet.
 #:
-#: ``response_model`` beschreibt nur die JSON-Antwort. Ohne diesen Zusatz verschwiege
-#: ``/api/docs`` die Datei, die ``curl -O`` tatsaechlich bekommt.
-MARKDOWN_ALTERNATIVE: dict[int | str, dict[str, object]] = {
-    200: {"content": {MARKDOWN_MEDIA_TYPE: {"schema": {"type": "string"}}}}
+#: Zweierlei steht hier, und beides fehlte der veroeffentlichten Fassung sonst.
+#:
+#: Erstens der zweite Rumpf: ``response_model`` beschreibt nur die JSON-Antwort.
+#: Ohne den Zusatz verschwiege ``/api/docs`` die Datei, die ``curl -O`` bekommt.
+#:
+#: Zweitens die Fehlerantworten. Sie entstehen im Ausnahmebehandler aus
+#: ``errors.py``, nicht im Endpunkt — FastAPI sieht sie also nicht und nennt sie
+#: von sich aus nirgends. Welche Codes zu welchem Endpunkt gehoeren, steht in
+#: ``contracts/api.md``; die Zuordnung hier bildet sie nach.
+CONVERT_RESPONSES: dict[int | str, dict[str, object]] = {
+    200: {"content": {MARKDOWN_MEDIA_TYPE: {"schema": {"type": "string"}}}},
+    400: {
+        "model": ErrorResponse,
+        "description": "`engine_unsuitable` oder `engine_unavailable` — die verlangte "
+        "Engine kann dieses Format nicht oder ist nicht installiert.",
+    },
+    413: {
+        "model": ErrorResponse,
+        "description": "`file_too_large` — ueber `KAIMARKIT_MAX_FILE_SIZE_MB`.",
+    },
+    415: {
+        "model": ErrorResponse,
+        "description": "`unsupported_format` — die Endung steht in keiner Praeferenzliste.",
+    },
+    500: {"model": ErrorResponse, "description": "`conversion_failed` — die Engine scheiterte."},
+    504: {
+        "model": ErrorResponse,
+        "description": "`conversion_timeout` — ueber `KAIMARKIT_CONVERSION_TIMEOUT`.",
+    },
 }
-ZIP_ALTERNATIVE: dict[int | str, dict[str, object]] = {
-    200: {"content": {ZIP_MEDIA_TYPE: {"schema": {"type": "string", "format": "binary"}}}}
+
+#: Der Stapel kennt nur einen Fehler, und das ist Absicht: Eine gescheiterte Datei
+#: wird zum Eintrag mit ``status: "failed"``, nicht zur Fehlerantwort. Uebrig bleibt,
+#: was die Anfrage als Ganzes betrifft.
+BATCH_RESPONSES: dict[int | str, dict[str, object]] = {
+    200: {"content": {ZIP_MEDIA_TYPE: {"schema": {"type": "string", "format": "binary"}}}},
+    413: {"model": ErrorResponse, "description": "`too_many_files` — ueber `KAIMARKIT_MAX_FILES`."},
 }
 
 
 @router.post(
     "/convert",
     response_model=ConversionEntry,
-    responses=MARKDOWN_ALTERNATIVE,
+    responses=CONVERT_RESPONSES,
 )
 async def convert(
     file: Annotated[UploadFile, File(description="Die Eingabedatei.")],
@@ -96,7 +126,7 @@ async def convert(
 @router.post(
     "/convert/batch",
     response_model=BatchResponse,
-    responses=ZIP_ALTERNATIVE,
+    responses=BATCH_RESPONSES,
 )
 async def convert_batch(
     file: Annotated[list[UploadFile], File(description="Die Eingabedateien.")],

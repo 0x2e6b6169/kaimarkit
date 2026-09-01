@@ -6,6 +6,12 @@ Modell kann in allen drei Dateien stehen und in ``/api/openapi.json`` trotzdem
 fehlen, solange dem Endpunkt ein ``response_model`` fehlt. Diese Tests lesen
 deshalb die erzeugte Fassung, nicht den Quelltext.
 
+Dreimal ist an dieser Stelle schon ein Typ verschwunden, ohne dass eine Regel
+angeschlagen haette. Der erste Test deckt deshalb nicht mehr einzelne Namen ab,
+sondern die Klasse: Was ``models.py`` als Schnittstelle beschreibt, muss in der
+veroeffentlichten Fassung stehen — jeder Typ, auch der naechste, den jemand
+hinzufuegt.
+
 Dazu kommt die Gegenprobe in der anderen Richtung: Was die Endpunkte antworten,
 muss sich gegen dasselbe Modell lesen lassen, und zwar Feld fuer Feld.
 """
@@ -13,18 +19,31 @@ muss sich gegen dasselbe Modell lesen lassen, und zwar Feld fuer Feld.
 from __future__ import annotations
 
 from collections.abc import Iterator
+from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
+from pydantic import BaseModel
 
+from app import models
 from app.config import get_settings
 from app.converters import registry
 from app.converters.base import ConversionResult, ConvertOptions
 from app.main import app
 from app.models import BatchResponse, ConversionEntry
 from app.uploads import _semaphore
+
+#: Die Fehlercodes je Endpunkt, wie ``contracts/api.md`` sie zuschreibt.
+#:
+#: Der Stapel steht nur mit 413 darin: Eine gescheiterte Datei wird dort zum
+#: Eintrag mit ``status: "failed"``, nicht zur Fehlerantwort. Uebrig bleibt der
+#: Fehler, der die Anfrage als Ganzes betrifft.
+ERROR_CODES: dict[str, set[str]] = {
+    "/api/convert": {"400", "413", "415", "500", "504"},
+    "/api/convert/batch": {"413"},
+}
 
 
 class DummyEngine:
@@ -71,16 +90,58 @@ def schema_of(document: dict[str, Any], path: str) -> dict[str, Any]:
     return content_of(document, path)["application/json"]["schema"]
 
 
-def test_openapi_names_both_answer_types(client: TestClient) -> None:
-    """``ConversionEntry`` und ``BatchResponse`` stehen unter ``components``.
+def declared_types() -> set[str]:
+    """Alles, was ``models.py`` als Schnittstelle beschreibt.
 
-    Ohne ``response_model`` an den beiden Endpunkten fehlen sie dort ganz, und wer
-    unter ``/api/docs`` nachsieht, findet sie nicht.
+    Die Liste steht nicht im Test, sondern kommt aus dem Modul: Ein neues Modell
+    faellt damit unter dieselbe Pruefung, ohne dass jemand daran denkt.
+    """
+    return {
+        name
+        for name, obj in vars(models).items()
+        if not name.startswith("_")
+        and isinstance(obj, type)
+        and issubclass(obj, (BaseModel, StrEnum))
+        and obj.__module__ == models.__name__
+    }
+
+
+def test_openapi_publishes_every_declared_type(client: TestClient) -> None:
+    """Jeder Typ aus ``models.py`` steht unter ``components``.
+
+    Der Schnittstellen-Dreiklang prueft ``contracts/api.md``, ``models.py`` und
+    ``types.ts`` gegeneinander — keine der drei Dateien sagt etwas darueber, was
+    der Dienst tatsaechlich ausliefert. Genau dort sind ``ConversionEntry``,
+    ``BatchResponse`` und ``ErrorResponse`` nacheinander verschwunden. Diese
+    Pruefung schliesst die Luecke als Klasse, nicht Name fuer Name.
+    """
+    published = set(client.get("/api/openapi.json").json()["components"]["schemas"])
+
+    missing = sorted(declared_types() - published)
+    assert not missing, f"nicht in /api/openapi.json veroeffentlicht: {', '.join(missing)}"
+    assert "ErrorResponse" in published
+
+
+def test_openapi_names_the_error_codes_of_each_endpoint(client: TestClient) -> None:
+    """Beide Endpunkte fuehren die Fehlercodes, die der Vertrag ihnen zuschreibt.
+
+    Die Codes entstehen im Ausnahmebehandler, nicht im Endpunkt. FastAPI sieht sie
+    deshalb nicht; ohne ``responses=`` verspricht ``/api/docs`` nur 200 und 422.
     """
     document = client.get("/api/openapi.json").json()
 
-    assert "ConversionEntry" in document["components"]["schemas"]
-    assert "BatchResponse" in document["components"]["schemas"]
+    for path, codes in ERROR_CODES.items():
+        responses = document["paths"][path]["post"]["responses"]
+        assert codes <= set(responses), f"{path} nennt {sorted(codes - set(responses))} nicht"
+        for code in codes:
+            schema = responses[code]["content"]["application/json"]["schema"]
+            assert schema["$ref"].endswith("/ErrorResponse"), f"{path} {code}"
+
+
+def test_openapi_binds_each_endpoint_to_its_model(client: TestClient) -> None:
+    """Die 200-Antwort verweist je Endpunkt auf das richtige Modell."""
+    document = client.get("/api/openapi.json").json()
+
     assert schema_of(document, "/api/convert")["$ref"].endswith("/ConversionEntry")
     assert schema_of(document, "/api/convert/batch")["$ref"].endswith("/BatchResponse")
 
