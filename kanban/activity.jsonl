@@ -599,3 +599,5 @@
 {"timestamp":"2026-09-01T16:35:44.224134042+02:00","action":"move","task_id":82,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-01T16:35:49.742517539+02:00","action":"edit","task_id":82,"detail":"FE-15 · Die Abschlussansage zaehlt abgebrochene Dateien nicht mit"}
 {"timestamp":"2026-09-01T16:35:49.743844974+02:00","action":"release","task_id":82,"detail":"benny-16"}
+{"timestamp":"2026-09-01T17:05:50.416504001+02:00","action":"move","task_id":77,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T17:05:51.293373313+02:00","action":"edit","task_id":77,"detail":"IN-13 · Die Docs-Stufe laeuft nach jedem Commit neu"}

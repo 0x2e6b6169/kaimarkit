@@ -1,10 +1,11 @@
 ---
 id: 77
 title: IN-13 · Die Docs-Stufe laeuft nach jedem Commit neu
-status: backlog
+status: todo
 priority: low
 created: 2026-09-01T13:50:30.694332269+02:00
-updated: 2026-09-01T14:10:45.24020749+02:00
+updated: 2026-09-01T17:05:51.289024923+02:00
+started: 2026-09-01T17:05:50.415518255+02:00
 assignee: akar
 tags:
     - infra
@@ -88,3 +89,15 @@ Als Notiz an **#56**, mit dem Abbildstand. Die Folgerung daraus zieht sophies La
 ### Warum das keine Vermischung ist
 
 Es ändert nichts am Gegenstand von #77 und besitzt keine zusätzliche Datei. Es nutzt nur einen Neustart, der ohnehin stattfindet. Ein eigenes Ticket dafür bräuchte denselben Neustart und könnte deshalb nie neben diesem laufen.
+
+[[2026-09-01]] Tue 17:05
+**Vom Nutzer freigegeben (01.09.2026): „Ja, das passt jetzt. Baue mit #77 neu."**
+
+Der Bau ersetzt seinen laufenden Dienst — das ist ihm gesagt und von ihm abgenommen. Er wartet auf das neue Abbild; seit dem laufenden Stand `bbf7180` sind sechs Merges dazugekommen (FE-14, FE-15, BE-29, BE-30, BE-31, PROC-4).
+
+**Zwei Erwartungen an diesen Lauf, die zugleich Prüfungen sind:**
+
+1. **Der Cache aus #55 wird zum ersten Mal im Ernstfall geprüft.** Die sechs Merges fassen `backend/app/` und `frontend/src` an, aber **nicht** `backend/pyproject.toml`. `pip install` und der Modell-Download müssen also `CACHED` melden. Tun sie es nicht, ist das ein Befund und wiegt schwerer als dieses Ticket — dann greift die Korrektur aus #55 im Alltag nicht.
+2. **Das VPN des Nutzers steht weiterhin.** Solange die ladenden Stufen `CACHED` sind, spielt das keine Rolle. Läuft eine davon doch neu, kriecht sie bei rund 0,5 MB/s — dann ist die Bauzeit kein Beleg für irgendetwas und gehört mit Vorbehalt notiert, nicht als Messwert.
+
+Am Ende steht ein gesunder Dienst aus dem Haupt-Checkout auf dem aktuellen Stand. `docker/.env` bleibt unangetastet — dort steht die Zeitgrenze des Nutzers.
