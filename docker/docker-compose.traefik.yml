@@ -44,6 +44,10 @@ services:
     # Labels wie "traefik.http.routers..rule". Deshalb faengt der Vorgabewert
     # beide Faelle ab, die fehlende und die leere Variable. Ein docker/.env aus
     # der Zeit vor dieser Variablen laeuft damit unveraendert weiter.
+    #
+    # Bei ihren Middlewarevariablen schreibt die Authelia-Schicht "-" ohne
+    # Doppelpunkt, und das gehört dorthin: Dort ist der leere Wert eine gültige
+    # Angabe. Der Unterschied zwischen beiden Formen ist Absicht.
     labels:
       - "traefik.enable=true"
 
