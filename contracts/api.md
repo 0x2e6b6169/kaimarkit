@@ -95,7 +95,7 @@ was ohnehin scheitern würde.
   "limits": {
     "max_file_size_mb":    50,
     "max_files":           20,
-    "conversion_timeout_s": 120
+    "conversion_timeout_s": 600
   },
   "ocr_available": true,
   "default_engine": "auto"
