@@ -240,6 +240,13 @@ Deutsche Fließtexte — Dokumentation, Kommentare, Ticket-Rümpfe — folgen
 `~/.claude/rules/SPRACHE.md`. Code, Bezeichner, Variablennamen und Commit-Messages
 bleiben englisch.
 
+**Ein Wortlaut, den ein Ticket vorschlägt, steht darin in richtiger Schreibung.** Ein
+Subagent übernimmt einen vorgeschlagenen Meldungstext wörtlich — schreibt der Rumpf
+ihn in ASCII-Umschrift, landet die Umschrift im Quelltext und damit vor dem Nutzer.
+Genau so ist die Warnung aus BE-19 entstanden, Minuten nachdem BE-21 dieselbe
+Umschrift an anderer Stelle beseitigt hatte. Das Board verträgt Umlaute; die
+Gewohnheit, ohne sie zu schreiben, war nie nötig.
+
 <!-- BEGIN kanban-md context -->
 ## Board: kaimarkit
 
