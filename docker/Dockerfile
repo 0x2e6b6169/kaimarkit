@@ -85,20 +85,28 @@ RUN apt-get update \
 WORKDIR /src
 COPY . .
 
-# Zwei Wege zur ausgelieferten Dokumentation, und der zweite ist der Grund, dass
-# der allererste Bau ueberhaupt durchlaeuft: Im veroeffentlichten Repo liegt unter
-# gh-pages die von mike gebaute Fassung mit allen Versionen. In einem frischen
-# Klon vor dem ersten Release gibt es diesen Zweig nicht — dann baut die Stufe die
-# aktuelle Fassung selbst.
+# Drei Faelle, und die letzten beiden sind der Grund, dass ein Bau ueberhaupt
+# durchlaeuft, bevor etwas veroeffentlicht ist: Im veroeffentlichten Repo liegt
+# unter gh-pages die von mike gebaute Fassung mit allen Versionen. In einem
+# frischen Klon vor dem ersten Release gibt es diesen Zweig nicht. Und kommt der
+# Kontext aus einem Git-Worktree, ist ".git" dort kein Verzeichnis, sondern eine
+# Datei mit einem Zeiger auf den Haupt-Checkout; im Container laeuft dieser Zeiger
+# ins Leere. Git nimmt das nicht hin und beendet jeden Aufruf im Baum mit 128 —
+# auch "git config --global", das aus dem Repo nichts liest. Deshalb steht die
+# Frage nach dem Verzeichnis vor dem ersten Git-Aufruf und nicht erst vor dem
+# zweiten. In den letzten beiden Faellen baut die Stufe die aktuelle Fassung
+# selbst.
 #
 # Die Abhaengigkeiten stehen in backend/pyproject.toml unter der Gruppe "docs".
 # Sie werden von dort gelesen, damit es nur eine Quelle dafuer gibt.
-RUN git config --global --add safe.directory /src \
-    && mkdir -p /docs-site \
+RUN mkdir -p /docs-site \
     && GH_PAGES="" \
-    && for ref in gh-pages origin/gh-pages; do \
-           if git rev-parse --verify "$ref" >/dev/null 2>&1; then GH_PAGES="$ref"; break; fi; \
-       done \
+    && if [ -d .git ]; then \
+           git config --global --add safe.directory /src; \
+           for ref in gh-pages origin/gh-pages; do \
+               if git rev-parse --verify "$ref" >/dev/null 2>&1; then GH_PAGES="$ref"; break; fi; \
+           done; \
+       fi \
     && if [ -n "$GH_PAGES" ]; then \
            git archive "$GH_PAGES" | tar -x -C /docs-site; \
        else \

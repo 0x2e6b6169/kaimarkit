@@ -235,6 +235,37 @@ entsteht dort nie — ein `PreToolUse`-Hook setzt das durch. Wer committet, nenn
 eigenen Dateien einzeln und niemals `git add -A`: Der gemeinsame Checkout hält fast
 immer den Board- und Codezustand anderer Sitzungen.
 
+### Das Abbild wird aus dem Worktree gebaut
+
+`make up` und `make build` laufen aus dem Worktree, nicht aus dem Haupt-Checkout.
+Der Grund ist nicht die Bequemlichkeit, sondern der feste Stand. Der Haupt-Checkout
+gehört allen Sitzungen: Während dort ein Bau läuft, mergen fremde Tickets nach
+`main` — in genau das Verzeichnis, aus dem Docker gerade liest. Nichts am Vorgang
+meldet das. Kein Fehler, keine Warnung, kein sichtbarer Unterschied — **ein falscher
+Bau sieht aus wie ein richtiger.** Am 1. September 2026 ist das passiert, und
+aufgefallen ist es nur, weil jemand die Merges nebenher mitgelesen hat. Ein Worktree
+steht auf einem eigenen Zweig, den fremde Merges nicht bewegen.
+
+`docker/.env` liegt nicht im Git und wird in jedem Worktree einmal angelegt:
+
+```bash
+cd .worktrees/task-NN
+cp docker/.env.example docker/.env
+make up
+```
+
+Containername und Port stehen dort und sind in jedem Checkout dieselben. Zwei Läufe
+gleichzeitig gehen deshalb nicht; wer baut, hält den Dienst des anderen an.
+
+Ein Unterschied bleibt und ist gewollt. Die Docs-Stufe des Abbilds holt die
+veröffentlichte Dokumentation mit `git archive gh-pages` aus dem Repo. Dafür braucht
+sie das Objektlager, und das steht im Worktree nicht zur Verfügung: `.git` ist dort
+kein Verzeichnis, sondern eine Datei mit einem Zeiger auf den Haupt-Checkout, und im
+Container läuft dieser Zeiger ins Leere. Die Stufe erkennt das und baut die aktuelle
+Fassung selbst — derselbe Weg wie in einem frischen Klon vor dem ersten Release. Ein
+Abbild mit allen veröffentlichten Versionen entsteht nur aus dem Haupt-Checkout, und
+das ist Sache des Release, nicht der Entwicklung.
+
 ### Der Ticketschnitt entscheidet über die Gleichzeitigkeit
 
 Jeder Ticketrumpf hat denselben Aufbau: **Ziel**, **Eigene Dateien**, **Vorgaben**,
