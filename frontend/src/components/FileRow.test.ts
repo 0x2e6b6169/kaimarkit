@@ -8,7 +8,8 @@
  */
 
 import { mount } from '@vue/test-utils'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { nextTick } from 'vue'
 import FileRow from './FileRow.vue'
 import type { QueueEntry } from '../composables/useConversion'
 
@@ -35,6 +36,10 @@ function entry(overrides: Partial<QueueEntry> = {}): QueueEntry {
 }
 
 describe('FileRow', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it('nennt jeden Zustand als Wort, nicht nur als Farbe', () => {
     const cases: [QueueEntry['status'], string][] = [
       ['queued', 'wartet'],
@@ -116,6 +121,64 @@ describe('FileRow', () => {
     // Der gefuellte Slot ersetzt den Rueckfall vollstaendig.
     expect(wrapper.get('#file-row-1-preview').text()).toBe('Vorschau aus dem Elternteil.')
     expect(wrapper.text()).not.toContain('Zeichen Markdown')
+  })
+
+  it('zaehlt an der laufenden Zeile mit, wie lange sie schon laeuft', async () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(FileRow, { props: { entry: entry({ status: 'running' }) } })
+    expect(wrapper.text()).toContain('läuft · 0:00')
+
+    vi.advanceTimersByTime(47_000)
+    await nextTick()
+    expect(wrapper.text()).toContain('läuft · 0:47')
+
+    vi.advanceTimersByTime(60_000)
+    await nextTick()
+    expect(wrapper.text()).toContain('läuft · 1:47')
+
+    // Nichts behauptet einen Fortschritt: Das Ende ist unbekannt.
+    expect(wrapper.text()).not.toContain('%')
+    expect(wrapper.find('progress').exists()).toBe(false)
+  })
+
+  it('haelt den Zaehler an, sobald die Datei fertig ist, und nennt die Gesamtdauer', async () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(FileRow, { props: { entry: entry({ status: 'running' }) } })
+    vi.advanceTimersByTime(103_000)
+    await nextTick()
+    expect(wrapper.text()).toContain('1:43')
+
+    await wrapper.setProps({
+      entry: entry({ status: 'ok', markdown: '# a', engine: 'docling', durationMs: 103_500 }),
+    })
+
+    expect(wrapper.text()).not.toContain('1:43')
+    expect(wrapper.text()).toContain('fertig')
+    expect(wrapper.text()).toContain('103500 ms')
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('zaehlt weder vor dem Start noch nach einem Fehlschlag', () => {
+    vi.useFakeTimers()
+
+    for (const status of ['queued', 'failed'] as const) {
+      const wrapper = mount(FileRow, { props: { entry: entry({ status }) } })
+      expect(wrapper.text()).not.toMatch(/\d:\d\d/)
+      expect(vi.getTimerCount()).toBe(0)
+      wrapper.unmount()
+    }
+  })
+
+  it('laesst den Zaehler nicht weiterticken, wenn die Zeile verschwindet', () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(FileRow, { props: { entry: entry({ status: 'running' }) } })
+    expect(vi.getTimerCount()).toBe(1)
+
+    wrapper.unmount()
+    expect(vi.getTimerCount()).toBe(0)
   })
 
   it('meldet den Wunsch, die Zeile zu entfernen', async () => {
