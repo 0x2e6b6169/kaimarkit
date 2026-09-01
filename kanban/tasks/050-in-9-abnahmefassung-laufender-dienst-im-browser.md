@@ -4,15 +4,13 @@ title: 'IN-9 · Abnahmefassung: laufender Dienst, im Browser des Hosts pruefbar'
 status: done
 priority: high
 created: 2026-09-01T08:52:15.226215349+02:00
-updated: 2026-09-01T11:42:06.313701807+02:00
+updated: 2026-09-01T11:42:54.319663242+02:00
 started: 2026-09-01T11:42:06.323336252+02:00
 completed: 2026-09-01T11:42:06.323336252+02:00
 assignee: akar
 tags:
     - infra
     - release
-claimed_by: akar-21
-claimed_at: 2026-09-01T11:42:06.313701807+02:00
 class: standard
 ---
 
@@ -197,3 +195,12 @@ Der Container laeuft weiter (`kaimarkit`, `healthy`, Port `127.0.0.1:8080`),
 `docker/.env` liegt als Kopie von `docker/.env.example` im Arbeitsbaum. Der Worktree
 `.worktrees/task-50` ist entfernt, der Zweig gemergt. Das Ticket steht auf `review`:
 Die letzte Meile — der Browser unter Windows — geht der Nutzer.
+
+[[2026-09-01]] Tue 11:42
+Vom Nutzer abgenommen (01.09.2026): "Fuer den aktuellen Stand ist #50 okay, das heisst aber nicht, dass wir statisch bleiben."
+
+Die Abnahme lief ueber echte Dokumente, nicht ueber die Abnahmeliste: eine Bahnrechnung (docling, 103,5 s, beide Tabellen vollstaendig) und eine Anmeldung (docling, 326,1 s, drei Platzhalter mit Warnung — die Mehrzahlform der BE-14-Warnung damit am echten Fall belegt). Ein drittes Dokument scheiterte zuerst an der Zeitgrenze von 120 s und lief nach dem Quick-Fix des Nutzers auf 600 s durch.
+
+Der Weg von Windows nach WSL ist damit an echtem Gebrauch belegt, nicht nur an curl. Der Container laeuft weiter; `docker/.env` traegt jetzt die hoehere Zeitgrenze.
+
+Aus der Abnahme sind sechs Befunde als Tickets entstanden: #55, #56, #57, #58, #59, #60. Dazu eine offene Produktfrage, die kein Ticket ist, weil sie dem Nutzer gehoert: ob `engine=auto` fuer `.pdf` weiterhin docling zuerst nennen soll.
