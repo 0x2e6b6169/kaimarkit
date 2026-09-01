@@ -88,7 +88,7 @@ class PandocConverter:
                 f"Pandoc hat {path.name} in {timeout} s nicht gewandelt."
             ) from exc
         except OSError as exc:  # Programm verschwunden oder nicht ausfuehrbar
-            raise EngineUnavailable(f"Pandoc laesst sich nicht aufrufen: {exc}") from exc
+            raise EngineUnavailable(f"Pandoc lässt sich nicht aufrufen: {exc}") from exc
 
         if process.returncode != 0:
             raise EngineFailed(
