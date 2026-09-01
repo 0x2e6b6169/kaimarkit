@@ -1,10 +1,12 @@
 ---
 id: 88
 title: IN-17 · Drei Kommentare in den Compose-Dateien sagen Falsches
-status: todo
+status: done
 priority: medium
 created: 2026-09-01T18:16:39.541396522+02:00
-updated: 2026-09-01T18:16:39.541396522+02:00
+updated: 2026-09-01T18:26:20.065160826+02:00
+started: 2026-09-01T18:26:14.076779579+02:00
+completed: 2026-09-01T18:26:14.076779579+02:00
 assignee: akar
 tags:
     - infra
@@ -64,3 +66,94 @@ Zu 3: Ein Satz am Kopf von `.env.example`.
 - Der Satz zu den zwei Ersetzungsformen nennt beide Gründe und macht klar, dass das Vereinheitlichen einen dokumentierten Weg zerstört.
 - `docker compose -f … config` liefert vor und nach dem Ticket dieselbe Ausgabe — es hat sich nichts als Kommentare geändert. Das ist die Prüfung, dass kein Verhalten mitgegangen ist.
 - `mkdocs build --strict` läuft durch.
+
+
+---
+
+## Umgesetzt (akar-30)
+
+Branch `task/88-compose-comments`, Commit `cbd76ec`, Merge `d166878`.
+
+### Gemessen: environment-Listen verhalten sich wie labels
+
+Compose v5.1.4, zwei Dateien, Dienst `app`:
+
+    Basis:      environment: [ONLY_BASE=base, SHARED=from-base, DUP=first, DUP=second]
+    Ergaenzung: environment: [SHARED=from-override, ONLY_OVER=over]
+    -> DUP: second | ONLY_BASE: base | ONLY_OVER: over | SHARED: from-override
+
+Der doppelte Schluessel steht einmal da, mit dem Wert der zweiten Datei. Die
+Schluessel, die nur eine Datei nennt, bleiben alle erhalten — es ist also weder
+ein Aneinanderhaengen noch ein Ersetzen der ganzen Liste, sondern eine
+Zusammenfuehrung ueber die Schluessel. Dasselbe Ergebnis bei gemischten Formen,
+in beiden Richtungen: Map in der Basis und Liste in der Ergaenzung, und
+umgekehrt. Compose normalisiert die Liste beim Laden zur Map, wie bei `labels`.
+
+**Gegenprobe, damit die Aussage eine Grenze hat:** `ports` und `volumes` haengt
+Compose tatsaechlich aneinander — zwei Dateien, je ein Eintrag, danach standen
+beide da. Das ist der Grund fuer das `!reset` in der Traefik-Schicht, und es
+bleibt richtig.
+
+**Folge fuer den Kommentar:** Die Begruendung fuer die Map-Form bei `environment`
+steht ohne technische Stuetze da. Sie lautet jetzt „lesbarer, und eine
+Ergaenzungsdatei ersetzt sichtbar einen einzelnen Schluessel", mit der Messung
+und dem Satz „Die Listenform verloere also nichts" dahinter. Keine neue
+Behauptung an die Stelle der alten.
+
+### Die drei Punkte
+
+1. `docker/docker-compose.yml` — die widerlegte Begruendung ist weg, die Messung
+   steht dort.
+2. `docker/docker-compose.authelia.yml` — der Satz zu den beiden
+   Ersetzungsformen. **Abweichung von der Dateiliste des Tickets:** Der Rumpf
+   nennt dafuer `docker-compose.traefik.yml`, aber `${KAIMARKIT_MIDDLEWARES}`
+   steht dort gar nicht. Beide Formen stehen in der Authelia-Schicht, in Zeile 75
+   sogar in derselben Zeile. Der Satz gehoert deshalb dorthin; in
+   `docker-compose.traefik.yml` steht nur ein Dreizeiler, der auf die andere
+   Schicht verweist, damit ihr Leser die Abweichung nicht fuer einen Fehler haelt.
+   Kein offenes Ticket besass `docker-compose.authelia.yml`.
+   Genannt sind beide dokumentierten Angaben: leeres `KAIMARKIT_API_MIDDLEWARES`
+   (curl ohne Browsersitzung an `/api`) und leeres `KAIMARKIT_MIDDLEWARES`
+   (Oberflaeche offen) — beide beschreibt `docs/betrieb/authelia.md`.
+3. `docker/.env.example` — Satz am Kopf. Nachgemessen: `MW=${X}-auth@docker` nach
+   `X=probe` ergibt `probe-auth@docker`; in umgekehrter Reihenfolge
+   `-auth@docker`, dazu nur `level=warning ... Defaulting to a blank string`.
+   Der ausfuehrliche Hinweis in der Authelia-Gruppe (aus IN-16) bleibt stehen; am
+   Kopf steht er, weil ihn liest, wer die Datei umsortiert.
+
+`docs/betrieb/traefik.md` sagte „Gegen Listen spricht sonst, dass Compose sie
+aneinanderhaengt" und schraenkte das nur fuer `labels` ein. Der Satz nennt jetzt
+die Trennlinie: `ports` und `volumes` einerseits, `labels` und `environment`
+andererseits.
+
+### Pruefung
+
+- Keine Datei behauptet mehr, Compose fuehre Label-Listen additiv zusammen:
+  `grep -rniE "additiv|aneinander"` ueber `docker/` und `docs/` liefert nur noch
+  die Stellen zu `ports`/`volumes` und die berichtigten Saetze.
+- Der Satz zu den zwei Formen nennt beide Gruende und sagt, was das
+  Vereinheitlichen kostet.
+- **`docker compose config` byteweise gleich, vorher und nachher.** Gegen die
+  Arbeitskopie `docker/.env` in allen drei Kombinationen (Basis; + Traefik;
+  + Traefik + Authelia): stdout und stderr identisch. Zusaetzlich gegen
+  `.env.example`: einmal nur die `.env.example` variiert (identisch), einmal nur
+  die Compose-Dateien (identisch bis auf den Build-Kontext, der vom Ablageort der
+  Dateien kommt, nicht von der Aenderung).
+- `mkdocs build --strict` laeuft durch.
+- Der Container `kaimarkit` des Nutzers auf 127.0.0.1:8080 blieb unangetastet;
+  nichts wurde gestartet oder gestoppt. `docker/.env` nicht ueberschrieben — fuer
+  die Messung eine Kopie in den Worktree gelegt, die `.gitignore` faengt sie ab.
+
+## Befunde ausserhalb dieses Tickets
+
+1. **`ENTWURF.md:449` sagt dasselbe Falsche**: „Labels in Map-Form, nicht als
+   Liste: Compose fuehrt Listen additiv zusammen …". Nicht angefasst — `ENTWURF.md`
+   haelt laut CLAUDE.md die Herkunft fest, nicht die Vorschrift, und stand nicht in
+   der Dateiliste. Wenn der Entwurf trotzdem stimmen soll, ist das ein eigenes
+   Ticket.
+2. **Umlaute in `docker/`**: Die vier Dateien unter `docker/` stehen vollstaendig
+   in ASCII-Umschrift, die Seiten unter `docs/` mit Umlauten. Die neuen Saetze
+   sind mit Umlauten geschrieben, wie es die Prosa-Regel verlangt; die Dateien
+   sind dadurch gemischt. Ein Ticket „Umschrift in den Compose-Dateien und im
+   Dockerfile" wuerde das aufloesen — dieselbe Art wie BE-21/BE-22/BE-23, nur
+   fuer Kommentare statt fuer nutzersichtbare Meldungen.
