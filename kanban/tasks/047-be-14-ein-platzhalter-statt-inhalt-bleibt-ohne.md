@@ -1,18 +1,18 @@
 ---
 id: 47
 title: BE-14 · Ein Platzhalter statt Inhalt bleibt ohne Warnung
-status: in-progress
+status: done
 priority: high
 created: 2026-08-31T17:08:22.240557722+02:00
-updated: 2026-09-01T09:08:14.488448827+02:00
+updated: 2026-09-01T09:12:51.767203218+02:00
+started: 2026-09-01T09:12:07.741377092+02:00
+completed: 2026-09-01T09:12:07.741377092+02:00
 assignee: sophie
 tags:
     - backend
     - bug
 depends_on:
     - 46
-claimed_by: sophie-13
-claimed_at: 2026-09-01T09:08:14.488448827+02:00
 class: standard
 ---
 
@@ -91,3 +91,14 @@ kein leerer Platzhalter, deshalb steht hier nur Docling.
 Vom PO auf high gehoben und nach todo gezogen. Der Nutzer will die Fassung selbst im Browser pruefen, und dieser Fehler trifft genau das: Eine Tabelle verschwindet, `status` sagt `ok`, `warnings` ist leer. Wer den Kontext sehen will, den er einem LLM gibt — der Zweck dieses Projekts —, sieht hier das Gegenteil und merkt es nicht.
 
 Ausserdem: **#46 und #47 besitzen dieselben zwei Dateien** (`docling.py`, `test_docling.py`). Nach dem Ticketschnitt duerfen sie nicht gleichzeitig laufen. Deshalb haengt #47 jetzt an #46 — `--unblocked` blendet es aus, bis #46 durch ist. Kein Schnittfehler, sondern zwei Befunde aus demselben Lauf am selben Modul; die Reihenfolge loest es.
+
+[[2026-09-01]] Tue 09:12
+Gebaut: `_placeholder_warnings(markdown, name)` in `docling.py` zaehlt `<!-- image -->` im exportierten Markdown; `convert()` legt daraus genau eine Warnung ins Ergebnis. Der Text nennt Datei und Zahl: "Docling hat in bericht.pdf 3 Bilder durch Platzhalter ersetzt. Ihr Inhalt fehlt im Markdown." Bei genau einem Platzhalter: "... ein Bild durch einen Platzhalter ersetzt. Sein Inhalt fehlt im Markdown."
+
+Rot vor gruen: Die drei neuen Tests liefen zuerst gegen den unveraenderten Adapter — `2 failed, 12 passed, 2 deselected`, beide Zaehltests mit `assert 0 == 1` auf leeren `warnings`. Die Gegenprobe war schon vorher gruen, wie sie sollte. Nach der Aenderung: `pytest -q` = 112 passed, 4 deselected; `ruff check .` sauber.
+
+Geprueft auf der Ebene, die ohne docling laeuft: gegen die Nachbearbeitung des Markdown-Strings ueber die vorhandene `FakePipeline`. Ein echter Docling-Lauf gegen das Befund-PDF steht aus und ist im Container zu pruefen — docling ist in der geteilten pyenv-Umgebung nicht installiert und darf es dort nicht werden.
+
+`test_docling_ocr.py` blieb unberuehrt und gruen. markitdown blieb aussen vor: Es setzt den Alt-Text ein, das ist laut Kopfkommentar gewollt und kein leerer Platzhalter.
+
+Befund fuer den PO: In `docs/formate.md` (Abschnitt "Docling") wird durch die Aenderung nichts unwahr, aber der Abschnitt erwaehnt die neue Warnung nicht — anders als die Abschnitte zu MarkItDown und Pandoc, die ihre `warnings` benennen. Ein Satz dort waere konsequent.

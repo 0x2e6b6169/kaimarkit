@@ -4,7 +4,7 @@ title: IN-8 · Docs-Stufe scheitert, wenn der Bau aus einem Worktree laeuft
 status: todo
 priority: high
 created: 2026-08-31T17:07:30.823818638+02:00
-updated: 2026-09-01T08:56:11.989913031+02:00
+updated: 2026-09-01T09:13:03.711791365+02:00
 assignee: akar
 tags:
     - infra
@@ -79,3 +79,12 @@ Grund, warum sie drinbleibt.
 
 [[2026-09-01]] Tue 08:53
 Nach todo gezogen, aber hinter #50 (IN-9). Grund ist kein Dateikonflikt, sondern ein Betriebsmittel: Beide Tickets bauen und starten den Dienst, beide benutzen denselben Containernamen `kaimarkit` und denselben Port 8080. Gleichzeitig laufen sie sich gegenseitig um. IN-9 zuerst, weil der Nutzer die Fassung heute testen will; IN-8 danach, mit dem Bau aus dem Worktree.
+
+[[2026-09-01]] Tue 09:13
+Die Begruendung dieses Tickets ist staerker, als beim Verteilen angenommen. Ich hatte #45 gegen #50 als Entwicklerbequemlichkeit eingeordnet; das war zu kurz gegriffen.
+
+Befund von akar, waehrend #50 lief: **Ein Bau aus dem gemeinsamen Haupt-Checkout hat keinen festen Stand.** akar-21 fing um 08:53 auf `ed56300` an; waehrend der Bau lief, merzten sophies Subagenten `0cc458a` (BE-13) und `6f9cafc` (BE-14) in genau das Verzeichnis, aus dem gebaut wurde. Die Abnahmefassung haette dem Nutzer die beiden Fehler vorgelegt, die wir gerade behoben hatten. Aufgefallen ist es nur, weil der PO die Merges nebenher gesehen hat — nicht, weil irgendetwas es gemeldet haette.
+
+Der Worktree ist die Antwort darauf: Er faehrt einen festgelegten Stand, den fremde Merges nicht bewegen. Solange dieses Ticket offen ist, kann kein Bau reproduzierbar sein.
+
+Daraus eine zusaetzliche Vorgabe: Der Abschnitt in `docs/entwicklung.md` sagt nicht nur, dass der Bau aus einem Worktree geht, sondern **dass er von dort laufen soll** — und warum. Ein Bau aus dem Haupt-Checkout ist kein Notweg mehr, sondern eine Fehlerquelle mit Namen.
