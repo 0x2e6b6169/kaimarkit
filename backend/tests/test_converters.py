@@ -160,3 +160,36 @@ def test_markdown_wird_durchgereicht(tmp_path: Path) -> None:
 
     assert result.engine == registry.PASSTHROUGH
     assert result.markdown == f"# {MARKER}\n"
+
+
+#: Sechs Umlaute, die in ISO-8859-1 je ein Byte belegen, das kein UTF-8 ist.
+UMLAUTE = f"# {MARKER}\n\nGrüße über Umlaute: ä ö ü\n"
+
+
+def test_fremde_kodierung_wird_gemeldet(tmp_path: Path) -> None:
+    """Eine .md-Datei in ISO-8859-1 kommt zurueck, aber mit einer Warnung.
+
+    Die sechs Umlaute werden beim Lesen durch U+FFFD ersetzt. Ohne Warnung stuende
+    ``status: ok`` ueber einem Text mit sechs zerstoerten Stellen.
+    """
+    sample = tmp_path / "notiz.md"
+    sample.write_bytes(UMLAUTE.encode("iso-8859-1"))
+
+    result = convert_with_fallback(sample, ConvertOptions())
+
+    assert result.engine == registry.PASSTHROUGH
+    assert MARKER in result.markdown
+    assert len(result.warnings) == 1
+    assert "6" in result.warnings[0]
+    assert "notiz.md" in result.warnings[0]
+
+
+def test_utf8_meldet_nichts(tmp_path: Path) -> None:
+    """Gegenprobe: dieselbe Datei in UTF-8 kommt unversehrt und ohne Warnung."""
+    sample = tmp_path / "notiz.md"
+    sample.write_text(UMLAUTE, encoding="utf-8")
+
+    result = convert_with_fallback(sample, ConvertOptions())
+
+    assert result.markdown == UMLAUTE
+    assert result.warnings == []
