@@ -204,5 +204,6 @@ curl -sf -F file=@a.pdf -F file=@b.epub -F file=@c.docx \
 ```
 
 Der Aufruf antwortet mit 200, auch wenn jede einzelne Datei scheiterte — die
-Anfrage selbst war ja in Ordnung. Nur 413 (zu viele Dateien) und 415 gelten für den
-Stapel als Ganzes.
+Anfrage selbst war ja in Ordnung. Auch eine unbekannte Endung bleibt ein Fehler ihres
+Eintrags: Was `/api/convert` mit 415 abweist, wird hier zu `status: "failed"` mit dem
+Grund in `error`. Für den Stapel als Ganzes bleibt allein 413 (zu viele Dateien).

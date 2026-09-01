@@ -334,3 +334,27 @@ def test_nothing_stays_behind_after_a_failure(
 
     assert client.post("/api/convert", files=upload()).status_code == 500
     assert list(tmp_path.iterdir()) == []
+
+
+def test_unknown_extension_in_a_batch_stays_the_error_of_its_entry(client: TestClient) -> None:
+    """Was einzeln ein 415 waere, scheitert im Stapel nur als Eintrag.
+
+    Der Stapel antwortet mit 200; die uebrigen Dateien sind gewandelt. Wer fuenf
+    Dateien schickt, verliert nicht alle vier guten wegen einer unbekannten Endung.
+    """
+    install(DummyEngine("markitdown"))
+    files = [
+        ("file", (name, b"x", "application/octet-stream"))
+        for name in ("a.docx", "archiv.zip", "b.docx")
+    ]
+
+    response = client.post(
+        "/api/convert/batch", files=files, headers={"Accept": "application/json"}
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert [entry["status"] for entry in body["entries"]] == ["ok", "failed", "ok"]
+    assert body["entries"][1]["error"] == "Für .zip gibt es keine Engine."
+    assert body["entries"][0]["markdown"] and body["entries"][2]["markdown"]
+    assert (body["succeeded"], body["failed"]) == (2, 1)
