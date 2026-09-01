@@ -1,14 +1,16 @@
 ---
 id: 70
 title: FE-13 · Die fertige Zeile zeigt rohe Millisekunden
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-01T12:36:53.106709459+02:00
-updated: 2026-09-01T12:36:53.106709459+02:00
+updated: 2026-09-01T12:38:23.549618249+02:00
 assignee: benny
 tags:
     - frontend
     - ux
+claimed_by: benny-14
+claimed_at: 2026-09-01T12:38:23.549618249+02:00
 class: standard
 ---
 

@@ -1,18 +1,18 @@
 ---
 id: 59
 title: IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp
-status: in-progress
+status: done
 priority: high
 created: 2026-09-01T10:40:33.636401513+02:00
-updated: 2026-09-01T12:07:51.017454037+02:00
+updated: 2026-09-01T12:37:54.007733011+02:00
+started: 2026-09-01T12:37:28.190914523+02:00
+completed: 2026-09-01T12:37:28.190914523+02:00
 assignee: akar
 tags:
     - infra
     - config
 depends_on:
     - 45
-claimed_by: akar-23
-claimed_at: 2026-09-01T12:07:51.017454037+02:00
 class: standard
 ---
 
@@ -107,3 +107,151 @@ Die Ueberlegung beim Anlegen war: Klaert sich in BE-17, ob `ready` wirklich `rea
 Ausserdem haette die Sperre eine `high`-Sache mit sichtbarer Wirkung fuer den Nutzer hinter einer `medium`-Untersuchung in einer anderen Lane angehalten — und akars Lane damit ganz.
 
 Bleibt die Abhaengigkeit auf #45, und die ist erfuellt.
+
+Umgesetzt (akar-23, 01.09.2026). Merge `01a8651`, Branch `task/59-conversion-timeout`.
+
+## Womit gemessen wurde
+
+**Die beiden Dokumente des Nutzers liegen nicht im Repo und auch sonst nicht auf der
+Maschine** — gesucht unter `/home/kai` und `/mnt/c/Users`, nichts gefunden. Gemessen
+wurde deshalb mit Ersatzvorlagen; keine der Zahlen unten stammt aus
+`DB_Rechnung_647052188315.pdf` oder `TeleTrusT-...Anmeldung.pdf`.
+
+- `eine-seite.pdf` — eine Seite mit Textschicht (`captcha-fox-2012.pdf` aus einem
+  anderen Projekt des Nutzers).
+- `scan-1.pdf` — dieselbe Seite bei 200 dpi gerastert und als JPEG eingebettet, also
+  **ohne Textschicht**. Das ist das Gegenstueck zu einer eingescannten Rechnung.
+
+Alle Laeufe am laufenden Container `kaimarkit` auf `127.0.0.1:8080`, `engine=docling`.
+Zeiten aus `docker logs kaimarkit`, Zeile `Finished converting document ... in N sec.`
+
+## Die Messung nach Vorgabe: dasselbe Dokument zweimal
+
+**PDF mit Textschicht, OCR aus** — nach Neustart des Containers:
+
+    Initializing pipeline for StandardPdfPipeline with options hash a6d37f82...
+    Finished converting document eine-seite.pdf in 12.27 sec.
+    Finished converting document eine-seite.pdf in 3.03 sec.
+
+**Dieselbe Seite gescannt, OCR an** — nach erneutem Neustart:
+
+    Initializing pipeline for StandardPdfPipeline with options hash b7d3334f...
+    Finished converting document scan-1.pdf in 117.62 sec.
+    Finished converting document scan-1.pdf in 173.54 sec.
+    Finished converting document scan-1.pdf in 109.42 sec.
+
+## Abweichung von der Annahme des Tickets
+
+Die Vorgabe lautete: „Die zweite ist die Arbeitszeit, die Differenz das Laden."
+**Beim gescannten Dokument stimmt das nicht.** Der zweite Lauf war mit 173,54 s
+langsamer als der erste mit 117,62 s, der dritte mit 109,42 s wieder schneller. Drei
+weitere Laeufe in einem eigenen Prozess im Container ergaben 150,65 / 86,73 /
+118,36 / 161,42 s.
+
+Die Streuung auf identischer Eingabe reicht damit von **87 bis 174 Sekunden, Faktor
+1,8**. Die Differenz zweier Laeufe misst hier nicht das Laden der Modelle, sondern
+das Rauschen des Rechners. Der Wert fuer die Voreinstellung folgt deshalb aus dem
+langsamsten bekannten echten Dokument und dieser Streuung, nicht aus einer Differenz.
+
+## Die Zahl fuer BE-17 (#56): das Laden dauert unter zehn Sekunden
+
+Beim Dokument **mit** Textschicht ist die Differenz sauber, weil die Arbeitszeit
+klein und stabil ist:
+
+| Lauf | OCR aus | OCR an |
+|---|---|---|
+| erster (mit `Initializing pipeline`) | 12,27 s | 10,88 s |
+| zweiter | 3,03 s | 2,58 s |
+| **Differenz** | **9,24 s** | **8,30 s** |
+
+Direkt gemessen im Container, `_build_pipeline(True)` mit einer Stoppuhr darum
+herum: **8,50 s** bei zwei Threads, **3,49 s** bei vier.
+
+**Das Laden der Modelle kostet also unter zehn Sekunden, nicht Minuten.** Der
+Modulkopf von `backend/app/converters/docling.py:4` sagt „laedt vor dem ersten Aufruf
+minutenlang" — mit den vorgebackenen Modellen aus dem Abbild gilt das nicht mehr.
+Das gehoert nach #56.
+
+Zwei Nebenbefunde dazu: Die Pipeline haengt am Hash der Optionen. OCR an und OCR aus
+sind **zwei** Pipelines (`a6d37f82...` gegen `b7d3334f...`), und `start_warmup` baut
+nur die zur Voreinstellung. Wer `ocr` im Aufruf umstellt, zahlt das Laden ein zweites
+Mal. Ausserdem laedt EasyOCR sein Modell erst beim ersten Gebrauch, nicht beim Bau
+der Pipeline.
+
+## Der zweite Weg ist keiner: mehr Threads bringen nichts
+
+Gemessen im Container, gleicher Prozessaufbau, `scan-1.pdf` je zweimal:
+
+| Threads | Lauf 1 | Lauf 2 |
+|---|---|---|
+| 2 (Vorgabe) | 150,65 s | 86,73 s |
+| 4 (`OMP_NUM_THREADS=4` + `torch.set_num_threads(4)`) | 118,36 s | 161,42 s |
+
+Kein Unterschied ausserhalb der Streuung. Der Grund steht in `lscpu`: **zwei
+physische Kerne, vier logische** (`Core(s) per socket: 2`, `Thread(s) per core: 2`,
+i7-8565U). Torchs zwei Threads sind die zwei echten Kerne; die anderen zwei sind
+SMT-Geschwister und rechnen nicht mit. Waehrend der Umwandlung stand die CPU bei
+120 bis 360 Prozent, der Speicher bei hoechstens 2,15 von 6 GB — kein Druck.
+
+**`docker/docker-compose.yml` bleibt unangetastet.** Eine CPU-Grenze fehlt dort zwar,
+aber sie ist nicht die Ursache, und ein `cpus`-Eintrag wuerde nichts verbessern.
+
+## Was die Zeit wirklich kostet
+
+Nicht die Seitenzahl, sondern die fehlende Textschicht. Dieselbe Seite:
+
+| | Zeit (zweiter Lauf) |
+|---|---|
+| mit Textschicht | **3,0 s** |
+| gescannt, OCR an | **109 bis 174 s** |
+
+Faktor vierzig. Die 103,51 s der Rechnung und die 326 s der Anmeldung sind damit
+erklaert: Es waren gescannte Dokumente. Ein PDF aus einem Textprogramm laeuft in
+Sekunden durch, egal wie lang die Grenze steht.
+
+## Der neue Wert: 600 statt 120
+
+Das langsamste bekannte echte Dokument brauchte 326 s. Die gemessene Streuung auf
+identischer Eingabe betraegt Faktor 1,8. 326 mal 1,8 sind 587 — aufgerundet **600**.
+Damit laeuft ein Dokument wie die Anmeldung auch an einem schlechten Tag durch, und
+die Grenze bleibt eine Grenze: Bei rund zwei Minuten je gescannter Seite deckt sie
+etwa fuenf Seiten ab, nicht beliebig viele.
+
+## Pruefung
+
+1. **Beide Messungen aus dem Log abgeschrieben** — siehe oben, samt der Abweichung
+   von der Annahme.
+2. **Laeuft mit Abstand durch** — `scan-1.pdf` (das Ersatzdokument fuer die Rechnung)
+   dreimal in 109 bis 174 s gegen eine Grenze von 600 s.
+3. **Gegenprobe bestanden.** Ein eigener Container `kaimarkit-in11-probe` aus
+   demselben Abbild auf Port 8099, `KAIMARKIT_CONVERSION_TIMEOUT=20`, danach
+   entfernt. `docling` auf `ready` abgewartet, dann `scan-1.pdf` geschickt:
+
+       {"detail":"Die Umwandlung hat die Zeitgrenze von 20 s ueberschritten",
+        "code":"conversion_timeout"}
+       HTTP 504  wall 20.165792s
+
+   Sauberer Abbruch nach 20,17 s, deutsche Meldung mit Grund und Grenze, kein
+   Haengen. Der Container des Nutzers und `docker/.env` blieben unberuehrt.
+4. `mkdocs build --strict` laeuft durch.
+
+## Geaenderte Dateien
+
+- `docker/.env.example:46-52` — Wert 600 mit der Messung als Begruendung im Kommentar.
+- `docs/betrieb/konfiguration.md:45` — Tabellenwert; neuer Abschnitt „Woran man merkt,
+  dass die Zeitgrenze zu knapp ist" am Ende von „Anwendung".
+- `docs/grenzen.md:15` — nannte weiterhin 120 und waere durch diesen Merge unwahr
+  geworden. Kein offenes Ticket besitzt die Seite (#42 und #62 sind `done`).
+
+## Zwei Stellen nennen weiterhin 120 — Befund fuer den PO
+
+Beide liegen ausserhalb dieses Tickets und ausserhalb akars Lane, deshalb nicht
+angefasst:
+
+- `backend/app/config.py:27` — `conversion_timeout: int = 120`. Die Voreinstellung im
+  Code. Fuer den Container ohne Wirkung, weil Compose den Wert aus `.env` durchreicht;
+  wer das Backend nackt mit `uvicorn` startet, bekommt weiterhin 120 s.
+- `contracts/api.md:98` — `"conversion_timeout_s": 120` im Beispielrumpf von
+  `/api/capabilities`. Nur ein Beispiel, aber es zeigt jetzt einen Wert, den keine
+  Auslieferung mehr hat. Die Datei gehoert zum Schnittstellen-Dreiklang; sie zu
+  aendern zoege `models.py` und `types.ts` in denselben Commit.

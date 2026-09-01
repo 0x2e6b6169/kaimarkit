@@ -1,10 +1,11 @@
 ---
 id: 55
 title: IN-10 · Jede Backend-Aenderung baut Torch und Docling neu
-status: backlog
+status: todo
 priority: medium
 created: 2026-09-01T09:57:11.385309146+02:00
-updated: 2026-09-01T12:06:06.191044778+02:00
+updated: 2026-09-01T12:39:31.01192723+02:00
+started: 2026-09-01T12:39:31.063630981+02:00
 assignee: akar
 tags:
     - infra

@@ -458,3 +458,11 @@
 {"timestamp":"2026-09-01T12:36:14.961306407+02:00","action":"edit","task_id":66,"detail":"BE-23 · OpenAPI-Felderklaerungen: Umschrift im Schnittstellen-Dreiklang"}
 {"timestamp":"2026-09-01T12:36:14.973053073+02:00","action":"release","task_id":66,"detail":"sophie-18"}
 {"timestamp":"2026-09-01T12:36:53.156019733+02:00","action":"create","task_id":70,"detail":"FE-13 · Die fertige Zeile zeigt rohe Millisekunden"}
+{"timestamp":"2026-09-01T12:37:17.845519351+02:00","action":"edit","task_id":59,"detail":"IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp"}
+{"timestamp":"2026-09-01T12:37:28.192286951+02:00","action":"move","task_id":59,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T12:37:54.013727095+02:00","action":"edit","task_id":59,"detail":"IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp"}
+{"timestamp":"2026-09-01T12:37:54.014509076+02:00","action":"release","task_id":59,"detail":"akar-23"}
+{"timestamp":"2026-09-01T12:38:23.57458353+02:00","action":"move","task_id":70,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T12:39:21.926053149+02:00","action":"create","task_id":71,"detail":"BE-24 · Zwei Antworttypen fehlen in der veroeffentlichten OpenAPI-Fassung"}
+{"timestamp":"2026-09-01T12:39:26.192971027+02:00","action":"create","task_id":72,"detail":"BE-25 · Zwei Stellen nennen weiterhin 120 Sekunden"}
+{"timestamp":"2026-09-01T12:39:31.064581894+02:00","action":"move","task_id":55,"detail":"backlog -\u003e todo"}
