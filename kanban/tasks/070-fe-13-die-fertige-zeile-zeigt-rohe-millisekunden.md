@@ -1,16 +1,14 @@
 ---
 id: 70
 title: FE-13 · Die fertige Zeile zeigt rohe Millisekunden
-status: in-progress
+status: done
 priority: medium
 created: 2026-09-01T12:36:53.106709459+02:00
-updated: 2026-09-01T12:38:23.549618249+02:00
+updated: 2026-09-01T12:44:54.779526099+02:00
 assignee: benny
 tags:
     - frontend
     - ux
-claimed_by: benny-14
-claimed_at: 2026-09-01T12:38:23.549618249+02:00
 class: standard
 ---
 
@@ -58,3 +56,21 @@ Schnittstellen-Dreiklang wird nicht angefasst.
   zwei.
 - `npm run test` und `npm run typecheck` bleiben grün; ohne die Änderung fällt der
   neue Test durch.
+
+[[2026-09-01]] Tue 12:44
+## Ergebnis (benny-14)
+
+Eine Funktion `formatDuration()` für beide Zustände. Ab einer Sekunde `m:ss`
+(326 062 ms → `5:26`, 103 500 ms → `1:43`), darunter die Sekunde selbst:
+35 ms → `0,04 s`, 300 ms → `0,3 s`, 0 ms → `0 s`. Damit verschwindet der
+häufige markitdown-Fall nicht mehr als `0:00`.
+
+Der laufende Zähler benutzt dieselbe Funktion und beginnt deshalb bei
+`läuft · 0 s` statt `läuft · 0:00`. Die Zusicherung darauf stammt aus FE-12 und
+steht in derselben Datei, ist also mitgezogen. Ausserhalb von
+`FileRow.test.ts` steht keine Zusicherung auf `ms` — geprüft über alle Tests.
+
+92 Tests grün, `npm run typecheck` grün. Gegenprobe ohne die Änderung an
+`FileRow.vue`: 5 Tests rot. In `docs/` wird durch die Änderung kein Satz falsch
+(`schnellstart.md` nennt „Engine und Dauer", ohne eine Schreibweise zu nennen;
+`api.md` beschreibt `duration_ms` im Backend, das unangetastet bleibt).

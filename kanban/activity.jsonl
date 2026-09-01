@@ -471,3 +471,10 @@
 {"timestamp":"2026-09-01T12:41:03.712679588+02:00","action":"move","task_id":55,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-01T12:42:56.025406292+02:00","action":"move","task_id":71,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-01T12:43:31.029244899+02:00","action":"move","task_id":56,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T12:44:54.803288266+02:00","action":"edit","task_id":70,"detail":"FE-13 · Die fertige Zeile zeigt rohe Millisekunden"}
+{"timestamp":"2026-09-01T12:44:54.805299255+02:00","action":"release","task_id":70,"detail":"benny-14"}
+{"timestamp":"2026-09-01T12:46:42.247216689+02:00","action":"edit","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}
+{"timestamp":"2026-09-01T12:51:12.464614184+02:00","action":"edit","task_id":71,"detail":"BE-24 · Zwei Antworttypen fehlen in der veroeffentlichten OpenAPI-Fassung"}
+{"timestamp":"2026-09-01T12:51:13.81830987+02:00","action":"move","task_id":71,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T12:51:20.414945902+02:00","action":"edit","task_id":71,"detail":"BE-24 · Zwei Antworttypen fehlen in der veroeffentlichten OpenAPI-Fassung"}
+{"timestamp":"2026-09-01T12:51:20.415241176+02:00","action":"release","task_id":71,"detail":"sophie-19"}
