@@ -4,12 +4,14 @@ title: PROC-4 · pytest -m slow ueberspringt auf dem Entwicklungsrechner still
 status: todo
 priority: medium
 created: 2026-08-31T17:08:53.51522673+02:00
-updated: 2026-09-01T13:02:59.345311211+02:00
+updated: 2026-09-01T13:04:21.767429495+02:00
 started: 2026-09-01T13:02:59.351411003+02:00
 assignee: akar
 tags:
     - docs
     - process
+depends_on:
+    - 55
 class: standard
 ---
 
@@ -121,3 +123,10 @@ unwahr wird.
 - Die Definition of done verlangt die Sammelzahl in der Rückmeldung.
 - Gegenprobe: In einer Umgebung ohne `markitdown` nennt der dokumentierte Befehl das
   übersprungene Modul samt Grund.
+
+[[2026-09-01]] Tue 13:04
+Hängt an #55 (IN-10), auf Meldung von akar — aus zwei Gründen, von denen der erste allein reicht.
+
+**Die Maschine.** akar-24 misst in #55 Bauzeiten. Der Rechner hat zwei physische Kerne (gemessen in #59), und die Streuung auf identischer Eingabe liegt schon ohne Fremdlast bei Faktor 1,8. Ein paralleler `pytest`-Lauf über 120 Tests samt Gegenprobe im Container nimmt sich einen guten Teil davon. Eine Bauzeit unter fremder Last belegt nichts — und sähe trotzdem aus wie eine Messung.
+
+**Das bedingte Eigentum.** `docs/entwicklung.md` steht in beiden Rümpfen, beide Male unter einer Bedingung: #55 „falls die Bauzeiten dort genannt sind", #49 „nur, falls dort ein Prüfbefehl steht, der unwahr wird". Zwei Tickets, die dieselbe Datei bedingt besitzen, kollidieren erst beim Merge — und dann beim Zweiten. Nach #55 ist außerdem entschieden, ob die Datei überhaupt angefasst wurde.

@@ -139,7 +139,16 @@ nach `main` nacheinander, Worktrees nach Abschluss aufräumen.
 Dass das aufgeht, hängt am Ticketschnitt: **Jeder Ticketrumpf nennt die Dateien,
 die er besitzt, und keine zwei offenen Tickets besitzen dieselbe Datei.** Finden
 sich zwei startbereite Tickets, die sich eine Datei teilen, ist das ein Schnittfehler
-— melden statt parallel laufen lassen.
+— melden statt parallel laufen lassen. Das gilt auch für **bedingtes** Eigentum
+(„… falls dort etwas steht, das dadurch falsch wird"): Zwei Tickets, die dieselbe
+Datei unter einer Bedingung führen, kollidieren nicht beim Verteilen, sondern beim
+Merge — und dann bei dem, der als Zweiter kommt.
+
+**Nicht nur Dateien kollidieren, sondern auch Betriebsmittel.** Zwei Tickets, die
+denselben Container, denselben Port oder dieselbe Maschine für eine Messung brauchen,
+laufen nacheinander, auch wenn ihre Dateilisten sauber getrennt sind. Eine Zahl, die
+unter fremder Last entstanden ist, belegt nichts und sieht trotzdem aus wie eine
+Messung.
 
 ### Alle Ticketarbeit läuft in einem Worktree
 

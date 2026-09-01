@@ -493,3 +493,8 @@
 {"timestamp":"2026-09-01T13:01:32.154181996+02:00","action":"release","task_id":72,"detail":"sophie-21"}
 {"timestamp":"2026-09-01T13:02:58.740568739+02:00","action":"edit","task_id":49,"detail":"PROC-4 · pytest -m slow ueberspringt auf dem Entwicklungsrechner still"}
 {"timestamp":"2026-09-01T13:02:59.352535949+02:00","action":"move","task_id":49,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T13:03:26.627052174+02:00","action":"edit","task_id":74,"detail":"BE-27 · Zwei Stellen beschreiben das Vorladen falsch"}
+{"timestamp":"2026-09-01T13:03:31.683415229+02:00","action":"move","task_id":74,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T13:03:37.401451117+02:00","action":"edit","task_id":74,"detail":"BE-27 · Zwei Stellen beschreiben das Vorladen falsch"}
+{"timestamp":"2026-09-01T13:03:37.402070323+02:00","action":"release","task_id":74,"detail":"sophie-23"}
+{"timestamp":"2026-09-01T13:04:21.768298468+02:00","action":"edit","task_id":49,"detail":"PROC-4 · pytest -m slow ueberspringt auf dem Entwicklungsrechner still"}
