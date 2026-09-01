@@ -437,3 +437,12 @@
 {"timestamp":"2026-09-01T12:19:21.283966948+02:00","action":"create","task_id":66,"detail":"BE-23 · OpenAPI-Felderklaerungen: Umschrift im Schnittstellen-Dreiklang"}
 {"timestamp":"2026-09-01T12:20:14.319570933+02:00","action":"edit","task_id":65,"detail":"BE-22 · Umschrift in den uebrigen Fehlermeldungen des Backends"}
 {"timestamp":"2026-09-01T12:20:15.265502773+02:00","action":"create","task_id":67,"detail":"FE-11 · FileRow kuendigt eine Vorschau an, die es laengst gibt"}
+{"timestamp":"2026-09-01T12:21:35.938168453+02:00","action":"move","task_id":67,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T12:21:38.973888786+02:00","action":"move","task_id":65,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T12:25:09.323349133+02:00","action":"edit","task_id":67,"detail":"FE-11 · FileRow kuendigt eine Vorschau an, die es laengst gibt"}
+{"timestamp":"2026-09-01T12:25:09.32359572+02:00","action":"release","task_id":67,"detail":"benny-12"}
+{"timestamp":"2026-09-01T12:26:08.508489437+02:00","action":"edit","task_id":65,"detail":"BE-22 · Umschrift in den uebrigen Fehlermeldungen des Backends"}
+{"timestamp":"2026-09-01T12:26:13.59345898+02:00","action":"move","task_id":65,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T12:26:23.881441531+02:00","action":"edit","task_id":65,"detail":"BE-22 · Umschrift in den uebrigen Fehlermeldungen des Backends"}
+{"timestamp":"2026-09-01T12:26:23.881893133+02:00","action":"release","task_id":65,"detail":"sophie-17"}
+{"timestamp":"2026-09-01T12:26:28.874872687+02:00","action":"create","task_id":68,"detail":"FE-12 · Die Warteschlange sagt nicht, wie lange etwas schon laeuft"}

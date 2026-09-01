@@ -196,6 +196,11 @@ Aussagen über ihn. Zwei offene Tickets im selben Abschnitt bleiben ein Schnittf
 Ein Abschnitt, den jedes Ticket anfassen müsste, folgt der Engpassdatei, zu der er
 gehört: `docs/formate.md` (Abschnitt „Die Matrix") gehört `BE-2`, so wie `registry.py`.
 
+**Ein Textticket besitzt selten nur den Test seiner eigenen Datei.** Zusicherungen auf
+einen Wortlaut stehen oft auch im Test der Elternkomponente, die ihn durch das Kind
+hindurch prüft. Vor dem Festlegen der Dateiliste deshalb den Wortlaut über alle Tests
+greppen, nicht nur die Datei danebenlegen.
+
 **Wer ein Verhalten ändert, berichtigt im selben Merge, was dadurch falsch wird** —
 auch auf einer Seite, die ein anderes Ticket angelegt hat. Was schon vorher falsch
 war, wird gemeldet statt geändert. Eine Seite, die nach dem Merge etwas Unwahres
