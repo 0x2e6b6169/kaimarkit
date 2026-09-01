@@ -17,7 +17,7 @@ from typing import Annotated
 from urllib.parse import quote
 
 from fastapi import APIRouter, File, Form, Header, Response, UploadFile
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import StreamingResponse
 
 from ..config import get_settings
 from ..converters.base import ConvertOptions
@@ -36,14 +36,29 @@ MARKDOWN_MEDIA_TYPE = "text/markdown; charset=utf-8"
 ZIP_MEDIA_TYPE = "application/zip"
 ARCHIVE_NAME = "markdown.zip"
 
+#: Der zweite Rumpf je Endpunkt, damit die OpenAPI-Fassung beide Zweige nennt.
+#:
+#: ``response_model`` beschreibt nur die JSON-Antwort. Ohne diesen Zusatz verschwiege
+#: ``/api/docs`` die Datei, die ``curl -O`` tatsaechlich bekommt.
+MARKDOWN_ALTERNATIVE: dict[int | str, dict[str, object]] = {
+    200: {"content": {MARKDOWN_MEDIA_TYPE: {"schema": {"type": "string"}}}}
+}
+ZIP_ALTERNATIVE: dict[int | str, dict[str, object]] = {
+    200: {"content": {ZIP_MEDIA_TYPE: {"schema": {"type": "string", "format": "binary"}}}}
+}
 
-@router.post("/convert", response_model=None)
+
+@router.post(
+    "/convert",
+    response_model=ConversionEntry,
+    responses=MARKDOWN_ALTERNATIVE,
+)
 async def convert(
     file: Annotated[UploadFile, File(description="Die Eingabedatei.")],
     engine: Annotated[str | None, Form(description="Enginename oder auto.")] = None,
     ocr: Annotated[bool | None, Form(description="Ueberschreibt KAIMARKIT_OCR_ENABLED.")] = None,
     accept: Annotated[str, Header()] = "",
-) -> Response:
+) -> ConversionEntry | Response:
     """Wandelt eine Datei nach Markdown.
 
     Die Antwort richtet sich nach ``Accept``: ``application/json`` liefert das
@@ -59,7 +74,7 @@ async def convert(
         filename = stored.filename
 
     if "application/json" in accept:
-        entry = ConversionEntry(
+        return ConversionEntry(
             filename=filename,
             status=ConversionStatus.OK,
             markdown=result.markdown,
@@ -68,7 +83,6 @@ async def convert(
             duration_ms=result.duration_ms,
             error=None,
         )
-        return JSONResponse(content=entry.model_dump(mode="json"))
 
     headers = {
         "Content-Disposition": _content_disposition(_markdown_name(filename)),
@@ -79,13 +93,17 @@ async def convert(
     return Response(content=result.markdown, media_type=MARKDOWN_MEDIA_TYPE, headers=headers)
 
 
-@router.post("/convert/batch", response_model=None)
+@router.post(
+    "/convert/batch",
+    response_model=BatchResponse,
+    responses=ZIP_ALTERNATIVE,
+)
 async def convert_batch(
     file: Annotated[list[UploadFile], File(description="Die Eingabedateien.")],
     engine: Annotated[str | None, Form(description="Enginename oder auto.")] = None,
     ocr: Annotated[bool | None, Form(description="Ueberschreibt KAIMARKIT_OCR_ENABLED.")] = None,
     accept: Annotated[str, Header()] = "",
-) -> Response:
+) -> BatchResponse | Response:
     """Wandelt mehrere Dateien in einem Aufruf.
 
     Eine gescheiterte Datei nimmt die uebrigen nicht mit: Sie bekommt einen Eintrag
@@ -106,13 +124,12 @@ async def convert_batch(
 
     if "application/json" in accept:
         succeeded = sum(1 for entry in entries if entry.status == ConversionStatus.OK)
-        body = BatchResponse(
+        return BatchResponse(
             entries=entries,
             total=len(entries),
             succeeded=succeeded,
             failed=len(entries) - succeeded,
         )
-        return JSONResponse(content=body.model_dump(mode="json"))
 
     return StreamingResponse(
         build_archive(entries),
