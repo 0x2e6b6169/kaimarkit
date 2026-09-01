@@ -1,15 +1,17 @@
 ---
 id: 58
 title: BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-01T10:25:37.13806965+02:00
-updated: 2026-09-01T13:06:47.168745359+02:00
+updated: 2026-09-01T13:08:46.825473676+02:00
 started: 2026-09-01T13:06:47.176178135+02:00
 assignee: sophie
 tags:
     - backend
     - tests
+claimed_by: sophie-25
+claimed_at: 2026-09-01T13:08:46.825473676+02:00
 class: standard
 ---
 

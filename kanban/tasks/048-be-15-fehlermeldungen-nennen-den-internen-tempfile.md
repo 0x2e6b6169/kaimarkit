@@ -1,10 +1,11 @@
 ---
 id: 48
 title: BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad
-status: backlog
+status: todo
 priority: low
 created: 2026-08-31T17:08:52.676542507+02:00
-updated: 2026-08-31T17:08:52.676542507+02:00
+updated: 2026-09-01T13:13:36.252604382+02:00
+started: 2026-09-01T13:13:36.259156379+02:00
 assignee: sophie
 tags:
     - backend

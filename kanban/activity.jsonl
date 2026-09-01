@@ -507,3 +507,11 @@
 {"timestamp":"2026-09-01T13:05:34.480712864+02:00","action":"release","task_id":73,"detail":"sophie-22"}
 {"timestamp":"2026-09-01T13:06:46.361843645+02:00","action":"create","task_id":75,"detail":"BE-28 · Der Vertrag verspricht ein 415, das der Stapel nie liefert"}
 {"timestamp":"2026-09-01T13:06:47.177567392+02:00","action":"move","task_id":58,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T13:08:08.154715694+02:00","action":"move","task_id":75,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T13:08:46.840369726+02:00","action":"move","task_id":58,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T13:12:34.09823102+02:00","action":"edit","task_id":75,"detail":"BE-28 · Der Vertrag verspricht ein 415, das der Stapel nie liefert"}
+{"timestamp":"2026-09-01T13:12:40.55035679+02:00","action":"move","task_id":75,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T13:12:47.865315588+02:00","action":"edit","task_id":75,"detail":"BE-28 · Der Vertrag verspricht ein 415, das der Stapel nie liefert"}
+{"timestamp":"2026-09-01T13:12:47.865512974+02:00","action":"release","task_id":75,"detail":"sophie-24"}
+{"timestamp":"2026-09-01T13:13:08.10728157+02:00","action":"edit","task_id":75,"detail":"BE-28 · Der Vertrag verspricht ein 415, das der Stapel nie liefert"}
+{"timestamp":"2026-09-01T13:13:36.260030739+02:00","action":"move","task_id":48,"detail":"backlog -\u003e todo"}
