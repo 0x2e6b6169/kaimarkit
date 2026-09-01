@@ -644,3 +644,4 @@
 {"timestamp":"2026-09-01T18:29:48.387827301+02:00","action":"create","task_id":90,"detail":"INT-3 · Erstbenutzerlauf aus einem frischen Klon vor dem ersten Tag"}
 {"timestamp":"2026-09-01T18:37:01.33683378+02:00","action":"edit","task_id":90,"detail":"INT-3 · Erstbenutzerlauf aus einem frischen Klon vor dem ersten Tag"}
 {"timestamp":"2026-09-01T18:40:51.77232361+02:00","action":"create","task_id":91,"detail":"DOC-13 · Die Voraussetzungspruefung merkt fehlende Docker-Rechte nicht"}
+{"timestamp":"2026-09-01T19:10:53.824494009+02:00","action":"create","task_id":92,"detail":"DOC-14 · KAIMARKIT_DOMAIN muss unter Authelias Cookie-Domaene liegen"}
