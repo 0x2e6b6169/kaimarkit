@@ -63,7 +63,44 @@ describe('FileRow', () => {
 
     expect(wrapper.text()).toContain('bericht.pdf')
     expect(wrapper.text()).toContain('docling')
-    expect(wrapper.text()).toContain('412 ms')
+    expect(wrapper.text()).toContain('0,41 s')
+    // Rohe Millisekunden muss niemand im Kopf umrechnen.
+    expect(wrapper.text()).not.toContain('412 ms')
+  })
+
+  it('schreibt die Gesamtdauer wie den laufenden Zaehler', () => {
+    const cases: [number, string][] = [
+      [326_062, '5:26'],
+      [103_500, '1:43'],
+      [1_000, '0:01'],
+    ]
+
+    for (const [durationMs, shown] of cases) {
+      const wrapper = mount(FileRow, {
+        props: { entry: entry({ status: 'ok', markdown: '# a', engine: 'docling', durationMs }) },
+      })
+      expect(wrapper.text()).toContain(`docling · ${shown}`)
+      wrapper.unmount()
+    }
+  })
+
+  it('laesst einen kurzen Lauf nicht als 0:00 verschwinden', () => {
+    // markitdown wandelt eine Datei in Hundertstelsekunden um; das ist hier der
+    // haeufige Fall, nicht der Sonderfall.
+    const cases: [number, string][] = [
+      [35, '0,04 s'],
+      [300, '0,3 s'],
+      [0, '0 s'],
+    ]
+
+    for (const [durationMs, shown] of cases) {
+      const wrapper = mount(FileRow, {
+        props: { entry: entry({ status: 'ok', markdown: '# a', engine: 'markitdown', durationMs }) },
+      })
+      expect(wrapper.text()).toContain(`markitdown · ${shown}`)
+      expect(wrapper.text()).not.toContain('0:00')
+      wrapper.unmount()
+    }
   })
 
   it('stellt Warnungen an die Zeile', () => {
@@ -127,7 +164,7 @@ describe('FileRow', () => {
     vi.useFakeTimers()
 
     const wrapper = mount(FileRow, { props: { entry: entry({ status: 'running' }) } })
-    expect(wrapper.text()).toContain('läuft · 0:00')
+    expect(wrapper.text()).toContain('läuft · 0 s')
 
     vi.advanceTimersByTime(47_000)
     await nextTick()
@@ -154,9 +191,10 @@ describe('FileRow', () => {
       entry: entry({ status: 'ok', markdown: '# a', engine: 'docling', durationMs: 103_500 }),
     })
 
-    expect(wrapper.text()).not.toContain('1:43')
+    // Der Zaehler haengt nicht mehr am Zustand; die Gesamtdauer steht daneben.
+    expect(wrapper.text()).not.toContain('fertig · ')
     expect(wrapper.text()).toContain('fertig')
-    expect(wrapper.text()).toContain('103500 ms')
+    expect(wrapper.text()).toContain('docling · 1:43')
     expect(vi.getTimerCount()).toBe(0)
   })
 
