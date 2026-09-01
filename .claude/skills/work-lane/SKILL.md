@@ -105,6 +105,12 @@ Repeat until your lane is empty **and** no subagent of yours is still running:
      result note — "126 collected, 122 selected, 122 passed", never just
      "passed". All lanes share one pyenv environment, so a module that silently
      dropped out of collection is only visible in the numbers.
+     In the **frontend** lane the same rule reads differently: vitest prints the
+     collection in parentheses, so report **both** lines — "Test Files 9 passed (9)"
+     and "Tests 92 passed (92)". The file count is the important one here: a test
+     file whose name falls out of the glob disappears from the run without a word,
+     and only that first number shows it. There is no `-rs` equivalent; vitest names
+     skipped tests on its own.
    - **If the Pruefung does not come out as specified, suspect the Pruefung before
      the work.** Report the deviation and hand the ticket back
      (`handoff <ID> --block "..." --note "..."`) instead of adjusting until the
