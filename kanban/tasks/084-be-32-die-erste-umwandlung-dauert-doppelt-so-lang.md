@@ -1,14 +1,16 @@
 ---
 id: 84
 title: BE-32 · Die erste Umwandlung dauert doppelt so lang wie die zweite
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-01T17:28:22.990006761+02:00
-updated: 2026-09-01T17:28:22.990006761+02:00
+updated: 2026-09-01T17:30:24.03209668+02:00
 assignee: sophie
 tags:
     - backend
     - performance
+claimed_by: sophie-32
+claimed_at: 2026-09-01T17:30:24.03209668+02:00
 class: standard
 ---
 
