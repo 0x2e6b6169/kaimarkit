@@ -73,7 +73,7 @@ erreichbar sein; die Barrierefreiheit aus FE-7 gilt weiter.
 
 Der Hinweis steht offen unter der Auswahl in `EngineSelect.vue` — je ein Satz zu
 docling und zu markitdown, kein Tooltip, damit man ihn ohne Maus liest. Er haengt
-per `aria-describedby" am Auswahlfeld, ein Screenreader liest ihn beim Anspringen
+per `aria-describedby` am Auswahlfeld, ein Screenreader liest ihn beim Anspringen
 mit.
 
 - docling: liest gruendlich und braucht dafuer oft Minuten je Dokument; bei
