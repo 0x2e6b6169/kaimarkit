@@ -435,3 +435,5 @@
 {"timestamp":"2026-09-01T12:18:56.069345573+02:00","action":"edit","task_id":63,"detail":"FE-10 · Die Oberflaeche zeigt deutsche Texte in ASCII-Umschrift"}
 {"timestamp":"2026-09-01T12:19:20.547011389+02:00","action":"create","task_id":65,"detail":"BE-22 · Umschrift in den uebrigen Fehlermeldungen des Backends"}
 {"timestamp":"2026-09-01T12:19:21.283966948+02:00","action":"create","task_id":66,"detail":"BE-23 · OpenAPI-Felderklaerungen: Umschrift im Schnittstellen-Dreiklang"}
+{"timestamp":"2026-09-01T12:20:14.319570933+02:00","action":"edit","task_id":65,"detail":"BE-22 · Umschrift in den uebrigen Fehlermeldungen des Backends"}
+{"timestamp":"2026-09-01T12:20:15.265502773+02:00","action":"create","task_id":67,"detail":"FE-11 · FileRow kuendigt eine Vorschau an, die es laengst gibt"}

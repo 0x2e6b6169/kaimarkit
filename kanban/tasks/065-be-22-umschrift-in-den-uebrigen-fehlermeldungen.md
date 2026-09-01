@@ -4,7 +4,7 @@ title: BE-22 · Umschrift in den uebrigen Fehlermeldungen des Backends
 status: todo
 priority: medium
 created: 2026-09-01T12:19:20.541493648+02:00
-updated: 2026-09-01T12:19:20.541493648+02:00
+updated: 2026-09-01T12:20:14.318676579+02:00
 assignee: sophie
 tags:
     - backend
@@ -63,3 +63,16 @@ Kommentare, nicht Bezeichner. Von Hand pruefen statt ersetzen zu lassen.
 - Gegenprobe an der echten API, nicht nur im Test: Ein Aufruf mit zu vielen Dateien
   meldet "Höchstens ...", eine unbekannte Endung "Für ... gibt es keine Engine."
 - `pytest -q` bleibt gruen; Tests, die den alten Wortlaut pruefen, ziehen mit.
+
+[[2026-09-01]] Tue 12:20
+Eine Datei kommt dazu, und der Grund ist lehrreicher als die Datei.
+
+**`backend/app/converters/markitdown.py:60`** — die Warnung, die #60 vorgestern gebaut hat: "MarkItDown uebernimmt keine Bilder aus PDF." Sie ist Minuten nach dem Merge von #64 entstanden, der das Gegenteil hergestellt hat. Dazu der Modul-Docstring in Zeile 6.
+
+**Woher sie kommt:** Ich habe den Wortlaut im Rumpf von #60 vorgeschlagen — in ASCII-Umschrift, weil ich Ticketruempfe gewohnheitsmaessig so schreibe. Der Subagent hat ihn woertlich uebernommen, und das war richtig: Sein Ticket verlangte den Text, nicht die Schreibweise.
+
+Die Umschrift waechst also aus dem Board nach, nicht nur aus dem Quelltext. Wer sie nur dort berichtigt, wo sie steht, holt sie beim naechsten Ticket wieder herein.
+
+**Die Gewohnheit war nie noetig:** Neun der 64 Ticketdateien tragen bereits Umlaute, `kanban-md` kommt damit zurecht. Ein vorgeschlagener Wortlaut gehoert deshalb in richtiger Schreibung in den Rumpf. Steht ab jetzt in `CLAUDE.md`, Abschnitt "Prosa".
+
+Damit besitzt dieses Ticket zusaetzlich `backend/app/converters/markitdown.py` und `backend/tests/test_markitdown.py`.
