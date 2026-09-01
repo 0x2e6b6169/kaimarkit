@@ -88,7 +88,7 @@ async def stored_upload(upload: UploadFile) -> AsyncIterator[StoredUpload]:
             while chunk := await upload.read(CHUNK_SIZE):
                 written += len(chunk)
                 if written > settings.max_file_size_bytes:
-                    raise FileTooLarge(f"{filename} ueberschreitet {settings.max_file_size_mb} MB")
+                    raise FileTooLarge(f"{filename} überschreitet {settings.max_file_size_mb} MB")
                 sink.write(chunk)
         yield StoredUpload(path=path, filename=filename)
     finally:
@@ -119,5 +119,5 @@ async def run_conversion[T](func: Callable[[], T]) -> T:
         except TimeoutError as exc:
             raise ConversionTimeout(
                 f"Die Umwandlung hat die Zeitgrenze von {settings.conversion_timeout} s "
-                "ueberschritten"
+                "überschritten"
             ) from exc

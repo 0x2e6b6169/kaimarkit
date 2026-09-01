@@ -63,10 +63,12 @@ async def test_upload_too_large_aborts_before_full_read(tmp_spool: Path, limits)
     payload = b"x" * (3 * 1024 * 1024)
     upload, source = make_upload(payload, "gross.pdf")
 
-    with pytest.raises(FileTooLarge):
+    with pytest.raises(FileTooLarge) as fehler:
         async with stored_upload(upload):
             pytest.fail("der Rumpf darf nie erreicht werden")
 
+    # Die Meldung erreicht den Nutzer und steht deshalb in deutscher Schreibung.
+    assert "überschreitet" in fehler.value.detail
     assert source.tell() < len(payload), "die Datei wurde vollstaendig eingelesen"
     assert list(tmp_spool.iterdir()) == []
 
@@ -147,8 +149,11 @@ async def test_run_conversion_passes_the_result_through(limits) -> None:
 async def test_run_conversion_gives_up_at_the_time_limit(limits) -> None:
     limits(conversion_timeout="1", max_concurrent="2")
 
-    with pytest.raises(ConversionTimeout):
+    with pytest.raises(ConversionTimeout) as fehler:
         await run_conversion(lambda: time.sleep(5))
+
+    # Die Meldung erreicht den Nutzer und steht deshalb in deutscher Schreibung.
+    assert "überschritten" in fehler.value.detail
 
 
 async def test_run_conversion_limits_concurrency(limits) -> None:
