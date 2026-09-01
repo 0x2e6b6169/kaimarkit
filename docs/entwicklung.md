@@ -43,11 +43,11 @@ damit MkDocs nicht im Container landet.
 Alle `make`-Ziele laufen aus dem Wurzelverzeichnis; `make help` listet sie.
 
 ```bash
-make dev            # Backend auf :8000 und Frontend auf :5173, beide mit Reload
-make test           # pytest ohne die Docling-Modelle
-make test-slow      # pytest mit Docling, dauert
-make lint           # ruff über das Backend
-make docs-serve     # Vorschau dieser Seiten auf :8001
+make dev             # Backend auf :8000 und Frontend auf :5173, beide mit Reload
+make test            # pytest ohne die Docling-Modelle
+make test-slow-image # dieselben Tests mit Docling, im Abbild, dauert
+make lint            # ruff über das Backend
+make docs-serve      # Vorschau dieser Seiten auf :8001
 ```
 
 Im Frontend kommen `npm run typecheck` und `npm run test` dazu. Der Dev-Server
@@ -92,14 +92,27 @@ ohne Schrägstrich vergleicht nur die oberste Ebene des Kontextes und ließe
 Die Suite läuft aus `backend/` heraus, in der pyenv-Umgebung `claude-code`:
 
 ```bash
-pytest -q            # der Standardlauf, ohne Docling
-pytest -q -m slow    # nur die Tests, die die Docling-Modelle brauchen
+pytest -q -rs          # der Standardlauf, ohne Docling
+pytest -q -rs -m slow  # nur die Tests, die die Docling-Modelle brauchen
 ```
 
 Der Standardlauf blendet die Marke `slow` aus; das steht in `backend/pyproject.toml`
 und gilt damit auch für jeden Aufruf ohne Argumente. Wer `-m slow` angibt,
 überschreibt die Einstellung und bekommt genau die ausgeblendeten Tests. Sie laden
 die Modelle und dauern deshalb; ohne Docling überspringen sie sich.
+
+Genau deshalb belegt der zweite Aufruf auf dem Entwicklungsrechner nichts. Docling
+steht nicht in der pyenv-Umgebung, sondern nur im Abbild; der Lauf meldet lauter
+Übersprungenes und Rückgabewert 0. Wirklich laufen die Tests unter
+`make test-slow-image`. Das Ziel startet das gebaute Abbild, hängt `backend/` lesend
+hinein, installiert dort pytest und httpx und wirft den Container danach weg. Ein
+laufender Dienst bleibt unberührt; `make build` muss vorher gelaufen sein.
+
+`-rs` gehört an jeden Aufruf. Der Schalter nennt jeden übersprungenen Test mit
+Grund. Ohne ihn fällt eine fehlende Abhängigkeit nur als kleinere Sammelzahl auf,
+denn `pytest.importorskip` auf Modulebene macht aus einem ganzen ausgefallenen Modul
+eine einzige Zeile. Die pyenv-Umgebung teilen sich alle Lanes; wer eine Zahl
+weitergibt, nennt deshalb die Sammelzahl mit.
 
 Die meisten Enginetests arbeiten mit Attrappen und prüfen den Adapter. Die
 Smoketests in `backend/tests/test_converters.py` tun das Gegenteil: Sie lassen jede
