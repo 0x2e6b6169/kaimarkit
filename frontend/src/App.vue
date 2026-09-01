@@ -30,7 +30,7 @@ import { useConversion } from './composables/useConversion'
 import { messageFromError } from './api'
 import { ARCHIVE_FILENAME, downloadArchive, hasResult } from './download'
 
-const { entries, options, busy, enqueue, remove } = useConversion()
+const { entries, options, busy, enqueue, abort, remove } = useConversion()
 const { extensions, error: capabilitiesError, load, reload } = useCapabilities()
 
 onMounted(() => void load())
@@ -164,7 +164,7 @@ async function downloadAll(): Promise<void> {
           Das Archiv ließ sich nicht bauen: {{ archiveError }}
         </p>
 
-        <FileQueue :entries="entries" @remove="remove">
+        <FileQueue :entries="entries" @abort="abort" @remove="remove">
           <template #preview="{ entry }">
             <MarkdownPreview :markdown="entry.markdown" :open="true" />
           </template>

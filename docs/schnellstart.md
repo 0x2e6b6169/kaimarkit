@@ -64,6 +64,13 @@ gescheiterte Datei hält die übrigen nicht auf, sondern zeigt ihre Meldung in d
 eigenen Zeile. Die Vorschau klappt das gewandelte Markdown auf, herunterladen
 lässt es sich einzeln oder als ZIP über alle gelungenen Dateien.
 
+Eine laufende Zeile zählt mit, wie lange sie schon läuft. Wem es zu lange dauert,
+der drückt „Nicht mehr warten": Die Zeile steht danach auf „abgebrochen", die
+nächste wartende Datei rückt nach, und die Warteschlange zählt den Abbruch nicht
+als Fehlschlag. Der Knopf heißt genau deshalb so — er beendet die Anfrage des
+Browsers, nicht die Arbeit des Dienstes. Der wandelt die Datei im Hintergrund zu
+Ende und gibt seinen Platz erst dann oder an der [Zeitgrenze](grenzen.md) frei.
+
 ## Welche Engine kommt zum Zug?
 
 Der Dienst wählt nach der Dateiendung. Was er jetzt wirklich anbietet, sagt er

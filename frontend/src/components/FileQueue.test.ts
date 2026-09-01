@@ -111,6 +111,30 @@ describe('FileQueue', () => {
     expect(wrapper.text()).toContain('Die Engine scheiterte an dieser Datei.')
   })
 
+  it('sagt einen Abbruch als solchen an, nicht als Fehlschlag', async () => {
+    const entries = fresh()
+    const wrapper = mount(FileQueue, { props: { entries } })
+
+    await wrapper.setProps({
+      entries: entries.map((item) =>
+        item.id === 1 ? { ...item, status: 'aborted' as const } : item,
+      ),
+    })
+
+    expect(wrapper.get(live).text()).toBe('a.pdf wurde abgebrochen.')
+    expect(wrapper.get(live).text()).not.toContain('fehlgeschlagen')
+  })
+
+  it('reicht den Abbruch einer Zeile nach oben weiter', async () => {
+    const wrapper = mount(FileQueue, {
+      props: { entries: [entry(4, 'a.pdf', { status: 'running' })] },
+    })
+
+    await wrapper.get('[data-test="abort-row"]').trigger('click')
+
+    expect(wrapper.emitted('abort')).toEqual([[4]])
+  })
+
   it('sagt an, wenn eine wartende Datei startet', async () => {
     const entries = fresh()
     const wrapper = mount(FileQueue, { props: { entries } })
