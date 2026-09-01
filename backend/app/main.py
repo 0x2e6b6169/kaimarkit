@@ -43,10 +43,11 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     """Stoesst beim Hochfahren das Vorladen von Docling an.
 
     Der Aufruf kehrt sofort zurueck: Er startet einen Daemon-Thread, der Modelle
-    laedt. Ohne ihn begaenne das Laden erst mit der ersten Wandlung, und der erste
-    Nutzer wartete minutenlang. Fehlt die Bibliothek, bleibt es folgenlos — der
-    Thread faengt den ``ImportError`` selbst ab, ``/api/capabilities`` meldet
-    Docling danach als ``unavailable``.
+    laedt — rund achteinhalb Sekunden je Pipeline, und der Warmlauf baut zwei davon,
+    eine mit Texterkennung und eine ohne. Ohne ihn begaenne das Laden erst mit der
+    ersten Wandlung, und der erste Nutzer wartete darauf. Fehlt die Bibliothek,
+    bleibt es folgenlos — der Thread faengt den ``ImportError`` selbst ab,
+    ``/api/capabilities`` meldet Docling danach als ``unavailable``.
 
     Der Weg fuehrt ueber das Adaptermodul; ``main.py`` kennt Docling nicht.
     """

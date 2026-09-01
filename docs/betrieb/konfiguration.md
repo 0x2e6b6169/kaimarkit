@@ -141,9 +141,15 @@ aus dem Netz gibt es zwei Wege: `0.0.0.0` setzen, oder — besser — den
 ganz.
 
 Solange die Anlaufzeit läuft, zählt ein fehlgeschlagener Healthcheck nicht als
-ungesund. Docling lädt in dieser Zeit seine Modelle. Auf langsamen Datenträgern
-`KAIMARKIT_HEALTH_START_PERIOD` hochsetzen, sonst gilt der Container als ungesund,
-bevor er überhaupt fertig gestartet ist.
+ungesund. Sie deckt den Start des Dienstes ab, nicht das Vorladen der Modelle: Der
+Healthcheck ruft `GET /api/health`, und diese Antwort hängt nicht an Docling.
+`healthy` sagt also, dass der Dienst antwortet — nicht, dass das Vorladen fertig ist.
+Docling lädt daneben im Hintergrund weiter: rund achteinhalb Sekunden je Pipeline,
+und der Warmlauf baut zwei davon, eine mit Texterkennung und eine ohne. Solange die
+erste nicht steht, meldet `GET /api/capabilities` Docling als `warming`.
+
+Auf langsamen Datenträgern `KAIMARKIT_HEALTH_START_PERIOD` hochsetzen, sonst gilt
+der Container als ungesund, bevor er überhaupt fertig gestartet ist.
 
 ## Traefik
 
