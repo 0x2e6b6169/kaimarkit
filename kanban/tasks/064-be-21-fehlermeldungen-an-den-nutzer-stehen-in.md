@@ -1,10 +1,12 @@
 ---
 id: 64
 title: BE-21 · Fehlermeldungen an den Nutzer stehen in ASCII-Umschrift
-status: todo
+status: done
 priority: medium
 created: 2026-09-01T12:12:55.183359933+02:00
-updated: 2026-09-01T12:12:55.183359933+02:00
+updated: 2026-09-01T12:17:56.517979899+02:00
+started: 2026-09-01T12:17:50.685808432+02:00
+completed: 2026-09-01T12:17:50.685808432+02:00
 assignee: sophie
 tags:
     - backend
@@ -52,3 +54,46 @@ gilt `SPRACHE.md` auch fuer den Rest des Satzes.
 - `pytest -q` bleibt gruen. Prueft ein Test auf den alten Wortlaut, wird er
   mitgezogen — er gehoert zu denselben Dateien.
 - Gegenprobe: Eine Umwandlung, die in die Zeitgrenze laeuft, meldet "überschritten".
+
+## Ergebnis (sophie-16, 01.09.2026)
+
+Umgesetzt in `uploads.py`: die beiden Meldungen stehen jetzt mit Umlaut —
+"{filename} überschreitet {n} MB" und "Die Umwandlung hat die Zeitgrenze von
+{n} s überschritten". Sonst nichts umformuliert; die Saetze waren in Ordnung.
+
+`errors.py` blieb unveraendert. Die drei im Ticket genannten Zeilen (:60, :67,
+:74) sind Docstrings, keine Meldungen, und die Abgrenzung des Tickets nimmt
+Docstrings ausdruecklich aus. `errors.py` enthaelt ueberhaupt keine Zeichenkette,
+die zum Nutzer geht: alle `detail` kommen von den Aufrufern.
+
+**Bewusst stehen gelassen** (Kommentar oder Docstring, nie nutzersichtbar):
+`errors.py:60`, `:67`; `uploads.py:29`, `:32`, `:55`, `:71`, `:73`, `:75`.
+Der grep des Tickets findet in beiden Dateien nur noch diese.
+
+**Tests:** Die beiden vorhandenen Faelle in `test_uploads.py` pruefen jetzt
+zusaetzlich den Wortlaut. Ein Rueckfall bricht damit einen Test, statt nur in der
+Oberflaeche aufzutauchen. Kein Test prueft den alten Wortlaut — es musste keiner
+nachgezogen werden.
+
+**Pruefung:** `pytest -q` 112 passed, 4 deselected. `ruff check .` sauber.
+Gegenprobe ueber die echte API mit TestClient ausgefuehrt, nicht angenommen:
+504 mit "Die Umwandlung hat die Zeitgrenze von 1 s überschritten" und
+413 mit "gross.pdf überschreitet 1 MB". Kein Container gebaut, kein Dienst
+gestartet.
+
+Branch `task/64-meldungen-umlaute`, Commit `8a60f2b`, Merge `07af096`.
+
+## Befund fuer den PO — dieselbe Umschrift ausserhalb dieser Dateien
+
+Nutzersichtbare Meldungen, absichtlich nicht angefasst:
+
+- `api/convert.py:100` — "Hoechstens {n} Dateien je Aufruf"
+- `converters/registry.py:94` "ist nicht verfuegbar", `:130` "Fuer {ext} …
+  gibt es keine Engine.", `:138` "Fuer {ext} ist zurzeit keine Engine verfuegbar."
+- `converters/pandoc.py:70` "Dateien ohne Endung", `:91` "Pandoc laesst sich
+  nicht aufrufen"
+- `converters/docling.py:183` "Docling ist nicht verfuegbar"
+- `markitdown.py` laeuft parallel unter #60, dort nicht geprueft.
+
+Dazu: die Felderklaerungen in `models.py` erscheinen als OpenAPI-Beschreibungen
+unter `/docs` und stehen ebenfalls in Umschrift.

@@ -1,10 +1,12 @@
 ---
 id: 63
 title: FE-10 · Die Oberflaeche zeigt deutsche Texte in ASCII-Umschrift
-status: todo
+status: done
 priority: medium
 created: 2026-09-01T12:12:54.471738305+02:00
-updated: 2026-09-01T12:12:54.471738305+02:00
+updated: 2026-09-01T12:18:56.068700293+02:00
+started: 2026-09-01T12:18:36.776301718+02:00
+completed: 2026-09-01T12:18:36.776301718+02:00
 assignee: benny
 tags:
     - frontend
@@ -57,3 +59,32 @@ Von Hand pruefen, nicht ersetzen lassen: Ein blindes `ue` -> `ü` verunstaltet
 - Kein Bezeichner und kein Import hat sich geaendert: `npm run typecheck` bleibt
   gruen, `npm run test` ebenso.
 - Gegenprobe: Die Dropzone zeigt im Browser "auswählen", nicht "auswaehlen".
+
+
+## Ergebnis (benny-11, Branch task/63-umlaute)
+
+11 Dateien, 13 nutzersichtbare Zeichenketten: App.vue (2), FileDropZone.vue (3),
+EngineSelect.vue (3, darunter der docling-Hinweis), OptionsPanel.vue (2),
+FileQueue.vue (1), FileRow.vue (1), download.ts (1). Vier Testerwartungen ziehen
+nach — App.test.ts, FileQueue.test.ts (zwei Stellen), FileRow.test.ts,
+OptionsPanel.test.ts. Testnamen, Bezeichner und Kommentare blieben unberührt.
+
+Bewusst ASCII geblieben ist nichts. Alle übrigen deutschen Zeichenketten in
+`frontend/src` brauchen von sich aus keinen Umlaut: „Warteschlange", „Kopieren",
+„fehlgeschlagen", „Der Dienst ist nicht erreichbar." Deshalb ändern sich
+MarkdownPreview.vue, api.ts, useConversion.ts und useCapabilities.ts nicht.
+
+Prüfung: `npm run typecheck` grün, `npm run test` 86 von 86 grün. Gegenprobe mit
+headless Chrome gegen den Dev-Server: Die Dropzone zeigt jetzt „Dateien hierher
+ziehen oder auswählen", daneben „alle unterstützten Formate", „Noch keine Dateien
+ausgewählt." und „Die Optionen gelten für den nächsten Lauf". In `docs/` steht
+keine dieser Zeichenketten; es wurde durch die Änderung nichts falsch.
+
+## Befund, gemeldet statt geändert
+
+Der Platzhalter im Slot `preview` von FileRow.vue sagt: „Die Vorschau folgt mit
+FE-4. Bis dahin steht hier nur, dass N Zeichen Markdown vorliegen." FE-4 ist
+gebaut, App.vue hängt `MarkdownPreview` ein. Der Satz verspricht dem Nutzer
+etwas, das längst da ist — er stimmt nur noch dort, wo die Warteschlange ohne
+Slot eingesetzt wird. Zwei Tests prüfen ihn (FileQueue.test.ts, FileRow.test.ts).
+Gehört in ein eigenes Ticket.

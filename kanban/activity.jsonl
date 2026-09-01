@@ -419,3 +419,19 @@
 {"timestamp":"2026-09-01T12:12:05.355569067+02:00","action":"move","task_id":60,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-01T12:12:54.47797498+02:00","action":"create","task_id":63,"detail":"FE-10 · Die Oberflaeche zeigt deutsche Texte in ASCII-Umschrift"}
 {"timestamp":"2026-09-01T12:12:55.200771065+02:00","action":"create","task_id":64,"detail":"BE-21 · Fehlermeldungen an den Nutzer stehen in ASCII-Umschrift"}
+{"timestamp":"2026-09-01T12:14:11.183125316+02:00","action":"move","task_id":63,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T12:14:20.003064179+02:00","action":"move","task_id":64,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T12:17:50.001611678+02:00","action":"edit","task_id":64,"detail":"BE-21 · Fehlermeldungen an den Nutzer stehen in ASCII-Umschrift"}
+{"timestamp":"2026-09-01T12:17:50.686073883+02:00","action":"move","task_id":64,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T12:17:52.76740923+02:00","action":"edit","task_id":60,"detail":"BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst"}
+{"timestamp":"2026-09-01T12:17:56.518791146+02:00","action":"edit","task_id":64,"detail":"BE-21 · Fehlermeldungen an den Nutzer stehen in ASCII-Umschrift"}
+{"timestamp":"2026-09-01T12:17:56.519255331+02:00","action":"release","task_id":64,"detail":"sophie-16"}
+{"timestamp":"2026-09-01T12:18:04.029804617+02:00","action":"move","task_id":60,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T12:18:11.522964968+02:00","action":"edit","task_id":60,"detail":"BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst"}
+{"timestamp":"2026-09-01T12:18:11.523310612+02:00","action":"release","task_id":60,"detail":"sophie-15"}
+{"timestamp":"2026-09-01T12:18:36.776551428+02:00","action":"move","task_id":63,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T12:18:41.681769376+02:00","action":"edit","task_id":63,"detail":"FE-10 · Die Oberflaeche zeigt deutsche Texte in ASCII-Umschrift"}
+{"timestamp":"2026-09-01T12:18:41.68203027+02:00","action":"release","task_id":63,"detail":"benny-11"}
+{"timestamp":"2026-09-01T12:18:56.069345573+02:00","action":"edit","task_id":63,"detail":"FE-10 · Die Oberflaeche zeigt deutsche Texte in ASCII-Umschrift"}
+{"timestamp":"2026-09-01T12:19:20.547011389+02:00","action":"create","task_id":65,"detail":"BE-22 · Umschrift in den uebrigen Fehlermeldungen des Backends"}
+{"timestamp":"2026-09-01T12:19:21.283966948+02:00","action":"create","task_id":66,"detail":"BE-23 · OpenAPI-Felderklaerungen: Umschrift im Schnittstellen-Dreiklang"}

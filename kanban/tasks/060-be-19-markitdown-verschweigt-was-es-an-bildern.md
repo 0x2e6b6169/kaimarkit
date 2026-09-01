@@ -1,16 +1,16 @@
 ---
 id: 60
 title: BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst
-status: in-progress
+status: done
 priority: high
 created: 2026-09-01T11:23:01.248130894+02:00
-updated: 2026-09-01T12:12:05.346890532+02:00
+updated: 2026-09-01T12:18:11.522044584+02:00
+started: 2026-09-01T12:18:04.027708238+02:00
+completed: 2026-09-01T12:18:04.027708238+02:00
 assignee: sophie
 tags:
     - backend
     - bug
-claimed_by: sophie-15
-claimed_at: 2026-09-01T12:12:05.346890532+02:00
 class: standard
 ---
 
@@ -144,3 +144,37 @@ fuer Zeichen dasselbe Markdown wie dasselbe PDF ohne.
 - Gegenprobe: Eine `.docx` durch `markitdown` liefert sie **nicht**.
 - Keine der drei Doku-/Kommentarstellen behauptet noch einen Alt-Text fuer PDF.
 - `pytest -q` bleibt gruen; ohne die Aenderung faellt der neue Test durch.
+
+
+[[2026-09-01]] Tue — sophie-15
+
+Gebaut nach dem neuen Zuschnitt. `_pdf_image_warnings()` in `markitdown.py` haengt
+bei `suffix == ".pdf"` eine feste Warnung an: "MarkItDown uebernimmt keine Bilder
+aus PDF. Enthielt <name> Bilder, fehlt ihr Inhalt hier." Kein zweites Lesen, kein
+pdfplumber, keine Zahl — die Warnung nennt das Verhalten der Engine. Ein PDF ohne
+Bilder bekommt sie damit auch; das ist so entschieden und im Docstring festgehalten.
+
+ROT VOR GRUEN, ausgefuehrt: Mit dem neuen Test gegen den unveraenderten Adapter
+"1 failed, 7 passed" — `AssertionError: assert [] == ['MarkItDown uebernimmt keine
+Bilder aus PDF. Enthielt bericht.pdf Bilder, fehlt ihr Inhalt hier.']`. Nach der
+Aenderung 8 passed. Voller Lauf: 114 passed, 4 deselected. `ruff check .`: All
+checks passed.
+
+Tests: `test_pdf_warnt_vor_weggelassenen_bildern` — der neue Helfer `_write_pdf`
+baut ein einseitiges PDF von Hand, ohne jedes Bild, und es bekommt die Warnung
+trotzdem: genau der gewollte Preis. Gegenprobe `test_docx_bekommt_die_bildwarnung_nicht`
+ueber den vorhandenen `_write_docx`-Helfer. Die Datei bleibt wie im Kopfkommentar
+versprochen ohne Fixtures aus dem Repo.
+
+Die drei falschen Stellen sind berichtigt statt gestrichen — fuer `.docx`, `.html`
+und `.epub` stimmt der Alt-Text weiterhin: Modul-Docstring `markitdown.py:3-7`,
+`docs/formate.md` (Abschnitt MarkItDown, neuer Absatz) und `docs/grenzen.md`
+(Abschnitt "Bilder werden nicht beschrieben", neuer Absatz mit dem Vergleich zu
+Doclings `<!-- image -->`). Damit ist #62 (BE-20) inhaltlich abgedeckt.
+
+NEBENBEFUND, nur gemeldet: `ENTWURF.md:179` behauptet dieselbe Alt-Text-Aussage.
+ENTWURF.md ist laut CLAUDE.md die Herkunft und nicht die Vorschrift, deshalb nicht
+angefasst.
+
+Commit 361cc1f auf `task/60-markitdown-pdf-warnung`, `--no-ff` nach main gemerged,
+Worktree entfernt.
