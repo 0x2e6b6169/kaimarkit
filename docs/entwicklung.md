@@ -70,6 +70,23 @@ ein zweites Mal durch eine Engine zu schicken wäre doppelte Arbeit. Die Namensr
 im Archiv sind deshalb in `frontend/src/download.ts` nachgebaut und stammen aus
 `backend/app/packaging.py`.
 
+## Das Abbild bauen
+
+`make build` baut nur, `make up` baut und startet. Der erste Bau installiert Torch
+und Docling und lädt anschließend die Docling-Modelle herunter; wie viel davon ein
+zweites Mal anfällt, entscheidet die Schichtung im Dockerfile.
+
+Diese beiden Schritte kosten fast die ganze Zeit — gemessen 210 und 173 Sekunden.
+Beide hängen allein an `backend/pyproject.toml`. Wer nur Quelltext ändert, bekommt
+sie aus dem Cache zurück: 86 Sekunden für einen Bau, der vorher 485 gebraucht hat.
+Wer eine Abhängigkeit ergänzt, bezahlt sie zu Recht ein zweites Mal.
+
+Damit das aufgeht, darf nichts in den Build-Kontext geraten, was sich bei jedem
+Testlauf ändert. `.dockerignore` schließt `__pycache__`, `.pytest_cache` und
+`.ruff_cache` deshalb mit dem Präfix `**/` aus. Das Präfix ist nötig: Ein Muster
+ohne Schrägstrich vergleicht nur die oberste Ebene des Kontextes und ließe
+`backend/app/__pycache__` durch.
+
 ## Tests
 
 Die Suite läuft aus `backend/` heraus, in der pyenv-Umgebung `claude-code`:
