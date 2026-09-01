@@ -1,15 +1,17 @@
 ---
 id: 56
 title: BE-17 · Heisst ready wirklich ready?
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-01T10:24:25.93867698+02:00
-updated: 2026-09-01T12:40:23.929707072+02:00
+updated: 2026-09-01T12:43:30.98003356+02:00
 started: 2026-09-01T12:40:23.978293179+02:00
 assignee: sophie
 tags:
     - backend
     - bug
+claimed_by: sophie-20
+claimed_at: 2026-09-01T12:43:30.98003356+02:00
 class: standard
 ---
 

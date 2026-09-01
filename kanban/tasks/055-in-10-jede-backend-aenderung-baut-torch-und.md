@@ -1,10 +1,10 @@
 ---
 id: 55
 title: IN-10 · Jede Backend-Aenderung baut Torch und Docling neu
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-01T09:57:11.385309146+02:00
-updated: 2026-09-01T12:39:31.01192723+02:00
+updated: 2026-09-01T12:41:03.657251899+02:00
 started: 2026-09-01T12:39:31.063630981+02:00
 assignee: akar
 tags:
@@ -13,6 +13,8 @@ tags:
 depends_on:
     - 45
     - 59
+claimed_by: akar-24
+claimed_at: 2026-09-01T12:41:03.657251899+02:00
 class: standard
 ---
 

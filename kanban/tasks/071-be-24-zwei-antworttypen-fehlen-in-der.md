@@ -1,14 +1,16 @@
 ---
 id: 71
 title: BE-24 · Zwei Antworttypen fehlen in der veroeffentlichten OpenAPI-Fassung
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-01T12:39:21.848759324+02:00
-updated: 2026-09-01T12:39:21.848759324+02:00
+updated: 2026-09-01T12:42:55.983314288+02:00
 assignee: sophie
 tags:
     - backend
     - api
+claimed_by: sophie-19
+claimed_at: 2026-09-01T12:42:55.983314288+02:00
 class: standard
 ---
 
