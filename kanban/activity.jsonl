@@ -612,3 +612,5 @@
 {"timestamp":"2026-09-01T17:30:24.087610894+02:00","action":"move","task_id":84,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-01T17:38:37.594072074+02:00","action":"create","task_id":85,"detail":"IN-15 · Eine vorhandene Authelia-Middleware laesst sich nicht verwenden"}
 {"timestamp":"2026-09-01T17:41:03.274365103+02:00","action":"move","task_id":85,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T17:44:20.715604528+02:00","action":"edit","task_id":51,"detail":"PROC-5 · Abhaengigkeit vor der Freigabe setzen, nicht danach"}
+{"timestamp":"2026-09-01T17:44:21.54553919+02:00","action":"move","task_id":51,"detail":"backlog -\u003e done"}

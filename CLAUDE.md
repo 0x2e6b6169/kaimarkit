@@ -135,7 +135,13 @@ solche mit einem ausdrücklichen `--block` aus. Dieses Board ist über `depends_
 verdrahtet — `--not-blocked` allein listet die ganze Lane als startbereit.
 
 **Nur `todo` wird automatisch gezogen.** `backlog` ist der Ideenspeicher des PO.
-Ein Ticket nach `todo` zu schieben ist katches ausdrückliches „das wird gebaut".
+Ein Ticket nach `todo` zu schieben ist katches ausdrückliches „das wird gebaut". Und
+es ist unwiderruflich: Eine Lane zieht binnen einer Minute und verteilt sofort.
+**Alles, was im Ticket stehen soll, steht dort vor der Freigabe** — Abhängigkeit,
+Auflage, Entscheidung des Nutzers. Dreimal an einem Tag kam eine Notiz nach dem
+Claim und musste als Nachricht hinterhergeschickt werden; einmal wäre um ein Haar
+gegen eine Entscheidung gebaut worden, die schon gefallen war. Wer noch etwas
+nachtragen will, schiebt noch nicht.
 
 ### Subagenten — einer je Ticket
 

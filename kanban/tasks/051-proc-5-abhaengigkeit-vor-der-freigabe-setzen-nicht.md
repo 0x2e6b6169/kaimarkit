@@ -1,10 +1,12 @@
 ---
 id: 51
 title: PROC-5 · Abhaengigkeit vor der Freigabe setzen, nicht danach
-status: backlog
+status: done
 priority: low
 created: 2026-09-01T08:56:13.051115364+02:00
-updated: 2026-09-01T08:56:13.051115364+02:00
+updated: 2026-09-01T17:44:21.534541188+02:00
+started: 2026-09-01T17:44:21.545214672+02:00
+completed: 2026-09-01T17:44:21.545214672+02:00
 assignee: katche
 tags:
     - process
@@ -40,3 +42,14 @@ Die Stelle, die die PO-Pflichten beschreibt, nennt die Reihenfolge ausdruecklich
 ## Zurueckgestellt
 
 Vom Nutzer zurueckgestellt, bis die Abnahmefassung steht (01.09.2026).
+
+[[2026-09-01]] Tue 17:44
+Erledigt, ohne eigene Umsetzung (01.09.2026). Die Regel steht in `CLAUDE.md`, Abschnitt „Rollen und Lanes", bei den PO-Pflichten — und sie ist weiter gefasst als dieses Ticket:
+
+> Alles, was im Ticket stehen soll, steht dort vor der Freigabe — Abhängigkeit, Auflage, Entscheidung des Nutzers. Wer noch etwas nachtragen will, schiebt noch nicht.
+
+Die Abhängigkeit, um die es hier ursprünglich ging, ist nur einer von drei Fällen desselben Tages. Die anderen beiden: eine Auflage zu #80, die den Messaufbau vom Dienst des Nutzers fernhalten sollte, und die Entscheidung des Nutzers zu #85, die die Voreinstellung umkehrte — beide kamen nach dem Claim und mussten als Nachricht hinterher. Beim letzten wäre um ein Haar gegen eine bereits gefallene Entscheidung gebaut worden.
+
+akar hat die Ursache benannt, und sie liegt nicht an der Sorgfalt: Der Monitor meldet eine Freigabe binnen einer Minute, und die Lane verteilt sofort. Es gibt kein stilles Zeitfenster zwischen `todo` und Claim — die Freigabe **ist** der Start.
+
+Die Regel steht deshalb bei den PO-Pflichten und nicht im Ticketschnitt: Sie betrifft die Reihenfolge, in der der PO arbeitet, nicht den Zuschnitt eines Tickets.
