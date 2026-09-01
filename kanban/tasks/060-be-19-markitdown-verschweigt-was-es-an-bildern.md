@@ -1,17 +1,17 @@
 ---
 id: 60
 title: BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst
-status: in-progress
+status: backlog
 priority: medium
 created: 2026-09-01T11:23:01.248130894+02:00
-updated: 2026-09-01T12:04:49.565772336+02:00
+updated: 2026-09-01T12:08:34.126037177+02:00
 started: 2026-09-01T12:03:27.525130027+02:00
 assignee: sophie
 tags:
     - backend
     - bug
-claimed_by: sophie-14
-claimed_at: 2026-09-01T12:04:49.565772336+02:00
+blocked: true
+block_reason: markitdown hinterlaesst keine zaehlbare Marke
 class: standard
 ---
 
@@ -68,3 +68,27 @@ weglaesst, ohne eine Marke zu hinterlassen, gehoert das gemeldet und neu geschni
 ## Zurueckgestellt
 
 Vom Nutzer zurueckgestellt, bis die Abnahme abgeschlossen ist (01.09.2026).
+
+[[2026-09-01]] Tue 12:06
+MESSUNG (markitdown 0.1.7, pdfminer.six 20260107, pdfplumber), zwei unabhaengig gebaute PDFs:
+- Handgebautes PDF, eine Textzeile plus zwei Image-XObjects -> markdown == 'Bericht mit Bildern\n\n'. Dasselbe PDF ohne die Bilder liefert Zeichen fuer Zeichen dasselbe.
+- PIL-PDF, das nur aus einem Bild besteht -> markdown == '' (leer).
+
+Beobachteter Wortlaut fuer ein Bild: keiner. Keine Bildmarke, kein Alt-Text, kein Kommentar. Die Bilder verschwinden spurlos, das Ergebnis unterscheidet sich nicht von dem einer Vorlage ohne Bilder.
+
+Ursache in der Bibliothek: markitdown/converters/_pdf_converter.py zieht ausschliesslich Text (pdfplumber page.extract_text, sonst pdfminer.high_level.extract_text). Bilder kommen dort nicht vor.
+
+Zaehlen nach dem Muster von _placeholder_warnings() entfaellt damit. Noetig waere ein Vergleich Vorlage/Ergebnis: pdfplumber -- markitdowns eigene Abhaengigkeit -- sieht die Bilder sehr wohl (page.images ergab 2 / 0 / 1 fuer die drei Messdateien). Die Warnung muesste also die Vorlage oeffnen und dort zaehlen, statt eine Marke im Ergebnis zu zaehlen.
+
+NEU SCHNEIDEN, weil das drei Fragen aufwirft, die #60 nicht stellt: pdfplumber als direkte Abhaengigkeit des Adapters; je Format verschiedene Antwort (docx/epub/html fuehren Alt-Texte, PDF nicht -- die Warnung darf nur fuer .pdf gelten); und ob die Zahl aus der Vorlage ueberhaupt zur Zahl der verlorenen Bilder passt (Hintergrundgrafiken, Trennlinien als Bild).
+
+Nichts geaendert, kein Commit, Branch und Worktree wieder entfernt.
+
+NEBENBEFUND, schon vor diesem Ticket falsch, deshalb nur gemeldet: markitdown.py Zeile 1-7, docs/formate.md Zeile 74 und docs/grenzen.md Zeile 66 behaupten, Bilder erschienen bei MarkItDown als Alt-Text. Fuer PDF stimmt das nicht.
+
+[[2026-09-01]] Tue 12:08
+Zurueck in den Ideenspeicher, bis der Nutzer ueber den Zuschnitt entschieden hat. Die Uebergabe war richtig: Der zweite der beiden Faelle aus dem Ticketrumpf ist eingetreten, und er verlangt einen anderen Schnitt, kein Weiterbauen.
+
+**Eine Korrektur an sophies Einordnung, geprueft im laufenden Container:** Der Vergleich braucht **keine neue Abhaengigkeit**. `pdfplumber 0.11.10` liegt bereits im Abbild und im venv — es ist ueber markitdown oder docling mitgekommen. Auch `pdfminer.six 20260107` ist da; `pypdf` fehlt.
+
+Damit lautet die Produktfrage anders als gedacht. Nicht "eine neue Bibliothek fuer eine Warnung", sondern: eine bereits vorhandene Bibliothek ausdruecklich in `pyproject.toml` aufnehmen — sich auf eine mitgeschleppte Abhaengigkeit zu verlassen ist bruechig — und ein zweites Lesen des PDF in Kauf nehmen. Was das zweite Lesen kostet, ist ungemessen und gehoert vor die Entscheidung.

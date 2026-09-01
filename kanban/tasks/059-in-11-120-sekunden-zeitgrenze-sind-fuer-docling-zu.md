@@ -1,16 +1,18 @@
 ---
 id: 59
 title: IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-01T10:40:33.636401513+02:00
-updated: 2026-09-01T12:06:32.767632683+02:00
+updated: 2026-09-01T12:07:51.017454037+02:00
 assignee: akar
 tags:
     - infra
     - config
 depends_on:
     - 45
+claimed_by: akar-23
+claimed_at: 2026-09-01T12:07:51.017454037+02:00
 class: standard
 ---
 

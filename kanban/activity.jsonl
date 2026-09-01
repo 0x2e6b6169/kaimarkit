@@ -399,3 +399,13 @@
 {"timestamp":"2026-09-01T12:06:06.1917112+02:00","action":"edit","task_id":55,"detail":"IN-10 · Jede Backend-Aenderung baut Torch und Docling neu"}
 {"timestamp":"2026-09-01T12:06:32.768351094+02:00","action":"edit","task_id":59,"detail":"IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp"}
 {"timestamp":"2026-09-01T12:06:33.1773086+02:00","action":"edit","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}
+{"timestamp":"2026-09-01T12:06:46.386865752+02:00","action":"move","task_id":60,"detail":"in-progress -\u003e review"}
+{"timestamp":"2026-09-01T12:06:46.386988363+02:00","action":"handoff","task_id":60,"detail":"BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst"}
+{"timestamp":"2026-09-01T12:06:46.387078672+02:00","action":"block","task_id":60,"detail":"markitdown hinterlaesst keine zaehlbare Marke"}
+{"timestamp":"2026-09-01T12:06:46.387161879+02:00","action":"release","task_id":60,"detail":"BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst"}
+{"timestamp":"2026-09-01T12:07:51.023160545+02:00","action":"move","task_id":59,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T12:08:32.226526641+02:00","action":"create","task_id":62,"detail":"BE-20 · Drei Stellen behaupten einen Alt-Text, den es bei PDF nicht gibt"}
+{"timestamp":"2026-09-01T12:08:33.180955515+02:00","action":"edit","task_id":60,"detail":"BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst"}
+{"timestamp":"2026-09-01T12:08:33.181292542+02:00","action":"claim","task_id":60,"detail":"sophie-14"}
+{"timestamp":"2026-09-01T12:08:34.135504384+02:00","action":"edit","task_id":60,"detail":"BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst"}
+{"timestamp":"2026-09-01T12:08:34.136958814+02:00","action":"release","task_id":60,"detail":"sophie-14"}
