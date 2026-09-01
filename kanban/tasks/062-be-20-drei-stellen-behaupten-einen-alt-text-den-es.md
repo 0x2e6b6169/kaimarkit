@@ -1,10 +1,12 @@
 ---
 id: 62
 title: BE-20 · Drei Stellen behaupten einen Alt-Text, den es bei PDF nicht gibt
-status: todo
+status: done
 priority: medium
 created: 2026-09-01T12:08:32.215028701+02:00
-updated: 2026-09-01T12:08:32.215028701+02:00
+updated: 2026-09-01T12:10:21.508310605+02:00
+started: 2026-09-01T12:10:21.513335196+02:00
+completed: 2026-09-01T12:10:21.513335196+02:00
 assignee: sophie
 tags:
     - backend
@@ -62,3 +64,6 @@ Kein Code, keine Warnung. Ob und wie kaimarkit das meldet, entscheidet #60.
 - Keine der drei Stellen behauptet noch einen Alt-Text fuer PDF.
 - `pytest -q` bleibt gruen (der Docstring aendert kein Verhalten).
 - `make docs-serve` rendert beide Seiten fehlerfrei.
+
+[[2026-09-01]] Tue 12:10
+Aufgegangen in #60 (BE-19). Der Nutzer hat #60 pragmatisch neu geschnitten: eine feste Warnung fuer markitdown bei PDF, dazu dieselbe Aussage an den drei Stellen, die heute das Gegenteil behaupten. Beide Tickets haetten `markitdown.py` besessen; sie in einem Merge zu erledigen ist billiger als sie zu verketten. Geschlossen ohne eigene Umsetzung.

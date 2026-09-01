@@ -1,10 +1,10 @@
 ---
 id: 60
 title: BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst
-status: backlog
+status: todo
 priority: medium
 created: 2026-09-01T11:23:01.248130894+02:00
-updated: 2026-09-01T12:08:34.126037177+02:00
+updated: 2026-09-01T12:10:22.698034118+02:00
 started: 2026-09-01T12:03:27.525130027+02:00
 assignee: sophie
 tags:
@@ -92,3 +92,56 @@ Zurueck in den Ideenspeicher, bis der Nutzer ueber den Zuschnitt entschieden hat
 **Eine Korrektur an sophies Einordnung, geprueft im laufenden Container:** Der Vergleich braucht **keine neue Abhaengigkeit**. `pdfplumber 0.11.10` liegt bereits im Abbild und im venv — es ist ueber markitdown oder docling mitgekommen. Auch `pdfminer.six 20260107` ist da; `pypdf` fehlt.
 
 Damit lautet die Produktfrage anders als gedacht. Nicht "eine neue Bibliothek fuer eine Warnung", sondern: eine bereits vorhandene Bibliothek ausdruecklich in `pyproject.toml` aufnehmen — sich auf eine mitgeschleppte Abhaengigkeit zu verlassen ist bruechig — und ein zweites Lesen des PDF in Kauf nehmen. Was das zweite Lesen kostet, ist ungemessen und gehoert vor die Entscheidung.
+
+[[2026-09-01]] Tue 12:10
+## Neuer Zuschnitt (01.09.2026) — ersetzt Ziel, Vorgaben und Pruefung oben
+
+Entscheidung des Nutzers, woertlich: "Explizit machen, dass Bildinformationen bei
+markitdown fehlen. Ich brauche eine pragmatische, keine akademisch perfekte
+Loesung."
+
+Damit faellt der Vergleich von Vorlage und Ergebnis weg. Kein zweites Lesen des PDF,
+kein `pdfplumber`, keine Zahl. Gebaut wird die **Aussage**, nicht die Messung.
+
+### Ziel
+
+Wer ein PDF durch markitdown schickt, erfaehrt, dass Bilder darin nicht uebernommen
+werden. Ob die Vorlage welche enthielt, sagt kaimarkit nicht — und behauptet es auch
+nicht.
+
+### Eigene Dateien
+
+- `backend/app/converters/markitdown.py` (einschliesslich Modul-Docstring)
+- `backend/tests/test_markitdown.py`
+- `docs/formate.md` (Abschnitt "MarkItDown")
+- `docs/grenzen.md` (die betroffene Zeile)
+
+**#62 (BE-20) ist hier aufgegangen und geschlossen.** Die drei falschen Stellen
+gehoeren zur selben Aussage und werden im selben Merge berichtigt, statt zwei Tickets
+auf dieselbe Datei zu setzen.
+
+### Vorgaben
+
+Wandelt markitdown ein PDF, legt der Adapter eine feste Warnung dazu. Sinngemaess:
+"MarkItDown uebernimmt keine Bilder aus PDF. Enthielt die Vorlage Bilder, fehlt ihr
+Inhalt hier." Der Wortlaut gehoert in die deutsche Prosa des Projekts.
+
+Nur fuer PDF. Bei `.docx`, `.html` und `.epub` setzt markitdown den Alt-Text ein —
+dort ist die Aussage unwahr.
+
+Bewusst in Kauf genommen: Ein PDF ohne Bilder bekommt die Warnung auch. Deshalb sagt
+sie, was die Engine tut, und nicht, was in der Datei stand. Das ist der Preis dafuer,
+nicht zweimal zu lesen — und er ist es wert.
+
+Dieselbe Aussage gehoert an die drei Stellen, die heute das Gegenteil behaupten:
+Modul-Docstring, `docs/formate.md:74`, `docs/grenzen.md:66`. Gemessen wurde das in
+diesem Ticket bereits (siehe Notiz oben): Ein PDF mit zwei Bildern liefert Zeichen
+fuer Zeichen dasselbe Markdown wie dasselbe PDF ohne.
+
+### Pruefung
+
+- Ein PDF durch `markitdown` liefert eine nichtleere `warnings`-Liste mit dieser
+  einen Warnung.
+- Gegenprobe: Eine `.docx` durch `markitdown` liefert sie **nicht**.
+- Keine der drei Doku-/Kommentarstellen behauptet noch einen Alt-Text fuer PDF.
+- `pytest -q` bleibt gruen; ohne die Aenderung faellt der neue Test durch.

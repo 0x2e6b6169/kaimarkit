@@ -409,3 +409,7 @@
 {"timestamp":"2026-09-01T12:08:33.181292542+02:00","action":"claim","task_id":60,"detail":"sophie-14"}
 {"timestamp":"2026-09-01T12:08:34.135504384+02:00","action":"edit","task_id":60,"detail":"BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst"}
 {"timestamp":"2026-09-01T12:08:34.136958814+02:00","action":"release","task_id":60,"detail":"sophie-14"}
+{"timestamp":"2026-09-01T12:10:20.3384987+02:00","action":"edit","task_id":60,"detail":"BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst"}
+{"timestamp":"2026-09-01T12:10:20.905617449+02:00","action":"edit","task_id":62,"detail":"BE-20 · Drei Stellen behaupten einen Alt-Text, den es bei PDF nicht gibt"}
+{"timestamp":"2026-09-01T12:10:21.513639107+02:00","action":"move","task_id":62,"detail":"todo -\u003e done"}
+{"timestamp":"2026-09-01T12:10:22.705173082+02:00","action":"move","task_id":60,"detail":"backlog -\u003e todo"}
