@@ -1,14 +1,16 @@
 ---
 id: 74
 title: BE-27 · Zwei Stellen beschreiben das Vorladen falsch
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-01T12:57:48.662367545+02:00
-updated: 2026-09-01T12:57:48.662367545+02:00
+updated: 2026-09-01T12:59:14.817061204+02:00
 assignee: sophie
 tags:
     - backend
     - docs
+claimed_by: sophie-23
+claimed_at: 2026-09-01T12:59:14.817061204+02:00
 class: standard
 ---
 
