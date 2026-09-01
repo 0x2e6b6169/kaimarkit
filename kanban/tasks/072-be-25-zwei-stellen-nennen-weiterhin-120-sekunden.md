@@ -1,14 +1,16 @@
 ---
 id: 72
 title: BE-25 · Zwei Stellen nennen weiterhin 120 Sekunden
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-01T12:39:26.15386304+02:00
-updated: 2026-09-01T12:39:26.15386304+02:00
+updated: 2026-09-01T12:53:02.34942713+02:00
 assignee: sophie
 tags:
     - backend
     - config
+claimed_by: sophie-21
+claimed_at: 2026-09-01T12:53:02.34942713+02:00
 class: standard
 ---
 
