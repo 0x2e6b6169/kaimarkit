@@ -39,7 +39,7 @@ interface Badge {
 
 const BADGES: Record<QueueStatus, Badge> = {
   queued: { symbol: '◦', label: 'wartet', class: 'text-slate-600' },
-  running: { symbol: '◐', label: 'laeuft', class: 'text-sky-700' },
+  running: { symbol: '◐', label: 'läuft', class: 'text-sky-700' },
   ok: { symbol: '✓', label: 'fertig', class: 'text-emerald-700' },
   failed: { symbol: '✗', label: 'fehlgeschlagen', class: 'text-red-700' },
 }

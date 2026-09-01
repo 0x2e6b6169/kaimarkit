@@ -85,7 +85,7 @@ describe('App', () => {
     expect(text).toContain('kaimarkit wandelt Dokumente nach Markdown')
     // Die Endungen kommen aus /api/capabilities, alphabetisch sortiert.
     expect(text).toContain('Angenommen werden .docx · .epub · .pdf.')
-    expect(text).toContain('Noch keine Dateien ausgewaehlt.')
+    expect(text).toContain('Noch keine Dateien ausgewählt.')
 
     // Die Warteschlange bleibt eingehaengt, auch ohne Dateien: Sonst saehe sie
     // den Start der ersten Datei als Ausgangszustand und sagte ihn nie an.

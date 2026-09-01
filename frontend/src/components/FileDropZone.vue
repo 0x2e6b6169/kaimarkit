@@ -41,7 +41,7 @@ const accept = computed(() =>
 )
 
 const hint = computed(() =>
-  props.extensions.length ? props.extensions.join(' · ') : 'alle unterstuetzten Formate',
+  props.extensions.length ? props.extensions.join(' · ') : 'alle unterstützten Formate',
 )
 
 function openDialog(): void {
@@ -95,7 +95,7 @@ function emitFiles(list: FileList | File[] | null): void {
     >
       <span aria-hidden="true" class="text-3xl leading-none">⤓</span>
       <span class="text-lg font-medium">
-        {{ dragging ? 'Zum Hinzufuegen loslassen' : 'Dateien hierher ziehen oder auswaehlen' }}
+        {{ dragging ? 'Zum Hinzufügen loslassen' : 'Dateien hierher ziehen oder auswählen' }}
       </span>
       <span class="text-sm text-slate-600">{{ hint }}</span>
     </button>

@@ -75,7 +75,7 @@ describe('OptionsPanel', () => {
       .findAll('[data-test="engine-select"] option')
       .find((option) => option.attributes('value') === 'docling')
     expect(docling).toBeDefined()
-    expect(docling!.text()).toContain('laedt noch')
+    expect(docling!.text()).toContain('lädt noch')
     expect(docling!.attributes('disabled')).toBeUndefined()
   })
 

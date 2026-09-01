@@ -53,7 +53,7 @@ describe('FileQueue', () => {
     const expected = ['a.pdf', 'b.pdf', 'c.pdf', 'd.pdf', 'e.pdf']
     rows.forEach((row, index) => expect(row.text()).toContain(expected[index]!))
     // Zwei laufen, drei warten — beides steht als Wort an der Zeile.
-    expect(wrapper.text().match(/laeuft/g)).toHaveLength(2)
+    expect(wrapper.text().match(/läuft/g)).toHaveLength(2)
     expect(wrapper.text().match(/wartet/g)).toHaveLength(3)
   })
 
@@ -188,7 +188,7 @@ describe('Dropzone und Warteschlange zusammen', () => {
     expect(list.findAll('li')).toHaveLength(5)
     list.findAll('li').forEach((row, index) => expect(row.text()).toContain(names[index]!))
     // Nur die Liste zaehlen, nicht den Ansagebereich: Der wiederholt dieselben Woerter.
-    expect(list.get('ul').text().match(/laeuft/g)).toHaveLength(2)
+    expect(list.get('ul').text().match(/läuft/g)).toHaveLength(2)
     expect(list.get('ul').text().match(/wartet/g)).toHaveLength(3)
 
     // Die erste Datei scheitert, die uebrigen gelingen.

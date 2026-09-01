@@ -151,7 +151,7 @@ async function downloadAll(): Promise<void> {
             {{ packing ? 'Archiv wird gepackt …' : 'Alles herunterladen' }}
           </button>
           <span v-if="busy" class="text-sm text-slate-600">
-            Das Archiv steht bereit, sobald nichts mehr laeuft.
+            Das Archiv steht bereit, sobald nichts mehr läuft.
           </span>
         </div>
 
@@ -161,7 +161,7 @@ async function downloadAll(): Promise<void> {
           class="rounded border border-red-300 bg-red-50 p-3 text-red-900"
           data-test="archive-error"
         >
-          Das Archiv liess sich nicht bauen: {{ archiveError }}
+          Das Archiv ließ sich nicht bauen: {{ archiveError }}
         </p>
 
         <FileQueue :entries="entries" @remove="remove">
