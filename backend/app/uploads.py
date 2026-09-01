@@ -110,6 +110,14 @@ async def run_conversion[T](func: Callable[[], T]) -> T:
     Bekannte Einschraenkung: ``KAIMARKIT_CONVERSION_TIMEOUT`` beendet den
     Wartevorgang, nicht den Thread. Der laeuft weiter, bis er von selbst fertig
     ist, und belegt so lange einen Platz im Threadpool. Siehe ``docs/grenzen.md``.
+
+    Zweite Einschraenkung, am 01.09.2026 gemessen (BE-30): Bricht der Client die
+    Verbindung ab, gibt das den Semaphor-Platz nicht frei. uvicorn bricht die
+    Aufgabe beim Verbindungsabbruch nicht ab, ``async with _semaphore()`` wird
+    also nie vorzeitig verlassen. Der Platz kehrt erst zurueck, wenn die
+    Umwandlung von selbst endet oder in die Zeitgrenze laeuft — die Zeitgrenze
+    ist damit das einzige Mittel, das ihn zuverlaessig zurueckholt. Die Zahlen
+    stehen bei ``test_an_aborted_call_keeps_its_semaphore_slot``.
     """
     settings = get_settings()
     async with _semaphore():
