@@ -1,9 +1,9 @@
 """Was beim Hochfahren des Dienstes passiert.
 
-Docling laedt seine Modelle minutenlang. Beginnt das Vorladen erst mit der ersten
-Wandlung, wartet der erste Nutzer darauf. Deshalb stoesst der Lifespan es an — und
-diese Tests halten fest, dass er es tut, ohne den Start aufzuhalten und ohne an
-einer fehlenden Bibliothek zu scheitern.
+Docling laedt seine Modelle rund achteinhalb Sekunden je Pipeline, und der Warmlauf
+baut zwei davon. Beginnt das erst mit der ersten Wandlung, wartet der erste Nutzer
+darauf. Deshalb stoesst der Lifespan es an — und diese Tests halten fest, dass er es
+tut, ohne den Start aufzuhalten und ohne an einer fehlenden Bibliothek zu scheitern.
 """
 
 from __future__ import annotations

@@ -1,11 +1,19 @@
 """Docling hinter dem Converter-Protokoll.
 
-Docling ist die einzige Engine, die vor dem ersten Aufruf minutenlang laedt: Sie
-holt Layout- und Tabellenmodelle in den Speicher. Deshalb baut dieses Modul den
-``DocumentConverter`` genau einmal und im Hintergrund. Solange das laeuft, meldet
-der Adapter ``warming``; ``available()`` ist dann False, die Registry nimmt fuer
-``engine=auto`` die naechste Engine, und wer Docling ausdruecklich verlangt, wartet
-im ``convert()`` auf den fertigen Konverter.
+Docling ist die einzige Engine, die vor dem ersten Aufruf laedt: Sie holt Layout-
+und Tabellenmodelle in den Speicher und braucht dafuer rund achteinhalb Sekunden.
+Deshalb baut dieses Modul seine Konverter genau einmal und im Hintergrund. Solange
+noch keiner steht, meldet der Adapter ``warming``; ``available()`` ist dann False,
+die Registry nimmt fuer ``engine=auto`` die naechste Engine, und wer Docling
+ausdruecklich verlangt, wartet im ``convert()`` auf den fertigen Konverter.
+
+OCR an und OCR aus sind in Docling zwei Pipelines mit verschiedenem Options-Hash.
+Der Warmlauf baut beide, die eingestellte Voreinstellung zuerst. Laedt er nur eine,
+zahlt die erste Umwandlung mit der anderen Einstellung die Ladezeit ein zweites Mal
+— und ``/api/capabilities`` meldet waehrenddessen ``ready``. Dieses Fenster bleibt
+zwischen der ersten und der zweiten Pipeline bestehen: Wer dort die andere
+Einstellung verlangt, wartet an der Sperre in ``_pipeline`` und bekommt ein
+richtiges Ergebnis, nur spaeter.
 
 Die Bibliothek selbst wird erst in ``_build_pipeline`` importiert. Ist sie nicht
 installiert, laesst sich dieses Modul trotzdem laden — der Zugriff endet dann in
@@ -73,8 +81,8 @@ def _placeholder_warnings(markdown: str, name: str) -> list[str]:
 def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
     """Baut den ``DocumentConverter`` und gibt das Wandeln als Funktion zurueck.
 
-    Alles, was Docling kennt, steht in dieser einen Funktion. Der Aufruf dauert
-    Sekunden bis Minuten, weil hier die Modelle geladen werden; das Ergebnis wird
+    Alles, was Docling kennt, steht in dieser einen Funktion. Der Aufruf laedt die
+    Modelle und dauert deshalb rund achteinhalb Sekunden; das Ergebnis wird
     wiederverwendet. Die Tests ersetzen diese Funktion.
     """
     from docling.datamodel.base_models import InputFormat
@@ -141,7 +149,7 @@ class DoclingConverter:
         self._failure: str | None = None
 
     def start_warmup(self) -> None:
-        """Laedt den Standardkonverter im Hintergrund. Mehrfach aufzurufen schadet nicht.
+        """Laedt beide Konverter im Hintergrund. Mehrfach aufzurufen schadet nicht.
 
         Der Aufruf kehrt sofort zurueck — der Start des Dienstes und ``/api/health``
         warten nie auf die Modelle.
@@ -155,14 +163,20 @@ class DoclingConverter:
             self._thread.start()
 
     def _warmup(self) -> None:
+        """Baut beide Pipelines, die eingestellte Voreinstellung zuerst.
+
+        Scheitert die erste, fehlt meist die Bibliothek. Dann ist auch die zweite
+        nicht zu bauen, und der Warmlauf endet hier.
+        """
         default_ocr = get_settings().ocr_enabled
-        try:
-            self._pipeline(default_ocr)
-        except Exception as exc:  # noqa: BLE001 — der Thread darf nichts nach aussen werfen
-            self._failure = str(exc)
-            log.warning("Docling ist nicht verfuegbar: %s", exc)
-        else:
-            log.info("Docling ist bereit (OCR: %s).", default_ocr)
+        for ocr in (default_ocr, not default_ocr):
+            try:
+                self._pipeline(ocr)
+            except Exception as exc:  # noqa: BLE001 — der Thread darf nichts nach aussen werfen
+                self._failure = str(exc)
+                log.warning("Docling ist nicht verfuegbar: %s", exc)
+                return
+            log.info("Docling ist bereit (OCR: %s).", ocr)
 
     def state(self) -> str:
         """``ready``, ``warming`` oder ``unavailable`` — die Werte aus ``contracts/api.md``."""
