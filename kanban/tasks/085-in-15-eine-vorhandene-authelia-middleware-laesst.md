@@ -1,14 +1,16 @@
 ---
 id: 85
 title: IN-15 · Eine vorhandene Authelia-Middleware laesst sich nicht verwenden
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-01T17:38:37.523949913+02:00
-updated: 2026-09-01T17:38:37.523949913+02:00
+updated: 2026-09-01T17:41:03.265084308+02:00
 assignee: akar
 tags:
     - infra
     - docs
+claimed_by: akar-28
+claimed_at: 2026-09-01T17:41:03.265084308+02:00
 class: standard
 ---
 
