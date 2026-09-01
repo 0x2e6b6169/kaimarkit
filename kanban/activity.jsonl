@@ -368,3 +368,5 @@
 {"timestamp":"2026-09-01T10:23:23.21140172+02:00","action":"release","task_id":50,"detail":"akar-21"}
 {"timestamp":"2026-09-01T10:24:25.960361611+02:00","action":"create","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}
 {"timestamp":"2026-09-01T10:24:28.310936764+02:00","action":"create","task_id":57,"detail":"DOC-11 · Warnungen sieht nur, wer JSON anfordert"}
+{"timestamp":"2026-09-01T10:25:37.156459435+02:00","action":"create","task_id":58,"detail":"BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo"}
+{"timestamp":"2026-09-01T10:25:38.639973404+02:00","action":"edit","task_id":52,"detail":"BE-16 · Zwei fast gleiche Docling-Attrappen zusammenlegen"}

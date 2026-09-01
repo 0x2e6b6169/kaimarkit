@@ -4,13 +4,14 @@ title: BE-16 · Zwei fast gleiche Docling-Attrappen zusammenlegen
 status: backlog
 priority: low
 created: 2026-09-01T09:08:32.161989361+02:00
-updated: 2026-09-01T09:08:33.341501608+02:00
+updated: 2026-09-01T10:25:38.63821227+02:00
 assignee: sophie
 tags:
     - backend
     - tests
 depends_on:
     - 47
+    - 58
 class: standard
 ---
 
