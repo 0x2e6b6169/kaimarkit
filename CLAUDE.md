@@ -23,8 +23,8 @@ pyenv activate claude-code
 ```bash
 # Backend
 cd backend && uvicorn app.main:app --reload    # laeuft auch ohne Frontend und Docs
-pytest -q                                       # ohne Docling-Modelle
-pytest -q -m slow                               # mit Docling, dauert
+pytest -q -rs                                   # ohne Docling-Modelle
+make test-slow-image                            # die slow-Tests im Abbild, dauert
 ruff check .
 
 # Frontend
@@ -41,6 +41,20 @@ make docs-release VERSION=0.3                   # mike deploy, erst beim Release
 make help                                       # alle Ziele
 make up | make up-traefik | make up-authelia
 ```
+
+**`-rs` gehört an jeden pytest-Aufruf.** Der Schalter nennt jeden übersprungenen
+Test mit Grund. Ohne ihn bleibt eine fehlende Abhängigkeit unsichtbar:
+`pytest.importorskip` auf Modulebene nimmt das ganze Modul aus der Sammlung, und nur
+die Sammelzahl sinkt. Die pyenv-Umgebung `claude-code` teilen sich alle Lanes; was
+gerade darin steht, ändert sich unter der eigenen Messung. Deshalb meldet ein
+Subagent die Sammelzahl mit — „143 gesammelt, 137 ausgewählt, 137 bestanden“, nicht
+bloß „bestanden“.
+
+**Die langsamen Tests laufen im Abbild, nicht hier.** Docling steht nicht in der
+pyenv-Umgebung; es kommt nur in den Container. `pytest -q -rs -m slow` meldet
+deshalb auf dem Entwicklungsrechner lauter Übersprungenes und Rückgabewert 0 — wer
+das abhakt, hat Docling nicht geprüft. `make test-slow-image` führt dieselben Tests
+im gebauten Abbild aus, wo sie bestehen.
 
 `kanban-md` liegt unter `~/go/bin/kanban-md` und ist nicht im PATH.
 

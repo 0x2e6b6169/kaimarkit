@@ -21,14 +21,14 @@ PYENV_ROOT ?= $(HOME)/.pyenv
 VENV       := $(PYENV_ROOT)/versions/claude-code
 VENV_BIN   := $(VENV)/bin
 
-.PHONY: help up up-traefik up-authelia down logs build dev test test-slow lint \
-        docs-serve docs-release check-env check-venv
+.PHONY: help up up-traefik up-authelia down logs build dev test test-slow \
+        test-slow-image lint docs-serve docs-release check-env check-venv
 
 help: ## Diese Uebersicht anzeigen
 	@echo "kaimarkit — verfuegbare Ziele:"
 	@echo
 	@grep -hE '^[a-zA-Z0-9_-]+:.*## ' $(MAKEFILE_LIST) \
-	  | awk 'BEGIN { FS = ":.*## " } { printf "  %-14s %s\n", $$1, $$2 }'
+	  | awk 'BEGIN { FS = ":.*## " } { printf "  %-16s %s\n", $$1, $$2 }'
 	@echo
 	@echo "Beispiel: make docs-release VERSION=0.3"
 
@@ -63,11 +63,27 @@ dev: check-venv ## Backend auf :8000 und Frontend auf :5173, beide mit Reload
 	 ( cd frontend && npm run dev ) & \
 	 wait
 
-test: check-venv ## Tests ohne die Docling-Modelle
-	cd backend && $(VENV_BIN)/pytest -q
+# -rs gehoert an jeden Lauf: Es nennt jeden uebersprungenen Test mit Grund.
+# Ohne den Schalter faellt eine fehlende Abhaengigkeit nur als kleinere
+# Sammelzahl auf, und die liest niemand.
+test: check-venv ## Tests ohne die Docling-Modelle, Uebersprungenes mit Grund
+	cd backend && $(VENV_BIN)/pytest -q -rs
 
-test-slow: check-venv ## Tests mit Docling, dauert
-	cd backend && $(VENV_BIN)/pytest -q -m slow
+# Docling steht nur im Abbild. Dieses Ziel meldet deshalb auf dem
+# Entwicklungsrechner "3 skipped" und Rueckgabewert 0 — es belegt nichts.
+test-slow: check-venv ## Die slow-Tests lokal; ohne Docling ueberspringen sie sich
+	cd backend && $(VENV_BIN)/pytest -q -rs -m slow
+
+# Hier laufen sie wirklich. Das Abbild bringt Docling und die Modelle mit;
+# pytest und httpx fehlen ihm und kommen fuer den Lauf dazu. Das Backend haengt
+# nur lesend darin, der Container verschwindet danach. Setzt "make build"
+# voraus und laesst einen laufenden Dienst unberuehrt.
+test-slow-image: check-env ## Die slow-Tests im Abbild, wo Docling steht — dauert
+	@set -a; . ./$(ENV_FILE); set +a; \
+	 docker run --rm -u root -v "$(CURDIR)/backend:/src:ro" -w /src \
+	   "$$KAIMARKIT_IMAGE:$$KAIMARKIT_TAG" \
+	   sh -c "pip install -q pytest httpx \
+	          && python -m pytest -q -rs -m slow -p no:cacheprovider"
 
 lint: check-venv ## ruff ueber das Backend laufen lassen
 	cd backend && $(VENV_BIN)/ruff check .

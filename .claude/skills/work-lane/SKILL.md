@@ -100,6 +100,11 @@ Repeat until your lane is empty **and** no subagent of yours is still running:
    - Run the **Pruefung** section from its own ticket body and actually pass it.
      Every ticket carries one; it is what lets the subagent decide "done" without
      asking back.
+   - **Report test counts, not just pass/fail.** Run pytest as `pytest -q -rs`
+     (`-rs` names every skip with its reason) and state the collection in the
+     result note — "126 collected, 122 selected, 122 passed", never just
+     "passed". All lanes share one pyenv environment, so a module that silently
+     dropped out of collection is only visible in the numbers.
    - **If the Pruefung does not come out as specified, suspect the Pruefung before
      the work.** Report the deviation and hand the ticket back
      (`handoff <ID> --block "..." --note "..."`) instead of adjusting until the
