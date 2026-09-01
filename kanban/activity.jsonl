@@ -362,3 +362,9 @@
 {"timestamp":"2026-09-01T09:57:13.767112007+02:00","action":"edit","task_id":55,"detail":"IN-10 · Jede Backend-Aenderung baut Torch und Docling neu"}
 {"timestamp":"2026-09-01T09:58:09.232664734+02:00","action":"edit","task_id":45,"detail":"IN-8 · Docs-Stufe scheitert, wenn der Bau aus einem Worktree laeuft"}
 {"timestamp":"2026-09-01T10:14:25.762571956+02:00","action":"edit","task_id":55,"detail":"IN-10 · Jede Backend-Aenderung baut Torch und Docling neu"}
+{"timestamp":"2026-09-01T10:22:59.494795236+02:00","action":"edit","task_id":50,"detail":"IN-9 · Abnahmefassung: laufender Dienst, im Browser des Hosts pruefbar"}
+{"timestamp":"2026-09-01T10:23:11.198503367+02:00","action":"move","task_id":50,"detail":"in-progress -\u003e review"}
+{"timestamp":"2026-09-01T10:23:23.210927259+02:00","action":"edit","task_id":50,"detail":"IN-9 · Abnahmefassung: laufender Dienst, im Browser des Hosts pruefbar"}
+{"timestamp":"2026-09-01T10:23:23.21140172+02:00","action":"release","task_id":50,"detail":"akar-21"}
+{"timestamp":"2026-09-01T10:24:25.960361611+02:00","action":"create","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}
+{"timestamp":"2026-09-01T10:24:28.310936764+02:00","action":"create","task_id":57,"detail":"DOC-11 · Warnungen sieht nur, wer JSON anfordert"}
