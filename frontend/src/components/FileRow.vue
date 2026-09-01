@@ -16,8 +16,13 @@
  * Der Knopf „Herunterladen" steht erst da, wenn ein Ergebnis vorliegt. Er legt
  * die Datei unmittelbar ab, statt den Wunsch nach oben zu melden: Was
  * heruntergeladen wird, steht vollstaendig im Eintrag dieser Zeile.
+ *
+ * Eine laufende Zeile zaehlt mit, wie lange sie schon laeuft. Docling braucht
+ * Minuten je Dokument; ohne die Zahl haelt man den Dienst nach einer Minute fuer
+ * haengengeblieben. Einen Fortschritt behauptet die Zeile nicht — das Backend
+ * meldet nur Anfang und Ende, und ein Balken ohne Ende waere gelogen.
  */
-import { computed } from 'vue'
+import { computed, onUnmounted, ref, watch } from 'vue'
 import { downloadMarkdown, hasResult } from '../download'
 import type { QueueEntry, QueueStatus } from '../composables/useConversion'
 
@@ -47,6 +52,52 @@ const BADGES: Record<QueueStatus, Badge> = {
 
 const badge = computed(() => BADGES[props.entry.status])
 
+/**
+ * Den Startzeitpunkt haelt die Zeile selbst. Der Eintrag kennt ihn nicht: Seine
+ * `durationMs` kommt aus der Antwort und steht erst am Ende fest.
+ */
+const startedAt = ref<number | null>(null)
+const now = ref(0)
+let ticker: ReturnType<typeof setInterval> | undefined
+
+function stopTicker(): void {
+  if (ticker === undefined) return
+  clearInterval(ticker)
+  ticker = undefined
+}
+
+watch(
+  () => props.entry.status,
+  (status) => {
+    stopTicker()
+    if (status !== 'running') {
+      startedAt.value = null
+      return
+    }
+    startedAt.value = Date.now()
+    now.value = startedAt.value
+    ticker = setInterval(() => {
+      now.value = Date.now()
+    }, 1000)
+  },
+  { immediate: true },
+)
+
+// Sonst tickt der Zaehler weiter, nachdem niemand mehr hinsieht.
+onUnmounted(stopTicker)
+
+/** „0:47" — Minuten und Sekunden, solange die Zeile laeuft, sonst nichts. */
+const elapsed = computed(() => {
+  if (startedAt.value === null) return null
+  const seconds = Math.max(0, Math.floor((now.value - startedAt.value) / 1000))
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
+})
+
+/** „läuft · 0:47"; fertige und gescheiterte Zeilen nennen nur ihren Zustand. */
+const statusLabel = computed(() =>
+  elapsed.value === null ? badge.value.label : `${badge.value.label} · ${elapsed.value}`,
+)
+
 /** Engine und Dauer, sobald sie feststehen. */
 const meta = computed(() => {
   const parts: string[] = []
@@ -70,7 +121,7 @@ const previewId = computed(() => `file-row-${props.entry.id}-preview`)
         {{ badge.symbol }}
       </span>
       <span class="min-w-0 flex-1 truncate font-medium">{{ entry.filename }}</span>
-      <span :class="badge.class" class="text-sm">{{ badge.label }}</span>
+      <span :class="badge.class" class="text-sm">{{ statusLabel }}</span>
       <span v-if="meta" class="text-sm text-slate-600">{{ meta }}</span>
 
       <button
