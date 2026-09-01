@@ -640,3 +640,4 @@
 {"timestamp":"2026-09-01T18:26:14.077075918+02:00","action":"move","task_id":88,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-01T18:26:20.065752298+02:00","action":"edit","task_id":88,"detail":"IN-17 · Drei Kommentare in den Compose-Dateien sagen Falsches"}
 {"timestamp":"2026-09-01T18:26:20.066070337+02:00","action":"release","task_id":88,"detail":"akar-30"}
+{"timestamp":"2026-09-01T18:28:03.793989383+02:00","action":"create","task_id":89,"detail":"IN-18 · Die Compose-Dateien mischen Umschrift und Umlaute"}
