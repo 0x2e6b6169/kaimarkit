@@ -1,14 +1,16 @@
 ---
 id: 50
 title: 'IN-9 · Abnahmefassung: laufender Dienst, im Browser des Hosts pruefbar'
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-01T08:52:15.226215349+02:00
-updated: 2026-09-01T08:52:15.226215349+02:00
+updated: 2026-09-01T08:55:14.66329185+02:00
 assignee: akar
 tags:
     - infra
     - release
+claimed_by: akar-21
+claimed_at: 2026-09-01T08:55:14.66329185+02:00
 class: standard
 ---
 
