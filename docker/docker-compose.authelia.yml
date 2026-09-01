@@ -16,15 +16,15 @@
 
 services:
   kaimarkit:
-    # Map-Form wie in der Traefik-Schicht: Compose ersetzt einzelne Schluessel
-    # und haengt neue an, statt zwei Listen aneinanderzureihen.
+    # Listenform wie in der Traefik-Schicht, aus demselben Grund: Router- und
+    # Middlewarename stehen im Labelnamen, und nur in der Listenform ist der
+    # Labelname Teil eines Wertes, in den Compose einsetzen kann. Compose macht
+    # aus beiden Listen beim Laden Maps und fuehrt sie ueber die Schluessel
+    # zusammen — diese Datei ersetzt also weiterhin einzelne Eintraege der
+    # Traefik-Schicht und haengt kein zweites Label daneben.
     #
-    # Alle Namen in den Schluesseln stehen woertlich da — "kaimarkit-auth" fuer
-    # die Middleware, "kaimarkit" und "kaimarkit-api" fuer die Router. Compose
-    # setzt Variablen nur in Werte ein, nicht in Schluessel; ein ${...} links vom
-    # Doppelpunkt bliebe unveraendert stehen und ergaebe einen Namen mit
-    # Dollarzeichen darin. Wer einen dieser Namen aendert, aendert ihn hier und
-    # in docker-compose.traefik.yml gemeinsam.
+    # ${KAIMARKIT_TRAEFIK_NAME} ist derselbe Namensraum wie dort und muss es
+    # sein: Die Middleware haengt an dem Router, den jene Schicht anlegt.
     labels:
       # Die eigene Middleware. Sie definiert sich am eigenen Dienst und steht
       # damit fuer sich: Traefik findet sie ueber den Docker-Anbieter, ohne dass
@@ -41,17 +41,17 @@ services:
       # Fehler und ohne Eintrag im Log. Deshalb braucht diese Definition keine
       # Bedingung. Wer sie dagegen leer benutzt, bekommt 500 — nachgemessen,
       # nicht angenommen.
-      traefik.http.middlewares.kaimarkit-auth.forwardauth.address: ${AUTHELIA_VERIFY_URL}
+      - "traefik.http.middlewares.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}-auth.forwardauth.address=${AUTHELIA_VERIFY_URL}"
 
       # Authelia braucht die urspruengliche Anfrage, um Schema, Host und Pfad zu
       # pruefen und danach zurueckzuleiten. Ohne diesen Schalter sieht Authelia
       # nur Traefik.
-      traefik.http.middlewares.kaimarkit-auth.forwardauth.trustForwardHeader: "true"
+      - "traefik.http.middlewares.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}-auth.forwardauth.trustForwardHeader=true"
 
       # Was Authelia ueber die angemeldete Person zurueckgibt, reicht Traefik an
       # die Anwendung weiter. kaimarkit wertet die Kopfzeilen nicht aus; sie
       # stehen bereit, falls spaeter jemand danach unterscheiden will.
-      traefik.http.middlewares.kaimarkit-auth.forwardauth.authResponseHeaders: ${AUTHELIA_RESPONSE_HEADERS}
+      - "traefik.http.middlewares.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}-auth.forwardauth.authResponseHeaders=${AUTHELIA_RESPONSE_HEADERS}"
 
       # Der Router aus der Traefik-Schicht bekommt die Middleware vorgeschaltet.
       # Neuer Schluessel in derselben Map, deshalb bleibt dort alles ungeaendert.
@@ -59,7 +59,8 @@ services:
       # Voreingestellt "authelia@docker": Wer Authelia betreibt und sie per
       # Docker-Label beschriftet hat, verweist damit auf seine vorhandene
       # Middleware und setzt nichts doppelt. Wer das nicht hat, traegt
-      # "kaimarkit-auth@docker" ein und setzt AUTHELIA_VERIFY_URL.
+      # "${KAIMARKIT_TRAEFIK_NAME}-auth@docker" ein und setzt AUTHELIA_VERIFY_URL
+      # — der Name der eigenen Middleware folgt dem Namensraum.
       #
       # Der Vorgabewert steht hier und nicht nur in .env.example, damit ein
       # docker/.env ohne diese Variable nicht die leere Zeichenkette einsetzt.
@@ -69,31 +70,26 @@ services:
       # Deshalb "-" und nicht ":-". Der Doppelpunkt wuerde auch den leeren Wert
       # ersetzen; ohne ihn greift der Vorgabewert nur, wenn die Variable ganz
       # fehlt. Ein ausdruecklich leerer Wert bleibt leer und heisst "keine
-      # Middleware", wie beim /api-Router weiter unten.
-      #
-      # Ein Name, den Traefik nicht kennt, oeffnet den Dienst nicht: Der Router
-      # geht auf "disabled" und liefert 404. Gemessen mit Traefik 3.6.25 gegen
-      # "authelia@file" — Fehlertext 'middleware "authelia@file" does not exist',
-      # Pfad "/" mit 404. Der /api-Router blieb unberuehrt; er hat seine eigene
-      # Variable.
-      traefik.http.routers.kaimarkit.middlewares: "${KAIMARKIT_MIDDLEWARES-authelia@docker}"
+      # Middleware", wie beim /api-Router weiter unten. Beim Namensraum daneben
+      # steht es umgekehrt: Dort ergibt ein leerer Wert nichts Sinnvolles.
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}.middlewares=${KAIMARKIT_MIDDLEWARES-authelia@docker}"
 
       # Zweiter Router allein fuer /api. Hinter Authelia bekommt ein Aufruf ohne
       # Browser-Sitzung sonst eine Weiterleitung zum Login. curl und jedes
       # Skript bekaemen dann die Anmeldeseite statt Markdown.
-      traefik.http.routers.kaimarkit-api.rule: Host(`${KAIMARKIT_DOMAIN}`) && PathPrefix(`/api`)
-      traefik.http.routers.kaimarkit-api.entrypoints: ${TRAEFIK_ENTRYPOINT}
-      traefik.http.routers.kaimarkit-api.tls: "true"
-      traefik.http.routers.kaimarkit-api.tls.certresolver: ${TRAEFIK_CERTRESOLVER}
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}-api.rule=Host(`${KAIMARKIT_DOMAIN}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}-api.entrypoints=${TRAEFIK_ENTRYPOINT}"
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}-api.tls=true"
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}-api.tls.certresolver=${TRAEFIK_CERTRESOLVER}"
 
       # Traefik ordnet Regeln sonst nach Laenge. Das genuegt hier zwar, weil die
       # /api-Regel die laengere ist, haengt aber am Wortlaut der anderen Regel.
       # Die feste Zahl macht den Vorrang unabhaengig davon.
-      traefik.http.routers.kaimarkit-api.priority: "100"
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}-api.priority=100"
 
       # Ein Router ohne eigenen Dienst nimmt den einzigen des Containers. Hier
       # steht er trotzdem, damit niemand diese Regel nachschlagen muss.
-      traefik.http.routers.kaimarkit-api.service: kaimarkit
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}-api.service=${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}"
 
       # Derselbe Schalter fuer /api, mit derselben Voreinstellung: Beide Router
       # gehen denselben Weg, solange niemand sie auseinanderzieht.
@@ -104,9 +100,10 @@ services:
       # Middlewareliste war leer, und ein Aufruf kam durch, waehrend derselbe
       # Aufruf auf "/" an Authelia haengenblieb.
       #
-      # Die Anfuehrungszeichen schreiben die leere Zeichenkette hin, statt sie
-      # YAML zu ueberlassen — dort steht ein blanker Wert fuer null.
+      # Die Anfuehrungszeichen um das ganze Label schreiben die leere
+      # Zeichenkette hin, statt sie YAML zu ueberlassen — ein blanker Wert
+      # stuende dort fuer null.
       #
       # Statt ganz freizugeben laesst sich hier auch eine engere Middleware
       # eintragen, etwa eine IP-Allowlist. Siehe docs/betrieb/authelia.md.
-      traefik.http.routers.kaimarkit-api.middlewares: "${KAIMARKIT_API_MIDDLEWARES-authelia@docker}"
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}-api.middlewares=${KAIMARKIT_API_MIDDLEWARES-authelia@docker}"

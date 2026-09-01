@@ -153,7 +153,7 @@ der Container als ungesund, bevor er überhaupt fertig gestartet ist.
 
 ## Traefik
 
-Diese vier Variablen braucht nur, wer `docker-compose.traefik.yml` mitgibt.
+Diese fünf Variablen braucht nur, wer `docker-compose.traefik.yml` mitgibt.
 
 | Variable | Standard | Wirkung |
 | --- | --- | --- |
@@ -161,10 +161,15 @@ Diese vier Variablen braucht nur, wer `docker-compose.traefik.yml` mitgibt.
 | `TRAEFIK_ENTRYPOINT` | `websecure` | Der Traefik-Entrypoint, an dem der Router hängt. |
 | `TRAEFIK_CERTRESOLVER` | `myresolver` | Der Certresolver für das Zertifikat. |
 | `KAIMARKIT_DOMAIN` | `kaimarkit.example.com` | Der Hostname, unter dem der Dienst antwortet. |
+| `KAIMARKIT_TRAEFIK_NAME` | `kaimarkit` | Namensraum der Traefik-Namen: Router, `…-api`, Dienst und die eigene Middleware `…-auth`. |
 
-Die Namen der Router stehen nicht in der Umgebung. Sie lauten fest `kaimarkit` und
-`kaimarkit-api`; warum das so ist und was zu tun ist, wenn sie auf dem Host mit
-anderen kollidieren, steht unter [Traefik](traefik.md).
+Der letzte Wert trennt zwei Instanzen hinter derselben Traefik. Diese Namen gelten je
+Traefik-Instanz, nicht je Container; zwei Aufbauten mit demselben Wert legen einander
+lahm. Was daraus im Einzelnen wird und wie sich das nachprüfen lässt, steht unter
+[Traefik](traefik.md#der-namensraum-der-traefik-namen).
+
+Der Compose-Dienst heißt unabhängig davon weiterhin `kaimarkit`. `docker compose logs
+kaimarkit` und die Makefile-Ziele bleiben also, wie sie sind.
 
 ## Authelia
 
@@ -186,7 +191,8 @@ sich selbst definiert. Dann bleiben `AUTHELIA_VERIFY_URL` und
 
 Wer stattdessen `kaimarkit-auth@docker` einträgt, benutzt die Middleware, die
 `docker-compose.authelia.yml` selbst definiert — und braucht dafür die beiden
-letzten. Der Hostname in `AUTHELIA_VERIFY_URL` ist dann der Containername von
+letzten. Deren Name folgt `KAIMARKIT_TRAEFIK_NAME`: Bei abweichendem Namensraum heißt
+sie `<name>-auth@docker`. Der Hostname in `AUTHELIA_VERIFY_URL` ist dann der Containername von
 Authelia im Traefik-Netz, der `rd`-Parameter dagegen die von außen erreichbare
 Anmeldeseite. Beide zeigen auf denselben Dienst, aber aus verschiedenen
 Blickwinkeln.

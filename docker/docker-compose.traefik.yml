@@ -21,30 +21,44 @@ services:
     networks:
       - proxy
 
-    # Map-Form, nicht Liste. Compose fuehrt Listen additiv zusammen — die
-    # Authelia-Schicht koennte einen einzelnen Schluessel dann nicht mehr
-    # ersetzen, sondern haengte ein zweites Label daneben.
+    # Listenform, nicht Map. Der Grund steht in den Schluesseln: Router- und
+    # Dienstname sind Teil des Labelnamens, und Compose setzt Variablen nur in
+    # Werte ein, nicht in Schluessel. In der Listenform ist das ganze Label ein
+    # Wert, also greift ${KAIMARKIT_TRAEFIK_NAME} auch links vom Gleichheits-
+    # zeichen. In Map-Form bliebe ein ${...} woertlich stehen und ergaebe einen
+    # Routernamen mit einem Dollarzeichen darin.
     #
-    # Der Preis dafuer steht in der naechsten Zeile: Compose setzt Variablen nur
-    # in Werte ein, nicht in Schluessel. Der Routername muss deshalb woertlich
-    # dastehen. Er lautet "kaimarkit" wie der Container und ist damit auf dem
-    # Host so eindeutig wie dieser. Wer ihn aendert, aendert ihn hier und in der
-    # Authelia-Schicht gemeinsam.
+    # Der bekannte Einwand gegen Listen — Compose haenge sie aneinander, statt
+    # einzelne Eintraege zu ersetzen — gilt fuer labels nicht: Compose macht aus
+    # der Liste beim Laden eine Map und fuehrt sie danach ueber die Schluessel
+    # zusammen. Die Authelia-Schicht kann einen Eintrag von hier also weiterhin
+    # ersetzen. Nachgemessen mit Compose v5.1.4, zwei Dateien in Listenform, der
+    # doppelte Schluessel stand danach einmal da, mit dem Wert der zweiten Datei.
+    #
+    # Warum der Name ueberhaupt variabel ist: Router-, Dienst- und
+    # Middlewarenamen gelten je Traefik-Instanz, nicht je Container. Zwei
+    # kaimarkit hinter derselben Traefik erklaeren sonst denselben Router
+    # zweimal, und Traefik verwirft beide. Siehe docs/betrieb/traefik.md.
+    #
+    # ":-" und nicht "-": Ein leerer Wert ergaebe hier keinen Namen, sondern
+    # Labels wie "traefik.http.routers..rule". Deshalb faengt der Vorgabewert
+    # beide Faelle ab, die fehlende und die leere Variable. Ein docker/.env aus
+    # der Zeit vor dieser Variablen laeuft damit unveraendert weiter.
     labels:
-      traefik.enable: "true"
+      - "traefik.enable=true"
 
       # Bei mehreren Netzen am Container waehlt Traefik sonst unter Umstaenden
       # das falsche und laeuft in eine Adresse, die es nicht erreicht.
-      traefik.docker.network: ${TRAEFIK_NETWORK}
+      - "traefik.docker.network=${TRAEFIK_NETWORK}"
 
-      traefik.http.routers.kaimarkit.rule: Host(`${KAIMARKIT_DOMAIN}`)
-      traefik.http.routers.kaimarkit.entrypoints: ${TRAEFIK_ENTRYPOINT}
-      traefik.http.routers.kaimarkit.tls: "true"
-      traefik.http.routers.kaimarkit.tls.certresolver: ${TRAEFIK_CERTRESOLVER}
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}.rule=Host(`${KAIMARKIT_DOMAIN}`)"
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}.entrypoints=${TRAEFIK_ENTRYPOINT}"
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}.tls=true"
+      - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}.tls.certresolver=${TRAEFIK_CERTRESOLVER}"
 
       # Der Port im Container, nicht auf dem Host: Traefik spricht den Dienst
       # unmittelbar im gemeinsamen Netz an.
-      traefik.http.services.kaimarkit.loadbalancer.server.port: "8000"
+      - "traefik.http.services.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}.loadbalancer.server.port=8000"
 
 networks:
   proxy:
