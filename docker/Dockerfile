@@ -104,37 +104,58 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
-COPY . .
 
-# Drei Faelle, und die letzten beiden sind der Grund, dass ein Bau ueberhaupt
-# durchlaeuft, bevor etwas veroeffentlicht ist: Im veroeffentlichten Repo liegt
-# unter gh-pages die von mike gebaute Fassung mit allen Versionen. In einem
-# frischen Klon vor dem ersten Release gibt es diesen Zweig nicht. Und kommt der
-# Kontext aus einem Git-Worktree, ist ".git" dort kein Verzeichnis, sondern eine
-# Datei mit einem Zeiger auf den Haupt-Checkout; im Container laeuft dieser Zeiger
-# ins Leere. Git nimmt das nicht hin und beendet jeden Aufruf im Baum mit 128 —
-# auch "git config --global", das aus dem Repo nichts liest. Deshalb steht die
-# Frage nach dem Verzeichnis vor dem ersten Git-Aufruf und nicht erst vor dem
-# zweiten. In den letzten beiden Faellen baut die Stufe die aktuelle Fassung
-# selbst.
+# Die Eingaben kommen einzeln herein, in der Reihenfolge, in der sie sich aendern:
+# die Abhaengigkeiten selten, die Seiten oefter, ".git" bei jedem Commit. Ein
+# "COPY . ." zog den ganzen Kontext herein und verwarf damit die Stufe nach jedem
+# Commit — gemessene 20 bis 43 Sekunden fuer eine Aenderung, die kein Wort der
+# Dokumentation anfasst; wie viel davon, haengt an der Leitung, denn
+# PIP_NO_CACHE_DIR laedt mkdocs-material jedes Mal neu. Was die Stufe nicht liest,
+# gehoert deshalb auch nicht in sie: weder backend/app noch frontend/ noch docker/.
 #
 # Die Abhaengigkeiten stehen in backend/pyproject.toml unter der Gruppe "docs".
 # Sie werden von dort gelesen, damit es nur eine Quelle dafuer gibt.
-RUN mkdir -p /docs-site \
-    && GH_PAGES="" \
-    && if [ -d .git ]; then \
-           git config --global --add safe.directory /src; \
-           for ref in gh-pages origin/gh-pages; do \
-               if git rev-parse --verify "$ref" >/dev/null 2>&1; then GH_PAGES="$ref"; break; fi; \
-           done; \
-       fi \
-    && if [ -n "$GH_PAGES" ]; then \
-           git archive "$GH_PAGES" | tar -x -C /docs-site; \
-       else \
-           python -c "import tomllib; print('\n'.join(tomllib.load(open('backend/pyproject.toml','rb'))['project']['optional-dependencies']['docs']))" > /tmp/docs-requirements.txt \
-           && pip install -r /tmp/docs-requirements.txt \
-           && mkdocs build --site-dir /docs-site; \
-       fi
+COPY backend/pyproject.toml /src/backend/pyproject.toml
+RUN python -c "import tomllib; print('\n'.join(tomllib.load(open('backend/pyproject.toml','rb'))['project']['optional-dependencies']['docs']))" > /tmp/docs-requirements.txt \
+    && pip install -r /tmp/docs-requirements.txt
+
+# Die aktuelle Fassung entsteht immer. Sie ist das, was ein Repo vor dem ersten
+# Release ausliefert, und zugleich der Rueckfall fuer jeden Kontext ohne
+# brauchbares .git.
+COPY mkdocs.yml /src/mkdocs.yml
+COPY docs/ /src/docs/
+RUN mkdocs build --site-dir /docs-site
+
+# Und zuletzt die veroeffentlichte Fassung, wenn es sie gibt: Unter gh-pages liegt
+# die von mike gebaute Dokumentation mit allen Versionen; die eben gebaute kennt
+# nur die eine. Wo der Zweig existiert, ersetzt er sie.
+#
+# Zwei Faelle daneben. In einem frischen Klon vor dem ersten Release gibt es den
+# Zweig nicht. Und kommt der Kontext aus einem Git-Worktree, ist ".git" dort kein
+# Verzeichnis, sondern eine Datei mit einem Zeiger auf den Haupt-Checkout; im
+# Container laeuft dieser Zeiger ins Leere. Git nimmt das nicht hin und beendet
+# jeden Aufruf im Baum mit 128 — auch "git config --global", das aus dem Repo
+# nichts liest. Deshalb steht die Frage nach dem Verzeichnis vor dem ersten
+# Git-Aufruf und nicht erst vor dem zweiten.
+#
+# ".git" haengt als Bind-Mount ein und wird nicht kopiert: Es wird nur gelesen und
+# soll keine Schicht von zwoelf Megabyte anlegen. Am Zwischenspeicher aendert das
+# nichts — auch ein Bind-Mount geht mit seinem Inhalt in den Cache-Schluessel ein,
+# und ".git" aendert sich bei jedem Commit. Diese Schicht laeuft also weiterhin
+# nach jedem Commit; sie kostet dann Sekundenbruchteile statt der Sekunden, die
+# pip install und mkdocs build oben brauchen.
+RUN --mount=type=bind,source=.git,target=/src/.git \
+    set -e; \
+    [ -d /src/.git ] || exit 0; \
+    git config --global --add safe.directory /src; \
+    GH_PAGES=""; \
+    for ref in gh-pages origin/gh-pages; do \
+        if git rev-parse --verify "$ref" >/dev/null 2>&1; then GH_PAGES="$ref"; break; fi; \
+    done; \
+    [ -n "$GH_PAGES" ] || exit 0; \
+    rm -rf /docs-site; \
+    mkdir -p /docs-site; \
+    git archive "$GH_PAGES" | tar -x -C /docs-site
 
 
 # ── 6. Laufzeit ────────────────────────────────────────────────────────────────
