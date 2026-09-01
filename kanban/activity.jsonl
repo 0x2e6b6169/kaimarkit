@@ -546,3 +546,9 @@
 {"timestamp":"2026-09-01T13:39:47.570739765+02:00","action":"edit","task_id":52,"detail":"BE-16 · Zwei fast gleiche Docling-Attrappen zusammenlegen"}
 {"timestamp":"2026-09-01T13:39:47.571212508+02:00","action":"release","task_id":52,"detail":"sophie-27"}
 {"timestamp":"2026-09-01T13:40:14.675077472+02:00","action":"edit","task_id":52,"detail":"BE-16 · Zwei fast gleiche Docling-Attrappen zusammenlegen"}
+{"timestamp":"2026-09-01T13:48:13.017632123+02:00","action":"edit","task_id":55,"detail":"IN-10 · Jede Backend-Aenderung baut Torch und Docling neu"}
+{"timestamp":"2026-09-01T13:48:13.739051511+02:00","action":"move","task_id":55,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T13:48:14.359536831+02:00","action":"edit","task_id":55,"detail":"IN-10 · Jede Backend-Aenderung baut Torch und Docling neu"}
+{"timestamp":"2026-09-01T13:48:14.359774113+02:00","action":"release","task_id":55,"detail":"akar-24"}
+{"timestamp":"2026-09-01T13:50:07.115728796+02:00","action":"move","task_id":49,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T13:50:30.701119836+02:00","action":"create","task_id":77,"detail":"IN-13 · Die Docs-Stufe laeuft nach jedem Commit neu"}

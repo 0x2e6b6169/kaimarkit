@@ -1,11 +1,12 @@
 ---
 id: 55
 title: IN-10 · Jede Backend-Aenderung baut Torch und Docling neu
-status: in-progress
+status: done
 priority: medium
 created: 2026-09-01T09:57:11.385309146+02:00
-updated: 2026-09-01T12:41:03.657251899+02:00
+updated: 2026-09-01T13:48:14.358653719+02:00
 started: 2026-09-01T12:39:31.063630981+02:00
+completed: 2026-09-01T13:48:13.736647596+02:00
 assignee: akar
 tags:
     - infra
@@ -13,8 +14,6 @@ tags:
 depends_on:
     - 45
     - 59
-claimed_by: akar-24
-claimed_at: 2026-09-01T12:41:03.657251899+02:00
 class: standard
 ---
 
@@ -96,3 +95,85 @@ Damit ist die Praemisse dieses Tickets zu eng gefasst. "Jede Backend-Aenderung b
 Eine naheliegende Erklaerung scheidet aus, geprueft statt vermutet: `COPY . .` steht in Zeile 86 und gehoert zur **Docs-Stufe**, die mit einem eigenen `FROM` bei Zeile 76 beginnt. Die Builder-Stufe (Zeilen 29-47) kopiert nur `backend/`. Das Rauschen aus `.git`, das bei jedem Commit anfaellt, kann die Installationsschicht also nicht ungueltig machen.
 
 **Was die Schichten wirklich verwirft, ist damit offen.** Wer dieses Ticket umsetzt, faengt bei dieser Frage an und nicht bei der Umstellung: zweimal hintereinander bauen, ohne etwas zu aendern, und sehen, ob `CACHED` erscheint. Erst wenn feststeht, was den Cache verwirft, ist zu entscheiden, ob die Trennung von Abhaengigkeiten und Quelltext ueberhaupt hilft.
+
+## Umgesetzt (akar-24, 01.09.2026) — Merge bbf7180, Commit 12d3d17
+
+### Die Diagnose zuerst, wie der zweite Nachtrag es verlangt
+
+Zweimal hintereinander gebaut, ohne etwas zu aendern: Der zweite Lauf brauchte
+**3 Sekunden**, jede Stufe meldete `CACHED`. Der Cache greift also — er wird
+verworfen, und die Frage war wodurch.
+
+### Die Ursache liegt in .dockerignore, nicht im Dockerfile
+
+Ein Muster ohne Schraegstrich vergleicht in `.dockerignore` nur die **oberste
+Ebene** des Kontextes. `__pycache__/`, `.pytest_cache/`, `.ruff_cache/` und
+`node_modules/` liessen deshalb `backend/app/__pycache__`,
+`backend/.pytest_cache` und `backend/.ruff_cache` durch. Jeder Lauf von `pytest`
+oder `ruff` schrieb sie neu, der naechste Bau verwarf damit `COPY backend/`
+(alte Fassung, Zeile 42) und installierte Torch und Docling ein weiteres Mal.
+Ueber `FROM builder` (Zeile 51) fiel der Modell-Download gleich mit.
+
+Belegt, nicht vermutet: Ein Probeabbild mit `COPY backend/ /x/` meldete `CACHED`,
+solange nichts geschah; eine einzige geaenderte `.pyc`-Datei unter
+`backend/app/__pycache__` liess es neu laufen; der Lauf danach war wieder
+`CACHED`.
+
+Damit ist auch der Nebenbefund aus dem Lauf zu #45 erklaert: Dort war unter
+`backend/` nichts geaendert — aber vorher waren die Tests gelaufen.
+
+Die Praemisse des Rumpfes stimmt trotzdem, sie war nur nicht der ganze Fall: Auch
+in einem sauberen Kontext verwirft jede Aenderung unter `backend/` dieselbe
+Schicht.
+
+### Was geaendert wurde
+
+- `.dockerignore`: Die Artefaktmuster haben jetzt das Praefix `**/`. Geprueft mit
+  einem Probeabbild — angelegte `backend/app/__pycache__`, `backend/.pytest_cache`,
+  `frontend/node_modules` und ein `__pycache__` in der Wurzel kamen alle nicht mehr
+  im Kontext an.
+- `docker/Dockerfile`: sechs Stufen statt fuenf. `deps` installiert die
+  Abhaengigkeiten, die es aus `backend/pyproject.toml` liest; `builder`
+  (`FROM deps`) legt die Anwendung mit `--no-deps` darauf; `models` setzt jetzt
+  auf `deps` auf statt auf `builder`, weil der Download docling braucht und nicht
+  die Anwendung.
+- `docs/entwicklung.md`: neuer Abschnitt „Das Abbild bauen".
+
+### Die Pruefung
+
+**Aenderung unter `backend/`, danach bauen** — bestanden. `deps 5/5`
+(`pip install`) und `models 2/2` (Modell-Download) melden `CACHED`.
+
+**Gegenprobe mit geaenderter `backend/pyproject.toml`** — bestanden. Beide Stufen
+laufen zu Recht neu, 210 s und 173 s.
+
+**Die Zahlen.** Dieselbe Quelltextaenderung (ein Kommentar in
+`backend/app/__init__.py`), derselbe warme Cache:
+
+| | Bauzeit |
+|---|---|
+| vorher, alter Dockerfile | **485 s** (`pip install` 210 s, Modell-Download 173 s) |
+| nachher | **86 s** (beide `CACHED`; es lief nur `pip install --no-deps`, 6 s) |
+
+Eine zweite Bestaetigung von aussen: `make up` aus dem Haupt-Checkout brauchte
+**195 s**, beide Stufen `CACHED` — obwohl `backend/__pycache__`,
+`backend/.pytest_cache` und `backend/.ruff_cache` dort weiterhin auf der Platte
+liegen. Genau das war vorher der Fall, der alles verwarf.
+
+**Vorbehalt zur Messlage.** Alle Zahlen entstanden vor dem VPN des Nutzers, in
+einem Zug und unter gleichen Netzbedingungen; die beiden Laeufe mit echtem
+Download liegen mit 485 s und 482 s eng beieinander. Nach der Warnung wurde kein
+weiterer Lauf mit Zeitnahme gemacht, der herunterlaedt. Die 86 s holen nichts aus
+dem Netz und haengen deshalb nicht daran.
+
+**Funktionspruefung des neuen Abbilds.** `/api/health` meldet `ok`, alle drei
+Engines stehen auf `ready`, `tabelle.pdf` laeuft ueber docling und ueber
+markitdown, `text.odt` ueber pandoc — Antwort fuer Antwort dieselbe wie beim
+laufenden alten Abbild. Der Dienst aus dem Haupt-Checkout ist `healthy`.
+
+### Nebenbefund, nicht geaendert
+
+Die Docs-Stufe kopiert mit `COPY . .` (Zeile 86 der alten, 100 der neuen Fassung)
+den ganzen Kontext einschliesslich `.git`. Sie laeuft deshalb nach jedem Commit
+neu. Gemessen kostet das 20 bis 23 Sekunden — klein genug, um es hier stehen zu
+lassen, gross genug, um es zu nennen.

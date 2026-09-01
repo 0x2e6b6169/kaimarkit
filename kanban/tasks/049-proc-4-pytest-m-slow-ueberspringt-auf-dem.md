@@ -1,10 +1,10 @@
 ---
 id: 49
 title: PROC-4 · pytest -m slow ueberspringt auf dem Entwicklungsrechner still
-status: todo
+status: in-progress
 priority: medium
 created: 2026-08-31T17:08:53.51522673+02:00
-updated: 2026-09-01T13:04:21.767429495+02:00
+updated: 2026-09-01T13:50:07.107364906+02:00
 started: 2026-09-01T13:02:59.351411003+02:00
 assignee: akar
 tags:
@@ -12,6 +12,8 @@ tags:
     - process
 depends_on:
     - 55
+claimed_by: akar-25
+claimed_at: 2026-09-01T13:50:07.107364906+02:00
 class: standard
 ---
 
