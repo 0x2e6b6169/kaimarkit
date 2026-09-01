@@ -71,7 +71,9 @@ sondern nennt den Traefik-Anbieter, aus dem die Middleware stammt.
 
 Wessen Authelia ihre Middleware nicht per Docker-Label mitbringt — weil sie aus einer
 Datei kommt, außerhalb von Docker läuft oder gar keine hat —, trägt
-`kaimarkit-auth@docker` ein und setzt dafür die beiden Variablen:
+`kaimarkit-auth@docker` ein und setzt dafür die beiden Variablen. Der Name folgt
+`KAIMARKIT_TRAEFIK_NAME`; steht dort etwas anderes als `kaimarkit`, heißt die
+Middleware `<name>-auth@docker`:
 
 ```
 KAIMARKIT_MIDDLEWARES=kaimarkit-auth@docker
@@ -129,14 +131,25 @@ Welche Namen der eigene Traefik kennt, sagt seine API:
 curl -sf http://<traefik-host>:8080/api/http/middlewares | jq -r '.[].name'
 ```
 
-## Der Name der eigenen Middleware steht fest
+## Der Name der eigenen Middleware folgt dem Namensraum
 
-`kaimarkit-auth` steht wörtlich in den Label-Schlüsseln, aus demselben Grund wie die
-Routernamen: **Compose setzt Variablen nur in Label-Werte ein, nicht in
-Label-Schlüssel.** Eine Variable dafür gibt es deshalb nicht in
-`docker/.env.example`. Wer die Middleware anders nennen will, ändert
-`docker/docker-compose.authelia.yml` von Hand; dort steht der Name dreimal, alle drei
-Male in der Definition.
+`kaimarkit-auth` ist keine feste Zeichenkette, sondern
+`${KAIMARKIT_TRAEFIK_NAME}-auth`. Wer den [Namensraum](traefik.md#der-namensraum-der-traefik-namen)
+umstellt, weil eine zweite Instanz hinter derselben Traefik hängt, benennt damit auch
+diese Middleware um — und muss sie unter dem neuen Namen in `KAIMARKIT_MIDDLEWARES`
+eintragen. Die Variable dort löst sich nicht von selbst mit auf.
+
+Eine Verkettung in `docker/.env` nimmt Compose an:
+
+```
+KAIMARKIT_MIDDLEWARES=${KAIMARKIT_TRAEFIK_NAME}-auth@docker
+```
+
+Eine Bedingung hat sie: `KAIMARKIT_TRAEFIK_NAME` muss in der Datei **weiter oben**
+stehen. Rückwärts setzt Compose eine leere Zeichenkette ein, meldet dazu nur eine
+Warnung und lässt den Aufruf weiterlaufen — der Router hieße dann `-auth@docker` und
+verschwände. In `docker/.env.example` steht die Traefik-Gruppe vor der
+Authelia-Gruppe, die Reihenfolge stimmt also von selbst.
 
 Am Router steht kein fester Name. Dort entscheidet `KAIMARKIT_MIDDLEWARES`, und die
 eigene Middleware ist nur einer der zwei Werte, die dort sinnvoll sind.
@@ -149,12 +162,14 @@ liefe ins Leere.
 
 Dagegen legt die Schicht einen zweiten Router allein für `/api` an:
 
+`<name>` steht wieder für `KAIMARKIT_TRAEFIK_NAME`, voreingestellt `kaimarkit`:
+
 | Label | Wert | Wozu |
 | --- | --- | --- |
-| `…routers.kaimarkit-api.rule` | ``Host(`${KAIMARKIT_DOMAIN}`) && PathPrefix(`/api`)`` | Nur die API. |
-| `…routers.kaimarkit-api.priority` | `100` | Vorrang vor dem Router für alles Übrige. |
-| `…routers.kaimarkit-api.service` | `kaimarkit` | Derselbe Dienst wie beim ersten Router. |
-| `…routers.kaimarkit-api.middlewares` | `${KAIMARKIT_API_MIDDLEWARES-authelia@docker}` | Der Schalter, um den es geht. |
+| `…routers.<name>-api.rule` | ``Host(`${KAIMARKIT_DOMAIN}`) && PathPrefix(`/api`)`` | Nur die API. |
+| `…routers.<name>-api.priority` | `100` | Vorrang vor dem Router für alles Übrige. |
+| `…routers.<name>-api.service` | `<name>` | Derselbe Dienst wie beim ersten Router. |
+| `…routers.<name>-api.middlewares` | `${KAIMARKIT_API_MIDDLEWARES-authelia@docker}` | Der Schalter, um den es geht. |
 
 Die feste Priorität ist Absicht. Ohne sie ordnet Traefik die Regeln nach Länge; das
 genügte hier zwar, weil die `/api`-Regel die längere ist, hinge aber am Wortlaut der
@@ -197,6 +212,9 @@ Der Router und seine Middleware lassen sich unmittelbar ablesen:
 ```bash
 curl -sf http://<traefik-host>:8080/api/http/routers | jq '.[] | select(.name | startswith("kaimarkit"))'
 ```
+
+Der Filter nennt den voreingestellten Namensraum; bei abweichendem
+`KAIMARKIT_TRAEFIK_NAME` gehört dessen Wert dorthin.
 
 Beide Router müssen dort mit `"status": "enabled"` stehen und im Feld `middlewares`
 den Namen führen, der in `docker/.env` steht. Steht einer auf `disabled`, nennt das

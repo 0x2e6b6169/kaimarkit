@@ -39,23 +39,34 @@ vertauscht, holt sich den Host-Port der Basisdatei zurück.
 
 ## Wie die Labels gebaut sind
 
-Die Labels stehen als Map, nicht als Liste. Compose führt Listen additiv zusammen —
-eine dritte Schicht könnte einen einzelnen Eintrag dann nicht mehr ersetzen, sondern
-hängte ein zweites Label daneben. Bei einer Map ersetzt sie den Schlüssel. Die
-[Authelia-Schicht](authelia.md) lebt von dieser Eigenschaft.
+Die Labels stehen als Liste, nicht als Map. Der Grund steht in den Schlüsseln selbst:
+Der Routername ist Teil des Labelnamens, und **Compose setzt Variablen nur in Werte
+ein, nicht in Schlüssel**. In der Listenform ist das ganze Label ein Wert, deshalb
+greift `${KAIMARKIT_TRAEFIK_NAME}` dort auch links vom Gleichheitszeichen. In Map-Form
+bliebe ein `${...}` wörtlich stehen und ergäbe einen Routernamen mit einem
+Dollarzeichen darin.
 
-Die Labels im Einzelnen — die Präfixe `traefik.http.routers.kaimarkit` und
-`traefik.http.services.kaimarkit` sind hier abgekürzt:
+Gegen Listen spricht sonst, dass Compose sie aneinanderhängt, statt einzelne Einträge
+zu ersetzen — eine dritte Schicht bekäme dann ein zweites Label daneben statt eines
+geänderten. Für `labels` gilt das nicht: Compose macht aus der Liste beim Laden eine
+Map und führt sie danach über die Schlüssel zusammen. Nachgemessen mit Compose v5.1.4,
+zwei Dateien in Listenform, ein Schlüssel in beiden — er stand danach einmal da, mit
+dem Wert der zweiten Datei. Die [Authelia-Schicht](authelia.md) ersetzt Einträge von
+hier also weiterhin.
+
+Die Labels im Einzelnen. `<name>` steht für `KAIMARKIT_TRAEFIK_NAME`, voreingestellt
+`kaimarkit`; die Präfixe `traefik.http.routers.<name>` und
+`traefik.http.services.<name>` sind abgekürzt:
 
 | Label | Wert | Wozu |
 | --- | --- | --- |
 | `traefik.enable` | `true` | Traefik nimmt den Container überhaupt an. |
 | `traefik.docker.network` | `${TRAEFIK_NETWORK}` | Welches Netz Traefik benutzt. |
-| `…routers.kaimarkit.rule` | ``Host(`${KAIMARKIT_DOMAIN}`)`` | Welche Anfragen hierher gehören. |
-| `…routers.kaimarkit.entrypoints` | `${TRAEFIK_ENTRYPOINT}` | An welchem Eingang der Router hängt. |
-| `…routers.kaimarkit.tls` | `true` | Der Router terminiert TLS. |
-| `…routers.kaimarkit.tls.certresolver` | `${TRAEFIK_CERTRESOLVER}` | Wer das Zertifikat besorgt. |
-| `…services.kaimarkit.loadbalancer.server.port` | `8000` | Der Port **im Container**. |
+| `…routers.<name>.rule` | ``Host(`${KAIMARKIT_DOMAIN}`)`` | Welche Anfragen hierher gehören. |
+| `…routers.<name>.entrypoints` | `${TRAEFIK_ENTRYPOINT}` | An welchem Eingang der Router hängt. |
+| `…routers.<name>.tls` | `true` | Der Router terminiert TLS. |
+| `…routers.<name>.tls.certresolver` | `${TRAEFIK_CERTRESOLVER}` | Wer das Zertifikat besorgt. |
+| `…services.<name>.loadbalancer.server.port` | `8000` | Der Port **im Container**. |
 
 Das Netz-Label ist keine Zierde. Hängt der Container an mehreren Netzen, wählt
 Traefik sonst unter Umständen das falsche und läuft in eine Adresse, die es nicht
@@ -64,26 +75,62 @@ erreicht.
 Der Port 8000 ist der Port im Container. Traefik spricht den Dienst unmittelbar im
 gemeinsamen Netz an, `KAIMARKIT_HOST_PORT` spielt hier keine Rolle mehr.
 
-## Die Routernamen stehen fest
+## Der Namensraum der Traefik-Namen
 
-`kaimarkit` und `kaimarkit-api` stehen wörtlich in den Label-Schlüsseln, und das
-lässt sich nicht über die Umgebung ändern: **Compose setzt Variablen nur in
-Label-Werte ein, nicht in Label-Schlüssel.** Ein `${...}` links vom Doppelpunkt
-bliebe unverändert stehen und ergäbe einen Routernamen mit einem Dollarzeichen
-darin.
+Router, Dienst und Middleware bekommen ihre Namen aus einer einzigen Variablen,
+`KAIMARKIT_TRAEFIK_NAME`. Voreingestellt lautet sie `kaimarkit`, und daraus wird:
 
-Deshalb gibt es dafür keine Variable in `docker/.env.example`. Wer die Router anders
-nennen will, ändert `docker/docker-compose.traefik.yml` und
-`docker/docker-compose.authelia.yml` von Hand — beide, denn die Authelia-Schicht
-hängt ihre Middleware an denselben Routernamen.
+| Was | Name |
+| --- | --- |
+| Router für die Oberfläche | `${KAIMARKIT_TRAEFIK_NAME}` |
+| Router für `/api` | `${KAIMARKIT_TRAEFIK_NAME}-api` |
+| Traefik-Dienst | `${KAIMARKIT_TRAEFIK_NAME}` |
+| eigene ForwardAuth-Middleware | `${KAIMARKIT_TRAEFIK_NAME}-auth` |
+
+Diese Namen gelten **je Traefik-Instanz, nicht je Container**. Wer zwei kaimarkit
+hinter dieselbe Traefik hängt — Produktion und Test, zwei Mandanten —, gibt dem
+zweiten Aufbau hier einen eigenen Wert.
+
+Der Compose-Dienst heißt weiterhin `kaimarkit`. Die Variable ändert nichts an
+`docker compose logs kaimarkit`, nichts an den Makefile-Zielen und nichts am
+Containernamen; dafür gibt es `KAIMARKIT_CONTAINER_NAME`.
 
 !!! danger "Ein doppelter Routername legt beide Router still"
-    Routernamen müssen auf dem Traefik-Host eindeutig sein. Deklariert ein anderer
-    Container einen Router gleichen Namens mit abweichender Konfiguration, verwirft
-    Traefik **beide** und schreibt „Router defined multiple times“ ins Protokoll.
-    Nach außen antwortet dann keiner von beiden. Das fällt niemandem auf, der nur
-    auf die Container schaut — sie laufen ja. Wer neben kaimarkit einen zweiten
-    Dienst gleichen Namens betreibt, benennt einen von beiden um.
+    Deklariert ein zweiter Container einen Router gleichen Namens mit abweichender
+    Konfiguration, verwirft Traefik **beide**. Nach außen antwortet dann keiner von
+    beiden — und den Containern sieht man nichts an, sie laufen ja.
+
+    Nachgemessen mit Traefik 3.6.25: Zwei kaimarkit unter verschiedenen Domains, beide
+    mit demselben `KAIMARKIT_TRAEFIK_NAME`. Danach führte `/api/http/routers` keinen
+    der beiden Router mehr auf, beide Domains antworteten mit 404, und im Protokoll
+    stand `Router defined multiple times with different configurations` mit den Namen
+    beider Container. Nachdem die zwei Aufbauten verschiedene Werte bekamen, lief
+    jeder wieder unter seiner eigenen Domain.
+
+### Zwei Instanzen nebeneinander
+
+Der zweite Aufbau braucht vier eigene Werte in seiner `docker/.env`:
+
+```
+KAIMARKIT_PROJECT_NAME=kaimarkit-test
+KAIMARKIT_CONTAINER_NAME=kaimarkit-test
+KAIMARKIT_TRAEFIK_NAME=kaimarkit-test
+KAIMARKIT_DOMAIN=kaimarkit-test.example.com
+```
+
+Die ersten beiden trennen Compose-Projekt und Container, der dritte trennt die
+Traefik-Namen, der vierte die Domain. Wer den dritten vergisst, bekommt den Fall aus
+dem Kasten darüber: zwei laufende Container und zwei tote Domains.
+
+Ob die Trennung greift, sagt die Traefik-API — nicht die Compose-Datei:
+
+```bash
+curl -sf http://<traefik-host>:8080/api/http/routers | jq -r '.[].name'
+curl -sf http://<traefik-host>:8080/api/http/services | jq -r '.[] | "\(.name) \(.loadBalancer.servers // [])"'
+```
+
+Jeder Name darf dort nur einmal vorkommen, und die beiden Dienste müssen auf
+verschiedene Container-Adressen zeigen.
 
 ## `!reset` braucht Compose 2.24
 
