@@ -22,9 +22,18 @@ services:
     container_name: ${KAIMARKIT_CONTAINER_NAME}
     restart: ${KAIMARKIT_RESTART_POLICY}
 
-    # Map-Form, nicht Liste: Compose fuehrt Listen additiv zusammen, Maps
-    # ersetzen einzelne Schluessel. Nur so kann eine Ergaenzungsdatei einen
-    # einzelnen Wert ueberschreiben.
+    # Map-Form, nicht Liste: lesbarer, und eine Ergänzungsdatei ersetzt hier
+    # sichtbar einen einzelnen Schlüssel.
+    #
+    # Hier stand ein technischer Grund — Compose hänge Listen aneinander, nur
+    # Maps ließen einen einzelnen Schlüssel ersetzen. Für environment ist er
+    # widerlegt: Compose macht aus einer environment-Liste beim Laden eine Map
+    # und führt sie über die Schlüssel zusammen, gleich welche Form die andere
+    # Datei benutzt. Nachgemessen mit Compose v5.1.4 — ein Schlüssel, der in
+    # beiden Dateien stand, stand danach einmal da, mit dem Wert der zweiten;
+    # die Schlüssel aus nur einer Datei blieben alle erhalten. Die Listenform
+    # verlöre also nichts. Aneinander hängt Compose ports und volumes, nicht
+    # labels und environment.
     environment:
       KAIMARKIT_MAX_FILE_SIZE_MB: ${KAIMARKIT_MAX_FILE_SIZE_MB}
       KAIMARKIT_MAX_FILES: ${KAIMARKIT_MAX_FILES}

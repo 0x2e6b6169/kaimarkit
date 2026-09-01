@@ -72,6 +72,13 @@ services:
       # fehlt. Ein ausdruecklich leerer Wert bleibt leer und heisst "keine
       # Middleware", wie beim /api-Router weiter unten. Beim Namensraum daneben
       # steht es umgekehrt: Dort ergibt ein leerer Wert nichts Sinnvolles.
+      #
+      # Die nächste Zeile führt beide Formen nebeneinander, und das bleibt so.
+      # Wer sie vereinheitlicht, nimmt zwei Angaben weg, die
+      # docs/betrieb/authelia.md beschreibt: Ein leeres KAIMARKIT_API_MIDDLEWARES
+      # lässt ein curl ohne Browsersitzung an /api durch, ein leeres
+      # KAIMARKIT_MIDDLEWARES gibt die Oberfläche frei. Mit ":-" wäre beides
+      # nicht mehr einstellbar.
       - "traefik.http.routers.${KAIMARKIT_TRAEFIK_NAME:-kaimarkit}.middlewares=${KAIMARKIT_MIDDLEWARES-authelia@docker}"
 
       # Zweiter Router allein fuer /api. Hinter Authelia bekommt ein Aufruf ohne

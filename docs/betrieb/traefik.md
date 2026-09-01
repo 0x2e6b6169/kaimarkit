@@ -48,11 +48,13 @@ Dollarzeichen darin.
 
 Gegen Listen spricht sonst, dass Compose sie aneinanderhängt, statt einzelne Einträge
 zu ersetzen — eine dritte Schicht bekäme dann ein zweites Label daneben statt eines
-geänderten. Für `labels` gilt das nicht: Compose macht aus der Liste beim Laden eine
-Map und führt sie danach über die Schlüssel zusammen. Nachgemessen mit Compose v5.1.4,
-zwei Dateien in Listenform, ein Schlüssel in beiden — er stand danach einmal da, mit
-dem Wert der zweiten Datei. Die [Authelia-Schicht](authelia.md) ersetzt Einträge von
-hier also weiterhin.
+geänderten. Das gilt für `ports` und `volumes`, nicht für `labels` und nicht für
+`environment`: Deren Listen macht Compose beim Laden zu Maps und führt sie danach über
+die Schlüssel zusammen. Nachgemessen mit Compose v5.1.4, zwei Dateien in Listenform,
+ein Schlüssel in beiden — er stand danach einmal da, mit dem Wert der zweiten Datei;
+die Schlüssel aus nur einer Datei blieben alle erhalten. Für `environment` ergab
+dieselbe Messung dasselbe, auch bei gemischten Formen. Die
+[Authelia-Schicht](authelia.md) ersetzt Einträge von hier also weiterhin.
 
 Die Labels im Einzelnen. `<name>` steht für `KAIMARKIT_TRAEFIK_NAME`, voreingestellt
 `kaimarkit`; die Präfixe `traefik.http.routers.<name>` und
