@@ -533,3 +533,6 @@
 {"timestamp":"2026-09-01T13:24:05.367032474+02:00","action":"release","task_id":48,"detail":"sophie-26"}
 {"timestamp":"2026-09-01T13:25:39.905898265+02:00","action":"edit","task_id":48,"detail":"BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad"}
 {"timestamp":"2026-09-01T13:25:41.968666619+02:00","action":"edit","task_id":76,"detail":"IN-12 · Die zwei neuen slow-Tests im Container fahren"}
+{"timestamp":"2026-09-01T13:26:50.822172924+02:00","action":"move","task_id":52,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T13:26:51.486980449+02:00","action":"move","task_id":53,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T13:26:52.178858445+02:00","action":"edit","task_id":53,"detail":"DOC-10 · Docling-Abschnitt nennt seine Warnung nicht"}

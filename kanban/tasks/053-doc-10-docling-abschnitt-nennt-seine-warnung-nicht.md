@@ -1,10 +1,11 @@
 ---
 id: 53
 title: DOC-10 · Docling-Abschnitt nennt seine Warnung nicht
-status: backlog
+status: todo
 priority: low
 created: 2026-09-01T09:14:12.802860179+02:00
-updated: 2026-09-01T09:14:12.802860179+02:00
+updated: 2026-09-01T13:26:52.178105047+02:00
+started: 2026-09-01T13:26:51.486134658+02:00
 assignee: sophie
 tags:
     - docs
@@ -43,3 +44,8 @@ erwaehnt: Die Warnung nennt, wie viele Platzhalter im Ergebnis stehen.
 - `make docs-serve` rendert die Seite fehlerfrei.
 - Gegenprobe am Gegenstand statt am Werkzeug: Der genannte Wortlaut stimmt mit dem
   ueberein, den `_placeholder_warnings()` erzeugt.
+
+[[2026-09-01]] Tue 13:26
+Der Wortlaut ist seit #58 belegt, nicht mehr nur gebaut: `_placeholder_warnings()` wurde mit 0, 1, 2 und 14 Platzhaltern aufgerufen, Zahl und Mehrzahlform stimmen. Wer diesen Abschnitt schreibt, kann den Wortlaut aus der Notiz von #58 übernehmen, statt ihn aus dem Quelltext abzuleiten.
+
+Seit dem Anlegen dieses Tickets ist eine zweite Warnung dazugekommen: #60 hat für MarkItDown bei PDF eine feste Warnung gebaut ("MarkItDown übernimmt keine Bilder aus PDF"). Sie gehört in den Abschnitt "MarkItDown", nicht hierher — aber wer beim Schreiben merkt, dass der eine Abschnitt seine Warnung nennt und der andere nicht, meldet das, statt beide anzufassen. Der MarkItDown-Abschnitt wurde in #60 bereits berichtigt.
