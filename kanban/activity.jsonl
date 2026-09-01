@@ -329,3 +329,10 @@
 {"timestamp":"2026-08-31T17:14:43.375316276+02:00","action":"move","task_id":30,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-08-31T17:14:43.93023346+02:00","action":"edit","task_id":30,"detail":"INT-2 · Ende-zu-Ende-Pruefung im Container"}
 {"timestamp":"2026-08-31T17:14:43.930520363+02:00","action":"release","task_id":30,"detail":"akar-19"}
+{"timestamp":"2026-09-01T08:52:15.230641641+02:00","action":"create","task_id":50,"detail":"IN-9 · Abnahmefassung: laufender Dienst, im Browser des Hosts pruefbar"}
+{"timestamp":"2026-09-01T08:52:22.582312413+02:00","action":"move","task_id":45,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T08:52:22.977193883+02:00","action":"move","task_id":46,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T08:52:23.359414164+02:00","action":"edit","task_id":47,"detail":"BE-14 · Ein Platzhalter statt Inhalt bleibt ohne Warnung"}
+{"timestamp":"2026-09-01T08:52:23.736061883+02:00","action":"move","task_id":47,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T08:53:03.941141005+02:00","action":"edit","task_id":47,"detail":"BE-14 · Ein Platzhalter statt Inhalt bleibt ohne Warnung"}
+{"timestamp":"2026-09-01T08:53:04.319383822+02:00","action":"edit","task_id":45,"detail":"IN-8 · Docs-Stufe scheitert, wenn der Bau aus einem Worktree laeuft"}

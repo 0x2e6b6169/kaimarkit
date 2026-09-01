@@ -1,14 +1,17 @@
 ---
 id: 47
 title: BE-14 · Ein Platzhalter statt Inhalt bleibt ohne Warnung
-status: backlog
-priority: medium
+status: todo
+priority: high
 created: 2026-08-31T17:08:22.240557722+02:00
-updated: 2026-08-31T17:08:22.240557722+02:00
+updated: 2026-09-01T08:53:03.940677477+02:00
+started: 2026-09-01T08:52:23.735821966+02:00
 assignee: sophie
 tags:
     - backend
     - bug
+depends_on:
+    - 46
 class: standard
 ---
 
@@ -82,3 +85,8 @@ kein leerer Platzhalter, deshalb steht hier nur Docling.
 - Gegenprobe: Ein PDF ohne Platzhalter im Ergebnis liefert weiterhin `warnings: []`.
   Sonst warnt der Adapter immer und die Warnung sagt nichts mehr.
 - `pytest -q` bleibt gruen.
+
+[[2026-09-01]] Tue 08:53
+Vom PO auf high gehoben und nach todo gezogen. Der Nutzer will die Fassung selbst im Browser pruefen, und dieser Fehler trifft genau das: Eine Tabelle verschwindet, `status` sagt `ok`, `warnings` ist leer. Wer den Kontext sehen will, den er einem LLM gibt — der Zweck dieses Projekts —, sieht hier das Gegenteil und merkt es nicht.
+
+Ausserdem: **#46 und #47 besitzen dieselben zwei Dateien** (`docling.py`, `test_docling.py`). Nach dem Ticketschnitt duerfen sie nicht gleichzeitig laufen. Deshalb haengt #47 jetzt an #46 — `--unblocked` blendet es aus, bis #46 durch ist. Kein Schnittfehler, sondern zwei Befunde aus demselben Lauf am selben Modul; die Reihenfolge loest es.

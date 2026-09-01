@@ -1,14 +1,17 @@
 ---
 id: 45
 title: IN-8 · Docs-Stufe scheitert, wenn der Bau aus einem Worktree laeuft
-status: backlog
+status: todo
 priority: high
 created: 2026-08-31T17:07:30.823818638+02:00
-updated: 2026-08-31T17:07:30.823818638+02:00
+updated: 2026-09-01T08:53:04.318970527+02:00
+started: 2026-09-01T08:52:22.581548875+02:00
 assignee: akar
 tags:
     - infra
     - bug
+depends_on:
+    - 50
 class: standard
 ---
 
@@ -74,3 +77,6 @@ Grund, warum sie drinbleibt.
   `/docs/versions.json` nennt alle veroeffentlichten Versionen.
 - Gegenprobe, dass die Pruefung anschlaegt: ohne die Aenderung bricht der Bau aus
   dem Worktree weiterhin mit 128 ab.
+
+[[2026-09-01]] Tue 08:53
+Nach todo gezogen, aber hinter #50 (IN-9). Grund ist kein Dateikonflikt, sondern ein Betriebsmittel: Beide Tickets bauen und starten den Dienst, beide benutzen denselben Containernamen `kaimarkit` und denselben Port 8080. Gleichzeitig laufen sie sich gegenseitig um. IN-9 zuerst, weil der Nutzer die Fassung heute testen will; IN-8 danach, mit dem Bau aus dem Worktree.
