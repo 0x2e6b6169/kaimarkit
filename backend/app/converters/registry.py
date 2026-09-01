@@ -32,6 +32,9 @@ ENGINE_NAMES: tuple[str, ...] = ("markitdown", "docling", "pandoc")
 #: Markdown wird durchgereicht statt gewandelt.
 PASSTHROUGH = "passthrough"
 
+#: Das Zeichen, durch das ``errors="replace"`` jedes ungueltige Byte ersetzt.
+REPLACEMENT = "\ufffd"
+
 #: Endung auf Praeferenz, erste Wahl zuerst.
 PREFERENCES: dict[str, tuple[str, ...]] = {
     ".pdf": ("docling", "markitdown"),
@@ -59,6 +62,27 @@ PREFERENCES: dict[str, tuple[str, ...]] = {
 }
 
 
+def _encoding_warnings(markdown: str, name: str) -> list[str]:
+    """Warnt, wenn beim Lesen Bytes durch U+FFFD ersetzt wurden.
+
+    ``errors="replace"`` bleibt richtig: Eine Datei mit einem einzigen krummen Byte
+    soll ihren Eintrag im Stapel behalten und nicht wegfallen. Sie darf ihn nur nicht
+    stillschweigend beschaedigt bekommen. Die Zahl steht in der Warnung: ein
+    ersetztes Zeichen ist etwas anderes als vierhundert.
+
+    Was hier stattdessen richtig waere — die Kodierung erraten und umwandeln —
+    verspricht mehr, als diese Engine zusagt. Sie reicht durch und meldet den Verlust.
+    """
+    count = markdown.count(REPLACEMENT)
+    if count == 0:
+        return []
+    if count == 1:
+        ersetzt = "wurde ein Zeichen ersetzt, das kein gültiges UTF-8 war"
+    else:
+        ersetzt = f"wurden {count} Zeichen ersetzt, die kein gültiges UTF-8 waren"
+    return [f"In {name} {ersetzt}. Die Datei ist vermutlich anders kodiert."]
+
+
 class _Passthrough:
     """Markdown bleibt Markdown — nur lesen, nichts wandeln."""
 
@@ -73,7 +97,11 @@ class _Passthrough:
             markdown = path.read_text(encoding="utf-8", errors="replace")
         except OSError as exc:
             raise EngineFailed(f"Datei nicht lesbar: {exc}") from exc
-        return ConversionResult(markdown=markdown, engine=self.name)
+        return ConversionResult(
+            markdown=markdown,
+            engine=self.name,
+            warnings=_encoding_warnings(markdown, path.name),
+        )
 
 
 # Einmal geladene Engines bleiben hier stehen. Tests setzen Attrappen direkt ein.
