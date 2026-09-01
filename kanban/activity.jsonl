@@ -360,3 +360,4 @@
 {"timestamp":"2026-09-01T09:47:23.771740779+02:00","action":"create","task_id":54,"detail":"PROC-6 · Nichts uebergeben, was ein offenes Ticket noch besitzt"}
 {"timestamp":"2026-09-01T09:57:11.400111282+02:00","action":"create","task_id":55,"detail":"IN-10 · Jede Backend-Aenderung baut Torch und Docling neu"}
 {"timestamp":"2026-09-01T09:57:13.767112007+02:00","action":"edit","task_id":55,"detail":"IN-10 · Jede Backend-Aenderung baut Torch und Docling neu"}
+{"timestamp":"2026-09-01T09:58:09.232664734+02:00","action":"edit","task_id":45,"detail":"IN-8 · Docs-Stufe scheitert, wenn der Bau aus einem Worktree laeuft"}

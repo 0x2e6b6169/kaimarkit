@@ -4,7 +4,7 @@ title: IN-8 · Docs-Stufe scheitert, wenn der Bau aus einem Worktree laeuft
 status: todo
 priority: high
 created: 2026-08-31T17:07:30.823818638+02:00
-updated: 2026-09-01T09:13:03.711791365+02:00
+updated: 2026-09-01T09:58:09.230461054+02:00
 assignee: akar
 tags:
     - infra
@@ -88,3 +88,10 @@ Befund von akar, waehrend #50 lief: **Ein Bau aus dem gemeinsamen Haupt-Checkout
 Der Worktree ist die Antwort darauf: Er faehrt einen festgelegten Stand, den fremde Merges nicht bewegen. Solange dieses Ticket offen ist, kann kein Bau reproduzierbar sein.
 
 Daraus eine zusaetzliche Vorgabe: Der Abschnitt in `docs/entwicklung.md` sagt nicht nur, dass der Bau aus einem Worktree geht, sondern **dass er von dort laufen soll** — und warum. Ein Bau aus dem Haupt-Checkout ist kein Notweg mehr, sondern eine Fehlerquelle mit Namen.
+
+[[2026-09-01]] Tue 09:58
+Gegenprobe belegt, die diesem Ticket bisher fehlte (01.09.2026, aus dem Neubau fuer IN-9): **Aus dem Haupt-Checkout laeuft die Docs-Stufe sauber durch** — `#21 [docs 5/5] ... DONE 151.9s`, also greift der `git config --global --add safe.directory /src` dort und die Kette faellt korrekt auf `gh-pages` oder `mkdocs build` zurueck.
+
+Damit steht beides gemessen nebeneinander, und der Befund ist eingegrenzt: Haupt-Checkout gruen, Worktree bricht mit 128 ab. Nur der Worktree-Fall ist ungedeckt. Wer dieses Ticket umsetzt, muss den Normalfall nicht mehr selbst herstellen, sondern nur dafuer sorgen, dass er gruen bleibt — die zweite Zeile der Pruefung hat damit einen belegten Ausgangswert.
+
+Gemeldet von akar.
