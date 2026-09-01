@@ -193,3 +193,31 @@ def test_utf8_meldet_nichts(tmp_path: Path) -> None:
 
     assert result.markdown == UMLAUTE
     assert result.warnings == []
+
+
+def test_echtes_ersetzungszeichen_meldet_nichts(tmp_path: Path) -> None:
+    """Eine gültige UTF-8-Datei, die U+FFFD selbst enthält, ist unversehrt.
+
+    Der Fall kommt vor: eine Notiz über Mojibake, oder das Ergebnis einer früheren
+    Wandlung. Nichts wurde ersetzt, also gibt es nichts zu melden.
+    """
+    sample = tmp_path / "notiz.md"
+    sample.write_text(f"# {MARKER}\n\nEin echtes � im Text.\n", encoding="utf-8")
+
+    result = convert_with_fallback(sample, ConvertOptions())
+
+    assert result.engine == registry.PASSTHROUGH
+    assert "�" in result.markdown
+    assert result.warnings == []
+
+
+def test_gemischter_fall_zaehlt_nur_die_eingefuegten(tmp_path: Path) -> None:
+    """ISO-8859-1 mit einem echten U+FFFD darin: die Warnung nennt nur die sechs."""
+    sample = tmp_path / "notiz.md"
+    sample.write_bytes(UMLAUTE.encode("iso-8859-1") + "Und ein echtes �.\n".encode())
+
+    result = convert_with_fallback(sample, ConvertOptions())
+
+    assert len(result.warnings) == 1
+    assert "6" in result.warnings[0]
+    assert "7" not in result.warnings[0]

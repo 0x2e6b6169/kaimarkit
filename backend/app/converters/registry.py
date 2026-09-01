@@ -32,8 +32,11 @@ ENGINE_NAMES: tuple[str, ...] = ("markitdown", "docling", "pandoc")
 #: Markdown wird durchgereicht statt gewandelt.
 PASSTHROUGH = "passthrough"
 
-#: Das Zeichen, durch das ``errors="replace"`` jedes ungueltige Byte ersetzt.
+#: Das Zeichen, durch das ``errors="replace"`` ungültige Bytes ersetzt.
 REPLACEMENT = "\ufffd"
+
+#: Dasselbe Zeichen, wie es eine gültige UTF-8-Datei selbst schreibt.
+REPLACEMENT_BYTES = REPLACEMENT.encode("utf-8")
 
 #: Endung auf Praeferenz, erste Wahl zuerst.
 PREFERENCES: dict[str, tuple[str, ...]] = {
@@ -62,19 +65,27 @@ PREFERENCES: dict[str, tuple[str, ...]] = {
 }
 
 
-def _encoding_warnings(markdown: str, name: str) -> list[str]:
+def _encoding_warnings(raw: bytes, markdown: str, name: str) -> list[str]:
     """Warnt, wenn beim Lesen Bytes durch U+FFFD ersetzt wurden.
+
+    Gezählt wird nur, was das Dekodieren **eingefügt** hat. U+FFFD ist ein
+    gewöhnliches Zeichen; eine gültige UTF-8-Datei darf es enthalten und tut das auch
+    — eine Notiz über Mojibake etwa, oder das Ergebnis einer früheren Wandlung.
+    Solche Zeichen stehen als die drei Bytes ``EF BF BD`` in der Datei und überstehen
+    das Dekodieren unverändert; ein eingefügtes hat dort kein Urbild. Die Differenz
+    trennt beide genau, ohne die Kodierung zu raten.
 
     ``errors="replace"`` bleibt richtig: Eine Datei mit einem einzigen krummen Byte
     soll ihren Eintrag im Stapel behalten und nicht wegfallen. Sie darf ihn nur nicht
     stillschweigend beschaedigt bekommen. Die Zahl steht in der Warnung: ein
-    ersetztes Zeichen ist etwas anderes als vierhundert.
+    ersetztes Zeichen ist etwas anderes als vierhundert. Sie zählt Ersetzungen, nicht
+    verlorene Bytes — eine abgeschnittene Mehrbytefolge wird zu einem einzigen U+FFFD.
 
     Was hier stattdessen richtig waere — die Kodierung erraten und umwandeln —
     verspricht mehr, als diese Engine zusagt. Sie reicht durch und meldet den Verlust.
     """
-    count = markdown.count(REPLACEMENT)
-    if count == 0:
+    count = markdown.count(REPLACEMENT) - raw.count(REPLACEMENT_BYTES)
+    if count <= 0:
         return []
     if count == 1:
         ersetzt = "wurde ein Zeichen ersetzt, das kein gültiges UTF-8 war"
@@ -93,14 +104,18 @@ class _Passthrough:
         return True
 
     def convert(self, path: Path, opts: ConvertOptions) -> ConversionResult:
+        # Gelesen wird byteweise, weil die Warnung die Bytes braucht: Nur an ihnen
+        # lässt sich ein eingefügtes U+FFFD von einem echten unterscheiden. Dass die
+        # Zeilenenden dabei bleiben, wie sie sind, passt zum Durchreichen.
         try:
-            markdown = path.read_text(encoding="utf-8", errors="replace")
+            raw = path.read_bytes()
         except OSError as exc:
             raise EngineFailed(f"Datei nicht lesbar: {exc}") from exc
+        markdown = raw.decode("utf-8", errors="replace")
         return ConversionResult(
             markdown=markdown,
             engine=self.name,
-            warnings=_encoding_warnings(markdown, path.name),
+            warnings=_encoding_warnings(raw, markdown, path.name),
         )
 
 
