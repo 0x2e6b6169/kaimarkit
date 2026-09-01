@@ -4,14 +4,12 @@ title: IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp
 status: todo
 priority: high
 created: 2026-09-01T10:40:33.636401513+02:00
-updated: 2026-09-01T12:06:05.767176804+02:00
-started: 2026-09-01T12:06:05.772175009+02:00
+updated: 2026-09-01T12:06:32.767632683+02:00
 assignee: akar
 tags:
     - infra
     - config
 depends_on:
-    - 56
     - 45
 class: standard
 ---
@@ -98,3 +96,12 @@ Die fehlende Zahl ist da (01.09.2026, nach dem Quick-Fix des Nutzers auf 600 s):
 Die Voreinstellung von 120 Sekunden liegt damit bei **37 Prozent** dessen, was dieses Dokument braucht. Es war nicht knapp daneben, sondern um das Zweieinhalbfache zu klein.
 
 Damit steht die Entscheidungsgrundlage: Eine Voreinstellung, die alltaegliche Dokumente durchlaesst, liegt oberhalb von fuenf Minuten — oder die Sache wird an der Ursache angefasst (Threads, Enginewahl), statt die Grenze immer weiter hochzusetzen. Beide Wege stehen im Ticket; diese Zahl sagt, dass der zweite der wichtigere ist.
+
+[[2026-09-01]] Tue 12:06
+Abhaengigkeit auf #56 wieder entfernt (PO, 01.09.2026). Sie war verkehrt herum gesetzt.
+
+Die Ueberlegung beim Anlegen war: Klaert sich in BE-17, ob `ready` wirklich `ready` heisst, aendert sich womoeglich diese Zahl. Richtig ist das Gegenteil. Die Vorgabe dieses Tickets lautet, dasselbe Dokument **zweimal hintereinander** zu messen; die zweite Zeit ist die Arbeitszeit, die Differenz das Laden. Genau diese Differenz ist die Zahl, die #56 braucht. Dieses Ticket liefert den Messwert, es wartet nicht darauf.
+
+Ausserdem haette die Sperre eine `high`-Sache mit sichtbarer Wirkung fuer den Nutzer hinter einer `medium`-Untersuchung in einer anderen Lane angehalten — und akars Lane damit ganz.
+
+Bleibt die Abhaengigkeit auf #45, und die ist erfuellt.

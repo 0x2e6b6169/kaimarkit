@@ -4,7 +4,7 @@ title: BE-17 · Heisst ready wirklich ready?
 status: backlog
 priority: medium
 created: 2026-09-01T10:24:25.93867698+02:00
-updated: 2026-09-01T10:24:25.93867698+02:00
+updated: 2026-09-01T12:06:33.176894352+02:00
 assignee: sophie
 tags:
     - backend
@@ -55,3 +55,6 @@ Nicht der Abschnitt "Pruefen, ob der Dienst antwortet" — der gehoert DOC-11 (#
 ## Zurueckgestellt
 
 Vom Nutzer zurueckgestellt, bis die Abnahmefassung steht (01.09.2026).
+
+[[2026-09-01]] Tue 12:06
+Die Messung fuer dieses Ticket entsteht in #59 (IN-11): Dort wird dasselbe Dokument zweimal hintereinander umgewandelt. Die Differenz zwischen erstem und zweitem Lauf **ist** die Ladezeit des Konverters — also die Zahl, um die es hier geht. Wer #56 aufnimmt, sieht zuerst in der Notiz von #59 nach, statt selbst zu messen.

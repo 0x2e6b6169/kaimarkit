@@ -397,3 +397,5 @@
 {"timestamp":"2026-09-01T12:06:05.390952397+02:00","action":"edit","task_id":55,"detail":"IN-10 · Jede Backend-Aenderung baut Torch und Docling neu"}
 {"timestamp":"2026-09-01T12:06:05.772387284+02:00","action":"move","task_id":59,"detail":"backlog -\u003e todo"}
 {"timestamp":"2026-09-01T12:06:06.1917112+02:00","action":"edit","task_id":55,"detail":"IN-10 · Jede Backend-Aenderung baut Torch und Docling neu"}
+{"timestamp":"2026-09-01T12:06:32.768351094+02:00","action":"edit","task_id":59,"detail":"IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp"}
+{"timestamp":"2026-09-01T12:06:33.1773086+02:00","action":"edit","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}
