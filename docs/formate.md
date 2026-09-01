@@ -24,7 +24,10 @@ nicht mit dem Deployment.
 | `.md`, `.markdown` | durchreichen, keine Engine |
 
 Pandoc fehlt bei `.pdf`, weil Pandoc PDF nicht liest. Markdown reicht der Dienst
-durch: Er liest die Datei und gibt sie unverändert zurück.
+durch: Er liest die Datei und gibt sie zurück, wie sie ist — solange sie UTF-8 ist.
+Jedes ungültige Byte ersetzt er durch `�` und meldet in einer Warnung, wie viele
+Zeichen er ersetzt hat. Steht `�` schon in einer gültigen Datei, gibt es nichts zu
+melden.
 
 Was von dieser Tabelle im Betrieb übrig bleibt, meldet `GET /api/capabilities`. Eine
 Engine, die nicht installiert oder noch nicht geladen ist, erscheint dort nicht.
