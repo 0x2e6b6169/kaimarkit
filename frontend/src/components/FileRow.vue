@@ -86,11 +86,30 @@ watch(
 // Sonst tickt der Zaehler weiter, nachdem niemand mehr hinsieht.
 onUnmounted(stopTicker)
 
-/** „0:47" — Minuten und Sekunden, solange die Zeile laeuft, sonst nichts. */
+/**
+ * Eine Zeitspanne, wie die Zeile sie zeigt: „5:26" ab einer Sekunde, darunter
+ * die Sekunde selbst — „0,04 s".
+ *
+ * Laufende und fertige Zeile teilen sich diese Funktion. Dieselbe Zeitspanne in
+ * zwei Schreibweisen, je nachdem ob die Datei laeuft oder fertig ist, war der
+ * Befund, aus dem dieses Format entstanden ist.
+ *
+ * Der kurze Fall ist bei diesem Dienst der haeufige: markitdown wandelt eine
+ * Datei in 0,035 s um. „0:00" waere darueber keine Auskunft.
+ */
+function formatDuration(ms: number): string {
+  const seconds = Math.max(0, ms) / 1000
+  const rounded = Math.round(seconds * 100) / 100
+  if (rounded < 1) return `${rounded.toString().replace('.', ',')} s`
+  // Was auf eine Sekunde aufrundet, heisst 0:01 und nicht 0:00.
+  const whole = Math.max(1, Math.floor(seconds))
+  return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`
+}
+
+/** „0:47" — mitgezaehlt, solange die Zeile laeuft, sonst nichts. */
 const elapsed = computed(() => {
   if (startedAt.value === null) return null
-  const seconds = Math.max(0, Math.floor((now.value - startedAt.value) / 1000))
-  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
+  return formatDuration(now.value - startedAt.value)
 })
 
 /** „läuft · 0:47"; fertige und gescheiterte Zeilen nennen nur ihren Zustand. */
@@ -102,7 +121,7 @@ const statusLabel = computed(() =>
 const meta = computed(() => {
   const parts: string[] = []
   if (props.entry.engine) parts.push(props.entry.engine)
-  if (props.entry.durationMs !== null) parts.push(`${props.entry.durationMs} ms`)
+  if (props.entry.durationMs !== null) parts.push(formatDuration(props.entry.durationMs))
   return parts.join(' · ')
 })
 
