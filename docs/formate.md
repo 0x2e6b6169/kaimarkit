@@ -70,8 +70,15 @@ nichts aus dem Netz nachgeladen wird.
 ## MarkItDown
 
 MarkItDown kommt ohne Modelle und ohne OCR aus und ist deshalb die schnelle Engine.
-Einen LLM-Client setzt der Dienst bewusst nicht ein: Bilder erscheinen im Markdown
-nur als Alt-Text, nicht als beschriebener Inhalt.
+Einen LLM-Client setzt der Dienst bewusst nicht ein: In `.docx`, `.html` und `.epub`
+steht von einem Bild nur der Alt-Text im Markdown, nicht sein Inhalt.
+
+Aus einem PDF übernimmt MarkItDown Bilder gar nicht. Die Engine liest dort nur die
+Textebene; ein Bild hinterlässt weder Marke noch Alt-Text, und ein PDF mit Bildern
+ergibt Zeichen für Zeichen dasselbe Markdown wie dasselbe PDF ohne. Deshalb warnt der
+Dienst bei jedem PDF, das durch MarkItDown läuft — auch bei einem ohne Bilder: Er
+liest die Datei kein zweites Mal, um nachzuzählen. Wer die Stellen sehen will, an
+denen ein Bild stand, wählt Docling.
 
 Findet MarkItDown in einer Datei keinen Text — bei einem gescannten PDF etwa —, ist
 das kein Fehler. Das Ergebnis bleibt leer und die Antwort nennt den Grund in
