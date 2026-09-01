@@ -1,17 +1,16 @@
 ---
 id: 58
 title: BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo
-status: in-progress
+status: done
 priority: medium
 created: 2026-09-01T10:25:37.13806965+02:00
-updated: 2026-09-01T13:08:46.825473676+02:00
+updated: 2026-09-01T13:14:44.119272319+02:00
 started: 2026-09-01T13:06:47.176178135+02:00
+completed: 2026-09-01T13:14:43.477822912+02:00
 assignee: sophie
 tags:
     - backend
     - tests
-claimed_by: sophie-25
-claimed_at: 2026-09-01T13:08:46.825473676+02:00
 class: standard
 ---
 
@@ -90,3 +89,34 @@ Der Mehrzahlfall ist am echten Dokument belegt (01.09.2026, Abnahme des Nutzers)
     3 Bilder durch Platzhalter ersetzt. Ihr Inhalt fehlt im Markdown.
 
 Zahl, Mehrzahl und Wortlaut stimmen. Der zweite Punkt dieses Tickets ist damit erledigt — es bleibt der erste: ein Fixture im Repo, das den Fall festhaelt, damit er nicht nur einmal in einer Abnahme gesehen wurde.
+
+
+[[2026-09-01]] sophie-25 — umgesetzt
+
+Branch `task/58-platzhalter-fixture`, Commit `087bc61`, nach `main` gemerged.
+
+**Punkt 2 (die Zahl) ist gemessen und erledigt.** `_placeholder_warnings()` direkt aufgerufen, in der pyenv-Umgebung `claude-code`, mit 0/1/2/14 Platzhaltern. Aus dem Lauf abgeschrieben:
+
+    0  -> []
+    1  -> Docling hat in breit.pdf ein Bild durch einen Platzhalter ersetzt. Sein Inhalt fehlt im Markdown.
+    2  -> Docling hat in breit.pdf 2 Bilder durch Platzhalter ersetzt. Ihr Inhalt fehlt im Markdown.
+    14 -> Docling hat in breit.pdf 14 Bilder durch Platzhalter ersetzt. Ihr Inhalt fehlt im Markdown.
+
+Zahl und Mehrzahl stimmen; am Quelltext war nichts zu berichtigen. Die beiden Einheitstests halten jetzt den vollen Wortlaut fest statt einzelner Teilzeichenketten — vorher stand dort nur `"3" in warning`.
+
+**Punkt 1 (das Fixture) ist gebaut.** `backend/tests/fixtures/breit.pdf`, elf Spalten auf vierzehn Zeilen in Sieben-Punkt-Schrift, dazu `build_breit_pdf()` in `build_fixtures.py`. Die Datei ist **byte-identisch** (md5 9d46a776c4337f48efe87038d01bb5a8) mit dem Wegwerf-PDF, das akar-21 im Scratchpad gebaut und an dem er den Platzhalter gesehen hat — die Vorlage ist also nicht nachempfunden, sondern dieselbe.
+
+Der PDF-Behaelter (fuenf Objekte, xref, Offsets) steht jetzt in `_write_pdf()`, den sich beide PDF-Fixtures teilen. Gegenprobe: `tabelle.pdf` baut sich byte-identisch neu (md5 0bdec642644e014fffa05d63c7a7c454 vor und nach dem Umbau). `git check-attr binary` meldet `set` fuer `breit.pdf` — die Regel aus `.gitattributes` greift ohne Zutun.
+
+**Zwei neue Tests hinter `-m slow`** in `test_docling.py`:
+
+- `test_a_wide_table_becomes_a_placeholder_with_a_warning` — `breit.pdf` liefert mindestens einen Platzhalter, genau eine Warnung, und die nennt Datei und Zahl.
+- `test_a_plain_table_produces_no_warning` — die Gegenprobe: `tabelle.pdf` liefert keinen Platzhalter und keine Warnung.
+
+**Offen, im Container zu pruefen.** Docling ist in der geteilten Umgebung `claude-code` nicht installiert und wurde dort nicht installiert; beide neuen Tests haben lokal nur uebersprungen. Die Kette Fixture → docling → Warnung ist damit **nicht belegt**, sondern wiederhergestellt: Sie ruht auf akar-21s Beobachtung an derselben Datei. Wer den Container das naechste Mal baut, faehrt `pytest -m slow -k "placeholder or plain_table"` und schreibt das Ergebnis hierher. Faellt der breite Fall dort anders aus, ist die Modellfassung der Unterschied, nicht das Fixture.
+
+**Zahlen.** Sammlung vorher 124/128 (4 deselected), nachher 124/130 (6 deselected) — die zwei neuen slow-Tests. `pytest -q -rs`: 124 passed. `pytest -q -m slow -rs`: 6 skipped, alle mit "docling ist nicht installiert". `ruff check .`: sauber.
+
+**Befund nebenbei, nicht geaendert.** `.gitattributes` markiert `backend/tests/fixtures/**` als binaer. Das trifft auch `build_fixtures.py`, ein Python-Modul: Sein Diff erscheint in jedem Commit als `Bin 13610 -> 15891 bytes` statt als Text. Fuer die Beispieldateien ist die Regel richtig; das Bauskript gehoerte ausgenommen (`backend/tests/fixtures/build_fixtures.py text`). Fremde Datei, deshalb nur gemeldet.
+
+**Aenderung ausserhalb der Dateiliste.** `docs/entwicklung.md`, Abschnitt "Beispieldateien": Er zaehlte neun Dateien und ein PDF; nach dem Merge waeren beide Zahlen falsch. Nach der Regel "Wer ein Verhalten aendert, berichtigt im selben Merge, was dadurch falsch wird" mitkorrigiert und `breit.pdf` in einem Absatz erklaert.

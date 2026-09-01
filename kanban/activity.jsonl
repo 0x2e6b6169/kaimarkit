@@ -515,3 +515,12 @@
 {"timestamp":"2026-09-01T13:12:47.865512974+02:00","action":"release","task_id":75,"detail":"sophie-24"}
 {"timestamp":"2026-09-01T13:13:08.10728157+02:00","action":"edit","task_id":75,"detail":"BE-28 · Der Vertrag verspricht ein 415, das der Stapel nie liefert"}
 {"timestamp":"2026-09-01T13:13:36.260030739+02:00","action":"move","task_id":48,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T13:14:16.890175007+02:00","action":"edit","task_id":58,"detail":"BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo"}
+{"timestamp":"2026-09-01T13:14:16.890614062+02:00","action":"release","task_id":58,"detail":"sophie-25"}
+{"timestamp":"2026-09-01T13:14:42.208289308+02:00","action":"edit","task_id":58,"detail":"BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo"}
+{"timestamp":"2026-09-01T13:14:42.208842361+02:00","action":"claim","task_id":58,"detail":"sophie-25"}
+{"timestamp":"2026-09-01T13:14:42.840244359+02:00","action":"edit","task_id":58,"detail":"BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo"}
+{"timestamp":"2026-09-01T13:14:43.478108886+02:00","action":"move","task_id":58,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T13:14:44.119913958+02:00","action":"edit","task_id":58,"detail":"BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo"}
+{"timestamp":"2026-09-01T13:14:44.12021983+02:00","action":"release","task_id":58,"detail":"sophie-25"}
+{"timestamp":"2026-09-01T13:15:02.442566857+02:00","action":"edit","task_id":48,"detail":"BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad"}

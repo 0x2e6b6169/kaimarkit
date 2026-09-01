@@ -4,11 +4,13 @@ title: BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad
 status: todo
 priority: low
 created: 2026-08-31T17:08:52.676542507+02:00
-updated: 2026-09-01T13:13:36.252604382+02:00
+updated: 2026-09-01T13:15:02.440678611+02:00
 started: 2026-09-01T13:13:36.259156379+02:00
 assignee: sophie
 tags:
     - backend
+depends_on:
+    - 58
 class: standard
 ---
 
@@ -52,3 +54,12 @@ Konfiguration dafuer.
 - Gegenprobe: Die Meldung nennt weiterhin den Dateinamen und den Grund, ist also
   nicht auf "Konvertierung gescheitert" eingedampft.
 - Im Protokoll des Dienstes steht der ungekuerzte Wortlaut.
+
+[[2026-09-01]] Tue 13:15
+Hängt an #58, auf Meldung von sophie (01.09.2026) — und der Grund ist wichtiger als die Wartezeit.
+
+Die Eigenen Dateien nennen `errors.py` **oder** die Übersetzungsstelle im Adapter. Der belegte Befund ist eine Docling-Meldung; die Übersetzungsstelle dafür liegt in `converters/docling.py`, und die gehört gerade #58. Bedingtes Eigentum, also kollisionsfrei erst danach.
+
+**Der Ausweg, den ich nicht will:** den Subagenten auf `errors.py` festlegen und den Adapter verbieten. Dann entschiede die Verfügbarkeit einer Datei über den Entwurf statt die Sache. Eine gemeinsame Kürzung in `errors.py` ist wahrscheinlich ohnehin das Bessere — sie gilt dann für alle drei Engines gleich statt dreimal verschieden —, aber das soll aus der Betrachtung folgen und nicht daraus, dass `docling.py` gerade belegt war. Der Satz stammt von sophie und trifft es genauer, als eine Regel es könnte.
+
+**Zur Prüfung, zweiter Hinweis von sophie:** Sie verlangt, dass im Protokoll des Dienstes der ungekürzte Wortlaut steht. Das ist eine Aussage über `log.*`-Aufrufe, und über deren Sprache ist mit #69 (PROC-7) noch nicht entschieden. Kein Hindernis — der Wortlaut der Bibliothek ist ohnehin englisch. Aber wer hier eine Protokollzeile **neu** schreibt, schreibt sie in einer Sprache, die zur Wahl steht: dann die Form der Nachbarzeilen übernehmen und nichts Neues festlegen. #69 entscheidet es für alle auf einmal.
