@@ -46,6 +46,29 @@ EXTENSIONS: tuple[str, ...] = (
 #: das Dockerfile setzt sie, damit zur Laufzeit nichts nachgeladen wird.
 ARTIFACTS_ENV = "DOCLING_ARTIFACTS_PATH"
 
+#: Was ``ImageRefMode.PLACEHOLDER`` anstelle eines Bildes ins Markdown setzt.
+PLACEHOLDER = "<!-- image -->"
+
+
+def _placeholder_warnings(markdown: str, name: str) -> list[str]:
+    """Warnt, wenn im Markdown Platzhalter statt Inhalt stehen.
+
+    Doclings Modell ordnet manches als Bild ein, was Text ist — eine breite Tabelle
+    etwa. Der Export setzt dafuer ``<!-- image -->`` ein, und wer das Ergebnis liest,
+    sieht sonst nicht, dass ein Stueck der Vorlage fehlt. Die Zahl steht in der
+    Warnung: Ein ersetztes Bild ist etwas anderes als vierzehn.
+    """
+    count = markdown.count(PLACEHOLDER)
+    if count == 0:
+        return []
+    if count == 1:
+        ersetzt = "ein Bild durch einen Platzhalter"
+        fehlt = "Sein Inhalt fehlt im Markdown."
+    else:
+        ersetzt = f"{count} Bilder durch Platzhalter"
+        fehlt = "Ihr Inhalt fehlt im Markdown."
+    return [f"Docling hat in {name} {ersetzt} ersetzt. {fehlt}"]
+
 
 def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
     """Baut den ``DocumentConverter`` und gibt das Wandeln als Funktion zurueck.
@@ -95,6 +118,8 @@ def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
 
     def run(path: Path) -> str:
         document = converter.convert(path).document
+        # Bilder werden zu ``PLACEHOLDER``. Was dabei verloren geht, zaehlt der
+        # Adapter danach und meldet es in ``warnings``.
         return document.export_to_markdown(image_mode=ImageRefMode.PLACEHOLDER)
 
     return run
@@ -160,7 +185,11 @@ class DoclingConverter:
             markdown = run(path)
         except Exception as exc:  # noqa: BLE001 — jede Ausnahme der Bibliothek
             raise EngineFailed(f"Docling ist an {path.name} gescheitert: {exc}") from exc
-        return ConversionResult(markdown=markdown, engine=self.name)
+        return ConversionResult(
+            markdown=markdown,
+            engine=self.name,
+            warnings=_placeholder_warnings(markdown, path.name),
+        )
 
     def _pipeline(self, ocr: bool) -> Callable[[Path], str]:
         """Der Konverter zu dieser OCR-Einstellung, beim ersten Mal gebaut.
