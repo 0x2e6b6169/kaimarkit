@@ -4,7 +4,7 @@ title: IN-10 · Jede Backend-Aenderung baut Torch und Docling neu
 status: backlog
 priority: medium
 created: 2026-09-01T09:57:11.385309146+02:00
-updated: 2026-09-01T09:57:13.762403437+02:00
+updated: 2026-09-01T10:14:25.760901274+02:00
 assignee: akar
 tags:
     - infra
@@ -76,3 +76,10 @@ nicht das Mittel.
 ## Zurueckgestellt
 
 Vom Nutzer zurueckgestellt, bis die Abnahmefassung steht (01.09.2026).
+
+[[2026-09-01]] Tue 10:14
+Die Zahl, gemessen statt geschaetzt (von akar): Von `make down` um 09:44:25 bis `healthy` um 10:13:30 vergingen **29 Minuten**. Ausgeloest hat das eine Aenderung unter `backend/` — die Merges von BE-13 und BE-14 —, ohne dass sich eine einzige Abhaengigkeit geaendert haette.
+
+Zum Vergleich die Erwartung, unter der zuvor geplant wurde: fuenf Minuten, gerechnet aus einem warmen Cache. Der Unterschied zwischen fuenf und neunundzwanzig ist der Betrag, um den dieses Ticket jeden Durchgang verkuerzt.
+
+Das ist zugleich der Ausgangswert fuer die Pruefung: Nach der Aenderung muss eine reine Quelltextaenderung deutlich darunter liegen, und die gemessene Zeit gehoert in die Ticketnotiz.
