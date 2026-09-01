@@ -1,16 +1,16 @@
 ---
 id: 73
 title: BE-26 · Die Fehlerantworten stehen in keiner OpenAPI-Fassung
-status: in-progress
+status: done
 priority: medium
 created: 2026-09-01T12:53:38.556719389+02:00
-updated: 2026-09-01T12:57:07.751804073+02:00
+updated: 2026-09-01T13:05:34.479921805+02:00
+started: 2026-09-01T13:04:52.74634175+02:00
+completed: 2026-09-01T13:04:52.74634175+02:00
 assignee: sophie
 tags:
     - backend
     - api
-claimed_by: sophie-22
-claimed_at: 2026-09-01T12:57:07.751804073+02:00
 class: standard
 ---
 
@@ -63,3 +63,58 @@ eines Typs lässt einen Test fehlschlagen und nicht bloß eine Doku veralten.
 - Die Endpunkte führen die Fehlercodes, die `contracts/api.md` ihnen zuschreibt.
 - Der neue Test schlägt fehl, wenn man `responses=` an einem Endpunkt entfernt.
 - `pytest -q` bleibt grün.
+
+
+---
+
+## Ergebnis (sophie-22, 01.09.2026)
+
+Commit `ea17e08`, gemerged nach `main`.
+
+**Teil 1 — nachgetragen.** Beide Endpunkte in `convert.py` deklarieren ihre
+Fehlerantworten über `responses=` mit `model=ErrorResponse`. `/api/convert`: 400
+(`engine_unsuitable` | `engine_unavailable`), 413 (`file_too_large`), 415
+(`unsupported_format`), 500 (`conversion_failed`), 504 (`conversion_timeout`).
+`/api/convert/batch`: nur 413 (`too_many_files`). `ErrorResponse` und `ErrorCode`
+stehen damit unter `components`.
+
+`meta.py` blieb unverändert: `contracts/api.md` schreibt `/api/health` und
+`/api/capabilities` keinen Fehlercode zu, und beide werfen auch keinen. `models.py`
+blieb unverändert — `ErrorResponse` war dort schon vollständig, der
+Schnittstellen-Dreiklang wurde also nicht berührt.
+
+**Teil 2 — die Klasse geschlossen.** `test_openapi_publishes_every_declared_type`
+leitet die erwarteten Namen aus `app.models` ab — jede öffentliche `BaseModel`- und
+`StrEnum`-Klasse, die dort definiert ist — und prüft, dass jede unter `components`
+steht. Ein später hinzugefügtes Modell fällt ohne Zutun unter dieselbe Prüfung. Der
+ältere `test_openapi_names_both_answer_types` ist darin aufgegangen; seine
+`$ref`-Zusicherungen leben als `test_openapi_binds_each_endpoint_to_its_model`
+weiter. Dazu kommt `test_openapi_names_the_error_codes_of_each_endpoint` mit der
+Zuordnung Endpunkt → Codes.
+
+**Rot vor grün, ausgeführt.** `responses=` nur an `/api/convert` entfernt: 2 failed
+(Fehlercodes und zweiter Zweig). Nur an `/api/convert/batch` entfernt: 2 failed. An
+beiden entfernt: 3 failed, darunter `nicht in /api/openapi.json veroeffentlicht:
+ErrorCode, ErrorResponse`. Wiederhergestellt: 6 passed. `pytest -q` auf `main` nach
+dem Merge: 124 passed, 4 deselected. `ruff check .` sauber.
+
+## Befund — nicht behoben
+
+`contracts/api.md` sagt zu `/api/convert/batch`: „Nur 413 (zu viele Dateien) und 415
+gelten für den Stapel als Ganzes." Ein 415 kann der Stapel aber nicht liefern:
+`_convert_entry` fängt jede `ConversionError` ab und macht daraus einen Eintrag mit
+`status: "failed"`, und `TooManyFiles` ist die einzige Ausnahme, die vor dem `try`
+steht. Der Endpunkt deklariert deshalb nur 413.
+
+Entweder streicht der Vertrag das 415, oder der Stapel soll ein unbekanntes Format
+doch als Ganzes ablehnen. Das ist eine Produktentscheidung, kein Tippfehler.
+`contracts/api.md` gehörte während dieses Tickets einem anderen Subagenten und wurde
+deshalb nicht angefasst.
+
+## Auskunft zur schwankenden Sammelzahl
+
+Sie hängt am Interpreter, nicht an verlorenen Tests. `tests/test_markitdown.py` hat
+ein `pytest.importorskip("markitdown")` auf Modulebene; fehlt die Bibliothek, fällt
+das ganze Modul mit seinen 8 Tests aus der Sammlung. In der pyenv-Umgebung
+`claude-code`: vorher 120/124 (4 deselected), nachher 122/126. Ohne die Umgebung:
+112/116. Die Differenz ist genau 8.

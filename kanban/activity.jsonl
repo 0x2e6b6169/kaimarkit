@@ -498,3 +498,12 @@
 {"timestamp":"2026-09-01T13:03:37.401451117+02:00","action":"edit","task_id":74,"detail":"BE-27 · Zwei Stellen beschreiben das Vorladen falsch"}
 {"timestamp":"2026-09-01T13:03:37.402070323+02:00","action":"release","task_id":74,"detail":"sophie-23"}
 {"timestamp":"2026-09-01T13:04:21.768298468+02:00","action":"edit","task_id":49,"detail":"PROC-4 · pytest -m slow ueberspringt auf dem Entwicklungsrechner still"}
+{"timestamp":"2026-09-01T13:04:52.74671643+02:00","action":"move","task_id":73,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T13:04:54.19518799+02:00","action":"edit","task_id":73,"detail":"BE-26 · Die Fehlerantworten stehen in keiner OpenAPI-Fassung"}
+{"timestamp":"2026-09-01T13:04:54.195682566+02:00","action":"release","task_id":73,"detail":"sophie-22"}
+{"timestamp":"2026-09-01T13:05:28.083571595+02:00","action":"edit","task_id":73,"detail":"BE-26 · Die Fehlerantworten stehen in keiner OpenAPI-Fassung"}
+{"timestamp":"2026-09-01T13:05:28.084028209+02:00","action":"claim","task_id":73,"detail":"sophie-22"}
+{"timestamp":"2026-09-01T13:05:34.480444446+02:00","action":"edit","task_id":73,"detail":"BE-26 · Die Fehlerantworten stehen in keiner OpenAPI-Fassung"}
+{"timestamp":"2026-09-01T13:05:34.480712864+02:00","action":"release","task_id":73,"detail":"sophie-22"}
+{"timestamp":"2026-09-01T13:06:46.361843645+02:00","action":"create","task_id":75,"detail":"BE-28 · Der Vertrag verspricht ein 415, das der Stapel nie liefert"}
+{"timestamp":"2026-09-01T13:06:47.177567392+02:00","action":"move","task_id":58,"detail":"backlog -\u003e todo"}
