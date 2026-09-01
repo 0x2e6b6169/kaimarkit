@@ -69,6 +69,12 @@ Sprachmodell — er soll den Kontext zeigen, den man einem Modell gibt, und ihn 
 selbst erzeugen. Ein Diagramm, dessen Aussage nur im Bild steht, geht dabei
 verloren.
 
+Bei einem PDF durch MarkItDown bleibt nicht einmal die Stelle übrig. Die Engine
+liest dort nur die Textebene und lässt jedes Bild ersatzlos weg; im Markdown steht
+danach weder Platzhalter noch Alt-Text. Der Dienst warnt deshalb bei jedem PDF, das
+durch MarkItDown läuft. Docling setzt stattdessen `<!-- image -->` ein und zählt die
+ersetzten Bilder.
+
 ## Jeder Worker hält eigene Docling-Modelle
 
 Die Modelle liegen im Speicher des Prozesses, nicht daneben. Zwei Uvicorn-Worker

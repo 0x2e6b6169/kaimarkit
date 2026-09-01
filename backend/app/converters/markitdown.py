@@ -1,9 +1,10 @@
 """MarkItDown hinter dem Converter-Protokoll.
 
 MarkItDown ist die schnelle Engine: keine Modelle, kein OCR, dafuer breite
-Formatabdeckung. Ein LLM-Client wird bewusst nicht gesetzt — Bilder landen dadurch
-nur als Alt-Text im Markdown, und genau das ist die gewuenschte Platzhalter-
-Behandlung.
+Formatabdeckung. Einen LLM-Client setzt der Adapter bewusst nicht ein: Kein Bild
+wird beschrieben. In ``.docx``, ``.html`` und ``.epub`` bleibt davon der Alt-Text
+stehen. Aus einem PDF uebernimmt MarkItDown dagegen gar nichts — dort faellt jedes
+Bild ersatzlos weg, und ``convert()`` legt dafuer eine Warnung dazu.
 
 Achtung beim Lesen: Diese Datei heisst wie die Bibliothek. ``from markitdown import
 MarkItDown`` meint trotzdem die Bibliothek, denn Python 3 importiert absolut; das
@@ -38,6 +39,29 @@ EXTENSIONS: tuple[str, ...] = (
 )
 
 
+def _pdf_image_warnings(path: Path) -> list[str]:
+    """Warnt bei einem PDF davor, dass MarkItDown die Bilder weglaesst.
+
+    MarkItDown zieht aus einem PDF nur die Textebene. Ein Bild hinterlaesst dort
+    weder eine Marke noch einen Alt-Text: Ein PDF mit Bildern liefert Zeichen fuer
+    Zeichen dasselbe Markdown wie dasselbe PDF ohne. Zaehlen laesst sich am Ergebnis
+    deshalb nichts.
+
+    Die Warnung nennt darum das Verhalten der Engine und nicht den Inhalt der
+    Vorlage. Der Preis dafuer, die Datei kein zweites Mal zu lesen: Ein PDF ganz ohne
+    Bilder bekommt sie auch. Das ist so entschieden.
+
+    Nur fuer PDF. In ``.docx``, ``.html`` und ``.epub`` setzt MarkItDown den Alt-Text
+    ein — dort waere die Aussage unwahr.
+    """
+    if path.suffix.lower() != ".pdf":
+        return []
+    return [
+        "MarkItDown uebernimmt keine Bilder aus PDF. "
+        f"Enthielt {path.name} Bilder, fehlt ihr Inhalt hier."
+    ]
+
+
 class MarkItDownConverter:
     """Der Adapter. Die Bibliothek wird verzoegert geladen und einmal aufgebaut."""
 
@@ -66,6 +90,7 @@ class MarkItDownConverter:
         warnings: list[str] = []
         if not markdown.strip():
             warnings.append(f"MarkItDown hat in {path.name} keinen Text gefunden.")
+        warnings.extend(_pdf_image_warnings(path))
         return ConversionResult(markdown=markdown, engine=self.name, warnings=warnings)
 
     def _get_engine(self) -> Any:
