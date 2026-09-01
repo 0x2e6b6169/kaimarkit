@@ -1,11 +1,12 @@
 ---
 id: 76
 title: IN-12 · Die zwei neuen slow-Tests im Container fahren
-status: todo
+status: done
 priority: medium
 created: 2026-09-01T13:16:13.857772486+02:00
-updated: 2026-09-01T14:00:16.316801786+02:00
+updated: 2026-09-01T14:07:46.411296841+02:00
 started: 2026-09-01T14:00:15.714875061+02:00
+completed: 2026-09-01T14:07:38.5422967+02:00
 assignee: akar
 tags:
     - infra
@@ -79,3 +80,36 @@ Nach `todo` gezogen (01.09.2026). Voraussetzung erfüllt: Das Abbild ist aus `bb
 **Auflage: Der laufende Dienst des Nutzers bleibt stehen.** Er testet gerade auf `127.0.0.1:8080`. Dieses Ticket fährt Tests **im** Abbild und baut nichts — es darf den Container weder ersetzen noch abräumen. Seit #49 gibt es dafür `make test-slow-image`: Es startet einen eigenen Container aus dem Abbild, hängt `backend/` lesend hinein und wirft ihn danach weg. Das ist der Weg.
 
 #77 (IN-13) bleibt derweil im Backlog — es baut und würde den Dienst ersetzen.
+
+[[2026-09-01]] Tue — Ausgefuehrt von akar-26. Kein Worktree, kein Commit, kein Bau.
+
+**Erste Messung — beide slow-Tests laufen im Abbild, beide bestehen.**
+`2 passed, 141 deselected` aus `pytest -q -rs -m slow -k "placeholder or plain_table"`,
+kein Ueberspringen, kein `docling ist nicht installiert`. Abbild `kaimarkit:local`
+(`sha256:49e8ccc5…`, 01.09.2026 13:44 +0200); dass es aus `bbf7180` stammt, ist
+belegt und nicht uebernommen: Das Paket `app` im Abbild ist byte-identisch mit
+`backend/app` aus diesem Commit. `breit.pdf` erzeugt unter docling 2.124.0 genau einen
+Platzhalter und genau eine Warnung, die Datei und Zahl nennt. Wortlaut, Aufruf und
+Belege stehen in der Notiz von #58.
+
+**Zweite Messung — die Protokollzeile aus BE-15 erzeugt kein Rauschen.** Fuenf
+beschaedigte PDFs im Stapel: 26 neue Logzeilen, davon **5 aus `app.errors`, also eine
+je fehlgeschlagener Datei**, gegen 20 Zeilen von Docling selbst. Drei Dateien mit
+unbekannter Endung: **null** Zeilen aus `app.errors`. Die Annahme des Nachtrags stimmt
+so nicht — die Zeile haengt an `if self.detail != detail`
+(`backend/app/errors.py:77-78`, `bbf7180`) und faellt nur, wenn wirklich ein Pfad
+gekuerzt wurde. Kein Folgeticket vorgeschlagen. Zahlen und Aufschluesselung in der
+Notiz von #48.
+
+**Auflage eingehalten.** Der Container des Nutzers auf `127.0.0.1:8080` lief durch;
+kein `make up`, kein `make down`, kein `docker compose`, kein Bau. Die Tests liefen in
+einem eigenen Wegwerf-Container nach der Bauart von `make test-slow-image`
+(`backend/` nur lesend eingehaengt), der Fehlerstapel als gewoehnliche API-Anfragen
+gegen den laufenden Dienst. `docker/.env` nur gelesen.
+
+**Pruefung.** (1) Beide Tests laufen und ueberspringen nicht — ja, mit `-v` je Test
+`PASSED` belegt. (2) Ausgang steht in #58 und hier, mit Abbildstand — ja. (3) `git
+status` sauber: **ausserhalb von `kanban/` null Eintraege**. Innerhalb von `kanban/`
+stehen die Aenderungen dieses Tickets selbst (Claim, Status, diese Notizen) — die
+gehoeren dem Board-Sync des PO und sind kein Befund. Ein Befund waere eine Aenderung
+an Code, Tests, Fixtures oder `docker/`; es gab keine.

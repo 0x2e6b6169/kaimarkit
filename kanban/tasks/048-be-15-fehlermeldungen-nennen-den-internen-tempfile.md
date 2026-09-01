@@ -4,7 +4,7 @@ title: BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad
 status: done
 priority: low
 created: 2026-08-31T17:08:52.676542507+02:00
-updated: 2026-09-01T13:25:39.903151962+02:00
+updated: 2026-09-01T14:09:28.90266875+02:00
 started: 2026-09-01T13:23:54.726548822+02:00
 completed: 2026-09-01T13:23:54.726548822+02:00
 assignee: sophie
@@ -94,3 +94,56 @@ Ihn zu entfernen hieße, fremde Prosa umzuschreiben statt eigene zu kürzen. Die
 Konvention 3 verlangt, dass jede Engine ihre Ausnahmen übersetzt. Sie verlangt nicht, dass wir die Sätze der Bibliothek neu schreiben.
 
 Damit ist die Prüfung dieses Tickets nicht zu schwach gewesen, sondern genauer als seine Vorgabe.
+
+**Gemessen: kein Rauschen — und die Annahme im Nachtrag stimmte nicht** (IN-12,
+akar-26, 01.09.2026, gegen den laufenden Container `kaimarkit:local` aus `bbf7180`).
+
+Zwei Staepel an `POST /api/convert/batch`, dazwischen die Zeilen des Containerlogs
+gezaehlt.
+
+*Stapel 1 — fuenf beschaedigte PDFs an Docling.* Alle fuenf scheiterten
+(`status: "failed"`), 26 neue Protokollzeilen. Davon:
+
+| Herkunft | Zeilen | je Datei |
+|---|---|---|
+| `app.errors` (die Zeile aus BE-15) | 5 | 1 |
+| `docling.*` (fremde Bibliothek) | 20 | 4 |
+| Zugriffsprotokoll von uvicorn | 1 | — |
+
+**Eine Zeile je fehlgeschlagener Datei**, und sie ist eine von 26. Docling selbst
+schreibt zu jeder Datei viermal so viel, darunter ohnehin schon den vollen Pfad:
+`WARNING:docling.document_converter:Input document /tmp/tmpwvw4ceqh/kaputt1.pdf is not
+valid.` Wer diesen Stapel im Log ansieht, findet unsere Zeile nicht in einer Flut,
+sondern zwischen vier fremden.
+
+*Stapel 2 — drei Dateien mit unbekannter Endung `.xyz`.* Alle drei scheiterten
+(`Fuer .xyz gibt es keine Engine.`), **null** Zeilen aus `app.errors`; die einzige
+neue Zeile war das Zugriffsprotokoll.
+
+Damit ist die Voraussetzung des Nachtrags widerlegt: `ConversionError.__init__`
+schreibt **nicht** bei jeder Erzeugung. Die Zeile haengt an einer Bedingung —
+`backend/app/errors.py:77-78` in `bbf7180`:
+
+    if self.detail != detail:
+        log.warning("Fehlermeldung gekuerzt. Ungekuerzt: %s", detail)
+
+Sie faellt nur, wenn `shorten()` tatsaechlich etwas gekuerzt hat, also wenn ein Pfad
+in der Meldung stand. `UnsupportedFormat`, `TooManyFiles`, `FileTooLarge` und jede
+andere Ausnahme ohne Pfad im Wortlaut schreiben nichts — Stapel 2 zeigt das.
+
+**Bewertung, nicht weiter, als die Zahl hergibt:** Bei 1 Zeile je Datei und nur dort,
+wo ohnehin ein Pfad verloren ginge, entsteht kein Rauschen. Kein Folgeticket
+vorgeschlagen. Was den Log eines Fehlerstapels fuellt, ist Doclings eigene
+Gespraechigkeit, nicht unsere Zeile — wer daran etwas will, braucht ein Ticket ueber
+den Log-Level fremder Bibliotheken, nicht ueber `errors.py`.
+
+[[2026-09-01]] Tue 14:09
+**Berichtigung meines Nachtrags (01.09.2026, belegt von akar in #76).** Ich hatte geschrieben, „**jede** erzeugte `ConversionError` schreibt eine Zeile". Das stimmt nicht.
+
+`backend/app/errors.py:77-78` schreibt unter `if self.detail != detail:` — also nur, wenn `shorten()` tatsächlich einen Pfad entfernt hat. Gegenprobe gefahren, nicht erschlossen: drei Dateien mit unbekannter Endung, alle drei `failed`, **null** Zeilen aus `app.errors`.
+
+**Die Rauschfrage ist damit beantwortet, und die Antwort zeigt woandershin.** Fünf beschädigte PDFs erzeugen 26 neue Logzeilen: 5 aus `app.errors` — eine je fehlgeschlagener Datei —, 20 aus Docling selbst (vier je Datei, samt vollem Pfad) und eine Zugriffszeile. Das Verhältnis ist vier zu eins gegen Docling.
+
+Wer den Log eines Fehlerstapels leiser will, muss an Doclings Log-Level, nicht an `errors.py`. Kein Folgeticket.
+
+Bemerkenswert an der Messung: Die Frage war „erzeugt das Rauschen?", die Antwort lautet „ja, aber nicht dort". Ohne die Aufschlüsselung wäre die Gesamtzahl 26 hängengeblieben und hätte auf `errors.py` gezeigt — auf die Stelle, die als einzige im Verdacht stand.

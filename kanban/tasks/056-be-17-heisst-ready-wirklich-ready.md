@@ -4,7 +4,7 @@ title: BE-17 · Heisst ready wirklich ready?
 status: done
 priority: high
 created: 2026-09-01T10:24:25.93867698+02:00
-updated: 2026-09-01T12:54:30.532325268+02:00
+updated: 2026-09-01T14:09:29.755150539+02:00
 started: 2026-09-01T12:40:23.978293179+02:00
 completed: 2026-09-01T12:53:49.630901447+02:00
 assignee: sophie
@@ -149,3 +149,15 @@ Infrastruktur-Lane.
 Lifespan-Docstring, ohne das Vorladen wartete der erste Nutzer „minutenlang";
 `docs/betrieb/konfiguration.md:144` legt nahe, der Healthcheck warte auf die Modelle.
 Beide Stellen gehoeren anderen Tickets.
+
+[[2026-09-01]] Tue 14:09
+**Die zwei offenen Zahlen bleiben offen — Zwischenstand des PO (01.09.2026).**
+
+Ich hatte zugesagt, Zeit bis `healthy` und Speicherzuwachs beim nächsten Container-Lauf zu holen. Am laufenden Dienst geht beides **nicht** sauber:
+
+- **Zeit bis `healthy`:** `docker inspect` hält nur die letzten Healthcheck-Einträge; bei einem Container, der seit über einer Stunde läuft, ist der erste längst herausgerollt. Der Startzeitpunkt allein sagt nichts darüber, wann der erste Check gelang.
+- **Speicher:** Gemessen sind jetzt 476 MiB im Ruhezustand. Die 1,77 GB von heute Vormittag entstanden **während einer Umwandlung**. Die beiden Zahlen nebeneinanderzustellen wäre derselbe Fehler wie bei den zwei Durchsatzwerten — verschiedene Bedingungen, kein Vergleich.
+
+Beide Zahlen brauchen einen kontrollierten Neustart: Container hoch, Zeit bis `healthy` nehmen, Speicher im Ruhezustand ablesen — einmal mit und einmal ohne das Vorladen der zweiten Pipeline. Das ersetzt den laufenden Dienst und geht deshalb erst, wenn der Nutzer durch ist.
+
+Bis dahin ruht die Entscheidung aus diesem Ticket auf einer Schätzung (2 × 8,5 s bei 180 s Startfenster) und nicht auf einer Messung. Das ist vertretbar, aber es ist nicht dasselbe, und es soll hier stehen statt vergessen zu werden.

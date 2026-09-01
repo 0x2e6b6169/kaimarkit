@@ -558,3 +558,12 @@
 {"timestamp":"2026-09-01T13:58:58.955287921+02:00","action":"release","task_id":49,"detail":"akar-25"}
 {"timestamp":"2026-09-01T14:00:15.715567648+02:00","action":"move","task_id":76,"detail":"backlog -\u003e todo"}
 {"timestamp":"2026-09-01T14:00:16.317253643+02:00","action":"edit","task_id":76,"detail":"IN-12 · Die zwei neuen slow-Tests im Container fahren"}
+{"timestamp":"2026-09-01T14:01:30.101390132+02:00","action":"move","task_id":76,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T14:06:35.039667428+02:00","action":"edit","task_id":58,"detail":"BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo"}
+{"timestamp":"2026-09-01T14:06:57.950457118+02:00","action":"edit","task_id":48,"detail":"BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad"}
+{"timestamp":"2026-09-01T14:07:37.709636992+02:00","action":"edit","task_id":76,"detail":"IN-12 · Die zwei neuen slow-Tests im Container fahren"}
+{"timestamp":"2026-09-01T14:07:38.542707054+02:00","action":"move","task_id":76,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T14:07:46.411850193+02:00","action":"edit","task_id":76,"detail":"IN-12 · Die zwei neuen slow-Tests im Container fahren"}
+{"timestamp":"2026-09-01T14:07:46.412181364+02:00","action":"release","task_id":76,"detail":"akar-26"}
+{"timestamp":"2026-09-01T14:09:28.904035273+02:00","action":"edit","task_id":48,"detail":"BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad"}
+{"timestamp":"2026-09-01T14:09:29.756939609+02:00","action":"edit","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}

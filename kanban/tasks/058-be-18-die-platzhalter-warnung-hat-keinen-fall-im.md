@@ -4,7 +4,7 @@ title: BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo
 status: done
 priority: medium
 created: 2026-09-01T10:25:37.13806965+02:00
-updated: 2026-09-01T13:14:44.119272319+02:00
+updated: 2026-09-01T14:06:35.038544633+02:00
 started: 2026-09-01T13:06:47.176178135+02:00
 completed: 2026-09-01T13:14:43.477822912+02:00
 assignee: sophie
@@ -120,3 +120,40 @@ Der PDF-Behaelter (fuenf Objekte, xref, Offsets) steht jetzt in `_write_pdf()`, 
 **Befund nebenbei, nicht geaendert.** `.gitattributes` markiert `backend/tests/fixtures/**` als binaer. Das trifft auch `build_fixtures.py`, ein Python-Modul: Sein Diff erscheint in jedem Commit als `Bin 13610 -> 15891 bytes` statt als Text. Fuer die Beispieldateien ist die Regel richtig; das Bauskript gehoerte ausgenommen (`backend/tests/fixtures/build_fixtures.py text`). Fremde Datei, deshalb nur gemeldet.
 
 **Aenderung ausserhalb der Dateiliste.** `docs/entwicklung.md`, Abschnitt "Beispieldateien": Er zaehlte neun Dateien und ein PDF; nach dem Merge waeren beide Zahlen falsch. Nach der Regel "Wer ein Verhalten aendert, berichtigt im selben Merge, was dadurch falsch wird" mitkorrigiert und `breit.pdf` in einem Absatz erklaert.
+
+**Die Kette ist belegt** — Lauf im Abbild am 01.09.2026 (IN-12, akar-26).
+
+Abbildstand: `kaimarkit:local`, `sha256:49e8ccc5…`, gebaut am 01.09.2026 um 13:44:22 +0200.
+Belegt statt uebernommen: Das im Abbild installierte Paket
+`/opt/venv/lib/python3.12/site-packages/app` ist byte-identisch mit `backend/app` aus
+`bbf7180` — 16 `.py`-Dateien, die Liste ihrer md5-Summen ergibt beidseits
+`52e7111967c67d72b67f08e863a0a9ea`. `git diff bbf7180 HEAD -- backend/` ist leer, das
+Abbild bildet also auch den heutigen Stand ab. Fixture `breit.pdf`: md5
+`9d46a776c4337f48efe87038d01bb5a8`, unveraendert. docling 2.124.0.
+
+Aufruf (die Bauart von `make test-slow-image`, eigener Wegwerf-Container, `backend/`
+nur lesend eingehaengt — der laufende Dienst des Nutzers blieb stehen):
+
+    docker run --rm -u root -v "$PWD/backend:/src:ro" -w /src kaimarkit:local \
+      sh -c 'pip install -q pytest httpx && python -m pytest -q -rs -m slow \
+             -k "placeholder or plain_table" -p no:cacheprovider'
+
+Ausgang, woertlich:
+
+    tests/test_docling.py::test_a_plain_table_produces_no_warning PASSED     [ 50%]
+    tests/test_docling.py::test_a_wide_table_becomes_a_placeholder_with_a_warning PASSED [100%]
+    ================ 2 passed, 141 deselected, 1 warning in 29.09s =================
+
+**Beide Tests liefen, keiner uebersprang.** Kein `docling ist nicht installiert` im
+`-rs`-Abschnitt; der erste Lauf meldete `2 passed, 141 deselected, 3 warnings in
+26.52s`, die Warnungen waren Deprecation-Meldungen aus Starlette und Docling.
+
+Was das Modell heute aus `breit.pdf` macht, gemessen im selben Abbild:
+
+    PLACEHOLDERS 1
+    WARNINGS ['Docling hat in breit.pdf ein Bild durch einen Platzhalter ersetzt. Sein Inhalt fehlt im Markdown.']
+
+Genau ein Platzhalter, genau eine Warnung, und sie nennt Datei und Zahl. Das deckt
+sich mit der Beobachtung von akar-21 an derselben Datei. Die Kette Fixture → docling →
+Warnung ruht damit nicht mehr auf einer Beobachtung, sondern auf einem Lauf gegen den
+heutigen Stand.
