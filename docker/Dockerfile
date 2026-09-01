@@ -7,8 +7,8 @@
 #
 #     docker build -f docker/Dockerfile .
 #
-# Fuenf Stufen: Frontend, Python-Abhaengigkeiten, Docling-Modelle, Dokumentation,
-# Laufzeit. Nur die letzte landet im Abbild.
+# Sechs Stufen: Frontend, Python-Abhaengigkeiten, Anwendung, Docling-Modelle,
+# Dokumentation, Laufzeit. Nur die letzte landet im Abbild.
 
 
 # ── 1. Frontend ────────────────────────────────────────────────────────────────
@@ -26,7 +26,7 @@ RUN npm run build
 
 
 # ── 2. Python-Abhaengigkeiten ──────────────────────────────────────────────────
-FROM python:3.12-slim AS builder
+FROM python:3.12-slim AS deps
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
@@ -39,16 +39,37 @@ RUN apt-get update \
 
 RUN python -m venv /opt/venv
 
-COPY backend/ /src/backend/
+# Erst die Abhaengigkeiten, dann der Quelltext — dasselbe Muster wie oben im
+# Frontend. Kaeme "backend/" schon hier herein, verwuerfe jede Aenderung daran
+# diese Schicht: gemessene 210 Sekunden fuer die Installation und, weil die
+# Modellstufe darauf aufsetzt, weitere 200 fuer den Download.
+#
+# Welche Pakete es sind, steht in pyproject.toml und wird von dort gelesen, damit
+# es nur eine Quelle dafuer gibt. Die Docs-Stufe liest ihre Gruppe ebenso.
+COPY backend/pyproject.toml /src/backend/pyproject.toml
 
 # Torch kommt aus dem CPU-Index. Die Standard-Wheels ziehen die CUDA-Bibliotheken
 # nach und blaehen das Abbild um rund zwei Gigabyte auf. Der CPU-Index liefert
 # dieselben Versionen mit dem lokalen Kennzeichen "+cpu", das pip vorzieht.
-RUN pip install --extra-index-url https://download.pytorch.org/whl/cpu /src/backend
+RUN python -c "import tomllib; print('\n'.join(tomllib.load(open('/src/backend/pyproject.toml','rb'))['project']['dependencies']))" > /tmp/requirements.txt \
+    && pip install --extra-index-url https://download.pytorch.org/whl/cpu -r /tmp/requirements.txt
 
 
-# ── 3. Docling-Modelle ─────────────────────────────────────────────────────────
-FROM builder AS models
+# ── 3. Anwendung ───────────────────────────────────────────────────────────────
+FROM deps AS builder
+
+COPY backend/ /src/backend/
+
+# --no-deps, weil alles Noetige schon im venv liegt. Ohne den Schalter fragte pip
+# den Index noch einmal ab und koennte dabei eine Abhaengigkeit austauschen, die
+# die Stufe darueber eben erst festgelegt hat.
+RUN pip install --no-deps /src/backend
+
+
+# ── 4. Docling-Modelle ─────────────────────────────────────────────────────────
+# Setzt auf "deps" auf und nicht auf "builder": Der Download braucht docling, nicht
+# die Anwendung. So bleibt er erhalten, wenn sich allein der Quelltext aendert.
+FROM deps AS models
 
 # Vorgebacken, damit die Laufzeit ohne Netz auskommt. HF_HOME zeigt auf dasselbe
 # Verzeichnis: Docling laedt einen Teil der Gewichte ueber den Hugging-Face-Cache,
@@ -72,7 +93,7 @@ RUN docling-tools models download --output-dir /opt/docling-models \
         --easyocr-lang de --easyocr-lang en
 
 
-# ── 4. Dokumentation ───────────────────────────────────────────────────────────
+# ── 5. Dokumentation ───────────────────────────────────────────────────────────
 FROM python:3.12-slim AS docs
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -116,7 +137,7 @@ RUN mkdir -p /docs-site \
        fi
 
 
-# ── 5. Laufzeit ────────────────────────────────────────────────────────────────
+# ── 6. Laufzeit ────────────────────────────────────────────────────────────────
 FROM python:3.12-slim AS runtime
 
 # Muss zu PANDOC_VERSION in docker/.env.example passen.

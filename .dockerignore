@@ -5,17 +5,23 @@
 # "mkdocs build" zurueck und liefert nur die aktuelle Fassung.
 
 # Was im Container neu entsteht
-node_modules/
+#
+# Das Praefix "**/" ist noetig, nicht schmueckend: Ein Muster ohne Schraegstrich
+# vergleicht nur die oberste Ebene des Kontextes. "__pycache__/" liess deshalb
+# backend/app/__pycache__ durch, ebenso backend/.pytest_cache und
+# backend/.ruff_cache. Jeder Testlauf schrieb sie neu, der naechste Bau verwarf
+# damit "COPY backend/" und installierte Torch und Docling ein weiteres Mal.
+**/node_modules/
 frontend/dist/
 site/
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-*.egg-info/
-.pytest_cache/
-.ruff_cache/
-*.tsbuildinfo
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/venv/
+**/*.egg-info/
+**/.pytest_cache/
+**/.ruff_cache/
+**/*.tsbuildinfo
 
 # Was den Betrieb nichts angeht
 kanban/
