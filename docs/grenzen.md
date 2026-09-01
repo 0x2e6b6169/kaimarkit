@@ -12,7 +12,7 @@ im Einzelnen, `docker/.env.example` nennt die Standardwerte.
 | `KAIMARKIT_MAX_FILE_SIZE_MB` | 50 | Größe einer einzelnen Datei |
 | `KAIMARKIT_MAX_FILES` | 20 | Dateien je Stapelaufruf |
 | `KAIMARKIT_MAX_CONCURRENT` | 2 | gleichzeitige Umwandlungen |
-| `KAIMARKIT_CONVERSION_TIMEOUT` | 120 | Sekunden je Datei |
+| `KAIMARKIT_CONVERSION_TIMEOUT` | 600 | Sekunden je Datei |
 
 Die Größe prüft der Dienst schon beim Empfang. Überschreitet die Datei das Limit,
 bricht er ab und antwortet mit 413 und `file_too_large`. Den Rest des Uploads liest

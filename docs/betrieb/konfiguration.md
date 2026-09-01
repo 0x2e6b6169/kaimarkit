@@ -42,7 +42,7 @@ die `.dockerignore` in der Wurzel des dortigen Baums.
 | `KAIMARKIT_MAX_FILE_SIZE_MB` | `50` | Größe einer einzelnen Datei. |
 | `KAIMARKIT_MAX_FILES` | `20` | Dateien je Stapelaufruf. |
 | `KAIMARKIT_MAX_CONCURRENT` | `2` | Gleichzeitige Umwandlungen. |
-| `KAIMARKIT_CONVERSION_TIMEOUT` | `120` | Zeitgrenze je Datei in Sekunden. |
+| `KAIMARKIT_CONVERSION_TIMEOUT` | `600` | Zeitgrenze je Datei in Sekunden. |
 | `KAIMARKIT_PANDOC_TIMEOUT` | `60` | Zeitgrenze für den Pandoc-Unterprozess in Sekunden. |
 | `KAIMARKIT_DEFAULT_ENGINE` | `auto` | `auto` folgt der Präferenzliste im Code. Ein Enginename (`markitdown`, `docling`, `pandoc`) zieht diese Engine überall nach vorn. |
 | `KAIMARKIT_ENABLE_FALLBACK` | `true` | Bei `auto` die nächste geeignete Engine nehmen, wenn die erste scheitert. |
@@ -71,6 +71,34 @@ erst erhöhen, wenn genug RAM da ist, und `KAIMARKIT_MEM_LIMIT` mit anheben.
 
 Fehlt eines der beiden Verzeichnisse, hängt das Backend es nicht ein und läuft
 trotzdem: ohne gebautes Frontend und ohne Dokumentation, aber mit vollständiger API.
+
+### Woran man merkt, dass die Zeitgrenze zu knapp ist
+
+Überschreitet eine Umwandlung `KAIMARKIT_CONVERSION_TIMEOUT`, antwortet der Dienst mit 504 und
+`conversion_timeout`, und die Oberfläche zeigt an der Datei „Die Umwandlung hat die
+Zeitgrenze von *n* s überschritten". Der Satz nennt den Grund, sieht aber aus wie ein
+Fehler des Dienstes. Er ist keiner: Der Dienst hat abgebrochen, weil die Einstellung
+es ihm sagt.
+
+Zwei Anzeichen unterscheiden die zu knappe Grenze von einer echten Störung. Erstens
+scheitert immer dieselbe Datei, und zwar nach immer derselben Zeit — auf die Sekunde
+der eingestellte Wert. Zweitens steht im Containerprotokoll keine Ausnahme, sondern
+Doclings eigene Zeile:
+
+```
+INFO:docling.document_converter:Finished converting document rechnung.pdf in 326.06 sec.
+```
+
+Sie kommt oft erst nach der Fehlermeldung, weil die Engine weiterrechnet, wenn der
+Wartevorgang längst beendet ist ([Grenzen](../grenzen.md)). Diese Zahl ist die
+gesuchte: Wer die Zeitgrenze über sie setzt, lässt das Dokument durch.
+
+Die Zeit geht dabei fast vollständig in die Texterkennung gescannter Seiten. Ein PDF
+mit Textschicht wandelt derselbe Dienst in wenigen Sekunden um; eine gescannte Seite
+kostet auf einem Notebook mit zwei Kernen zwischen anderthalb und drei Minuten,
+dasselbe Dokument von Lauf zu Lauf verschieden. Wer regelmäßig gescannte Dokumente
+mit vielen Seiten durchschickt, rechnet mit rund zwei Minuten je Seite und setzt die
+Grenze entsprechend.
 
 ## Was das Abbild fest setzt
 
