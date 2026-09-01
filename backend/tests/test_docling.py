@@ -101,6 +101,48 @@ def test_warmup_reports_warming_and_then_ready(monkeypatch: pytest.MonkeyPatch) 
     assert converter.available() is True
 
 
+def test_warmup_builds_both_ocr_pipelines(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """OCR an und aus sind zwei Pipelines, und vorgeladen werden beide.
+
+    Docling haengt die OCR-Einstellung an den Options-Hash: Wer nur eine Pipeline
+    vorlaedt und danach die andere anfordert, laedt die Modelle ein zweites Mal —
+    waehrend ``/api/capabilities`` laengst ``ready`` meldet. Nach dem Warmlauf baut
+    deshalb keine der beiden Einstellungen noch etwas.
+    """
+    fake = FakePipeline()
+    install(monkeypatch, fake)
+    converter = adapter.DoclingConverter()
+
+    converter.start_warmup()
+    converter._thread.join(timeout=5)
+    assert sorted(fake.builds) == [False, True]
+
+    sample = tmp_path / "bericht.pdf"
+    converter.convert(sample, ConvertOptions(ocr=True))
+    converter.convert(sample, ConvertOptions(ocr=False))
+
+    assert len(fake.builds) == 2  # beide kamen aus dem Warmlauf
+    assert converter.state() == "ready"
+
+
+def test_warmup_builds_the_configured_setting_first(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Zuerst die eingestellte Voreinstellung: Sie wird am ehesten verlangt."""
+    monkeypatch.setenv("KAIMARKIT_OCR_ENABLED", "false")
+    get_settings.cache_clear()
+    fake = FakePipeline()
+    install(monkeypatch, fake)
+    converter = adapter.DoclingConverter()
+
+    converter.start_warmup()
+    converter._thread.join(timeout=5)
+
+    assert fake.builds == [False, True]
+
+
 def test_a_request_while_warming_waits_for_the_same_converter(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -121,7 +163,8 @@ def test_a_request_while_warming_waits_for_the_same_converter(
     caller.join(timeout=5)
 
     assert result == ["| a | b |"]
-    assert len(fake.builds) == 1  # der Aufbau lief genau einmal
+    # Der Warmlauf baut beide Einstellungen; die verlangte kam aus ihm, nicht dazu.
+    assert fake.builds.count(True) == 1
 
 
 def test_converter_is_reused(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -185,7 +228,7 @@ def test_get_converter_starts_the_warmup(monkeypatch: pytest.MonkeyPatch) -> Non
     converter._thread.join(timeout=5)
 
     assert adapter.get_converter() is converter  # eine Instanz je Prozess
-    assert len(fake.builds) == 1
+    assert sorted(fake.builds) == [False, True]
     assert converter.available() is True
 
 

@@ -36,16 +36,23 @@ Compose leitet sein Projektverzeichnis aus der ersten `-f`-Datei ab und liest
     `make up` prüft die Datei vorher und bricht mit einem Hinweis ab; der nackte
     `docker compose`-Aufruf tut das nicht.
 
-Der dritte Schritt ist warten. Docling lädt beim Start seine Modelle, und solange
-das läuft, gilt der Container als `starting`:
+Der dritte Schritt ist warten, und zwar kürzer, als es aussieht:
 
 ```bash
 docker inspect -f '{{.State.Health.Status}}' kaimarkit
 ```
 
 Sobald dort `healthy` steht, antwortet die Oberfläche unter
-<http://127.0.0.1:8080>. Die API steht schon vorher bereit — `GET /api/health`
-antwortet sofort, und `GET /api/capabilities` meldet Docling so lange als `warming`.
+<http://127.0.0.1:8080>. Der Healthcheck ruft `GET /api/health` auf, und diese
+Antwort hängt nicht an den Modellen — `healthy` sagt also, dass der Dienst läuft,
+nicht dass Docling geladen hat.
+
+Docling lädt derweil im Hintergrund: rund achteinhalb Sekunden je Pipeline, und der
+Dienst baut zwei davon — eine mit Texterkennung, eine ohne. Solange die erste nicht
+steht, meldet `GET /api/capabilities` Docling als `warming`, danach als `ready`,
+während die zweite entsteht. Wer in diesen Sekunden schon ein PDF schickt, bekommt
+es trotzdem gewandelt: `engine=auto` nimmt so lange MarkItDown, und wer Docling
+ausdrücklich verlangt, wartet auf den fertigen Konverter.
 
 ## Docker Desktop unter Windows
 
