@@ -10,12 +10,11 @@ Die Tests, die wirklich Docling laden, tragen die Marke ``slow``.
 from __future__ import annotations
 
 import importlib.util
-import sys
 import threading
 import time
 from collections.abc import Iterator
 from pathlib import Path
-from types import ModuleType, SimpleNamespace
+from types import SimpleNamespace
 
 import pytest
 
@@ -353,73 +352,15 @@ def test_the_ocr_switch_works_on_images() -> None:
 
 # --- Welche Formate die Optionen bekommen -----------------------------------
 #
-# Docling steckt vollstaendig in ``_build_pipeline``. Die folgenden Tests haengen
-# Attrappen der benutzten Module in ``sys.modules`` und lesen ab, welche
-# ``format_options`` daraus entstehen. Sie laufen ohne die Bibliothek und fangen
-# damit dauerhaft, was sonst erst im Container auffaellt.
-
-
-class FakePipelineOptions:
-    def __init__(self) -> None:
-        self.do_ocr = False
-        self.do_table_structure = False
-        self.generate_picture_images = True
-        self.artifacts_path: str | None = None
-        self.ocr_options: object = None
-
-
-class FakeEasyOcrOptions:
-    def __init__(self, lang: list[str] | None = None) -> None:
-        self.lang = lang
-
-
-def install_fake_docling(monkeypatch: pytest.MonkeyPatch) -> dict[str, object]:
-    """Legt Attrappen der Docling-Module und liefert die gesehenen ``format_options``."""
-    seen: dict[str, object] = {}
-
-    class FakeFormatOption:
-        def __init__(self, pipeline_options: FakePipelineOptions) -> None:
-            self.pipeline_options = pipeline_options
-
-    class FakeDocumentConverter:
-        def __init__(self, format_options: dict[str, object]) -> None:
-            seen["format_options"] = format_options
-
-        def convert(self, path: Path) -> object:
-            return SimpleNamespace(
-                document=SimpleNamespace(export_to_markdown=lambda image_mode: "# ok")
-            )
-
-    modules = {
-        "docling": {},
-        "docling.datamodel": {},
-        "docling.datamodel.base_models": {
-            "InputFormat": SimpleNamespace(PDF="pdf", IMAGE="image")
-        },
-        "docling.datamodel.pipeline_options": {
-            "PdfPipelineOptions": FakePipelineOptions,
-            "EasyOcrOptions": FakeEasyOcrOptions,
-        },
-        "docling.document_converter": {
-            "DocumentConverter": FakeDocumentConverter,
-            "PdfFormatOption": FakeFormatOption,
-            "ImageFormatOption": FakeFormatOption,
-        },
-        "docling_core": {},
-        "docling_core.types": {},
-        "docling_core.types.doc": {"ImageRefMode": SimpleNamespace(PLACEHOLDER="p")},
-    }
-    for name, attributes in modules.items():
-        module = ModuleType(name)
-        for key, value in attributes.items():
-            setattr(module, key, value)
-        monkeypatch.setitem(sys.modules, name, module)
-
-    return seen
+# Docling steckt vollstaendig in ``_build_pipeline``. Die folgenden Tests nehmen
+# das Fixture ``fake_docling`` aus ``conftest.py`` — es haengt Attrappen der
+# benutzten Module in ``sys.modules`` — und lesen ab, welche ``format_options``
+# daraus entstehen. Sie laufen ohne die Bibliothek und fangen damit dauerhaft,
+# was sonst erst im Container auffaellt.
 
 
 def test_images_get_the_same_pipeline_options_as_pdf(
-    monkeypatch: pytest.MonkeyPatch,
+    monkeypatch: pytest.MonkeyPatch, fake_docling: SimpleNamespace
 ) -> None:
     """Ohne einen eigenen Eintrag fuer Bilder legt Docling seine Vorgabe an.
 
@@ -428,11 +369,10 @@ def test_images_get_the_same_pipeline_options_as_pdf(
     """
     monkeypatch.setenv("KAIMARKIT_OCR_LANGS", "de,en")
     get_settings.cache_clear()
-    seen = install_fake_docling(monkeypatch)
 
     adapter._build_pipeline(False)
 
-    format_options = seen["format_options"]
+    format_options = fake_docling.format_options
     assert set(format_options) == {"pdf", "image"}
     options = format_options["image"].pipeline_options
     assert options is format_options["pdf"].pipeline_options  # dieselben Optionen
@@ -440,12 +380,10 @@ def test_images_get_the_same_pipeline_options_as_pdf(
     assert options.ocr_options.lang == ["de", "en"]
 
 
-def test_the_ocr_switch_reaches_the_image_options(monkeypatch: pytest.MonkeyPatch) -> None:
-    seen = install_fake_docling(monkeypatch)
-
+def test_the_ocr_switch_reaches_the_image_options(fake_docling: SimpleNamespace) -> None:
     adapter._build_pipeline(True)
 
-    assert seen["format_options"]["image"].pipeline_options.do_ocr is True
+    assert fake_docling.format_options["image"].pipeline_options.do_ocr is True
 
 
 # --- Platzhalter statt Inhalt ------------------------------------------------
