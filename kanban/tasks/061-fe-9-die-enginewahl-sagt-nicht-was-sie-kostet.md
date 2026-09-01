@@ -1,14 +1,16 @@
 ---
 id: 61
 title: FE-9 · Die Enginewahl sagt nicht, was sie kostet
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-01T12:03:27.128646032+02:00
-updated: 2026-09-01T12:03:27.128646032+02:00
+updated: 2026-09-01T12:05:05.981598039+02:00
 assignee: benny
 tags:
     - frontend
     - ux
+claimed_by: benny-10
+claimed_at: 2026-09-01T12:05:05.981598039+02:00
 class: standard
 ---
 

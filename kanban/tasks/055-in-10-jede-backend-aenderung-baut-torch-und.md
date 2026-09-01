@@ -4,13 +4,14 @@ title: IN-10 · Jede Backend-Aenderung baut Torch und Docling neu
 status: backlog
 priority: medium
 created: 2026-09-01T09:57:11.385309146+02:00
-updated: 2026-09-01T10:14:25.760901274+02:00
+updated: 2026-09-01T12:06:06.191044778+02:00
 assignee: akar
 tags:
     - infra
     - performance
 depends_on:
     - 45
+    - 59
 class: standard
 ---
 
@@ -83,3 +84,12 @@ Die Zahl, gemessen statt geschaetzt (von akar): Von `make down` um 09:44:25 bis 
 Zum Vergleich die Erwartung, unter der zuvor geplant wurde: fuenf Minuten, gerechnet aus einem warmen Cache. Der Unterschied zwischen fuenf und neunundzwanzig ist der Betrag, um den dieses Ticket jeden Durchgang verkuerzt.
 
 Das ist zugleich der Ausgangswert fuer die Pruefung: Nach der Aenderung muss eine reine Quelltextaenderung deutlich darunter liegen, und die gemessene Zeit gehoert in die Ticketnotiz.
+
+[[2026-09-01]] Tue 12:06
+Die Ursache reicht weiter als der Titel sagt (Nebenbefund von akar aus dem Lauf zu #45, 01.09.2026): Der Bau **aus dem Worktree** hat `pip install` (300 s) und den Modell-Download (379 s) komplett neu gefahren, **obwohl unter `backend/` nichts geaendert war**. Geaendert war allein die Docs-Stufe im Dockerfile.
+
+Damit ist die Praemisse dieses Tickets zu eng gefasst. "Jede Backend-Aenderung baut Torch neu" stimmt, ist aber nicht der ganze Fall — der Cache faellt auch ohne Backend-Aenderung.
+
+Eine naheliegende Erklaerung scheidet aus, geprueft statt vermutet: `COPY . .` steht in Zeile 86 und gehoert zur **Docs-Stufe**, die mit einem eigenen `FROM` bei Zeile 76 beginnt. Die Builder-Stufe (Zeilen 29-47) kopiert nur `backend/`. Das Rauschen aus `.git`, das bei jedem Commit anfaellt, kann die Installationsschicht also nicht ungueltig machen.
+
+**Was die Schichten wirklich verwirft, ist damit offen.** Wer dieses Ticket umsetzt, faengt bei dieser Frage an und nicht bei der Umstellung: zweimal hintereinander bauen, ohne etwas zu aendern, und sehen, ob `CACHED` erscheint. Erst wenn feststeht, was den Cache verwirft, ist zu entscheiden, ob die Trennung von Abhaengigkeiten und Quelltext ueberhaupt hilft.
