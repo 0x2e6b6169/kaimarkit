@@ -327,3 +327,51 @@ def test_the_ocr_switch_reaches_the_image_options(monkeypatch: pytest.MonkeyPatc
     adapter._build_pipeline(True)
 
     assert seen["format_options"]["image"].pipeline_options.do_ocr is True
+
+
+# --- Platzhalter statt Inhalt ------------------------------------------------
+#
+# Ordnet Doclings Modell etwas als Bild ein, steht im Markdown nur ein Platzhalter.
+# Der Adapter zaehlt diese Stellen und legt eine Warnung dazu; ohne Platzhalter
+# bleibt ``warnings`` leer, sonst warnt er immer und die Warnung sagt nichts mehr.
+
+
+def test_placeholders_become_a_warning_with_their_count(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    markdown = "## Breittabelle\n\n<!-- image -->\n\n<!-- image -->\n\n<!-- image -->\n"
+    install(monkeypatch, FakePipeline(markdown=markdown))
+    converter = adapter.DoclingConverter()
+
+    result = converter.convert(tmp_path / "bericht.pdf", ConvertOptions())
+
+    assert len(result.warnings) == 1
+    warning = result.warnings[0]
+    assert "3" in warning
+    assert "Platzhalter" in warning
+    assert "bericht.pdf" in warning
+
+
+def test_a_single_placeholder_is_counted_as_one(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    install(monkeypatch, FakePipeline(markdown="## Titel\n\n<!-- image -->\n"))
+    converter = adapter.DoclingConverter()
+
+    result = converter.convert(tmp_path / "bericht.pdf", ConvertOptions())
+
+    assert len(result.warnings) == 1
+    assert "ein Bild" in result.warnings[0]
+    assert "Platzhalter" in result.warnings[0]
+
+
+def test_markdown_without_placeholders_stays_without_warnings(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Die Gegenprobe: Eine Warnung, die immer kommt, sagt nichts mehr."""
+    install(monkeypatch, FakePipeline(markdown="| a | b |\n| - | - |\n"))
+    converter = adapter.DoclingConverter()
+
+    result = converter.convert(tmp_path / "bericht.pdf", ConvertOptions())
+
+    assert result.warnings == []
