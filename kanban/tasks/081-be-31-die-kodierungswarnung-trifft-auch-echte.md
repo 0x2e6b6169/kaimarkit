@@ -1,16 +1,16 @@
 ---
 id: 81
 title: BE-31 · Die Kodierungswarnung trifft auch echte Ersetzungszeichen
-status: in-progress
+status: done
 priority: medium
 created: 2026-09-01T16:24:41.480901999+02:00
-updated: 2026-09-01T16:26:01.984785619+02:00
+updated: 2026-09-01T16:30:54.674688216+02:00
+started: 2026-09-01T16:30:53.818861932+02:00
+completed: 2026-09-01T16:30:53.818861932+02:00
 assignee: sophie
 tags:
     - backend
     - bug
-claimed_by: sophie-31
-claimed_at: 2026-09-01T16:26:01.984785619+02:00
 class: standard
 ---
 
@@ -74,3 +74,42 @@ Der Satz gehört berichtigt; er beschreibt dieselbe Sache wie die Warnung.
 - Gegenprobe: Ohne die Änderung schlägt der erste Test fehl.
 - `docs/formate.md` sagt über `.md` nicht mehr „unverändert".
 - `pytest -q -rs` grün, Sammelzahl in der Notiz.
+
+
+## Ergebnis (sophie-31, 01.09.2026)
+
+Behoben. `_encoding_warnings()` zählt jetzt nur die eingefügten Ersetzungszeichen:
+`markdown.count(U+FFFD) - raw.count(b"\xef\xbf\xbd")`. Gewarnt wird ab eins.
+
+**Die Annahme hält — belegt, nicht überlegt.** `b"...\xef\xbf\xbd...".decode("utf-8")`
+gelingt strikt und liefert genau ein U+FFFD: Die Folge ist selbst gültiges UTF-8 und
+übersteht das Dekodieren unverändert. Die Subtraktion geht damit auf.
+
+**Befund nebenbei, und er betrifft die Zahl.** `errors="replace"` zählt Ersetzungen,
+nicht verlorene Bytes. Python folgt der maximal-subpart-Regel: `b"\xe4\xb8"` — eine
+abgeschnittene Dreibytefolge — wird zu *einem* U+FFFD, `b"\xe4\xf6\xfc"` zu drei. Für
+"warnen ab eins" ist das gleichgültig, für die gemeldete Zahl nicht: Bei fremder
+Kodierung kann sie unter der Zahl der zerstörten Stellen liegen, sobald auf ein hohes
+Byte zufällig ein gültiges Folgebyte trifft. Der Warntext sagt "Zeichen ersetzt", nicht
+"Bytes" — so stimmt er.
+
+**Seiteneffekt, bewusst.** `_Passthrough.convert()` liest jetzt `read_bytes()` statt
+`read_text()`, weil die Warnung die Bytes braucht. Damit bleiben CRLF-Zeilenenden
+stehen, die `read_text()` bisher zu LF normalisiert hat. Für eine Engine, die
+Durchreichen verspricht, ist das die richtige Richtung; wer es anders will, braucht
+ein Ticket.
+
+**Gegenprobe rot vor grün**, ausgeführt vor der Änderung — 2 failed:
+
+```
+assert ['In notiz.md wurde ein Zeichen ersetzt, das kein gültiges UTF-8 war. …'] == []
+assert '6' in 'In notiz.md wurden 7 Zeichen ersetzt, die kein gültiges UTF-8 waren. …'
+```
+
+**Zweiter Teil:** `docs/formate.md`, Abschnitt "Die Matrix", sagt über `.md` nicht mehr
+"unverändert", sondern "wie sie ist — solange sie UTF-8 ist", nennt Ersetzung und
+Warnung und hält fest, dass ein echtes U+FFFD nichts meldet.
+
+Sammelzahl vorher 146 gesammelt / 140 ausgewählt, nachher 148 / 142 — 142 bestanden,
+0 übersprungen (`-rs`), 6 deselected (slow). `ruff check .` sauber.
+Branch `task/81-echte-ersetzungszeichen`, Commit `2bee5e9`, `--no-ff` nach main.

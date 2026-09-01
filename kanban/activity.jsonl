@@ -585,3 +585,11 @@
 {"timestamp":"2026-09-01T16:25:32.479080522+02:00","action":"release","task_id":80,"detail":"sophie-29"}
 {"timestamp":"2026-09-01T16:26:01.990615009+02:00","action":"move","task_id":81,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-01T16:26:56.085641465+02:00","action":"edit","task_id":80,"detail":"BE-30 · Gibt ein abgebrochener Aufruf seinen Semaphor-Platz frei?"}
+{"timestamp":"2026-09-01T16:29:56.647555556+02:00","action":"edit","task_id":79,"detail":"FE-14 · Eine laufende Umwandlung laesst sich nicht abbrechen"}
+{"timestamp":"2026-09-01T16:29:56.647860147+02:00","action":"release","task_id":79,"detail":"benny-15"}
+{"timestamp":"2026-09-01T16:30:47.148685798+02:00","action":"edit","task_id":81,"detail":"BE-31 · Die Kodierungswarnung trifft auch echte Ersetzungszeichen"}
+{"timestamp":"2026-09-01T16:30:53.819326328+02:00","action":"move","task_id":81,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T16:30:54.675431141+02:00","action":"edit","task_id":81,"detail":"BE-31 · Die Kodierungswarnung trifft auch echte Ersetzungszeichen"}
+{"timestamp":"2026-09-01T16:30:54.675901136+02:00","action":"release","task_id":81,"detail":"sophie-31"}
+{"timestamp":"2026-09-01T16:31:20.239283576+02:00","action":"create","task_id":82,"detail":"FE-15 · Die Abschlussansage zaehlt abgebrochene Dateien nicht mit"}
+{"timestamp":"2026-09-01T16:31:20.788343347+02:00","action":"create","task_id":83,"detail":"IN-14 · Jeder Frontend-Worktree installiert node_modules neu"}

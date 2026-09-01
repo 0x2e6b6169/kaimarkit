@@ -1,16 +1,14 @@
 ---
 id: 79
 title: FE-14 · Eine laufende Umwandlung laesst sich nicht abbrechen
-status: in-progress
+status: done
 priority: high
 created: 2026-09-01T16:01:34.173915519+02:00
-updated: 2026-09-01T16:21:55.865074894+02:00
+updated: 2026-09-01T16:29:56.640555758+02:00
 assignee: benny
 tags:
     - frontend
     - ux
-claimed_by: benny-15
-claimed_at: 2026-09-01T16:21:55.865074894+02:00
 class: standard
 ---
 
@@ -61,3 +59,38 @@ melden, nicht nebenbei einbauen.
 - Ein Test belegt, dass `AbortController.abort()` tatsächlich gerufen wird.
 - `npm run test` und `npm run typecheck` bleiben grün; Testdateien und Tests je mit
   Sammelzahl gemeldet.
+
+## Ergebnis (benny-15)
+
+Ein AbortController je laufender Zeile: `useConversion` haelt sie in einer Map,
+`convertFile` reicht das Signal an `fetch` weiter. Der Knopf an der laufenden Zeile
+heisst **Nicht mehr warten** (`data-test="abort-row"`); `Entfernen` bricht eine
+laufende Zeile jetzt ebenfalls ab, statt die Anfrage weiterlaufen zu lassen.
+
+Der neue Zustand `aborted` steht in `QueueStatus` in `useConversion.ts` — ein reiner
+Client-Zustand, `types.ts` und der Vertrag bleiben unberuehrt. `App.vue` zaehlt nur
+`failed`, ein Abbruch gilt also nicht als Fehler; der Ticker aus FE-12 haengt am
+Status und stoppt mit ihm.
+
+Mitgezogen, weil es sonst nicht typpruefbar oder unwahr geworden waere — kein offenes
+Ticket besitzt diese Dateien: `api.ts` (optionales `signal` an `convertFile`, ein
+Abbruch wird nicht mehr als „Dienst nicht erreichbar" verkleidet), `download.ts`
+(`DownloadEntry.status` um `aborted` erweitert, sonst passt `QueueEntry` nicht mehr
+darauf), `App.vue` (eine Zeile: `abort` aus `useConversion` an `FileQueue`).
+
+Die schwache Beschriftung ist gemessen, nicht zaghaft: BE-30 hat gezeigt, dass
+uvicorn die ASGI-Aufgabe beim Verbindungsabbruch nicht abbricht — der Handler laeuft
+bis zur Zeitgrenze, der Platz blieb acht Sekunden laenger belegt als der Aufruf.
+„Umwandlung stoppen" oder ein blankes „Abbrechen" waere damit nachweislich falsch.
+Der Grund steht als Kommentar in `FileRow.vue` und `useConversion.ts`, damit der
+Naechste den Text nicht „schoener" macht. Die abgebrochene Zeile sagt es auch dem
+Nutzer: „Der Dienst wandelt sie im Hintergrund zu Ende — abgebrochen ist das Warten,
+nicht die Umwandlung." `docs/schnellstart.md` (Abschnitt „Ueber die Oberflaeche")
+beschreibt dasselbe.
+
+Prueflauf: `Test Files 9 passed (9)`, `Tests 100 passed (100)`, `npm run typecheck`
+Exit 0.
+
+Zwei Befunde am Rande: `frontend/node_modules` fehlte im Checkout, `npm ci" war
+noetig — und die Abschlussansage in `App.vue` („Alle Dateien sind fertig: N
+gelungen") erwaehnt abgebrochene Dateien nicht.
