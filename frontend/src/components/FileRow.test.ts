@@ -38,7 +38,7 @@ describe('FileRow', () => {
   it('nennt jeden Zustand als Wort, nicht nur als Farbe', () => {
     const cases: [QueueEntry['status'], string][] = [
       ['queued', 'wartet'],
-      ['running', 'laeuft'],
+      ['running', 'läuft'],
       ['ok', 'fertig'],
       ['failed', 'fehlgeschlagen'],
     ]

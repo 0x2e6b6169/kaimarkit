@@ -49,8 +49,8 @@ const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
  */
 const NOTES: Record<string, string> = {
   docling:
-    'docling liest gruendlich und braucht dafuer oft Minuten je Dokument. ' +
-    'Bei gescannten Seiten ohne Textebene fuehrt kein Weg daran vorbei.',
+    'docling liest gründlich und braucht dafür oft Minuten je Dokument. ' +
+    'Bei gescannten Seiten ohne Textebene führt kein Weg daran vorbei.',
   markitdown:
     'markitdown ist nach Sekundenbruchteilen fertig, verliert dabei aber ' +
     'gelegentlich eine Tabelle oder das Layout.',
@@ -67,7 +67,7 @@ const notes = computed(() =>
 
 /** Der Zusatz hinter dem Namen. Nur `warming` bekommt einen. */
 function hint(engine: string): string {
-  return props.states[engine] === 'warming' ? ' (laedt noch)' : ''
+  return props.states[engine] === 'warming' ? ' (lädt noch)' : ''
 }
 
 function onChange(event: Event): void {

@@ -149,7 +149,7 @@ export function saveBlob(blob: Blob, filename: string): void {
 /** Ein einzelnes Ergebnis als `.md`. */
 export function downloadMarkdown(entry: DownloadEntry, save: SaveFn = saveBlob): void {
   if (!hasResult(entry)) {
-    throw new Error(`Fuer ${sanitizeFilename(entry.filename)} gibt es kein Ergebnis.`)
+    throw new Error(`Für ${sanitizeFilename(entry.filename)} gibt es kein Ergebnis.`)
   }
   const blob = new Blob([entry.markdown ?? ''], { type: 'text/markdown;charset=utf-8' })
   save(blob, markdownFilename(entry.filename))

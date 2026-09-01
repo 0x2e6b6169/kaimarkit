@@ -90,7 +90,7 @@ watch(
       <p v-for="item in announcements" :key="item.id">{{ item.text }}</p>
     </div>
 
-    <p v-if="!entries.length" class="text-slate-600">Noch keine Dateien ausgewaehlt.</p>
+    <p v-if="!entries.length" class="text-slate-600">Noch keine Dateien ausgewählt.</p>
 
     <ul v-else aria-label="Warteschlange" class="space-y-2">
       <FileRow

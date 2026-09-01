@@ -88,7 +88,7 @@ function onOcrChange(event: Event): void {
     <h2 id="options-heading" class="text-lg font-medium">Optionen</h2>
 
     <p v-if="error" class="text-sm text-red-700" data-test="options-error">{{ error }}</p>
-    <p v-else-if="loading" class="text-sm text-slate-500">Faehigkeiten werden geladen …</p>
+    <p v-else-if="loading" class="text-sm text-slate-500">Fähigkeiten werden geladen …</p>
 
     <div class="flex flex-wrap items-start gap-x-6 gap-y-3">
       <div class="flex items-baseline gap-2">
@@ -120,7 +120,7 @@ function onOcrChange(event: Event): void {
     </div>
 
     <p class="text-xs text-slate-500">
-      Die Optionen gelten fuer den naechsten Lauf. Bereits konvertierte Dateien bleiben,
+      Die Optionen gelten für den nächsten Lauf. Bereits konvertierte Dateien bleiben,
       wie sie sind.
     </p>
   </section>
