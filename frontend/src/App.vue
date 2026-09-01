@@ -42,6 +42,7 @@ const formats = computed(() => extensions.value.join(' · '))
 
 const succeeded = computed(() => entries.value.filter((entry) => entry.status === 'ok').length)
 const failed = computed(() => entries.value.filter((entry) => entry.status === 'failed').length)
+const aborted = computed(() => entries.value.filter((entry) => entry.status === 'aborted').length)
 
 /**
  * Die Ansage am Ende eines Laufs. `FileQueue` meldet jede einzelne Zeile; was
@@ -61,7 +62,14 @@ watch(busy, (running, before) => {
   if (running || !before || !entries.value.length) return
   const parts = [`${succeeded.value} gelungen`]
   if (failed.value) parts.push(`${failed.value} fehlgeschlagen`)
-  announce(`Alle Dateien sind fertig: ${parts.join(', ')}.`)
+  if (aborted.value) parts.push(`${aborted.value} abgebrochen`)
+  // Wer abgebrochen hat, hoert nicht „alle sind fertig": Der Dienst wandelt eine
+  // abgebrochene Datei im Hintergrund zu Ende, fertig ist nur das Warten. Und
+  // „abgebrochen" steht neben „fehlgeschlagen", nicht darin — ein Abbruch ist
+  // die Entscheidung des Nutzers und kein Fehler. Ohne Abbruch bleibt der Satz,
+  // wie er war.
+  const lead = aborted.value ? 'Der Lauf ist zu Ende' : 'Alle Dateien sind fertig'
+  announce(`${lead}: ${parts.join(', ')}.`)
 })
 
 /**

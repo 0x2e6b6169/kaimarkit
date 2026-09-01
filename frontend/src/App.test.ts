@@ -153,6 +153,55 @@ describe('App', () => {
     )
   })
 
+  it('zaehlt abgebrochene Dateien mit, ohne sie zu den Fehlern zu schlagen', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    // Wer abgebrochen wird, antwortet nie von allein — wie `fetch` endet der
+    // Aufruf erst mit dem Abbruch, und zwar als `AbortError`.
+    api.convertFile.mockImplementation(
+      (file: File, _options: unknown, signal: AbortSignal) =>
+        new Promise<ConversionEntry>((resolve, reject) => {
+          if (!file.name.startsWith('warte')) {
+            resolve(result(file.name, '# Titel'))
+            return
+          }
+          signal.addEventListener('abort', () =>
+            reject(new DOMException('Abgebrochen', 'AbortError')),
+          )
+        }),
+    )
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    // Die beiden abzubrechenden stehen vorn, damit sie auch wirklich laufen:
+    // Eine wartende Zeile hat keinen Signalgeber, den ein Abbruch erreichen
+    // koennte.
+    const names = ['warte-1.pdf', 'warte-2.pdf', 'a.pdf', 'b.pdf', 'c.pdf']
+    wrapper
+      .findComponent(FileDropZone)
+      .vm.$emit(
+        'files',
+        names.map((name) => new File(['x'], name)),
+      )
+    await nextTick()
+    await flushPromises()
+
+    const queue = useConversion()
+    for (const entry of queue.entries.value.filter((item) => item.filename.startsWith('warte'))) {
+      queue.abort(entry.id)
+    }
+    await flushPromises()
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    const log = wrapper.find('[data-test="app-log"]').text()
+    expect(log).toContain('Der Lauf ist zu Ende: 3 gelungen, 2 abgebrochen.')
+    // Die abgebrochenen tauchen nirgends als Fehlschlag auf.
+    expect(log).not.toContain('fehlgeschlagen')
+  })
+
   it('gibt das Archiv erst frei, wenn ein Ergebnis vorliegt, und sagt es an', async () => {
     api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
     downloads.downloadArchive.mockResolvedValue(undefined)
