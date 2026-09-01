@@ -4,7 +4,7 @@ title: INT-3 · Erstbenutzerlauf aus einem frischen Klon vor dem ersten Tag
 status: backlog
 priority: high
 created: 2026-09-01T18:29:48.381602755+02:00
-updated: 2026-09-01T18:29:48.381602755+02:00
+updated: 2026-09-01T18:37:01.336460167+02:00
 assignee: akar
 tags:
     - infra
@@ -58,3 +58,17 @@ In einem frischen Klon von `main`, außerhalb des Arbeitsbaums, ohne `docker/.en
 ## Randbedingung
 
 **Das VPN sollte für die Dauer aus sein, wenn möglich.** Ein Erstbau ohne Cache holt Torch, Docling und die Modelle vollständig. Gemessen: rund 0,5 MB/s aus einem Container unter VPN gegen 1,9 MB/s ohne. Das ist der Unterschied zwischen einer knappen halben Stunde und deutlich über einer. Ist es nicht möglich, ist der Lauf nicht falsch, nur lang — und die Bauzeit dann kein Vergleichswert.
+
+[[2026-09-01]] Tue 18:37
+**Versionsnummer entschieden (01.09.2026): `v0.1.0`.**
+
+Der Nutzer hat sie gewählt, weil der Code sie schon sagt: `backend/app/__init__.py` führt `__version__ = "0.1.0"` als Literal, und `/api/health` meldet sie seit dem ersten Tag. Ein Tag `v0.0.1` hätte dem widersprochen — wer den Dienst fragt, bekäme eine andere Zahl als der Tag nennt.
+
+**Damit ist im Quelltext nichts zu ändern.** Der Tag folgt der Zahl, nicht umgekehrt.
+
+Zwei Punkte, die zum ersten Tag gehören und noch offen sind:
+
+- Es gibt keinen `CHANGELOG.md`.
+- 149 Commits sind nie gepusht worden; dieser Tag wäre die erste Auslieferung überhaupt.
+
+Beides ist Sache des Nutzers und kein Ticket — er hat dafür eigene Werkzeuge.
