@@ -1,10 +1,12 @@
 ---
 id: 68
 title: FE-12 · Die Warteschlange sagt nicht, wie lange etwas schon laeuft
-status: todo
+status: done
 priority: medium
 created: 2026-09-01T12:26:28.862983617+02:00
-updated: 2026-09-01T12:26:28.862983617+02:00
+updated: 2026-09-01T12:34:58.250037783+02:00
+started: 2026-09-01T12:34:58.299989826+02:00
+completed: 2026-09-01T12:34:58.299989826+02:00
 assignee: benny
 tags:
     - frontend
@@ -60,3 +62,21 @@ Stellen mit derselben Aussage sind eine zu viel.
 - Kein Prozentwert und kein Balken, der einen Fortschritt behauptet.
 - `npm run test` und `npm run typecheck` bleiben grün; ohne die Änderung fällt der
   neue Test durch.
+
+[[2026-09-01]] Tue 12:34
+## Ergebnis (benny-13)
+
+Die laufende Zeile zeigt „läuft · 0:47" und zählt im Sekundentakt weiter. Den
+Startzeitpunkt hält `FileRow.vue` selbst; er wird gesetzt, sobald der Status auf
+`running` wechselt. `useConversion.ts` und `types.ts` blieben unberührt — außerhalb
+der eigenen Dateiliste war nichts nötig. Der Intervall endet beim Wechsel nach `ok`
+oder `failed` und beim Unmount. Kein Prozentwert, kein Balken.
+
+Auf einen Hinweis zur Größenordnung verzichtet: `EngineSelect.vue` (FE-9) nennt die
+Minuten bei Docling bereits. Keine Zusicherung außerhalb der eigenen Dateien betroffen —
+`FileQueue.test.ts` prüft `/läuft/g` und zählt weiterhin richtig.
+
+Vier neue Tests in `FileRow.test.ts` mit `vi.useFakeTimers`; 90 Tests grün, `typecheck`
+grün. Gegenprobe ohne die Änderung: drei der vier fallen durch.
+
+Merge: `task/68-laufzeit`, `--no-ff`.
