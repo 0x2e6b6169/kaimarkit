@@ -4,7 +4,7 @@ title: BE-17 · Heisst ready wirklich ready?
 status: done
 priority: high
 created: 2026-09-01T10:24:25.93867698+02:00
-updated: 2026-09-01T14:09:29.755150539+02:00
+updated: 2026-09-01T17:28:34.458586678+02:00
 started: 2026-09-01T12:40:23.978293179+02:00
 completed: 2026-09-01T12:53:49.630901447+02:00
 assignee: sophie
@@ -161,3 +161,86 @@ Ich hatte zugesagt, Zeit bis `healthy` und Speicherzuwachs beim nächsten Contai
 Beide Zahlen brauchen einen kontrollierten Neustart: Container hoch, Zeit bis `healthy` nehmen, Speicher im Ruhezustand ablesen — einmal mit und einmal ohne das Vorladen der zweiten Pipeline. Das ersetzt den laufenden Dienst und geht deshalb erst, wenn der Nutzer durch ist.
 
 Bis dahin ruht die Entscheidung aus diesem Ticket auf einer Schätzung (2 × 8,5 s bei 180 s Startfenster) und nicht auf einer Messung. Das ist vertretbar, aber es ist nicht dasselbe, und es soll hier stehen statt vergessen zu werden.
+
+## Messwerte vom Neustart aus IN-13 (#77), gemessen von akar-27 am 01.09.2026
+
+Abbildstand: `kaimarkit:local`, gebaut aus dem Haupt-Checkout auf **6b4c3b4**
+(`merge: IN-13 Docs-Stufe kopiert nur, was sie braucht`). Ein Abbild, ein
+Container, zwei frische Starts unmittelbar hintereinander. `docker/.env`
+unveraendert, also `KAIMARKIT_WORKERS=1` und `KAIMARKIT_MEM_LIMIT=6GB`.
+
+**Gemessen, nicht gefolgert.** Die Entscheidung liegt bei sophies Lane.
+
+### 1. Zeit bis `healthy`
+
+| Marke | Zeit nach Containerstart |
+|---|---|
+| `/api/health` antwortet zum ersten Mal | **2,8 s** |
+| erster Healthcheck laeuft an / besteht | +5,2 s / +5,8 s |
+| `docker inspect` meldet `healthy` | **6,3 s** |
+
+Beide Starts lagen auf die Zehntelsekunde gleich (2,83 s / 6,25 s und
+2,78 s / 6,33 s). Gegen `KAIMARKIT_HEALTH_START_PERIOD=180 s` ist das der
+Faktor 29 — nicht knapp.
+
+Die 6,3 s sind durch das Healthcheck-Intervall von 30 s nach oben begrenzt
+abgelesen; die genaue Zahl steht im Protokoll (`Start=+5,2 s`, `ExitCode=0` bei
+`End=+5,8 s`).
+
+### 2. Speicher im Ruhezustand
+
+**294 MiB von 6 GiB, also 4,8 %** — abgelesen, nachdem die CPU unter 5 % gefallen
+war, vor jeder Umwandlung.
+
+Dabei ein Befund, der die Zahl selbst betrifft: Im ersten Lauf hatte ich sie bei
+t+6 s genommen und 197 MiB erhalten — mitten im Vorladen, die CPU stand da noch
+bei 96 %. Der Warmlauf ist erst bei **t+11 s** fertig; erst danach steht der
+Speicher bei 294 MiB. Wer diese Messung wiederholt, muss auf die CPU warten,
+sonst misst er einen halb gefuellten Prozess.
+
+### 3. Speicher waehrend einer Umwandlung
+
+`POST /api/convert` mit `backend/tests/fixtures/tabelle.pdf` und `engine=docling`,
+am selben Container unmittelbar danach:
+
+| | Lauf 1 | Lauf 2 |
+|---|---|---|
+| Hoechststand | 1012 MiB (16,5 %) | 972 MiB (15,8 %) |
+| unmittelbar danach | 1007 MiB | 972 MiB |
+| Dauer der Umwandlung | 28,2 s | 12,0 s |
+
+**Rund 1 GiB von 6 GiB.** Auch das ist nicht knapp.
+
+Zwei Beobachtungen dazu, ohne Folgerung:
+
+- Der Speicher faellt nach der Umwandlung nicht zurueck. Er bleibt bei knapp
+  1 GiB stehen. Fuer die Grenze von 6 GiB bei einem Worker bleibt trotzdem reichlich
+  Luft; bei mehreren Workern waere es die Zahl, mit der man rechnet.
+- Die **erste** Umwandlung dauerte mit 28,2 s mehr als doppelt so lange wie die
+  zweite mit 12,0 s, obwohl beide nach abgeschlossenem Warmlauf liefen. Das
+  Vorladen deckt also nicht alles ab, was beim ersten Durchlauf einmalig anfaellt.
+
+### Ein Befund fuer BE-17 selbst
+
+`/api/health` antwortet nach 2,8 s, der Container gilt nach 6,3 s als `healthy` —
+das Vorladen ist zu diesem Zeitpunkt noch nicht durch, es endet erst bei t+11 s.
+Die `start_period` von 180 s ist damit begruendet, dass Docling seine Modelle
+beim Start laedt; die Gesundheitsauskunft wartet darauf aber nicht. Ein Container
+gilt als gesund, bevor er seine erste Umwandlung schnell beantworten kann. Ob das
+so gewollt ist, entscheidet diese Lane.
+
+**Ausdruecklich nicht gemessen:** kein Vergleich mit und ohne Vorladen, kein
+zweites Abbild — so war es aufgetragen.
+
+[[2026-09-01]] Tue 17:28
+**Die drei Messwerte sind da (aus #77, Abbildstand `6b4c3b4`), und meine Entscheidung ruht damit auf Messungen statt auf einer Schätzung:**
+
+    6,3 s bis `healthy`      gegen 180 s `start_period`
+    294 MiB im Ruhezustand   von 6 GiB Limit
+    rund 1 GiB unter Last    am selben Container, unmittelbar danach
+
+Nichts fällt knapp aus, in keiner Richtung. Das Vorladen beider Pipelines bleibt.
+
+**Zum Nebenbefund, dass `healthy` nach 6,3 s kommt, das Vorladen aber erst bei t+11 s durch ist: kein Folgeticket.** Das Fenster ist rund fünf Sekunden lang, und wer es trifft, zahlt eine langsamere erste Umwandlung — keinen Fehlschlag. `healthy` auf das Vorladen warten zu lassen, verzögerte die Verfügbarkeit des Containers für nichts: Die API antwortet nach 2,8 s und ist dann auch benutzbar.
+
+Der zweite Nebenbefund ist der eigentliche Rest dieser Frage und liegt als #84 (BE-32): Die **erste** Umwandlung dauerte 28,2 s gegen 12,0 s bei der zweiten, obwohl beide nach dem Vorladen liefen. Da ist etwas, das dieses Ticket nicht abdeckt.
