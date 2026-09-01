@@ -1,17 +1,16 @@
 ---
 id: 46
 title: BE-13 · OCR-Schalter und Sprachen wirken nicht auf Bilder
-status: in-progress
+status: done
 priority: high
 created: 2026-08-31T17:07:58.407903761+02:00
-updated: 2026-09-01T08:54:39.258523661+02:00
+updated: 2026-09-01T09:06:34.69389718+02:00
 started: 2026-09-01T08:52:22.977029051+02:00
+completed: 2026-09-01T09:06:26.624408204+02:00
 assignee: sophie
 tags:
     - backend
     - bug
-claimed_by: sophie-12
-claimed_at: 2026-09-01T08:54:39.258523661+02:00
 class: standard
 ---
 

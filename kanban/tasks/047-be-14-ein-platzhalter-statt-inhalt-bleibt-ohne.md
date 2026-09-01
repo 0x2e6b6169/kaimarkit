@@ -1,16 +1,18 @@
 ---
 id: 47
 title: BE-14 · Ein Platzhalter statt Inhalt bleibt ohne Warnung
-status: todo
+status: in-progress
 priority: high
 created: 2026-08-31T17:08:22.240557722+02:00
-updated: 2026-09-01T08:56:11.995596336+02:00
+updated: 2026-09-01T09:08:14.488448827+02:00
 assignee: sophie
 tags:
     - backend
     - bug
 depends_on:
     - 46
+claimed_by: sophie-13
+claimed_at: 2026-09-01T09:08:14.488448827+02:00
 class: standard
 ---
 

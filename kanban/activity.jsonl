@@ -345,3 +345,9 @@
 {"timestamp":"2026-09-01T08:56:11.995252685+02:00","action":"edit","task_id":45,"detail":"IN-8 · Docs-Stufe scheitert, wenn der Bau aus einem Worktree laeuft"}
 {"timestamp":"2026-09-01T08:56:11.996520312+02:00","action":"edit","task_id":47,"detail":"BE-14 · Ein Platzhalter statt Inhalt bleibt ohne Warnung"}
 {"timestamp":"2026-09-01T08:56:13.067504391+02:00","action":"create","task_id":51,"detail":"PROC-5 · Abhaengigkeit vor der Freigabe setzen, nicht danach"}
+{"timestamp":"2026-09-01T09:06:26.624774831+02:00","action":"move","task_id":46,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T09:06:34.694390085+02:00","action":"edit","task_id":46,"detail":"BE-13 · OCR-Schalter und Sprachen wirken nicht auf Bilder"}
+{"timestamp":"2026-09-01T09:06:34.694774812+02:00","action":"release","task_id":46,"detail":"sophie-12"}
+{"timestamp":"2026-09-01T09:08:14.495579033+02:00","action":"move","task_id":47,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T09:08:32.173809065+02:00","action":"create","task_id":52,"detail":"BE-16 · Zwei fast gleiche Docling-Attrappen zusammenlegen"}
+{"timestamp":"2026-09-01T09:08:33.342941845+02:00","action":"edit","task_id":52,"detail":"BE-16 · Zwei fast gleiche Docling-Attrappen zusammenlegen"}
