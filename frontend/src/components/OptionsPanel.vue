@@ -90,8 +90,8 @@ function onOcrChange(event: Event): void {
     <p v-if="error" class="text-sm text-red-700" data-test="options-error">{{ error }}</p>
     <p v-else-if="loading" class="text-sm text-slate-500">Faehigkeiten werden geladen …</p>
 
-    <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-      <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-start gap-x-6 gap-y-3">
+      <div class="flex items-baseline gap-2">
         <label for="options-engine" class="text-sm">Engine</label>
         <EngineSelect
           id="options-engine"

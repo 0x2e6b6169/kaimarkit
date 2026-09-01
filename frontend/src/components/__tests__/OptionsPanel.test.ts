@@ -137,4 +137,14 @@ describe('OptionsPanel', () => {
     const wrapper = render(['bericht.pdf'])
     expect(offeredEngines(wrapper)).toEqual([])
   })
+
+  it('sagt schon in der Voreinstellung, was docling und markitdown kosten', () => {
+    // Der Nutzer soll die Dauer nicht erst an der Zeitgrenze erfahren: Die
+    // Saetze stehen da, bevor jemand die Auswahl anfasst.
+    const wrapper = render()
+    expect(wrapper.get('[data-test="engine-note-docling"]').text()).toMatch(/Minuten/)
+    expect(wrapper.get('[data-test="engine-note-markitdown"]').text()).toMatch(
+      /Sekundenbruchteil/,
+    )
+  })
 })
