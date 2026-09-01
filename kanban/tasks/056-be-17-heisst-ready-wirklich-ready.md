@@ -1,10 +1,11 @@
 ---
 id: 56
 title: BE-17 · Heisst ready wirklich ready?
-status: backlog
-priority: medium
+status: todo
+priority: high
 created: 2026-09-01T10:24:25.93867698+02:00
-updated: 2026-09-01T12:06:33.176894352+02:00
+updated: 2026-09-01T12:40:23.929707072+02:00
+started: 2026-09-01T12:40:23.978293179+02:00
 assignee: sophie
 tags:
     - backend
@@ -58,3 +59,20 @@ Vom Nutzer zurueckgestellt, bis die Abnahmefassung steht (01.09.2026).
 
 [[2026-09-01]] Tue 12:06
 Die Messung fuer dieses Ticket entsteht in #59 (IN-11): Dort wird dasselbe Dokument zweimal hintereinander umgewandelt. Die Differenz zwischen erstem und zweitem Lauf **ist** die Ladezeit des Konverters — also die Zahl, um die es hier geht. Wer #56 aufnimmt, sieht zuerst in der Notiz von #59 nach, statt selbst zu messen.
+
+[[2026-09-01]] Tue 12:40
+Die Messung aus #59 (IN-11) liegt vor und **kippt die Prämisse dieses Tickets** (akar, 01.09.2026).
+
+Das Laden dauert **unter zehn Sekunden**, nicht Minuten: 9,24 s und 8,30 s als Differenz zwischen erstem und zweitem Lauf, 8,50 s direkt an `_build_pipeline` gemessen. Die ursprüngliche Frage — ob `ready` nach neun Sekunden zu früh gemeldet wird — beantwortet sich damit weitgehend von selbst: Neun Sekunden sind ungefähr die Ladezeit.
+
+Der eigentliche Befund ist ein anderer und macht das Ticket erst wertvoll:
+
+**`start_warmup` baut nur eine von zwei Pipelines.** OCR an und OCR aus sind in Docling zwei verschiedene Pipelines mit verschiedenem Options-Hash. Wer die eine vorlädt und dann die andere anfordert, zahlt die Ladezeit ein zweites Mal — und `/api/capabilities` meldet währenddessen `ready`.
+
+Zweiter Befund: `backend/app/converters/docling.py:4` behauptet im Modulkopf, der Aufruf dauere „minutenlang", weil dort die Modelle geladen werden. Gemessen sind es 8,5 Sekunden. Der Satz ist unwahr und gehört in dieses Ticket, weil es dieselbe Sache betrifft.
+
+**Neuer Zuschnitt daraus**, ersetzt die Frage oben: Nicht mehr „heißt `ready` wirklich `ready`", sondern: Beide Pipelines vorladen oder `ready` erst melden, wenn die angeforderte steht — und den Modulkopf berichtigen.
+
+Nicht mehr Teil dieses Tickets: Die Zeitgrenze ist in #59 erledigt, und der Thread-Weg ist gemessen und tot — der Rechner hat zwei physische Kerne, Torchs zwei Threads sind richtig.
+
+Vom PO auf `high` gehoben: Ein `ready`, das nicht hält, ist eine falsche Auskunft an das Frontend.

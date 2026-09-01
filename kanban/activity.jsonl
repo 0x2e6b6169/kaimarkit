@@ -466,3 +466,5 @@
 {"timestamp":"2026-09-01T12:39:21.926053149+02:00","action":"create","task_id":71,"detail":"BE-24 · Zwei Antworttypen fehlen in der veroeffentlichten OpenAPI-Fassung"}
 {"timestamp":"2026-09-01T12:39:26.192971027+02:00","action":"create","task_id":72,"detail":"BE-25 · Zwei Stellen nennen weiterhin 120 Sekunden"}
 {"timestamp":"2026-09-01T12:39:31.064581894+02:00","action":"move","task_id":55,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T12:40:19.954516633+02:00","action":"edit","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}
+{"timestamp":"2026-09-01T12:40:23.981115839+02:00","action":"move","task_id":56,"detail":"backlog -\u003e todo"}
