@@ -1,11 +1,18 @@
 """Docling hinter dem Converter-Protokoll.
 
 Docling ist die einzige Engine, die vor dem ersten Aufruf laedt: Sie holt Layout-
-und Tabellenmodelle in den Speicher und braucht dafuer rund achteinhalb Sekunden.
-Deshalb baut dieses Modul seine Konverter genau einmal und im Hintergrund. Solange
-noch keiner steht, meldet der Adapter ``warming``; ``available()`` ist dann False,
-die Registry nimmt fuer ``engine=auto`` die naechste Engine, und wer Docling
+und Tabellenmodelle in den Speicher und braucht dafuer je Pipeline eine halbe
+Minute. Deshalb baut dieses Modul seine Konverter genau einmal und im Hintergrund.
+Solange noch keiner steht, meldet der Adapter ``warming``; ``available()`` ist dann
+False, die Registry nimmt fuer ``engine=auto`` die naechste Engine, und wer Docling
 ausdruecklich verlangt, wartet im ``convert()`` auf den fertigen Konverter.
+
+``DocumentConverter(...)`` allein laedt dabei nichts. Der Konstruktor legt nur die
+Optionen ab; die Modelle holt Docling erst, wenn das erste Dokument seines Formats
+ankommt. Ein Warmlauf, der nur baut, warmt deshalb nichts: Er kostet die Zeit fuer
+die Importe, meldet ``ready`` und laesst die Modelle der ersten Anfrage. Genau das
+hat die erste Umwandlung doppelt so teuer gemacht wie jede weitere. ``_build_pipeline``
+ruft deshalb ``initialize_pipeline`` und holt die Modelle dorthin, wo sie hingehoeren.
 
 OCR an und OCR aus sind in Docling zwei Pipelines mit verschiedenem Options-Hash.
 Der Warmlauf baut beide, die eingestellte Voreinstellung zuerst. Laedt er nur eine,
@@ -82,7 +89,7 @@ def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
     """Baut den ``DocumentConverter`` und gibt das Wandeln als Funktion zurueck.
 
     Alles, was Docling kennt, steht in dieser einen Funktion. Der Aufruf laedt die
-    Modelle und dauert deshalb rund achteinhalb Sekunden; das Ergebnis wird
+    Modelle und dauert deshalb rund eine halbe Minute; das Ergebnis wird
     wiederverwendet. Die Tests ersetzen diese Funktion.
     """
     from docling.datamodel.base_models import InputFormat
@@ -123,6 +130,14 @@ def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
             InputFormat.IMAGE: ImageFormatOption(pipeline_options=options),
         }
     )
+
+    # Ohne diesen Aufruf laedt Docling Layout- und Tabellenmodell erst beim ersten
+    # Dokument — im Container gemessen rund dreissig Sekunden, die dann die erste
+    # Umwandlung bezahlt statt der Warmlauf. Beide Formate teilen sich ``options``
+    # und damit dieselbe Pipeline; der zweite Aufruf findet sie im Zwischenspeicher
+    # und kostet nichts.
+    for fmt in (InputFormat.PDF, InputFormat.IMAGE):
+        converter.initialize_pipeline(fmt)
 
     def run(path: Path) -> str:
         document = converter.convert(path).document

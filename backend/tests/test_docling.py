@@ -268,19 +268,44 @@ def test_get_converter_starts_the_warmup(monkeypatch: pytest.MonkeyPatch) -> Non
 )
 @pytest.mark.skipif(not FIXTURE.exists(), reason="fixtures/tabelle.pdf fehlt")
 def test_real_docling_converts_a_table() -> None:
-    """Ein PDF mit Tabelle wird zur Markdown-Tabelle, der zweite Lauf ist schneller."""
+    """Ein PDF mit Tabelle wird zur Markdown-Tabelle."""
     converter = adapter.DoclingConverter()
 
-    first = time.perf_counter()
     markdown = converter.convert(FIXTURE, ConvertOptions(ocr=False)).markdown
+
+    assert "|" in markdown
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(
+    importlib.util.find_spec("docling") is None, reason="docling ist nicht installiert"
+)
+@pytest.mark.skipif(not FIXTURE.exists(), reason="fixtures/tabelle.pdf fehlt")
+def test_the_first_conversion_is_no_slower_than_the_second() -> None:
+    """Nach dem Warmlauf kostet die erste Umwandlung so viel wie jede weitere.
+
+    Genau das galt lange nicht: ``DocumentConverter(...)`` legt nur die Optionen ab,
+    und Docling holte Layout- und Tabellenmodell erst beim ersten Dokument. Der
+    Warmlauf meldete ``ready``, und die erste Anfrage zahlte die halbe Minute — im
+    Container gemessen 28,2 s gegen 12,0 s.
+
+    Der Test warmt ausdruecklich vor und misst danach zweimal dasselbe PDF. Die
+    Grenze liegt bei der Haelfte des beobachteten Abstands: Ein Faktor von 1,5 laesst
+    dem Rauschen Platz und faellt trotzdem, sobald wieder ein Modell erst beim ersten
+    Dokument laedt.
+    """
+    converter = adapter.DoclingConverter()
+    converter._pipeline(False)  # der Warmlauf, hier ohne Umweg ueber den Thread
+
+    first = time.perf_counter()
+    converter.convert(FIXTURE, ConvertOptions(ocr=False))
     first = time.perf_counter() - first
 
     second = time.perf_counter()
     converter.convert(FIXTURE, ConvertOptions(ocr=False))
     second = time.perf_counter() - second
 
-    assert "|" in markdown
-    assert second < first
+    assert first < 1.5 * second, f"erste {first:.1f}s, zweite {second:.1f}s"
 
 
 @pytest.mark.slow
@@ -378,6 +403,21 @@ def test_images_get_the_same_pipeline_options_as_pdf(
     assert options is format_options["pdf"].pipeline_options  # dieselben Optionen
     assert options.do_ocr is False
     assert options.ocr_options.lang == ["de", "en"]
+
+
+def test_the_warmup_loads_the_models_instead_of_the_first_request(
+    fake_docling: SimpleNamespace,
+) -> None:
+    """Der Warmlauf holt die Modelle — sonst zahlt sie die erste Umwandlung.
+
+    Der Konstruktor von ``DocumentConverter`` laedt nichts. Ohne den ausdruecklichen
+    Aufruf laedt Docling Layout- und Tabellenmodell erst beim ersten Dokument, und
+    der Adapter meldet waehrenddessen ``ready``. Beide Formate stehen hier, weil
+    beide einen Zugang zu derselben Pipeline sind.
+    """
+    adapter._build_pipeline(False)
+
+    assert fake_docling.initialized == ["pdf", "image"]
 
 
 def test_the_ocr_switch_reaches_the_image_options(fake_docling: SimpleNamespace) -> None:
