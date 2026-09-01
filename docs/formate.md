@@ -63,6 +63,13 @@ wiederverwendet — der erste Aufruf mit umgeschaltetem OCR ist deshalb langsame
 die folgenden. Die Sprachen kommen aus `KAIMARKIT_OCR_LANGS`; ihre Kürzel müssen zu
 der Texterkennung passen, die Docling benutzt.
 
+Bilder übernimmt Docling nicht, es setzt den Platzhalter `<!-- image -->` an ihre
+Stelle — auch dort, wo gar kein Bild stand, sondern eine breite Tabelle, die das
+Modell als Bild eingeordnet hat. Die Antwort sagt das in `warnings` und nennt die
+Zahl: „Docling hat in breit.pdf 14 Bilder durch Platzhalter ersetzt. Ihr Inhalt
+fehlt im Markdown." Bei einem einzigen Platzhalter steht dort „ein Bild durch
+einen Platzhalter".
+
 Wo die vorgebackenen Modelle liegen, sagt `DOCLING_ARTIFACTS_PATH`. Die Variable
 gehört Docling, nicht kaimarkit; das Container-Abbild setzt sie, damit zur Laufzeit
 nichts aus dem Netz nachgeladen wird.
