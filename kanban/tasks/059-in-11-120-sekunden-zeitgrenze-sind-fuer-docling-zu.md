@@ -2,9 +2,9 @@
 id: 59
 title: IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp
 status: backlog
-priority: medium
+priority: high
 created: 2026-09-01T10:40:33.636401513+02:00
-updated: 2026-09-01T10:40:37.891520045+02:00
+updated: 2026-09-01T11:07:41.776548575+02:00
 assignee: akar
 tags:
     - infra
@@ -66,3 +66,16 @@ Der Abbruch sieht fuer den Nutzer aus wie ein Fehler des Dienstes.
 ## Zurueckgestellt
 
 Vom Nutzer zurueckgestellt, bis die Abnahme abgeschlossen ist (01.09.2026).
+
+[[2026-09-01]] Tue 11:07
+Eingetreten, am selben Tag: **`TeleTrusT-T.I.S.P._T.P.S.S.E._CM_2026_Anmeldung.pdf` ist an der Grenze gescheitert.**
+
+    Die Umwandlung hat die Zeitgrenze von 120 s ueberschritten
+
+Damit steht das Ticket nicht mehr auf einer Vorhersage, sondern auf einem Vorfall. Von drei Dokumenten, die der Nutzer bei der Abnahme durchgeschickt hat, lag eines bei 86 Prozent der Grenze und eines darueber. Das ist keine Randlage, das ist der Alltag.
+
+Der Dienst selbst hat sich richtig verhalten: Er bricht sauber ab, die Meldung nennt die Grenze und den Grund, und die Oberflaeche zeigt sie an der Datei an. Der Fehler liegt allein im Wert.
+
+Was die Messung noch nicht hergibt: **Wie lange das Dokument gebraucht haette, ist unbekannt** — der Abbruch hat es abgeschnitten. Ohne diese Zahl laesst sich keine begruendete Voreinstellung waehlen, nur eine geratene. Wer das Ticket umsetzt, faehrt es zuerst mit einer weit gesetzten Grenze durch und misst.
+
+Vom PO auf `high` gehoben.
