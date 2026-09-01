@@ -54,12 +54,14 @@ def fake_docling(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
     """Legt die Attrappen der Docling-Module und merkt sich, was gebaut wurde.
 
     Zurueck kommt ein Namensraum mit ``pipeline_options`` und ``format_options``,
-    wie ``_build_pipeline`` sie an die Bibliothek gereicht hat, dazu die beiden
-    Options-Klassen fuer ``isinstance``-Proben.
+    wie ``_build_pipeline`` sie an die Bibliothek gereicht hat, dazu ``initialized``
+    mit den Formaten, fuer die vorgeladen wurde, und die beiden Options-Klassen fuer
+    ``isinstance``-Proben.
     """
     seen = SimpleNamespace(
         pipeline_options=None,
         format_options=None,
+        initialized=[],
         EasyOcrOptions=FakeEasyOcrOptions,
         OcrAutoOptions=FakeOcrAutoOptions,
     )
@@ -72,6 +74,9 @@ def fake_docling(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
     class FakeDocumentConverter:
         def __init__(self, format_options: dict[object, object]) -> None:
             seen.format_options = format_options
+
+        def initialize_pipeline(self, doc_format: object) -> None:
+            seen.initialized.append(doc_format)
 
         def convert(self, path: Path) -> object:
             return SimpleNamespace(
