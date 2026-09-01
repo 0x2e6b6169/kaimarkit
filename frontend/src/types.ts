@@ -2,7 +2,7 @@
  * Typen der HTTP-Schnittstelle.
  *
  * Diese Datei, `contracts/api.md` und `backend/app/models.py` beschreiben dieselbe
- * Schnittstelle und werden gemeinsam geaendert. Siehe CLAUDE.md, Konvention 1.
+ * Schnittstelle und werden gemeinsam geändert. Siehe CLAUDE.md, Konvention 1.
  */
 
 export type ConversionStatus = 'ok' | 'failed'
@@ -24,14 +24,14 @@ export interface ErrorResponse {
 }
 
 /**
- * Ergebnis fuer genau eine Datei.
+ * Ergebnis für genau eine Datei.
  *
  * `markdown` und `error` sind immer vorhanden: bei `ok` ist `error` null,
  * bei `failed` `markdown`.
  *
- * In `engine` steht neben den drei waehlbaren Engines auch `passthrough`:
+ * In `engine` steht neben den drei wählbaren Engines auch `passthrough`:
  * Markdown wird durchgereicht, nicht gewandelt. In `CapabilitiesResponse.engines`
- * fehlt der Name dagegen — dort steht, wozwischen sich waehlen laesst.
+ * fehlt der Name dagegen — dort steht, wozwischen sich wählen lässt.
  */
 export interface ConversionEntry {
   filename: string
@@ -57,12 +57,12 @@ export interface Limits {
 }
 
 /**
- * In `formats` ist die Reihenfolge die Praeferenz: Der erste Eintrag wird bei
+ * In `formats` ist die Reihenfolge die Präferenz: Der erste Eintrag wird bei
  * `engine=auto` genommen. Engines im Zustand `unavailable` erscheinen hier nicht.
  *
- * `engines` nennt nur die waehlbaren Engines. `formats` fuehrt `.md` mit
+ * `engines` nennt nur die wählbaren Engines. `formats` führt `.md` mit
  * `passthrough`, und dieser Name fehlt in `engines` — dort gibt es nichts zu
- * waehlen. Die Auswahl bietet deshalb nur an, was in `engines` steht.
+ * wählen. Die Auswahl bietet deshalb nur an, was in `engines` steht.
  */
 export interface CapabilitiesResponse {
   formats: Record<string, string[]>
@@ -77,7 +77,7 @@ export interface HealthResponse {
   version: string
 }
 
-/** Optionen fuer einen Konvertierungslauf. `engine: 'auto'` folgt der Praeferenz. */
+/** Optionen für einen Konvertierungslauf. `engine: 'auto'` folgt der Präferenz. */
 export interface ConvertOptions {
   engine: string
   ocr: boolean | null
