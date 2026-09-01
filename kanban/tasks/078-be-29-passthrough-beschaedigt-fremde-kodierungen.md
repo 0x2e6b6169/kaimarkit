@@ -1,16 +1,16 @@
 ---
 id: 78
 title: BE-29 · Passthrough beschaedigt fremde Kodierungen lautlos
-status: in-progress
+status: done
 priority: medium
 created: 2026-09-01T16:00:28.971140298+02:00
-updated: 2026-09-01T16:18:39.318841721+02:00
+updated: 2026-09-01T16:23:26.753486511+02:00
+started: 2026-09-01T16:23:00.572981431+02:00
+completed: 2026-09-01T16:23:00.572981431+02:00
 assignee: sophie
 tags:
     - backend
     - bug
-claimed_by: sophie-30
-claimed_at: 2026-09-01T16:18:39.318841721+02:00
 class: standard
 ---
 
@@ -69,3 +69,43 @@ Unrecht. Ist das der Fall, gehört es gemeldet statt umgangen.
 - Gegenprobe: Dieselbe Datei in UTF-8 liefert `warnings: []`.
 - Der Inhalt kommt in beiden Fällen zurück; die Umwandlung schlägt nicht fehl.
 - `pytest -q -rs` bleibt grün, Sammelzahl in der Notiz.
+
+[[2026-09-01]] Tue 16:23
+## Ergebnis (sophie-30)
+
+Umgesetzt: `_encoding_warnings()` in `registry.py` zählt U+FFFD im Ergebnis und legt
+bei count>0 eine Warnung dazu — Dateiname, Zahl, Deutung („Die Datei ist vermutlich
+anders kodiert."), Singular/Plural nach dem Muster von `_placeholder_warnings()` in
+`docling.py`. `errors="replace"` bleibt; die Kodierung wird nicht erraten.
+
+Rot vor grün: `test_fremde_kodierung_wird_gemeldet` schlug gegen den unveränderten
+Code fehl (`assert 0 == 1`, `warnings=[]` bei sechs zerstörten Umlauten). Die
+Gegenprobe `test_utf8_meldet_nichts` war schon vorher grün und hält die Warnung
+davon ab, überall anzuschlagen.
+
+Zahlen: Sammelzahl vorher 143 gesammelt / 137 ausgewählt, nachher 145 / 139;
+139 bestanden, 6 deselected (slow), `ruff check .` sauber.
+Branch `task/78-passthrough-kodierung`, Commit 25a1210, mit `--no-ff` in main.
+
+### Befund zur Auflage: U+FFFD kann echt in der Vorlage stehen
+
+Eine reine UTF-8-Datei darf das Zeichen enthalten — eine Dokumentation über
+Mojibake etwa, oder das Ergebnis einer früheren verlustbehafteten Wandlung.
+Nachgestellt: „Ein ersetztes Zeichen sieht so aus: <U+FFFD>", als UTF-8 gespeichert,
+strikt dekodierbar. Die Engine warnt trotzdem „In mojibake-doku.md wurde ein Zeichen
+ersetzt …". Der Satz ist dann unwahr.
+
+Nicht umgangen, sondern vorgelegt. Zwei Wege:
+
+- **(a) Hinnehmen.** Die Fehlwarnung kostet eine Zeile und trifft seltene Dateien.
+- **(b) Genau messen, ohne die Kodierung zu erraten.** `path.read_bytes()`, erst
+  strikt dekodieren: Gelingt das, wurde kein Byte ersetzt, also `warnings=[]`. Nur
+  bei `UnicodeDecodeError` mit `errors="replace"` lesen und die echten Vorkommen
+  abziehen (`raw.count(b"\xef\xbf\xbd")`). Kleiner Eingriff in dieselbe Methode,
+  gehört aber in ein eigenes Ticket, weil `registry.py` die Engpassdatei ist.
+
+### Zweiter Befund, nicht geändert (war schon vorher falsch)
+
+`docs/formate.md`, Abschnitt „Die Matrix", sagt über `.md`: „Er liest die Datei und
+gibt sie unverändert zurück." Bei fremder Kodierung stimmt das nicht — die Datei
+kommt mit U+FFFD zurück, jetzt immerhin mit einer Warnung daneben.

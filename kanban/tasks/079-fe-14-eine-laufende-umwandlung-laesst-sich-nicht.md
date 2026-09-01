@@ -1,14 +1,16 @@
 ---
 id: 79
 title: FE-14 · Eine laufende Umwandlung laesst sich nicht abbrechen
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-01T16:01:34.173915519+02:00
-updated: 2026-09-01T16:01:34.173915519+02:00
+updated: 2026-09-01T16:21:55.865074894+02:00
 assignee: benny
 tags:
     - frontend
     - ux
+claimed_by: benny-15
+claimed_at: 2026-09-01T16:21:55.865074894+02:00
 class: standard
 ---
 
