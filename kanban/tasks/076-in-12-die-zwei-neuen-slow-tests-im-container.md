@@ -4,7 +4,7 @@ title: IN-12 · Die zwei neuen slow-Tests im Container fahren
 status: backlog
 priority: medium
 created: 2026-09-01T13:16:13.857772486+02:00
-updated: 2026-09-01T13:16:13.857772486+02:00
+updated: 2026-09-01T13:25:41.955321729+02:00
 assignee: akar
 tags:
     - infra
@@ -64,3 +64,10 @@ der hier behoben wird.
 Es braucht ein gebautes Abbild. #55 (IN-10) baut ohnehin gerade mehrfach — wenn dabei
 ein Abbild auf aktuellem Stand entsteht, kostet dieses Ticket Minuten. Vorher wäre es
 ein eigener 29-Minuten-Bau für zwei Tests.
+
+[[2026-09-01]] Tue 13:25
+**Zweite Beobachtung für denselben Lauf** (aus #48, gemeldet von sophie): `ConversionError.__init__` schreibt seit BE-15 bei jeder Erzeugung eine `log.warning`-Zeile mit dem ungekürzten Wortlaut. Die Begründung ist sachlich richtig — der Stapel fängt seine Fehler selbst ab und erreicht den Ausnahmebehandler nie, nur im Konstruktor ist der volle Wortlaut sicher zu haben.
+
+Protokollieren als Nebenwirkung des Erzeugens ist trotzdem ungewöhnlich: **Jede** erzeugte `ConversionError` schreibt, auch eine, die gleich darauf abgefangen und ordentlich behandelt wird. Ob das im Betrieb Rauschen erzeugt, sagt erst ein Lauf mit vielen Fehlern.
+
+Beim Container-Lauf deshalb mit ansehen: einen Stapel mit mehreren fehlschlagenden Dateien schicken und zählen, wie viele Zeilen dabei entstehen. Das Ergebnis gehört als Notiz an #48. Ist es Rauschen, wird es ein eigenes Ticket — hier wird nichts geändert.

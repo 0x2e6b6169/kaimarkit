@@ -527,3 +527,9 @@
 {"timestamp":"2026-09-01T13:15:20.59958377+02:00","action":"edit","task_id":48,"detail":"BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad"}
 {"timestamp":"2026-09-01T13:15:55.094110018+02:00","action":"move","task_id":48,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-01T13:16:13.866927405+02:00","action":"create","task_id":76,"detail":"IN-12 · Die zwei neuen slow-Tests im Container fahren"}
+{"timestamp":"2026-09-01T13:23:46.956468139+02:00","action":"edit","task_id":48,"detail":"BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad"}
+{"timestamp":"2026-09-01T13:23:54.727329055+02:00","action":"move","task_id":48,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T13:24:05.366427809+02:00","action":"edit","task_id":48,"detail":"BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad"}
+{"timestamp":"2026-09-01T13:24:05.367032474+02:00","action":"release","task_id":48,"detail":"sophie-26"}
+{"timestamp":"2026-09-01T13:25:39.905898265+02:00","action":"edit","task_id":48,"detail":"BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad"}
+{"timestamp":"2026-09-01T13:25:41.968666619+02:00","action":"edit","task_id":76,"detail":"IN-12 · Die zwei neuen slow-Tests im Container fahren"}
