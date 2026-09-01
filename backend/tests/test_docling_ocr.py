@@ -77,7 +77,9 @@ def install_fake_docling(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
     modules = {
         "docling": {},
         "docling.datamodel": {},
-        "docling.datamodel.base_models": {"InputFormat": SimpleNamespace(PDF="pdf")},
+        "docling.datamodel.base_models": {
+            "InputFormat": SimpleNamespace(PDF="pdf", IMAGE="image")
+        },
         "docling.datamodel.pipeline_options": {
             "PdfPipelineOptions": FakePdfPipelineOptions,
             "EasyOcrOptions": FakeEasyOcrOptions,
@@ -86,6 +88,7 @@ def install_fake_docling(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
         "docling.document_converter": {
             "DocumentConverter": FakeDocumentConverter,
             "PdfFormatOption": FakePdfFormatOption,
+            "ImageFormatOption": FakePdfFormatOption,
         },
         "docling_core": {},
         "docling_core.types": {},

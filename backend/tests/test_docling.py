@@ -4,16 +4,18 @@ Die Bibliothek steckt vollstaendig in ``_build_pipeline``. Die Tests ersetzen di
 Funktion durch eine Attrappe und pruefen, was der Adapter darum herum tut:
 vorladen, wiederverwenden, den OCR-Schalter beachten und Ausnahmen uebersetzen.
 
-Der einzige Test, der wirklich Docling laedt, traegt die Marke ``slow``.
+Die Tests, die wirklich Docling laden, tragen die Marke ``slow``.
 """
 
 from __future__ import annotations
 
 import importlib.util
+import sys
 import threading
 import time
 from collections.abc import Iterator
 from pathlib import Path
+from types import ModuleType, SimpleNamespace
 
 import pytest
 
@@ -22,7 +24,9 @@ from app.converters import docling as adapter
 from app.converters.base import ConvertOptions
 from app.errors import EngineFailed, EngineUnavailable
 
-FIXTURE = Path(__file__).parent / "fixtures" / "tabelle.pdf"
+FIXTURES = Path(__file__).parent / "fixtures"
+FIXTURE = FIXTURES / "tabelle.pdf"
+BILD = FIXTURES / "bild.png"
 
 
 @pytest.fixture(autouse=True)
@@ -204,3 +208,122 @@ def test_real_docling_converts_a_table() -> None:
 
     assert "|" in markdown
     assert second < first
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(
+    importlib.util.find_spec("docling") is None, reason="docling ist nicht installiert"
+)
+@pytest.mark.skipif(not BILD.exists(), reason="fixtures/bild.png fehlt")
+def test_the_ocr_switch_works_on_images() -> None:
+    """Dasselbe Bild, zweimal: ohne Texterkennung bleibt es leer, mit ihr nicht.
+
+    Das Bild hat keine Textebene. Alles, was zurueckkommt, hat die Texterkennung
+    gelesen — der Schalter entscheidet also allein ueber den Inhalt. Auf einzelne
+    Woerter wird nichts geprueft: Was ein Modell aus gerendertem Text macht, ist
+    keine Zusage der Engine.
+    """
+    converter = adapter.DoclingConverter()
+
+    ohne = converter.convert(BILD, ConvertOptions(ocr=False)).markdown
+    mit = converter.convert(BILD, ConvertOptions(ocr=True)).markdown
+
+    assert not ohne.strip()
+    assert mit.strip()
+
+
+# --- Welche Formate die Optionen bekommen -----------------------------------
+#
+# Docling steckt vollstaendig in ``_build_pipeline``. Die folgenden Tests haengen
+# Attrappen der benutzten Module in ``sys.modules`` und lesen ab, welche
+# ``format_options`` daraus entstehen. Sie laufen ohne die Bibliothek und fangen
+# damit dauerhaft, was sonst erst im Container auffaellt.
+
+
+class FakePipelineOptions:
+    def __init__(self) -> None:
+        self.do_ocr = False
+        self.do_table_structure = False
+        self.generate_picture_images = True
+        self.artifacts_path: str | None = None
+        self.ocr_options: object = None
+
+
+class FakeEasyOcrOptions:
+    def __init__(self, lang: list[str] | None = None) -> None:
+        self.lang = lang
+
+
+def install_fake_docling(monkeypatch: pytest.MonkeyPatch) -> dict[str, object]:
+    """Legt Attrappen der Docling-Module und liefert die gesehenen ``format_options``."""
+    seen: dict[str, object] = {}
+
+    class FakeFormatOption:
+        def __init__(self, pipeline_options: FakePipelineOptions) -> None:
+            self.pipeline_options = pipeline_options
+
+    class FakeDocumentConverter:
+        def __init__(self, format_options: dict[str, object]) -> None:
+            seen["format_options"] = format_options
+
+        def convert(self, path: Path) -> object:
+            return SimpleNamespace(
+                document=SimpleNamespace(export_to_markdown=lambda image_mode: "# ok")
+            )
+
+    modules = {
+        "docling": {},
+        "docling.datamodel": {},
+        "docling.datamodel.base_models": {
+            "InputFormat": SimpleNamespace(PDF="pdf", IMAGE="image")
+        },
+        "docling.datamodel.pipeline_options": {
+            "PdfPipelineOptions": FakePipelineOptions,
+            "EasyOcrOptions": FakeEasyOcrOptions,
+        },
+        "docling.document_converter": {
+            "DocumentConverter": FakeDocumentConverter,
+            "PdfFormatOption": FakeFormatOption,
+            "ImageFormatOption": FakeFormatOption,
+        },
+        "docling_core": {},
+        "docling_core.types": {},
+        "docling_core.types.doc": {"ImageRefMode": SimpleNamespace(PLACEHOLDER="p")},
+    }
+    for name, attributes in modules.items():
+        module = ModuleType(name)
+        for key, value in attributes.items():
+            setattr(module, key, value)
+        monkeypatch.setitem(sys.modules, name, module)
+
+    return seen
+
+
+def test_images_get_the_same_pipeline_options_as_pdf(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Ohne einen eigenen Eintrag fuer Bilder legt Docling seine Vorgabe an.
+
+    Dann laeuft die Texterkennung dort immer, ``KAIMARKIT_OCR_LANGS`` bleibt
+    wirkungslos und statt EasyOCR startet die selbst gewaehlte Maschine.
+    """
+    monkeypatch.setenv("KAIMARKIT_OCR_LANGS", "de,en")
+    get_settings.cache_clear()
+    seen = install_fake_docling(monkeypatch)
+
+    adapter._build_pipeline(False)
+
+    format_options = seen["format_options"]
+    assert set(format_options) == {"pdf", "image"}
+    options = format_options["image"].pipeline_options
+    assert options is format_options["pdf"].pipeline_options  # dieselben Optionen
+    assert options.do_ocr is False
+    assert options.ocr_options.lang == ["de", "en"]
+
+
+def test_the_ocr_switch_reaches_the_image_options(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen = install_fake_docling(monkeypatch)
+
+    adapter._build_pipeline(True)
+
+    assert seen["format_options"]["image"].pipeline_options.do_ocr is True
