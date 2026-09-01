@@ -168,19 +168,30 @@ anderen kollidieren, steht unter [Traefik](traefik.md).
 
 ## Authelia
 
-Diese drei Variablen braucht nur, wer zusätzlich `docker-compose.authelia.yml`
+Diese vier Variablen braucht nur, wer zusätzlich `docker-compose.authelia.yml`
 mitgibt.
 
 | Variable | Standard | Wirkung |
 | --- | --- | --- |
-| `AUTHELIA_VERIFY_URL` | `http://authelia:9091/api/verify?rd=https://auth.example.com` | Die Adresse, an der die ForwardAuth-Middleware jede Anfrage prüfen lässt. |
+| `KAIMARKIT_MIDDLEWARES` | `authelia@docker` | Die Middlewares des Hauptrouters. Leer lassen gibt die Oberfläche frei. |
+| `KAIMARKIT_API_MIDDLEWARES` | `authelia@docker` | Die Middlewares des `/api`-Routers. Leer lassen gibt die API frei. |
+| `AUTHELIA_VERIFY_URL` | `http://authelia:9091/api/verify?rd=https://auth.example.com` | Die Adresse, an der die eigene ForwardAuth-Middleware jede Anfrage prüfen lässt. |
 | `AUTHELIA_RESPONSE_HEADERS` | `Remote-User,Remote-Groups,Remote-Name,Remote-Email` | Kopfzeilen, die Traefik von Authelia an die Anwendung durchreicht. |
-| `KAIMARKIT_API_MIDDLEWARES` | `kaimarkit-auth@docker` | Die Middlewares des `/api`-Routers. Leer lassen gibt die API frei. |
 
-Der Hostname in `AUTHELIA_VERIFY_URL` ist der Containername von Authelia im
-Traefik-Netz, der `rd`-Parameter dagegen die von außen erreichbare Anmeldeseite.
-Beide zeigen auf denselben Dienst, aber aus verschiedenen Blickwinkeln.
+Die ersten beiden entscheiden, welche Middleware die Router benutzen, und damit auch,
+ob die letzten beiden überhaupt gelesen werden. Voreingestellt verweisen sie auf
+`authelia@docker`: die Middleware, die eine per Docker-Label beschriftete Authelia an
+sich selbst definiert. Dann bleiben `AUTHELIA_VERIFY_URL` und
+`AUTHELIA_RESPONSE_HEADERS` ungenutzt.
 
-Der Name der Middleware steht ebenfalls fest, nämlich `kaimarkit-auth`. Was
-`KAIMARKIT_API_MIDDLEWARES` bewirkt und wann man es leert, steht unter
-[Authelia](authelia.md).
+Wer stattdessen `kaimarkit-auth@docker` einträgt, benutzt die Middleware, die
+`docker-compose.authelia.yml` selbst definiert — und braucht dafür die beiden
+letzten. Der Hostname in `AUTHELIA_VERIFY_URL` ist dann der Containername von
+Authelia im Traefik-Netz, der `rd`-Parameter dagegen die von außen erreichbare
+Anmeldeseite. Beide zeigen auf denselben Dienst, aber aus verschiedenen
+Blickwinkeln.
+
+Der Zusatz hinter dem `@` nennt den Traefik-Anbieter und gehört zum Wert: Eine
+Authelia, die ihre Middleware aus einer Datei bezieht, heißt `authelia@file`. Beide
+Wege, die Stolperstelle mit dem Anbieter und der Umstieg von einer früheren Fassung
+stehen unter [Authelia](authelia.md).
