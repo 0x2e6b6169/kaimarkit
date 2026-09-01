@@ -567,3 +567,4 @@
 {"timestamp":"2026-09-01T14:07:46.412181364+02:00","action":"release","task_id":76,"detail":"akar-26"}
 {"timestamp":"2026-09-01T14:09:28.904035273+02:00","action":"edit","task_id":48,"detail":"BE-15 · Fehlermeldungen nennen den internen Tempfile-Pfad"}
 {"timestamp":"2026-09-01T14:09:29.756939609+02:00","action":"edit","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}
+{"timestamp":"2026-09-01T14:10:45.241269163+02:00","action":"edit","task_id":77,"detail":"IN-13 · Die Docs-Stufe laeuft nach jedem Commit neu"}
