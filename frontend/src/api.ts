@@ -70,6 +70,10 @@ async function request(path: string, init: RequestInit): Promise<Response> {
   try {
     response = await fetch(`${API_BASE}${path}`, init)
   } catch (cause) {
+    // Ein Abbruch ist kein Ausfall des Dienstes. Er kommt vom Nutzer und geht
+    // unveraendert an den Aufrufer zurueck, damit die Warteschlange ihn von
+    // einem echten Fehlschlag unterscheiden kann.
+    if (init.signal?.aborted) throw cause
     throw new ApiError('Der Dienst ist nicht erreichbar.', 0, null, cause)
   }
   if (!response.ok) throw await errorFromResponse(response)
@@ -89,10 +93,15 @@ export async function fetchCapabilities(): Promise<CapabilitiesResponse> {
  *
  * `ocr: null` heisst „nichts mitschicken": Dann gilt die Einstellung des Dienstes
  * aus `KAIMARKIT_OCR_ENABLED`.
+ *
+ * Ueber `signal` bricht der Aufrufer das Warten ab. Der Aufruf endet dann mit dem
+ * `AbortError` des Browsers, nicht mit einem `ApiError` — abgebrochen ist nicht
+ * gescheitert.
  */
 export async function convertFile(
   file: File,
   options: ConvertOptions,
+  signal?: AbortSignal,
 ): Promise<ConversionEntry> {
   const body = new FormData()
   body.append('file', file, file.name)
@@ -103,6 +112,7 @@ export async function convertFile(
     method: 'POST',
     headers: { Accept: 'application/json' },
     body,
+    signal,
   })
   return (await response.json()) as ConversionEntry
 }

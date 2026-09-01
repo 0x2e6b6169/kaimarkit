@@ -11,7 +11,8 @@
  * Datei fertig ist.
  *
  * Die Komponente haelt nur, welche Zeilen aufgeklappt sind. Die Eintraege
- * selbst gehoeren `useConversion`; entfernt wird dort, nicht hier.
+ * selbst gehoeren `useConversion`; entfernt und abgebrochen wird dort, nicht
+ * hier.
  */
 import { ref, watch } from 'vue'
 import FileRow from './FileRow.vue'
@@ -19,7 +20,7 @@ import type { QueueEntry, QueueStatus } from '../composables/useConversion'
 
 const props = defineProps<{ entries: QueueEntry[] }>()
 
-const emit = defineEmits<{ remove: [number] }>()
+const emit = defineEmits<{ abort: [number]; remove: [number] }>()
 
 const expanded = ref<number[]>([])
 
@@ -51,6 +52,8 @@ function sentence(entry: QueueEntry): string {
         : `${entry.filename} ist fertig.`
     case 'failed':
       return `${entry.filename} ist fehlgeschlagen: ${entry.error ?? 'ohne Meldung'}`
+    case 'aborted':
+      return `${entry.filename} wurde abgebrochen.`
     default:
       return `${entry.filename} wartet.`
   }
@@ -99,6 +102,7 @@ watch(
         :entry="entry"
         :expanded="expanded.includes(entry.id)"
         @toggle="toggle"
+        @abort="emit('abort', $event)"
         @remove="emit('remove', $event)"
       >
         <!--

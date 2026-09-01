@@ -7,6 +7,17 @@
  *
  * Ein Fehlschlag betrifft nur seine eigene Zeile. Die uebrigen laufen weiter,
  * und die Meldung steht am Eintrag, nicht in der Konsole.
+ *
+ * Wer nicht laenger warten will, bricht eine laufende Zeile ab. Jede laufende
+ * Datei hat dafuer ihren eigenen `AbortController`; die Warteschlange ruft
+ * `/api/convert` je Datei auf, ein Abbruch beendet also genau eine Anfrage.
+ * Danach steht die Zeile auf `aborted` und nicht auf `failed`: Der Nutzer hat
+ * entschieden, gescheitert ist nichts.
+ *
+ * Was der Abbruch beendet, ist allein das Warten des Browsers. Der Dienst
+ * wandelt weiter: BE-30 hat gemessen, dass uvicorn die ASGI-Aufgabe beim
+ * Verbindungsabbruch nicht abbricht und der Handler erst an der Zeitgrenze
+ * endet. Deshalb verspricht die Oberflaeche nicht mehr als „nicht mehr warten".
  */
 
 import { computed, ref, type ComputedRef, type Ref } from 'vue'
@@ -17,10 +28,10 @@ import type { ConversionEntry, ConvertOptions } from '../types'
 const MAX_PARALLEL = 2
 
 /**
- * Der Lebenslauf einer Zeile. `queued` und `running` gibt es nur im Frontend;
- * `ok` und `failed` sind der `status` aus `contracts/api.md`.
+ * Der Lebenslauf einer Zeile. `queued`, `running` und `aborted` gibt es nur im
+ * Frontend; `ok` und `failed` sind der `status` aus `contracts/api.md`.
  */
-export type QueueStatus = 'queued' | 'running' | 'ok' | 'failed'
+export type QueueStatus = 'queued' | 'running' | 'ok' | 'failed' | 'aborted'
 
 /** Eine Zeile der Warteschlange. */
 export interface QueueEntry {
@@ -37,7 +48,11 @@ export interface QueueEntry {
 }
 
 /** Die Attrappe im Test setzt hier an. */
-export type ConvertFn = (file: File, options: ConvertOptions) => Promise<ConversionEntry>
+export type ConvertFn = (
+  file: File,
+  options: ConvertOptions,
+  signal: AbortSignal,
+) => Promise<ConversionEntry>
 
 export interface ConversionQueue {
   entries: Ref<QueueEntry[]>
@@ -46,6 +61,8 @@ export interface ConversionQueue {
   /** Wahr, solange etwas wartet oder laeuft. */
   busy: ComputedRef<boolean>
   enqueue: (files: Iterable<File>) => void
+  /** Beendet das Warten auf eine laufende Zeile. Wartende und fertige bleiben. */
+  abort: (id: number) => void
   remove: (id: number) => void
   clear: () => void
 }
@@ -70,6 +87,10 @@ export function createConversionQueue(
    * echte Objekt.
    */
   const files = new Map<number, File>()
+
+  /** Einer je laufender Zeile, angelegt beim Start und am Ende wieder entfernt. */
+  const controllers = new Map<number, AbortController>()
+
   let nextId = 1
   let running = 0
 
@@ -91,15 +112,26 @@ export function createConversionQueue(
     pump()
   }
 
+  /**
+   * Bricht das Warten auf eine laufende Zeile ab.
+   *
+   * Den Zustand setzt nicht diese Funktion, sondern `run`: Der Aufruf endet erst
+   * mit dem naechsten Durchlauf, und bis dahin laeuft die Zeile noch.
+   */
+  function abort(id: number): void {
+    controllers.get(id)?.abort()
+  }
+
   function remove(id: number): void {
+    // Sonst laeuft die Anfrage weiter, obwohl niemand mehr auf sie wartet.
+    abort(id)
     files.delete(id)
     const index = entries.value.findIndex((entry) => entry.id === id)
     if (index >= 0) entries.value.splice(index, 1)
   }
 
   function clear(): void {
-    // Was schon laeuft, laeuft zu Ende; sein Ergebnis findet keine Zeile mehr
-    // und verfaellt.
+    for (const controller of controllers.values()) controller.abort()
     files.clear()
     entries.value = []
   }
@@ -121,8 +153,16 @@ export function createConversionQueue(
   async function run(entry: QueueEntry): Promise<void> {
     const file = files.get(entry.id)
     if (!file) return
+    const controller = new AbortController()
+    controllers.set(entry.id, controller)
     try {
-      const result = await convert(file, { ...options.value })
+      const result = await convert(file, { ...options.value }, controller.signal)
+      // Ein Ergebnis, das nach dem Abbruch noch eintrifft, aendert nichts mehr:
+      // Der Nutzer hat schon aufgehoert zu warten.
+      if (controller.signal.aborted) {
+        entry.status = 'aborted'
+        return
+      }
       entry.status = result.status
       entry.markdown = result.markdown
       entry.engine = result.engine
@@ -130,8 +170,16 @@ export function createConversionQueue(
       entry.durationMs = result.duration_ms
       entry.error = result.error
     } catch (cause) {
-      entry.status = 'failed'
-      entry.error = messageFromError(cause)
+      if (controller.signal.aborted) {
+        // Kein Fehlschlag und deshalb auch keine Meldung.
+        entry.status = 'aborted'
+        entry.error = null
+      } else {
+        entry.status = 'failed'
+        entry.error = messageFromError(cause)
+      }
+    } finally {
+      controllers.delete(entry.id)
     }
   }
 
@@ -139,7 +187,7 @@ export function createConversionQueue(
     entries.value.some((entry) => entry.status === 'queued' || entry.status === 'running'),
   )
 
-  return { entries, options, busy, enqueue, remove, clear }
+  return { entries, options, busy, enqueue, abort, remove, clear }
 }
 
 /**

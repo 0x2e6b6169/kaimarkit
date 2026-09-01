@@ -46,6 +46,7 @@ describe('FileRow', () => {
       ['running', 'läuft'],
       ['ok', 'fertig'],
       ['failed', 'fehlgeschlagen'],
+      ['aborted', 'abgebrochen'],
     ]
 
     for (const [status, label] of cases) {
@@ -201,7 +202,7 @@ describe('FileRow', () => {
   it('zaehlt weder vor dem Start noch nach einem Fehlschlag', () => {
     vi.useFakeTimers()
 
-    for (const status of ['queued', 'failed'] as const) {
+    for (const status of ['queued', 'failed', 'aborted'] as const) {
       const wrapper = mount(FileRow, { props: { entry: entry({ status }) } })
       expect(wrapper.text()).not.toMatch(/\d:\d\d/)
       expect(vi.getTimerCount()).toBe(0)
@@ -217,6 +218,52 @@ describe('FileRow', () => {
 
     wrapper.unmount()
     expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('bietet den Abbruch nur an, solange die Zeile laeuft', async () => {
+    for (const status of ['queued', 'ok', 'failed', 'aborted'] as const) {
+      const wrapper = mount(FileRow, { props: { entry: entry({ status }) } })
+      expect(wrapper.find('[data-test="abort-row"]').exists()).toBe(false)
+    }
+
+    const wrapper = mount(FileRow, { props: { entry: entry({ id: 7, status: 'running' }) } })
+    const button = wrapper.get('[data-test="abort-row"]')
+    // Ein echter Knopf: mit der Tastatur erreichbar, ohne eigenes tabindex.
+    expect(button.element.tagName).toBe('BUTTON')
+    expect(button.attributes('type')).toBe('button')
+    // Der Text verspricht nur, was der Abbruch wirklich tut.
+    expect(button.text()).toContain('Nicht mehr warten')
+    expect(button.text()).not.toContain('stoppen')
+    // Zehn laufende Zeilen traegen sonst zehnmal dieselbe Beschriftung.
+    expect(button.text()).toContain('bericht.pdf')
+
+    await button.trigger('click')
+
+    expect(wrapper.emitted('abort')).toEqual([[7]])
+  })
+
+  it('sagt an der abgebrochenen Zeile, was der Abbruch nicht beendet', () => {
+    const wrapper = mount(FileRow, { props: { entry: entry({ status: 'aborted' }) } })
+
+    const note = wrapper.get('[data-test="abort-note"]').text()
+    expect(note).toContain('Der Browser wartet nicht mehr')
+    // BE-30 hat gemessen, dass der Dienst weiterwandelt. Die Zeile sagt es.
+    expect(note).toContain('im Hintergrund zu Ende')
+    // Ein Abbruch ist kein Fehler und steht deshalb nicht im roten Kasten.
+    expect(wrapper.find('.bg-red-50').exists()).toBe(false)
+  })
+
+  it('haelt den Zaehler an, sobald abgebrochen wurde', async () => {
+    vi.useFakeTimers()
+
+    const wrapper = mount(FileRow, { props: { entry: entry({ status: 'running' }) } })
+    expect(vi.getTimerCount()).toBe(1)
+
+    await wrapper.setProps({ entry: entry({ status: 'aborted' }) })
+
+    expect(vi.getTimerCount()).toBe(0)
+    expect(wrapper.text()).toContain('abgebrochen')
+    expect(wrapper.text()).not.toMatch(/\d:\d\d/)
   })
 
   it('meldet den Wunsch, die Zeile zu entfernen', async () => {

@@ -11,8 +11,9 @@
  * heisst `bericht-2.md`, die dritte `bericht-3.md`. Gescheiterte Dateien liegen
  * nicht im Archiv, sondern als je eine Zeile in `_errors.txt` darin.
  *
- * Was noch wartet oder laeuft, kommt weder ins Archiv noch in `_errors.txt`:
- * Eine Datei, die noch konvertiert wird, ist nicht gescheitert. Die Oberflaeche
+ * Was noch wartet, laeuft oder abgebrochen wurde, kommt weder ins Archiv noch in
+ * `_errors.txt`: Eine Datei, die noch konvertiert wird, ist nicht gescheitert,
+ * und eine abgebrochene erst recht nicht. Die Oberflaeche
  * sperrt „Alles herunterladen“, solange die Warteschlange arbeitet.
  */
 
@@ -27,7 +28,7 @@ import JSZip from 'jszip'
  */
 export interface DownloadEntry {
   filename: string
-  status: 'queued' | 'running' | 'ok' | 'failed'
+  status: 'queued' | 'running' | 'ok' | 'failed' | 'aborted'
   markdown: string | null
   error: string | null
 }

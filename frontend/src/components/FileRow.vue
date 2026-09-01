@@ -17,6 +17,18 @@
  * die Datei unmittelbar ab, statt den Wunsch nach oben zu melden: Was
  * heruntergeladen wird, steht vollstaendig im Eintrag dieser Zeile.
  *
+ * Eine laufende Zeile laesst sich abbrechen. Der Knopf heisst „Nicht mehr
+ * warten", und mehr sagt er auch nicht zu: Er beendet die Anfrage des Browsers.
+ *
+ * **Die schwache Beschriftung ist gemessen, nicht zaghaft.** BE-30 hat den
+ * Abbruch nachgestellt: uvicorn bricht die ASGI-Aufgabe beim Verbindungsabbruch
+ * nicht ab, der Handler laeuft bis zur Zeitgrenze weiter. Der Platz auf dem
+ * Server blieb acht Sekunden laenger belegt, als der Aufruf fuer den Nutzer
+ * ueberhaupt bestand. „Umwandlung stoppen" oder ein blankes „Abbrechen" waere
+ * also nachweislich falsch: Der Nutzer bekommt seine Wartezeit zurueck, der
+ * Dienst behaelt die Last. Wer den Text spaeter „schoener" macht, macht ihn
+ * unwahr.
+ *
  * Eine laufende Zeile zaehlt mit, wie lange sie schon laeuft. Docling braucht
  * Minuten je Dokument; ohne die Zahl haelt man den Dienst nach einer Minute fuer
  * haengengeblieben. Einen Fortschritt behauptet die Zeile nicht — das Backend
@@ -34,6 +46,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   /** Aufklappen oder zuklappen; die Warteschlange fuehrt darueber Buch. */
   toggle: [number]
+  /** Nicht laenger auf diese Zeile warten. */
+  abort: [number]
   remove: [number]
 }>()
 
@@ -48,6 +62,7 @@ const BADGES: Record<QueueStatus, Badge> = {
   running: { symbol: '◐', label: 'läuft', class: 'text-sky-700' },
   ok: { symbol: '✓', label: 'fertig', class: 'text-emerald-700' },
   failed: { symbol: '✗', label: 'fehlgeschlagen', class: 'text-red-700' },
+  aborted: { symbol: '⊘', label: 'abgebrochen', class: 'text-slate-600' },
 }
 
 const badge = computed(() => BADGES[props.entry.status])
@@ -125,6 +140,8 @@ const meta = computed(() => {
   return parts.join(' · ')
 })
 
+const canAbort = computed(() => props.entry.status === 'running')
+
 const canExpand = computed(() => props.entry.markdown !== null)
 
 /** Nur ein gelungener Eintrag laesst sich herunterladen. */
@@ -155,6 +172,16 @@ const previewId = computed(() => `file-row-${props.entry.id}-preview`)
       </button>
 
       <button
+        v-if="canAbort"
+        type="button"
+        class="rounded border border-slate-400 px-2 py-1 text-sm hover:bg-slate-100"
+        data-test="abort-row"
+        @click="emit('abort', entry.id)"
+      >
+        Nicht mehr warten<span class="sr-only"> — {{ entry.filename }}</span>
+      </button>
+
+      <button
         v-if="canDownload"
         type="button"
         class="rounded border border-slate-400 px-2 py-1 text-sm hover:bg-slate-100"
@@ -172,6 +199,15 @@ const previewId = computed(() => `file-row-${props.entry.id}-preview`)
         Entfernen<span class="sr-only"> — {{ entry.filename }}</span>
       </button>
     </div>
+
+    <p
+      v-if="entry.status === 'aborted'"
+      class="mt-2 rounded bg-slate-100 p-2 text-sm text-slate-700"
+      data-test="abort-note"
+    >
+      Der Browser wartet nicht mehr auf diese Datei. Der Dienst wandelt sie im
+      Hintergrund zu Ende — abgebrochen ist das Warten, nicht die Umwandlung.
+    </p>
 
     <p v-if="entry.error" class="mt-2 rounded border border-red-300 bg-red-50 p-2 text-sm text-red-900">
       {{ entry.error }}

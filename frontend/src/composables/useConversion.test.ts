@@ -1,9 +1,10 @@
 /**
  * Die Warteschlange gegen einen Attrappen-Client.
  *
- * Zwei Zusagen werden geprueft, und beide fallen ohne Test erst im Betrieb auf:
- * die Grenze von zwei gleichzeitigen Laeufen und dass ein Fehlschlag die
- * uebrigen Dateien nicht mitnimmt.
+ * Drei Zusagen werden geprueft, und jede faellt ohne Test erst im Betrieb auf:
+ * die Grenze von zwei gleichzeitigen Laeufen, dass ein Fehlschlag die uebrigen
+ * Dateien nicht mitnimmt, und dass ein Abbruch den Signalgeber der Zeile
+ * tatsaechlich erreicht.
  */
 
 import { describe, expect, it } from 'vitest'
@@ -34,6 +35,7 @@ interface Pending {
   filename: string
   resolve: (entry: ConversionEntry) => void
   reject: (cause: unknown) => void
+  signal: AbortSignal
 }
 
 /**
@@ -45,11 +47,21 @@ function stubClient() {
   let active = 0
   let peak = 0
 
-  const convert: ConvertFn = (file) =>
+  const convert: ConvertFn = (file, _options, signal) =>
     new Promise<ConversionEntry>((resolve, reject) => {
       active += 1
       peak = Math.max(peak, active)
-      pending.push({ filename: file.name, resolve, reject })
+      const item: Pending = { filename: file.name, resolve, reject, signal }
+      pending.push(item)
+      // Wie `fetch`: Ein Abbruch beendet den Aufruf mit einem `AbortError`.
+      signal.addEventListener('abort', () => {
+        const index = pending.indexOf(item)
+        if (index >= 0) {
+          pending.splice(index, 1)
+          active -= 1
+        }
+        reject(new DOMException('Abgebrochen', 'AbortError'))
+      })
     })
 
   function next(): Pending {
@@ -65,6 +77,12 @@ function stubClient() {
     count: () => pending.length,
     /** Die groesste Zahl gleichzeitiger Laeufe seit Beginn. */
     peak: () => peak,
+    /** Der Signalgeber, den die Zeile dieser Datei mitbekommen hat. */
+    signalFor(filename: string): AbortSignal {
+      const item = pending.find((candidate) => candidate.filename === filename)
+      if (!item) throw new Error(`${filename} laeuft nicht.`)
+      return item.signal
+    },
     succeedNext(): string {
       const item = next()
       item.resolve(okEntry(item.filename))
@@ -129,6 +147,62 @@ describe('useConversion', () => {
     expect(queue.entries.value.filter((entry) => entry.status === 'ok')).toHaveLength(4)
     expect(queue.entries.value.filter((entry) => entry.status === 'failed')).toHaveLength(1)
     expect(queue.entries.value[1]!.markdown).toBe('# b.pdf')
+  })
+
+  it('bricht eine laufende Zeile ab, ohne sie als Fehlschlag zu zaehlen', async () => {
+    const client = stubClient()
+    const queue = createConversionQueue({ convert: client.convert })
+
+    queue.enqueue(['a.pdf', 'b.pdf', 'c.pdf'].map(fileNamed))
+    const signal = client.signalFor('a.pdf')
+    expect(signal.aborted).toBe(false)
+
+    queue.abort(queue.entries.value[0]!.id)
+    await tick()
+
+    // Der Abbruch erreicht den Signalgeber der Anfrage und nicht nur die Anzeige.
+    expect(signal.aborted).toBe(true)
+    expect(queue.entries.value[0]!.status).toBe('aborted')
+    expect(queue.entries.value[0]!.error).toBeNull()
+    // Ein Abbruch ist kein Fehlschlag.
+    expect(queue.entries.value.filter((entry) => entry.status === 'failed')).toHaveLength(0)
+    // Der Platz ist frei geworden, c.pdf ist nachgerueckt.
+    expect(client.count()).toBe(2)
+
+    while (client.count() > 0) {
+      client.succeedNext()
+      await tick()
+    }
+
+    expect(queue.entries.value.map((entry) => entry.status)).toEqual(['aborted', 'ok', 'ok'])
+    expect(queue.busy.value).toBe(false)
+  })
+
+  it('bricht auch ab, wer eine laufende Zeile entfernt', async () => {
+    const client = stubClient()
+    const queue = createConversionQueue({ convert: client.convert })
+
+    queue.enqueue(['a.pdf', 'b.pdf'].map(fileNamed))
+    const signal = client.signalFor('a.pdf')
+
+    queue.remove(queue.entries.value[0]!.id)
+    await tick()
+
+    expect(signal.aborted).toBe(true)
+    expect(queue.entries.value.map((entry) => entry.filename)).toEqual(['b.pdf'])
+  })
+
+  it('laesst eine wartende Zeile unberuehrt', async () => {
+    const client = stubClient()
+    const queue = createConversionQueue({ convert: client.convert })
+
+    queue.enqueue(['a.pdf', 'b.pdf', 'c.pdf'].map(fileNamed))
+    // c.pdf wartet noch; ein Abbruch hat dort nichts zu beenden.
+    queue.abort(queue.entries.value[2]!.id)
+    await tick()
+
+    expect(queue.entries.value[2]!.status).toBe('queued')
+    expect(client.count()).toBe(2)
   })
 
   it('schickt Engine und OCR mit, aber ocr nur, wenn es gesetzt ist', async () => {
