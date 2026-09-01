@@ -4,7 +4,7 @@ title: IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp
 status: backlog
 priority: high
 created: 2026-09-01T10:40:33.636401513+02:00
-updated: 2026-09-01T11:07:41.776548575+02:00
+updated: 2026-09-01T11:19:02.07260601+02:00
 assignee: akar
 tags:
     - infra
@@ -79,3 +79,13 @@ Der Dienst selbst hat sich richtig verhalten: Er bricht sauber ab, die Meldung n
 Was die Messung noch nicht hergibt: **Wie lange das Dokument gebraucht haette, ist unbekannt** — der Abbruch hat es abgeschnitten. Ohne diese Zahl laesst sich keine begruendete Voreinstellung waehlen, nur eine geratene. Wer das Ticket umsetzt, faehrt es zuerst mit einer weit gesetzten Grenze durch und misst.
 
 Vom PO auf `high` gehoben.
+
+[[2026-09-01]] Tue 11:19
+Zwei Messungen zur Ursache, damit das Ticket nicht nur die Grenze hochsetzt (01.09.2026, im laufenden Container):
+
+- **Torch benutzt zwei Threads**, nicht vier: `torch.get_num_threads()` -> `2`, `torch.cuda.is_available()` -> `False`. Der Rechner hat vier logische Kerne (`nproc`), waehrend der Umwandlung stand die CPU bei 238 Prozent. Torch waehlt die Zahl nach physischen Kernen; ob hier vier logische auf zwei physische kommen, ist nicht geprueft. Ein Versuch mit `torch.set_num_threads(4)` oder `OMP_NUM_THREADS=4` kostet nichts und liefert eine Zahl.
+- **Der Container hat keine CPU-Grenze.** `docker/docker-compose.yml` setzt nur `mem_limit`, kein `cpus`. Die zwei Threads kommen also von Torch, nicht von Docker.
+
+Damit hat dieses Ticket zwei Wege, und der zweite ist der bessere: die Grenze hochsetzen behandelt das Symptom, mehr Threads die Sache. Beide messen, dann entscheiden.
+
+Nicht die Ursache sind die Anreicherungsmodelle: `_build_pipeline` schaltet weder Code- noch Formel- noch Bildklassifikation ein. `CodeFormulaV2` und `DocumentFigureClassifier` liegen im Abbild, laufen aber nicht — das ist Ballast in der Groesse, nicht in der Zeit.

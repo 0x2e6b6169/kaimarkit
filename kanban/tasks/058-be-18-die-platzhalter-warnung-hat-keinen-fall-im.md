@@ -4,7 +4,7 @@ title: BE-18 · Die Platzhalter-Warnung hat keinen Fall im Repo
 status: backlog
 priority: medium
 created: 2026-09-01T10:25:37.13806965+02:00
-updated: 2026-09-01T10:52:04.69285299+02:00
+updated: 2026-09-01T11:19:07.291959513+02:00
 assignee: sophie
 tags:
     - backend
@@ -74,3 +74,8 @@ Ein echter Fall aus der Abnahme (01.09.2026, Rechnung des Nutzers, einseitig, `e
 Das stuetzt die erste der beiden Vermutungen in diesem Ticket: Die Tabellenerkennung arbeitet an echten Dokumenten, und `tabelle.pdf` war womoeglich nie die richtige Vorlage fuer den Platzhalterfall. Wer das Ticket umsetzt, sucht die Vorlage also nicht in einer gewoehnlichen Tabelle, sondern in dem, was akar-21 gebaut hat — elf Spalten, vierzehn Zeilen.
 
 Dasselbe Dokument enthaelt einen Platzhalter an anderer Stelle: `<!-- image -->` als erste Zeile, das Logo im Briefkopf. Ob dazu eine Warnung erschienen ist, ist noch offen und beim Nutzer erfragt. Faellt die Antwort "keine Warnung", gehoert das hierher — dann greift der Zaehlweg im Alltagsfall nicht.
+
+[[2026-09-01]] Tue 11:19
+Halbe Entwarnung zum zweiten Punkt (Quelltext nachgesehen, 01.09.2026): **`_placeholder_warnings()` bildet sehr wohl eine Zahl.** Bei `count == 1` heisst es "ein Bild durch einen Platzhalter", ab zwei `f"{count} Bilder durch Platzhalter"`. Die Vorgabe aus BE-14 ist also erfuellt; akars Beobachtung galt dem gepruefen Einzelfall, in dem tatsaechlich nur ein Platzhalter vorkam.
+
+Was bleibt, ist der Test: Der Mehrzahlfall ist nirgends gefahren. Dieses Ticket braucht dafuer keine Korrektur mehr, nur die Abdeckung — ein Fall mit zwei oder mehr Platzhaltern, der den Wortlaut festhaelt.
