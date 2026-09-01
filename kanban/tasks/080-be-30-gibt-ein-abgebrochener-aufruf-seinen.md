@@ -44,7 +44,7 @@ sieht. Die Antwort hängt an dieser Messung:
 
 ## Vorgaben
 
-Zuerst **messen, nicht ändern**: Einen Aufruf starten, die Verbindung клиентseitig
+Zuerst **messen, nicht ändern**: Einen Aufruf starten, die Verbindung clientseitig
 schließen, und feststellen, ob ein zweiter und dritter Aufruf durchkommen. Das
 Ergebnis gehört wörtlich in die Ticketnotiz — es entscheidet über #79 und über die
 Zeitgrenze.
