@@ -614,3 +614,9 @@
 {"timestamp":"2026-09-01T17:41:03.274365103+02:00","action":"move","task_id":85,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-01T17:44:20.715604528+02:00","action":"edit","task_id":51,"detail":"PROC-5 · Abhaengigkeit vor der Freigabe setzen, nicht danach"}
 {"timestamp":"2026-09-01T17:44:21.54553919+02:00","action":"move","task_id":51,"detail":"backlog -\u003e done"}
+{"timestamp":"2026-09-01T17:50:55.343241151+02:00","action":"edit","task_id":84,"detail":"BE-32 · Die erste Umwandlung dauert doppelt so lang wie die zweite"}
+{"timestamp":"2026-09-01T17:51:35.380920869+02:00","action":"edit","task_id":84,"detail":"BE-32 · Die erste Umwandlung dauert doppelt so lang wie die zweite"}
+{"timestamp":"2026-09-01T17:51:36.141869339+02:00","action":"move","task_id":84,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T17:51:36.961847941+02:00","action":"edit","task_id":84,"detail":"BE-32 · Die erste Umwandlung dauert doppelt so lang wie die zweite"}
+{"timestamp":"2026-09-01T17:51:36.962227688+02:00","action":"release","task_id":84,"detail":"sophie-32"}
+{"timestamp":"2026-09-01T17:52:56.454992046+02:00","action":"edit","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}

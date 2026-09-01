@@ -4,7 +4,7 @@ title: BE-17 · Heisst ready wirklich ready?
 status: done
 priority: high
 created: 2026-09-01T10:24:25.93867698+02:00
-updated: 2026-09-01T17:28:34.458586678+02:00
+updated: 2026-09-01T17:52:56.454022701+02:00
 started: 2026-09-01T12:40:23.978293179+02:00
 completed: 2026-09-01T12:53:49.630901447+02:00
 assignee: sophie
@@ -244,3 +244,18 @@ Nichts fällt knapp aus, in keiner Richtung. Das Vorladen beider Pipelines bleib
 **Zum Nebenbefund, dass `healthy` nach 6,3 s kommt, das Vorladen aber erst bei t+11 s durch ist: kein Folgeticket.** Das Fenster ist rund fünf Sekunden lang, und wer es trifft, zahlt eine langsamere erste Umwandlung — keinen Fehlschlag. `healthy` auf das Vorladen warten zu lassen, verzögerte die Verfügbarkeit des Containers für nichts: Die API antwortet nach 2,8 s und ist dann auch benutzbar.
 
 Der zweite Nebenbefund ist der eigentliche Rest dieser Frage und liegt als #84 (BE-32): Die **erste** Umwandlung dauerte 28,2 s gegen 12,0 s bei der zweiten, obwohl beide nach dem Vorladen liefen. Da ist etwas, das dieses Ticket nicht abdeckt.
+
+[[2026-09-01]] Tue 17:52
+**Nachtrag aus #84 (BE-32, 01.09.2026): Die Umsetzung dieses Tickets reichte nicht so weit, wie wir beide angenommen haben.**
+
+`_warmup` legte zwei `DocumentConverter` an — und die laden nichts. Docling baut die Pipeline erst, wenn das erste Dokument des Formats ankommt (`_get_pipeline`, Schlüssel `(pipeline_class, options_hash)`). Gemessen im Abbild:
+
+    Konstruktor                  0,8 s
+    initialize_pipeline(PDF)    19,3 s   (Layout 9,7 s + Tabellenmodell 6,0 s)
+    initialize_pipeline(IMAGE)   0,0 s   (teilt sich die Pipeline mit PDF)
+
+„Beide Pipelines vorladen" hieß also: zwei Konverter bauen und die Modelle liegen lassen. Die 8,5 s, die dieses Ticket als Ladezeit gemessen hatte, waren etwas anderes als das, was die erste Umwandlung dann noch einmal kostete.
+
+**Die Entscheidung war richtig, die Ausführung unvollständig** — und beides ist erst durch #84 sichtbar geworden. Dort ist es behoben: Der Warmlauf ruft jetzt `initialize_pipeline`, der Start kostet 3,2 s mehr und die erste Umwandlung 13,4 s weniger.
+
+Bemerkenswert im Rückblick: Dass `IMAGE` sich die Pipeline mit PDF teilt und 0,0 s kostet, bestätigt nachträglich, dass „beide vorladen" nie etwas Teures verlangt hat. Die Sorge um doppelten Speicher, auf der die Entscheidung mit ruhte, war gegenstandslos — nur wusste das damals niemand.
