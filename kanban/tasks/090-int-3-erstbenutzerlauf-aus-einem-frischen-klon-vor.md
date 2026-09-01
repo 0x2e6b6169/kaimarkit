@@ -4,7 +4,7 @@ title: INT-3 · Erstbenutzerlauf aus einem frischen Klon vor dem ersten Tag
 status: backlog
 priority: high
 created: 2026-09-01T18:29:48.381602755+02:00
-updated: 2026-09-01T18:37:01.336460167+02:00
+updated: 2026-09-01T21:29:50.542752975+02:00
 assignee: akar
 tags:
     - infra
@@ -72,3 +72,26 @@ Zwei Punkte, die zum ersten Tag gehören und noch offen sind:
 - 149 Commits sind nie gepusht worden; dieser Tag wäre die erste Auslieferung überhaupt.
 
 Beides ist Sache des Nutzers und kein Ticket — er hat dafür eigene Werkzeuge.
+
+[[2026-09-01]] Tue 21:29
+**Teilweise überholt (01.09.2026): Der Nutzer ist den Weg selbst gegangen — auf einem echten VPS, mit v0.1.0.**
+
+Gegangen und belegt:
+
+- Klon des Tags über SSH, `detached HEAD`
+- `cp docker/.env.example docker/.env`, vier Werte gesetzt
+- `make up-authelia`, Erstbau ohne Cache
+- Container `running / healthy`
+- Traefik registriert beide Router, `status: enabled`
+- Hinter Authelia erreichbar unter `kaimarkit.0x2e6b6169.de`
+
+Drei Befunde sind dabei entstanden, die kein Lauf im Arbeitsbaum gefunden hätte: #91 (fehlende Docker-Gruppenzugehörigkeit besteht die dokumentierte Voraussetzungsprüfung), #92 (Domänenbedingung und `access_control` bei Authelia) und die Beobachtung zu den Beispielwerten in `.env.example`.
+
+**Was dieses Ticket noch abdecken würde und der VPS-Lauf nicht:**
+
+- die volle Testsuite auf einem frischen Klon (`pytest -q -rs`, `ruff`, `npm run test`, `npm run typecheck`)
+- `make docs-serve` und `mkdocs build --strict` aus dem Klon
+- `make docs-release` von null — der `gh-pages`-Zweig existiert nicht und wurde nie neu angelegt
+- der Fall **ohne** `authelia@docker`: Router `disabled`, überall 404 — beim Nutzer nicht eingetreten, weil er Authelia betreibt
+
+Das ist deutlich weniger als der ursprüngliche Zuschnitt und rechtfertigt keinen vollen Erstbau mehr. **Vor dem Neuschneiden entscheidet der PO, ob der Rest ein eigenes, kleineres Ticket wird oder entfällt.**
