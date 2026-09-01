@@ -7,3 +7,7 @@ kanban/activity.jsonl merge=union
 # wurden. Das PDF ist unkomprimiert und sieht deshalb wie Text aus; wandelt jemand
 # darin die Zeilenenden um, stimmen die Offsets der xref-Tabelle nicht mehr.
 backend/tests/fixtures/** binary
+
+# Das Bauskript der Beispieldateien ist Python, kein Beispiel: Sein Diff gehoert
+# lesbar. Ohne diese Zeile faellt es unter die Binaerregel darueber.
+backend/tests/fixtures/build_fixtures.py text diff merge
