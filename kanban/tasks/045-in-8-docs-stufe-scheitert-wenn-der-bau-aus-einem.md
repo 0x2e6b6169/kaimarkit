@@ -1,16 +1,18 @@
 ---
 id: 45
 title: IN-8 · Docs-Stufe scheitert, wenn der Bau aus einem Worktree laeuft
-status: todo
+status: in-progress
 priority: high
 created: 2026-08-31T17:07:30.823818638+02:00
-updated: 2026-09-01T09:58:09.230461054+02:00
+updated: 2026-09-01T11:43:56.64238724+02:00
 assignee: akar
 tags:
     - infra
     - bug
 depends_on:
     - 50
+claimed_by: akar-22
+claimed_at: 2026-09-01T11:43:56.64238724+02:00
 class: standard
 ---
 

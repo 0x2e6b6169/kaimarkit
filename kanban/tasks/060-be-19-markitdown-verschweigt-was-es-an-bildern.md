@@ -1,10 +1,11 @@
 ---
 id: 60
 title: BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst
-status: backlog
+status: todo
 priority: medium
 created: 2026-09-01T11:23:01.248130894+02:00
-updated: 2026-09-01T11:23:01.248130894+02:00
+updated: 2026-09-01T12:03:27.521240605+02:00
+started: 2026-09-01T12:03:27.525130027+02:00
 assignee: sophie
 tags:
     - backend

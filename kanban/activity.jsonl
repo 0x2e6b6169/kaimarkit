@@ -383,3 +383,8 @@
 {"timestamp":"2026-09-01T11:42:53.055473269+02:00","action":"edit","task_id":50,"detail":"IN-9 · Abnahmefassung: laufender Dienst, im Browser des Hosts pruefbar"}
 {"timestamp":"2026-09-01T11:42:54.320425588+02:00","action":"edit","task_id":50,"detail":"IN-9 · Abnahmefassung: laufender Dienst, im Browser des Hosts pruefbar"}
 {"timestamp":"2026-09-01T11:42:54.32066737+02:00","action":"release","task_id":50,"detail":"akar-21"}
+{"timestamp":"2026-09-01T11:43:09.590067014+02:00","action":"edit","task_id":50,"detail":"IN-9 · Abnahmefassung: laufender Dienst, im Browser des Hosts pruefbar"}
+{"timestamp":"2026-09-01T11:43:56.647664767+02:00","action":"move","task_id":45,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T12:03:26.734375124+02:00","action":"edit","task_id":59,"detail":"IN-11 · 120 Sekunden Zeitgrenze sind fuer Docling zu knapp"}
+{"timestamp":"2026-09-01T12:03:27.132759903+02:00","action":"create","task_id":61,"detail":"FE-9 · Die Enginewahl sagt nicht, was sie kostet"}
+{"timestamp":"2026-09-01T12:03:27.525366373+02:00","action":"move","task_id":60,"detail":"backlog -\u003e todo"}

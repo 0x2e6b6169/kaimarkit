@@ -4,7 +4,7 @@ title: 'IN-9 · Abnahmefassung: laufender Dienst, im Browser des Hosts pruefbar'
 status: done
 priority: high
 created: 2026-09-01T08:52:15.226215349+02:00
-updated: 2026-09-01T11:42:54.319663242+02:00
+updated: 2026-09-01T11:43:09.589529125+02:00
 started: 2026-09-01T11:42:06.323336252+02:00
 completed: 2026-09-01T11:42:06.323336252+02:00
 assignee: akar
