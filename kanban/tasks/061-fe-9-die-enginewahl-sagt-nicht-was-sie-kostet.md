@@ -1,16 +1,14 @@
 ---
 id: 61
 title: FE-9 · Die Enginewahl sagt nicht, was sie kostet
-status: in-progress
+status: done
 priority: high
 created: 2026-09-01T12:03:27.128646032+02:00
-updated: 2026-09-01T12:05:05.981598039+02:00
+updated: 2026-09-01T12:10:54.04520561+02:00
 assignee: benny
 tags:
     - frontend
     - ux
-claimed_by: benny-10
-claimed_at: 2026-09-01T12:05:05.981598039+02:00
 class: standard
 ---
 
@@ -69,3 +67,25 @@ erreichbar sein; die Barrierefreiheit aus FE-7 gilt weiter.
 - Der Hinweis ist mit der Tastatur erreichbar und fuer Screenreader angebunden.
 - `npm run test` und `npm run typecheck` bleiben gruen.
 - Gegenprobe: Ohne die Aenderung faellt der neue Test durch.
+
+
+## Ergebnis (benny-10)
+
+Der Hinweis steht offen unter der Auswahl in `EngineSelect.vue` — je ein Satz zu
+docling und zu markitdown, kein Tooltip, damit man ihn ohne Maus liest. Er haengt
+per `aria-describedby" am Auswahlfeld, ein Screenreader liest ihn beim Anspringen
+mit.
+
+- docling: liest gruendlich und braucht dafuer oft Minuten je Dokument; bei
+  gescannten Seiten ohne Textebene fuehrt kein Weg daran vorbei.
+- markitdown: ist nach Sekundenbruchteilen fertig, verliert dabei aber
+  gelegentlich eine Tabelle oder das Layout.
+
+pandoc bekommt keinen Satz: Es liest Formate, die sonst niemand liest, und stellt
+damit keine Wahl zwischen schnell und gruendlich. Faellt eine der beiden Engines
+aus der Auswahl, verschwindet ihr Satz mit ihr. `OptionsPanel.vue` richtet nur die
+Zeile neu aus (`items-start`/`items-baseline`), weil das Feld jetzt hoeher ist.
+`engine=auto` bleibt Voreinstellung, am Backend aendert sich nichts.
+
+86 Tests gruen, typecheck gruen. Gegenprobe gelaufen: ohne die Aenderung fallen
+5 der neuen Tests durch.

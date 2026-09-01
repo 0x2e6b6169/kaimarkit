@@ -2,16 +2,13 @@
 id: 60
 title: BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst
 status: todo
-priority: medium
+priority: high
 created: 2026-09-01T11:23:01.248130894+02:00
-updated: 2026-09-01T12:10:22.698034118+02:00
-started: 2026-09-01T12:03:27.525130027+02:00
+updated: 2026-09-01T12:10:53.491602339+02:00
 assignee: sophie
 tags:
     - backend
     - bug
-blocked: true
-block_reason: markitdown hinterlaesst keine zaehlbare Marke
 class: standard
 ---
 

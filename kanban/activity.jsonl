@@ -413,3 +413,6 @@
 {"timestamp":"2026-09-01T12:10:20.905617449+02:00","action":"edit","task_id":62,"detail":"BE-20 · Drei Stellen behaupten einen Alt-Text, den es bei PDF nicht gibt"}
 {"timestamp":"2026-09-01T12:10:21.513639107+02:00","action":"move","task_id":62,"detail":"todo -\u003e done"}
 {"timestamp":"2026-09-01T12:10:22.705173082+02:00","action":"move","task_id":60,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-01T12:10:53.492141942+02:00","action":"edit","task_id":60,"detail":"BE-19 · MarkItDown verschweigt, was es an Bildern weglaesst"}
+{"timestamp":"2026-09-01T12:10:54.057173692+02:00","action":"edit","task_id":61,"detail":"FE-9 · Die Enginewahl sagt nicht, was sie kostet"}
+{"timestamp":"2026-09-01T12:10:54.057571788+02:00","action":"release","task_id":61,"detail":"benny-10"}
