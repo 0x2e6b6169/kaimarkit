@@ -220,6 +220,36 @@ def test_library_failure_becomes_engine_failed(
     assert "bericht.pdf" in excinfo.value.detail
 
 
+def test_a_failure_names_the_file_but_not_its_path(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Der Weg des Befundes aus INT-2: Docling scheitert, der Pfad bleibt drinnen.
+
+    Der Wortlaut stammt aus dem Container-Lauf vom 31.08.2026. Docling nennt darin
+    den Pfad zweimal; die Antwort nennt ihn kein Mal mehr und den Grund weiter.
+    """
+    kaputt = tmp_path / "kaputt.pdf"
+    install(
+        monkeypatch,
+        FakePipeline(
+            fails=(
+                f"Conversion failed for: {kaputt} with status: failure. Errors: "
+                "docling-parse could not load document 46ef4e69 : Failed to load "
+                f"document with key key={kaputt}"
+            )
+        ),
+    )
+    converter = adapter.DoclingConverter()
+
+    with pytest.raises(EngineFailed) as excinfo:
+        converter.convert(kaputt, ConvertOptions())
+
+    detail = excinfo.value.detail
+    assert str(tmp_path) not in detail
+    assert "kaputt.pdf" in detail
+    assert "docling-parse could not load document" in detail
+
+
 def test_get_converter_starts_the_warmup(monkeypatch: pytest.MonkeyPatch) -> None:
     fake = FakePipeline()
     install(monkeypatch, fake)
