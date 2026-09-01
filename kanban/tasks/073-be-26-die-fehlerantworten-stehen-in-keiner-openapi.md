@@ -1,14 +1,16 @@
 ---
 id: 73
 title: BE-26 · Die Fehlerantworten stehen in keiner OpenAPI-Fassung
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-01T12:53:38.556719389+02:00
-updated: 2026-09-01T12:53:38.556719389+02:00
+updated: 2026-09-01T12:57:07.751804073+02:00
 assignee: sophie
 tags:
     - backend
     - api
+claimed_by: sophie-22
+claimed_at: 2026-09-01T12:57:07.751804073+02:00
 class: standard
 ---
 

@@ -1,17 +1,16 @@
 ---
 id: 56
 title: BE-17 · Heisst ready wirklich ready?
-status: in-progress
+status: done
 priority: high
 created: 2026-09-01T10:24:25.93867698+02:00
-updated: 2026-09-01T12:46:42.23484362+02:00
+updated: 2026-09-01T12:54:30.532325268+02:00
 started: 2026-09-01T12:40:23.978293179+02:00
+completed: 2026-09-01T12:53:49.630901447+02:00
 assignee: sophie
 tags:
     - backend
     - bug
-claimed_by: sophie-20
-claimed_at: 2026-09-01T12:46:42.245864236+02:00
 class: standard
 ---
 
@@ -101,3 +100,52 @@ Bisher gemessen waren 1,77 GB von 6 GB — es ist Platz, aber Platz ist keine Me
 **Faellt eine der Zahlen deutlich schlechter aus als erwartet, wird uebergeben**, nicht
 auf den anderen Weg gewechselt. Der ist eine Schnittstellenaenderung und gehoert dann
 neu geschnitten.
+
+
+[[2026-09-01]] Tue — umgesetzt (sophie-20), Branch task/56-beide-pipelines, Commit 5dfe6fe
+
+**Weg: beide Pipelines vorladen, `ready` bleibt, wie es ist** — der Entscheidung des PO
+folgend. `_warmup` baut jetzt beide OCR-Einstellungen nacheinander, die eingestellte
+Voreinstellung zuerst: Sie wird am ehesten verlangt, und wer die andere waehlt, wartet
+hoechstens an der Sperre in `_pipeline` statt auf einen zweiten Ladevorgang. Scheitert
+die erste, endet der Warmlauf — fehlt die Bibliothek, ist auch die zweite nicht zu bauen,
+und `state()` meldet weiterhin `unavailable`.
+
+**Was bleibt und bewusst bleibt:** Zwischen der ersten und der zweiten Pipeline meldet
+`/api/capabilities` `ready`, waehrend eine der beiden Einstellungen noch fehlt — rund
+achteinhalb Sekunden. Das Fenster steht im Modulkopf von `docling.py` und in
+`docs/betrieb/lokal.md`, statt verschwiegen zu werden. Wer dort die fehlende Einstellung
+verlangt, wartet an der Sperre und bekommt ein richtiges Ergebnis, nur spaeter.
+
+Modulkopf berichtigt: keine Minuten mehr, sondern die gemessenen achteinhalb Sekunden je
+Pipeline. Dieselbe Unwahrheit stand im Docstring von `tests/test_lifespan.py` und ist dort
+mitberichtigt. `docs/betrieb/lokal.md` (Abschnitt „Drei Schritte") sagt jetzt, was
+geschieht: `healthy` heisst, dass der Dienst laeuft, nicht dass Docling geladen hat; der
+Warmlauf baut zwei Pipelines zu je rund achteinhalb Sekunden; wer in dieser Zeit ein PDF
+schickt, bekommt es ueber `engine=auto` von MarkItDown gewandelt.
+
+**Tests.** Neu: `test_warmup_builds_both_ocr_pipelines` (nach dem Warmlauf stehen beide,
+und keine Umwandlung baut danach noch etwas) und
+`test_warmup_builds_the_configured_setting_first`. Rot vor gruen, gegen den unveraenderten
+Code ausgefuehrt: `3 failed, 13 passed`, dreimal `assert [True] == [False, True]` — in
+beiden neuen Tests und in `test_get_converter_starts_the_warmup`. Danach `116 passed,
+4 deselected` (`pytest -q`), `4 skipped` bei `-m slow` (docling ist lokal nicht
+installiert und darf es in der geteilten Umgebung nicht werden), `ruff check .` sauber.
+
+**Zwei Zahlen bleiben offen — im Container zu pruefen:**
+
+- **Zeit bis `healthy`.** Vom Warmlauf unberuehrt: Der Healthcheck ruft `/api/health`,
+  und diese Antwort haengt nicht an den Modellen. Gemessen ist das hier nicht; die
+  Aussage ist aus dem Quelltext gelesen (`docker/docker-compose.yml`, `app/api/meta.py`).
+- **Speicherzuwachs durch die zweite Pipeline.** Nicht gemessen. Vorher standen 1,77 GB
+  von 6 GB. Der Zuwachs sind die Modelle einer zweiten Pipeline samt EasyOCR; er faellt
+  nacheinander an, es gibt also keine doppelte Spitze. Faellt er deutlich hoeher aus als
+  erwartet, gehoert der Weg neu geschnitten.
+
+Beides ist ohne docling und ohne Containerbau nicht zu belegen und gehoert der
+Infrastruktur-Lane.
+
+**Befund, nicht geaendert (war vorher schon falsch):** `backend/app/main.py:47` sagt im
+Lifespan-Docstring, ohne das Vorladen wartete der erste Nutzer „minutenlang";
+`docs/betrieb/konfiguration.md:144` legt nahe, der Healthcheck warte auf die Modelle.
+Beide Stellen gehoeren anderen Tickets.

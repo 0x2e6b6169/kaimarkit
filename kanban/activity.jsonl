@@ -480,3 +480,9 @@
 {"timestamp":"2026-09-01T12:51:20.415241176+02:00","action":"release","task_id":71,"detail":"sophie-19"}
 {"timestamp":"2026-09-01T12:53:02.358993293+02:00","action":"move","task_id":72,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-01T12:53:38.570396133+02:00","action":"create","task_id":73,"detail":"BE-26 · Die Fehlerantworten stehen in keiner OpenAPI-Fassung"}
+{"timestamp":"2026-09-01T12:53:49.631279242+02:00","action":"move","task_id":56,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T12:53:50.33975114+02:00","action":"edit","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}
+{"timestamp":"2026-09-01T12:53:50.340189553+02:00","action":"release","task_id":56,"detail":"sophie-20"}
+{"timestamp":"2026-09-01T12:54:30.533074443+02:00","action":"edit","task_id":56,"detail":"BE-17 · Heisst ready wirklich ready?"}
+{"timestamp":"2026-09-01T12:57:07.765757339+02:00","action":"move","task_id":73,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T12:57:48.696807443+02:00","action":"create","task_id":74,"detail":"BE-27 · Zwei Stellen beschreiben das Vorladen falsch"}
