@@ -536,3 +536,13 @@
 {"timestamp":"2026-09-01T13:26:50.822172924+02:00","action":"move","task_id":52,"detail":"backlog -\u003e todo"}
 {"timestamp":"2026-09-01T13:26:51.486980449+02:00","action":"move","task_id":53,"detail":"backlog -\u003e todo"}
 {"timestamp":"2026-09-01T13:26:52.178858445+02:00","action":"edit","task_id":53,"detail":"DOC-10 · Docling-Abschnitt nennt seine Warnung nicht"}
+{"timestamp":"2026-09-01T13:27:53.143373496+02:00","action":"move","task_id":52,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T13:28:26.641401392+02:00","action":"move","task_id":53,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-01T13:31:37.700603868+02:00","action":"edit","task_id":53,"detail":"DOC-10 · Docling-Abschnitt nennt seine Warnung nicht"}
+{"timestamp":"2026-09-01T13:31:49.271715317+02:00","action":"move","task_id":53,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T13:32:07.44572933+02:00","action":"edit","task_id":53,"detail":"DOC-10 · Docling-Abschnitt nennt seine Warnung nicht"}
+{"timestamp":"2026-09-01T13:32:07.446418739+02:00","action":"release","task_id":53,"detail":"sophie-28"}
+{"timestamp":"2026-09-01T13:39:29.793785688+02:00","action":"move","task_id":52,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-01T13:39:47.570739765+02:00","action":"edit","task_id":52,"detail":"BE-16 · Zwei fast gleiche Docling-Attrappen zusammenlegen"}
+{"timestamp":"2026-09-01T13:39:47.571212508+02:00","action":"release","task_id":52,"detail":"sophie-27"}
+{"timestamp":"2026-09-01T13:40:14.675077472+02:00","action":"edit","task_id":52,"detail":"BE-16 · Zwei fast gleiche Docling-Attrappen zusammenlegen"}

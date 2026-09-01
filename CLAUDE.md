@@ -233,6 +233,13 @@ Jeder Ticketrumpf hat denselben Aufbau: **Ziel**, **Eigene Dateien**, **Vorgaben
 **Prüfung**. Der letzte Abschnitt ist der wichtigste: Er ist es, der einen Subagenten
 allein entscheiden lässt, ob er fertig ist, statt zurückzufragen.
 
+**Eine Prüfung, die vor der Arbeit schon grün ist, prüft nichts.** Zweimal an einem
+Tag ist eine bestanden worden, ohne etwas zu belegen: `IN-8` verlangte einen Zweig
+`gh-pages`, den dieses Repo gar nicht hat, und `BE-16` zählte mit `grep` einen
+Bezeichner, den es im Projekt nie gab — beide Male stand die Null schon vorher da.
+Wer eine Prüfung schreibt, die kein Test ist, belegt einmal, dass sie **vor** der
+Arbeit fehlschlägt. Das ist dieselbe Rot-vor-grün-Regel, die für Tests längst gilt.
+
 **Weicht die Prüfung ab, ist zuerst die Prüfung verdächtig, nicht die Arbeit.** Wer
 eine Vorgabe nicht erfüllen kann, meldet die Abweichung und übergibt das Ticket,
 statt die Zahl passend zu machen. Gemeint ist die Annahme hinter der Prüfung; ein
