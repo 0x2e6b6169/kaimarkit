@@ -356,3 +356,4 @@
 {"timestamp":"2026-09-01T09:12:10.325976354+02:00","action":"release","task_id":47,"detail":"sophie-13"}
 {"timestamp":"2026-09-01T09:12:51.775580357+02:00","action":"edit","task_id":47,"detail":"BE-14 · Ein Platzhalter statt Inhalt bleibt ohne Warnung"}
 {"timestamp":"2026-09-01T09:13:03.718256717+02:00","action":"edit","task_id":45,"detail":"IN-8 · Docs-Stufe scheitert, wenn der Bau aus einem Worktree laeuft"}
+{"timestamp":"2026-09-01T09:14:12.85877094+02:00","action":"create","task_id":53,"detail":"DOC-10 · Docling-Abschnitt nennt seine Warnung nicht"}
