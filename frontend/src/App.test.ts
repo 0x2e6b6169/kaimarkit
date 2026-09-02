@@ -20,11 +20,13 @@ import type { CapabilitiesResponse, ConversionEntry } from './types'
 
 const api = vi.hoisted(() => ({
   fetchCapabilities: vi.fn(),
+  fetchHealth: vi.fn(),
   convertFile: vi.fn(),
 }))
 
 vi.mock('./api', () => ({
   fetchCapabilities: api.fetchCapabilities,
+  fetchHealth: api.fetchHealth,
   convertFile: api.convertFile,
   messageFromError: (cause: unknown) =>
     cause instanceof Error && cause.message ? cause.message : String(cause),
@@ -301,5 +303,37 @@ describe('App', () => {
 
     expect(wrapper.find('[data-test="capabilities-error"]').exists()).toBe(false)
     expect(wrapper.text()).toContain('Angenommen werden .docx · .epub · .pdf.')
+  })
+
+  it('zeigt die Version des Dienstes unverändert an', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    // So sieht der Wert aus, sobald er aus dem Git-Tag stammt. Er ist eine
+    // undurchsichtige Zeichenkette: Was kommt, steht da — ungekürzt.
+    api.fetchHealth.mockResolvedValue({ status: 'ok', version: 'v0.1.0-12-ga22a6c5' })
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('v0.1.0-12-ga22a6c5')
+  })
+
+  it('schweigt, wenn die Version nicht zu haben ist', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    api.fetchHealth.mockRejectedValue(new Error('Der Dienst ist nicht erreichbar.'))
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    // Kein Banner, kein Platzhalter, keine Zeile: An der Version hängt nichts,
+    // wer sie nicht kennt, kann trotzdem umwandeln.
+    expect(wrapper.find('[data-test="version"]').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Version')
+    expect(wrapper.findAll('[role="alert"]')).toHaveLength(0)
+
+    // Und die Seite steht wie zuvor.
+    expect(wrapper.text()).toContain('Angenommen werden .docx · .epub · .pdf.')
+    expect(wrapper.text()).toContain('Noch keine Dateien ausgewählt.')
   })
 })
