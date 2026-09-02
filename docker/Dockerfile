@@ -203,6 +203,21 @@ COPY --from=docs --chown=kaimarkit:kaimarkit /docs-site /opt/kaimarkit/docs
 WORKDIR /opt/kaimarkit
 USER kaimarkit
 
+# Der Stand, aus dem gebaut wurde. Das Makefile ermittelt ihn mit "git describe"
+# und reicht ihn als Bau-Argument herein; im Abbild steht er als ENV, und der
+# Dienst meldet ihn unter /api/health. Nichts davon ruft git auf: Die Docs-Stufe
+# haengt ".git" als Bind-Mount ein, die Laufzeit sieht es nie.
+#
+# Leer ist ein zulaessiger Wert — Bau aus einem Tarball, Klon ohne Tags, keine
+# Installation von git. Der Bau laeuft dann durch, und das Backend faellt auf
+# __version__ aus app/__init__.py zurueck.
+#
+# Steht so weit unten, weil sich der Wert bei jedem Commit aendert: Alles nach
+# der ENV-Zeile faellt dann aus dem Zwischenspeicher. Oben im ENV-Block haette
+# das die Pandoc-Installation und die COPY-Schichten mitgerissen.
+ARG KAIMARKIT_VERSION=""
+ENV KAIMARKIT_VERSION=${KAIMARKIT_VERSION}
+
 EXPOSE 8000
 
 # Docling laedt seine Modelle beim Start. Die start_period deckt das ab.

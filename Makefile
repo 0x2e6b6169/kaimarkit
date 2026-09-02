@@ -15,6 +15,21 @@ COMPOSE_AUTHELIA := $(COMPOSE_TRAEFIK) -f docker/docker-compose.authelia.yml
 
 ENV_FILE := docker/.env
 
+# Der Stand des Arbeitsbaums, einmal hier ermittelt und an jedes Ziel
+# weitergereicht, das baut. Compose setzt ihn als Bau-Argument ein, das Abbild
+# behaelt ihn als ENV, und der Dienst meldet ihn unter /api/health. Im Container
+# fragt deshalb niemand nach Git.
+#
+# Drei Faelle liefern nichts: ein Bau aus einem Tarball ohne .git, ein Klon ohne
+# Tags und eine Maschine ohne git. Keiner davon darf den Bau abbrechen, deshalb
+# faengt 2>/dev/null den Fehler ab. Bleibt der Wert leer, wird er auch nicht
+# exportiert — sonst ueberschriebe die leere Zeichenkette einen Wert, den jemand
+# fuer genau diesen Fall in docker/.env von Hand eingetragen hat.
+KAIMARKIT_VERSION := $(shell git describe --tags --always --dirty 2>/dev/null)
+ifneq ($(KAIMARKIT_VERSION),)
+export KAIMARKIT_VERSION
+endif
+
 # Kein globales Python. Die Ziele rufen die Programme direkt aus der
 # pyenv-Umgebung auf, damit kein aktiviertes Shell-Profil noetig ist.
 PYENV_ROOT ?= $(HOME)/.pyenv
