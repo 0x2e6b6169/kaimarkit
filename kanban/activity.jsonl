@@ -648,3 +648,4 @@
 {"timestamp":"2026-09-01T21:29:50.165038983+02:00","action":"edit","task_id":92,"detail":"DOC-14 · KAIMARKIT_DOMAIN muss unter Authelias Cookie-Domaene liegen"}
 {"timestamp":"2026-09-01T21:29:50.543839258+02:00","action":"edit","task_id":90,"detail":"INT-3 · Erstbenutzerlauf aus einem frischen Klon vor dem ersten Tag"}
 {"timestamp":"2026-09-01T21:31:57.846764526+02:00","action":"edit","task_id":89,"detail":"IN-18 · Die Compose-Dateien mischen Umschrift und Umlaute"}
+{"timestamp":"2026-09-02T15:29:39.539637735+02:00","action":"create","task_id":93,"detail":"FE-8 · Verweis auf das GitHub-Repository im Kopf"}
