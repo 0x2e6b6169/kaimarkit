@@ -1,13 +1,13 @@
 ---
 id: 100
-title: FE-9 · Version des laufenden Dienstes im UI anzeigen
-status: in-progress
+title: FE-17 · Version des laufenden Dienstes im UI anzeigen
+status: done
 priority: high
 created: 2026-09-02T16:38:53.891700471+02:00
-updated: 2026-09-02T16:40:39.688507824+02:00
+updated: 2026-09-02T16:45:24.454003804+02:00
+started: 2026-09-02T16:44:51.656360456+02:00
+completed: 2026-09-02T16:44:51.656360456+02:00
 assignee: benny
-claimed_by: benny-18
-claimed_at: 2026-09-02T16:40:39.688507824+02:00
 class: standard
 ---
 
@@ -63,3 +63,13 @@ nichts blockieren; die Dropzone ist bedienbar, bevor die Antwort da ist.
 3. `npm run test` — Datei- **und** Testzahl beider Zeilen nennen.
 4. `npm run typecheck`
 5. `npm run build`
+
+## Ergebnis (benny-18)
+
+Die Version kommt aus `GET /api/health` und steht unverändert in einer Fußzeile unter dem Inhalt — klein, gedämpft, `data-test="version"`, mit der Beschriftung „Version“ davor. Neu in `api.ts`: `fetchHealth()`. `App.vue` holt den Wert einmal beim Laden über `loadVersion()`, ohne etwas aufzuhalten; ein Fehlschlag oder ein fehlendes Feld lässt die Zeile ganz weg — kein Banner, kein Platzhalter. Der GitHub-Verweis im Kopf bleibt unberührt, `types.ts` unverändert (`HealthResponse` stand schon da).
+
+Rot vor grün: Der neue Test „zeigt die Version des Dienstes unverändert an“ scheiterte vor der Änderung an `App.vue` — Test Files 1 failed | 8 passed (9), Tests 1 failed | 103 passed (104). Danach: Test Files 9 passed (9), Tests 104 passed (104). `npm run typecheck` und `npm run build` ohne Befund.
+
+Zum Testaufbau: `App.test.ts` attrappiert `./api` mit einer Fabrik, die jeden Export einzeln aufzählt. `fetchHealth` musste dort eingetragen werden, sonst liefe der Import ins Leere. Keine Seite unter `docs/` sagt durch diese Änderung etwas Unwahres; `contracts/api.md` blieb unberührt.
+
+Branch `task/100-version-anzeige`, mit `--no-ff` nach main gemergt.

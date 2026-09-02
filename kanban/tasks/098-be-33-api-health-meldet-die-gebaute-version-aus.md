@@ -1,13 +1,13 @@
 ---
 id: 98
 title: BE-33 · /api/health meldet die gebaute Version aus der Umgebung
-status: in-progress
+status: done
 priority: high
 created: 2026-09-02T16:37:59.663775366+02:00
-updated: 2026-09-02T16:39:13.381059082+02:00
+updated: 2026-09-02T16:44:22.335389688+02:00
+started: 2026-09-02T16:44:06.257124892+02:00
+completed: 2026-09-02T16:44:06.257124892+02:00
 assignee: sophie
-claimed_by: sophie-33
-claimed_at: 2026-09-02T16:39:13.381059082+02:00
 class: standard
 ---
 
@@ -67,3 +67,48 @@ und in einem Satz sagen, woher der Wert stammt und was der Rückfall ist.
    nicht nur „bestanden".
 3. `ruff check .` ohne Befund.
 4. Kein Treffer mehr für `"version": "0.1.0"` in `contracts/` und `docs/`.
+
+
+## Ergebnis (sophie-33)
+
+Merge `3d79cc9`, Zweig `task/98-health-version`.
+
+**Umsetzung.** `Settings.version` liest `KAIMARKIT_VERSION`; die Eigenschaft
+`Settings.service_version` liefert diesen Wert und fällt auf `__version__`
+zurück, wenn die Variable fehlt oder leer ist. `__version__` steht unverändert
+auf `0.1.0`. Kein Aufruf von `git` zur Laufzeit.
+
+**Eine Datei mehr als im Ticket: `backend/app/api/meta.py`.** Der Endpunkt
+`/api/health` liegt dort, nicht in `main.py`. Das Ticket schließt `main.py` und
+`models.py` aus; `meta.py` nennt es gar nicht, weil es den Endpunkt in `main.py`
+vermutete. Geändert ist dort nur die eine Zeile der Antwort und der Docstring.
+`main.py` und `models.py` sind unberührt.
+
+**Schnittstellen-Dreiklang geprüft, beide Dateien durften bleiben.**
+`backend/app/models.py` sagt `version: str`, `frontend/src/types.ts` sagt
+`version: string`. Beides bleibt richtig — es ändert sich nur der Beispielwert.
+
+**Rot vor grün belegt.** Vor der Änderung schlugen beide neuen Tests fehl:
+`AssertionError: assert '0.1.0' == 'v0.1.0-12-ga22a6c5'` und
+`AttributeError: 'Settings' object has no attribute 'service_version'`.
+
+Der zweite Prüfpunkt des Tickets wäre am Endpunkt allein schon vorher grün
+gewesen: Ohne die Variable antwortete `/api/health` auch bisher mit
+`__version__`. Der Test prüft deshalb zusätzlich, dass der Rückfall in
+`config.py` steht — ein fest verdrahtetes `__version__` im Endpunkt beantwortete
+dieselbe Frage richtig und ließe nie einen anderen Wert durch. Dazu die leere
+Variable als dritter Fall.
+
+**Tests.** `pytest -q -rs`: 152 gesammelt, 145 ausgewählt, 145 bestanden, 7
+abgewählt (`slow`), 0 übersprungen. Zwischen zwei Läufen hat eine andere Lane
+`markitdown` in die geteilte pyenv-Umgebung gelegt — der erste Lauf meldete noch
+130 bestanden und 8 übersprungen, der zweite 145 bestanden. `ruff check .` ohne
+Befund. Kein Treffer mehr für `"version": "0.1.0"` in `contracts/` und `docs/`.
+
+**Doku.** `contracts/api.md`, `docs/api.md` und `docs/schnellstart.md` zeigen
+jetzt `v0.1.0-12-ga22a6c5` und sagen, woher der Wert kommt und was der Rückfall
+ist.
+
+**Offen für akar (IN-19, #99):** `KAIMARKIT_VERSION` setzt niemand beim Bau —
+`docker/Dockerfile`, `docker/.env.example` und das Makefile sind unangetastet.
+Bis dahin meldet ein gebauter Container `0.1.0`.

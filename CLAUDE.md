@@ -238,6 +238,12 @@ Dateien aufgeführt, die gar keine Meldung enthielten (`errors.py`, `pandoc.py`)
 einmal eine übersehen, deren Text über zwei Zeilen umbrach. Ein Lauf über den
 Syntaxbaum unterscheidet Zeichenkette von Kommentar; `grep` kann es nicht.
 
+**Eine Datei auszuschließen ist eine Behauptung über den Quelltext.** BE-33 nannte
+`main.py` und `models.py` ausdrücklich als nicht betroffen — und übersah dabei
+`api/meta.py`, wo `/api/health` tatsächlich liegt. Der Ausschluss stimmte zufällig,
+die Liste nicht. Wer schreibt, welche Datei ein Ticket **nicht** anfasst, hat
+vorher nachgesehen, wo der Gegenstand steht; sonst gehört der Satz weg.
+
 **Wer ein Verhalten ändert, berichtigt im selben Merge, was dadurch falsch wird** —
 auch auf einer Seite, die ein anderes Ticket angelegt hat. Was schon vorher falsch
 war, wird gemeldet statt geändert. Eine Seite, die nach dem Merge etwas Unwahres

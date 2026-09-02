@@ -672,3 +672,12 @@
 {"timestamp":"2026-09-02T16:39:13.387213894+02:00","action":"move","task_id":98,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-02T16:40:39.704783482+02:00","action":"move","task_id":100,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-02T16:42:18.411467579+02:00","action":"edit","task_id":93,"detail":"FE-16 · Verweis auf das GitHub-Repository im Kopf"}
+{"timestamp":"2026-09-02T16:43:56.501539044+02:00","action":"edit","task_id":98,"detail":"BE-33 · /api/health meldet die gebaute Version aus der Umgebung"}
+{"timestamp":"2026-09-02T16:44:06.257738305+02:00","action":"move","task_id":98,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-02T16:44:22.335858325+02:00","action":"edit","task_id":98,"detail":"BE-33 · /api/health meldet die gebaute Version aus der Umgebung"}
+{"timestamp":"2026-09-02T16:44:22.336071688+02:00","action":"release","task_id":98,"detail":"sophie-33"}
+{"timestamp":"2026-09-02T16:44:40.097422645+02:00","action":"edit","task_id":100,"detail":"FE-9 · Version des laufenden Dienstes im UI anzeigen"}
+{"timestamp":"2026-09-02T16:44:40.097764909+02:00","action":"release","task_id":100,"detail":"benny-18"}
+{"timestamp":"2026-09-02T16:44:51.65661668+02:00","action":"move","task_id":100,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-02T16:45:03.343519117+02:00","action":"edit","task_id":100,"detail":"FE-9 · Version des laufenden Dienstes im UI anzeigen"}
+{"timestamp":"2026-09-02T16:45:24.454774329+02:00","action":"edit","task_id":100,"detail":"FE-17 · Version des laufenden Dienstes im UI anzeigen"}
