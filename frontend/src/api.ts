@@ -27,6 +27,7 @@ import type {
   ConvertOptions,
   ErrorCode,
   ErrorResponse,
+  HealthResponse,
 } from './types'
 
 const API_BASE = '/api'
@@ -86,6 +87,20 @@ export async function fetchCapabilities(): Promise<CapabilitiesResponse> {
     headers: { Accept: 'application/json' },
   })
   return (await response.json()) as CapabilitiesResponse
+}
+
+/**
+ * Der Stand des laufenden Dienstes. Die Oberfläche zeigt daraus nur die Version.
+ *
+ * `version` ist eine undurchsichtige Zeichenkette: Heute ist es `0.1.0`, sobald
+ * das Abbild aus dem Git-Tag baut, etwas wie `v0.1.0-12-ga22a6c5`. Wer sie
+ * anzeigt, gibt sie unverändert weiter.
+ */
+export async function fetchHealth(): Promise<HealthResponse> {
+  const response = await request('/health', {
+    headers: { Accept: 'application/json' },
+  })
+  return (await response.json()) as HealthResponse
 }
 
 /**

@@ -27,13 +27,41 @@ import MarkdownPreview from './components/MarkdownPreview.vue'
 import OptionsPanel from './components/OptionsPanel.vue'
 import { useCapabilities } from './composables/useCapabilities'
 import { useConversion } from './composables/useConversion'
-import { messageFromError } from './api'
+import { fetchHealth, messageFromError } from './api'
 import { ARCHIVE_FILENAME, downloadArchive, hasResult } from './download'
 
 const { entries, options, busy, enqueue, abort, remove } = useConversion()
 const { extensions, error: capabilitiesError, load, reload } = useCapabilities()
 
-onMounted(() => void load())
+/**
+ * Welchen Stand der Dienst fährt. Der Wert kommt aus `/api/health`, einmal beim
+ * Laden und danach nicht wieder.
+ *
+ * Zwei Dinge unterscheiden ihn von den Fähigkeiten. Er hält nichts auf: Die
+ * Dropzone nimmt Dateien an, lange bevor die Antwort da ist. Und sein Ausfall
+ * bleibt stumm — an der Version hängt kein Bedienschritt, wer sie nicht kennt,
+ * wandelt trotzdem um. Ein Fehlerbanner für eine Fußnote wäre aus dem
+ * Verhältnis.
+ *
+ * Die Zeichenkette geht unverändert auf den Bildschirm. Heute steht dort
+ * `0.1.0`, später etwas wie `v0.1.0-12-ga22a6c5`; welche Form sie hat,
+ * entscheidet der Dienst.
+ */
+const version = ref<string | null>(null)
+
+async function loadVersion(): Promise<void> {
+  try {
+    const health = await fetchHealth()
+    if (typeof health?.version === 'string' && health.version) version.value = health.version
+  } catch {
+    // Stillschweigen, siehe oben.
+  }
+}
+
+onMounted(() => {
+  void load()
+  void loadVersion()
+})
 
 /** Die Dateinamen schraenken die Enginewahl ein — siehe `OptionsPanel`. */
 const filenames = computed(() => entries.value.map((entry) => entry.filename))
@@ -209,6 +237,15 @@ async function downloadAll(): Promise<void> {
         </FileQueue>
       </section>
     </main>
+
+    <!--
+      Die Version. Sie steht unten, klein und gedämpft: Wer sie sucht, sucht
+      sie gezielt, und wer umwandeln will, braucht sie nicht. Bleibt
+      `/api/health` die Antwort schuldig, fehlt die Zeile ganz.
+    -->
+    <footer v-if="version" class="mx-auto w-full max-w-3xl px-4 pb-8 sm:px-6">
+      <p class="text-xs text-slate-500" data-test="version">Version {{ version }}</p>
+    </footer>
 
     <div class="sr-only" role="log" aria-live="polite" data-test="app-log">
       <p v-for="item in announcements" :key="item.id">{{ item.text }}</p>
