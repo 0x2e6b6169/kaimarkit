@@ -18,6 +18,13 @@ services:
       dockerfile: ${KAIMARKIT_DOCKERFILE}
       args:
         PANDOC_VERSION: ${PANDOC_VERSION}
+        # Der Stand, aus dem gebaut wird. Das Makefile ermittelt ihn mit
+        # "git describe" und exportiert ihn; steht er stattdessen in
+        # docker/.env, gilt der Wert von dort. Die Form "${VAR-}" ist hier
+        # Absicht: Ohne Git-Verlauf und ohne Eintrag bleibt der Wert leer, der
+        # Bau laeuft weiter, und der Dienst meldet __version__ aus dem
+        # Quelltext. Ohne den Bindestrich warnte Compose bei jedem Aufruf.
+        KAIMARKIT_VERSION: ${KAIMARKIT_VERSION-}
     image: ${KAIMARKIT_IMAGE}:${KAIMARKIT_TAG}
     container_name: ${KAIMARKIT_CONTAINER_NAME}
     restart: ${KAIMARKIT_RESTART_POLICY}

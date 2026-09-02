@@ -29,11 +29,40 @@ Dockerfile und nicht in der Umgebungsdatei.
 | `KAIMARKIT_DOCKERFILE` | `docker/Dockerfile` | Das Dockerfile, relativ zum Build-Kontext. |
 | `KAIMARKIT_PROJECT_NAME` | `kaimarkit` | Name des Compose-Projekts. Ohne ihn hieße es `docker`, nach dem Verzeichnis der Compose-Datei. |
 | `PANDOC_VERSION` | `3.6.4` | Pandoc kommt als `.deb` von GitHub, die Version steht fest. |
+| `KAIMARKIT_VERSION` | aus `git describe` | Der Stand, aus dem gebaut wird. Steht in `docker/.env.example` auskommentiert. |
 
 Wer aus einem zweiten Checkout baut, setzt die beiden ersten Variablen auf absolute
 Pfade; die Compose-Dateien bleiben dann unverändert. Zwei Feinheiten dabei:
 `KAIMARKIT_DOCKERFILE` muss relativ zu genau diesem Kontext liegen, und Docker sucht
 die `.dockerignore` in der Wurzel des dortigen Baums.
+
+### Welchen Stand der Dienst meldet
+
+`KAIMARKIT_VERSION` sagt, was wirklich läuft. Der Wert erscheint unter
+[`/api/health`](../api.md) und in der Fußzeile der Oberfläche. Ermittelt wird er
+einmal beim Bauen, auf der Maschine, die das `.git` hat:
+
+```bash
+git describe --tags --always --dirty
+```
+
+Auf dem Tag steht dort `v0.1.0`, zwölf Commits dahinter `v0.1.0-12-ga22a6c5`, und bei
+Änderungen im Arbeitsbaum kommt `-dirty` hinzu. Das Makefile ruft den Befehl auf und
+reicht das Ergebnis über `build.args` an den Bau weiter; das Abbild behält es als
+`ENV`. Der Container fragt nie selbst nach Git — er hat kein `.git`.
+
+Die Rückfallkette hat zwei Stufen:
+
+1. `KAIMARKIT_VERSION` aus der Umgebung, wie der Bau sie gesetzt hat.
+2. Ist die Variable leer oder fehlt sie, gilt `__version__` aus
+   `backend/app/__init__.py`.
+
+Die zweite Stufe greift in drei Fällen, und alle drei kommen vor: ein Bau aus einem
+Tarball ohne `.git`, ein Klon ohne Tags (`--depth 1` ohne `--tags`) und eine Maschine
+ohne `git`. Keiner davon bricht den Bau ab. Wer in einem dieser Fälle trotzdem einen
+genauen Stand melden will, trägt ihn in `docker/.env` von Hand ein; das Makefile
+überschreibt ihn nicht, weil es einen leeren Wert gar nicht erst weitergibt. Umgekehrt
+gilt: Wo `git describe` etwas liefert, gewinnt es gegen den Eintrag in der Datei.
 
 ## Anwendung
 
