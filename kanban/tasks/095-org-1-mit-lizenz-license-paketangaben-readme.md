@@ -1,10 +1,12 @@
 ---
 id: 95
 title: 'ORG-1 · MIT-Lizenz: LICENSE, Paketangaben, README'
-status: todo
+status: done
 priority: high
 created: 2026-09-02T16:29:00.805615873+02:00
-updated: 2026-09-02T16:29:00.805615873+02:00
+updated: 2026-09-02T16:34:28.604645964+02:00
+started: 2026-09-02T16:34:28.099256235+02:00
+completed: 2026-09-02T16:34:28.099256235+02:00
 assignee: akar
 class: standard
 ---
@@ -74,3 +76,43 @@ mitzuerledigen.
 4. `cd frontend && npm run build` läuft durch. `node -e "console.log(require('./package.json').license)"` gibt `MIT`.
 5. `mkdocs build --strict` ohne Warnung.
 6. `pytest -q -rs` im Backend unverändert grün — Sammelzahl mitnennen.
+
+
+
+## Ergebnis (akar-31)
+
+Rot vor grün belegt: `test -f LICENSE` schlug vor der Arbeit fehl, im Board-Home
+wie im Worktree.
+
+**Es wurde der SPDX-Ausdruck.** `license = "MIT"` in `[project]` von
+`backend/pyproject.toml`. Die Tabellenform war nicht nötig und der Klassifizierer
+ebensowenig: hatchling 1.30.1 nimmt den Zeichenketten-Ausdruck an, der Bau lief
+durch und die erzeugte `METADATA` (Metadata-Version 2.4) nennt
+`License-Expression: MIT`. Damit ist die Frage aus dem Rumpf entschieden — keine
+der beiden Formen ist gescheitert, die zweite kam gar nicht zum Zug.
+
+Prüfung:
+
+1. `LICENSE` beginnt mit `MIT License`, enthält `Copyright (c) 2026 kaimarkit
+   contributors` wörtlich und die Klausel `THE SOFTWARE IS PROVIDED "AS IS"`.
+   Unveränderter OSI-Text, keine Zusatzbedingung.
+2. Rot-Prüfung wie oben.
+3. `python -m build --wheel --no-isolation` durchgelaufen, `METADATA` nennt MIT.
+4. `npm run build` durchgelaufen (52 Module, 733 ms);
+   `node -e "console.log(require('./package.json').license)"` gibt `MIT`.
+5. `mkdocs build --strict` ohne Warnung. Der Satz in `docs/entwicklung.md` nennt
+   `LICENSE` als Dateinamen und nicht als Link — die Datei liegt oberhalb von
+   `docs/`, ein Link darauf wäre unter `--strict` eine Warnung.
+6. `pytest -q -rs`: 150 gesammelt, 143 ausgewählt, 143 bestanden, 7 abgewählt
+   (Marke `slow`).
+
+Der Satz steht als eigener Absatz direkt unter der Einleitung von
+`docs/entwicklung.md`, kein eigener Abschnitt, `mkdocs.yml` unberührt. Im README
+ist der Abschnitt `## Lizenz` ans Ende gekommen, zwei Sätze, mit Link auf
+`LICENSE`.
+
+Eigentum an `backend/pyproject.toml` fällt hiermit an BE-1 zurück.
+
+Befund für den PO: Die NOTICE-Frage für die Fremdbestandteile im Abbild (docling,
+markitdown, pandoc, Torch, vorgebackene Modelle) bleibt offen — dieses Ticket hat
+sie ausdrücklich nicht angefasst.
