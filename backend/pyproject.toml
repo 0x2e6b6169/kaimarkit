@@ -6,6 +6,7 @@ build-backend = "hatchling.build"
 name = "kaimarkit"
 description = "Wandelt Dokumente nach Markdown, damit man den Kontext sieht, den man einem LLM gibt."
 requires-python = ">=3.12"
+license = "MIT"
 dynamic = ["version"]
 dependencies = [
     "fastapi>=0.115",
