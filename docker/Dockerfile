@@ -138,24 +138,33 @@ RUN mkdocs build --site-dir /docs-site
 # nichts liest. Deshalb steht die Frage nach dem Verzeichnis vor dem ersten
 # Git-Aufruf und nicht erst vor dem zweiten.
 #
-# ".git" haengt als Bind-Mount ein und wird nicht kopiert: Es wird nur gelesen und
-# soll keine Schicht von zwoelf Megabyte anlegen. Am Zwischenspeicher aendert das
-# nichts — auch ein Bind-Mount geht mit seinem Inhalt in den Cache-Schluessel ein,
-# und ".git" aendert sich bei jedem Commit. Diese Schicht laeuft also weiterhin
-# nach jedem Commit; sie kostet dann Sekundenbruchteile statt der Sekunden, die
-# pip install und mkdocs build oben brauchen.
-RUN --mount=type=bind,source=.git,target=/src/.git \
+# Der Bind-Mount zeigt auf die Wurzel des Bau-Kontextes, nicht auf ".git" selbst.
+# Daran haengt, ob der Bau ueberhaupt beginnt: BuildKit loest die Quelle eines
+# Mounts schon auf, wenn es den Cache-Schluessel bildet, also bevor die erste
+# Zeile des Skripts laeuft. Zeigt sie auf ".git" und fehlt das Verzeichnis, endet
+# der Bau mit '"/.git": not found', und die Wache darunter kommt nie an die Reihe.
+# Die Wurzel des Kontextes gibt es dagegen immer; ob ".git" darin liegt,
+# entscheidet erst das Skript. So baut auch, wer den Quelltext als Tarball oder
+# als flachen Klon ohne Verlauf bezogen hat.
+#
+# ".git" wird nur gelesen und nicht kopiert: Eine Schicht von zwoelf Megabyte mit
+# dem Verlauf darin braucht niemand. Am Zwischenspeicher aendert die groessere
+# Quelle wenig. Ein Bind-Mount geht mit seinem Inhalt in den Cache-Schluessel ein;
+# bisher verwarf jeder Commit diese Schicht, jetzt tut es jede Aenderung am
+# Kontext. Beides kostet Sekundenbruchteile, weil pip install und mkdocs build
+# oberhalb des Mounts stehen und erhalten bleiben.
+RUN --mount=type=bind,source=.,target=/ctx \
     set -e; \
-    [ -d /src/.git ] || exit 0; \
-    git config --global --add safe.directory /src; \
+    [ -d /ctx/.git ] || exit 0; \
+    git config --global --add safe.directory /ctx; \
     GH_PAGES=""; \
     for ref in gh-pages origin/gh-pages; do \
-        if git rev-parse --verify "$ref" >/dev/null 2>&1; then GH_PAGES="$ref"; break; fi; \
+        if git -C /ctx rev-parse --verify "$ref" >/dev/null 2>&1; then GH_PAGES="$ref"; break; fi; \
     done; \
     [ -n "$GH_PAGES" ] || exit 0; \
     rm -rf /docs-site; \
     mkdir -p /docs-site; \
-    git archive "$GH_PAGES" | tar -x -C /docs-site
+    git -C /ctx archive "$GH_PAGES" | tar -x -C /docs-site
 
 
 # ── 6. Laufzeit ────────────────────────────────────────────────────────────────
