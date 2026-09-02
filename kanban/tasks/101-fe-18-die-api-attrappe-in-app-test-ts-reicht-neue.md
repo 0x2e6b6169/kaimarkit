@@ -1,11 +1,13 @@
 ---
 id: 101
 title: FE-18 · Die api-Attrappe in App.test.ts reicht neue Exporte durch
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-02T16:46:38.261202148+02:00
-updated: 2026-09-02T16:46:38.261202148+02:00
+updated: 2026-09-02T16:47:40.71424987+02:00
 assignee: benny
+claimed_by: benny-19
+claimed_at: 2026-09-02T16:47:40.71424987+02:00
 class: standard
 ---
 
