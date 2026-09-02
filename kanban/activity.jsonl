@@ -689,3 +689,8 @@
 {"timestamp":"2026-09-02T16:50:14.138163562+02:00","action":"move","task_id":101,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-02T16:50:15.299506559+02:00","action":"edit","task_id":101,"detail":"FE-18 · Die api-Attrappe in App.test.ts reicht neue Exporte durch"}
 {"timestamp":"2026-09-02T16:50:15.301386514+02:00","action":"release","task_id":101,"detail":"benny-19"}
+{"timestamp":"2026-09-02T17:00:17.516096081+02:00","action":"edit","task_id":99,"detail":"IN-19 · git describe als KAIMARKIT_VERSION in das Abbild"}
+{"timestamp":"2026-09-02T17:00:22.621428358+02:00","action":"move","task_id":99,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-02T17:00:23.001000575+02:00","action":"edit","task_id":99,"detail":"IN-19 · git describe als KAIMARKIT_VERSION in das Abbild"}
+{"timestamp":"2026-09-02T17:00:23.001174735+02:00","action":"release","task_id":99,"detail":"akar-32"}
+{"timestamp":"2026-09-02T17:01:31.826372497+02:00","action":"create","task_id":103,"detail":"IN-20 · Bau ohne .git bricht in der Docs-Stufe ab"}
