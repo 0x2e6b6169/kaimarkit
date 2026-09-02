@@ -1,10 +1,12 @@
 ---
 id: 90
 title: INT-3 · Erstbenutzerlauf aus einem frischen Klon vor dem ersten Tag
-status: backlog
+status: done
 priority: high
 created: 2026-09-01T18:29:48.381602755+02:00
-updated: 2026-09-01T21:29:50.542752975+02:00
+updated: 2026-09-02T16:29:28.040200237+02:00
+started: 2026-09-02T16:29:28.046619742+02:00
+completed: 2026-09-02T16:29:28.046619742+02:00
 assignee: akar
 tags:
     - infra
@@ -95,3 +97,23 @@ Drei Befunde sind dabei entstanden, die kein Lauf im Arbeitsbaum gefunden hätte
 - der Fall **ohne** `authelia@docker`: Router `disabled`, überall 404 — beim Nutzer nicht eingetreten, weil er Authelia betreibt
 
 Das ist deutlich weniger als der ursprüngliche Zuschnitt und rechtfertigt keinen vollen Erstbau mehr. **Vor dem Neuschneiden entscheidet der PO, ob der Rest ein eigenes, kleineres Ticket wird oder entfällt.**
+
+[[2026-09-02]] Wed 16:29
+Erledigt durch den echten Lauf: Der Nutzer hat am 2026-09-01 auf seinem VPS aus
+einem frischen Klon von v0.1.0 installiert und den Dienst erfolgreich in Betrieb
+genommen — hinter Traefik und Authelia, unter `kaimarkit.0x2e6b6169.de`.
+
+Damit sind die Punkte 1 und 2 belegt, und zwar härter als jeder Wegwerf-Klon es
+gekonnt hätte: Erstbau ohne Cache auf fremder Maschine, kein `docker/.env`,
+`.git` nur als Bind-Mount, und die Voreinstellung `authelia@docker` aus IN-15 im
+echten Zusammenspiel.
+
+Nicht ohne Reibung, und die Reibung war lehrreich: Zwei Hürden standen im Weg,
+beide außerhalb dieses Repositorys — die Cookie-Domäne von Authelia und ein
+fehlender Eintrag unter `access_control`. Beide hat der Nutzer gelöst. Was das
+Projekt daraus lernt, steht in DOC-14 (#92).
+
+**Punkt 3 ist damit nicht belegt.** `make docs-release` von null, auf einem
+Repository ohne `gh-pages`-Zweig, hat niemand ausgeführt. Der Rest wandert nach
+ORG-2 (#96); dieses Ticket wird nicht offen gehalten, um einen einzelnen Punkt
+mitzuschleppen.
