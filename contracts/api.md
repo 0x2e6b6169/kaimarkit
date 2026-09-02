@@ -65,8 +65,14 @@ Container-Healthcheck hängt daran; eine Antwort erst nach dem Laden der Modelle
 würde den Start als Fehlschlag erscheinen lassen.
 
 ```json
-{ "status": "ok", "version": "0.1.0" }
+{ "status": "ok", "version": "v0.1.0-12-ga22a6c5" }
 ```
+
+Die Version ist die des gebauten Abbilds: Der Bau setzt `KAIMARKIT_VERSION` auf das
+Ergebnis von `git describe --tags --always --dirty` — `v0.1.0` auf dem Tag,
+`v0.1.0-12-ga22a6c5` zwölf Commits dahinter, mit `-dirty` bei Änderungen im
+Arbeitsbaum. Fehlt die Variable, meldet der Dienst `__version__` aus
+`app/__init__.py`, also `0.1.0`.
 
 ```bash
 curl -sf localhost:8000/api/health

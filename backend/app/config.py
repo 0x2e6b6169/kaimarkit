@@ -16,6 +16,8 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from . import __version__
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="KAIMARKIT_", extra="ignore")
@@ -44,6 +46,12 @@ class Settings(BaseSettings):
     # Betrieb
     log_level: str = "info"
     workers: int = 1
+    # Der Stand, der wirklich laeuft. Der Bau setzt hier ein, was
+    # ``git describe --tags --always --dirty`` auf der bauenden Maschine liefert:
+    # ``v0.1.0`` auf dem Tag, ``v0.1.0-12-ga22a6c5`` dahinter, mit ``-dirty`` bei
+    # Aenderungen im Arbeitsbaum. Der Container hat kein ``.git`` und fragt Git
+    # deshalb nie selbst.
+    version: str = ""
 
     # Pfade der ausgelieferten statischen Teile. Fehlt ein Verzeichnis, haengt
     # ``main.py`` es nicht ein — so laeuft das Backend auch ohne gebautes Frontend
@@ -54,6 +62,16 @@ class Settings(BaseSettings):
     @property
     def max_file_size_bytes(self) -> int:
         return self.max_file_size_mb * 1024 * 1024
+
+    @property
+    def service_version(self) -> str:
+        """Die Version, die ``/api/health`` meldet.
+
+        Ohne ``KAIMARKIT_VERSION`` gilt ``__version__`` aus ``app/__init__.py``.
+        Das ist der Fall in der Entwicklung, und es ist der Fall bei einem Bau ohne
+        Git-Verlauf — dann bleibt die Variable leer, und der Dienst startet trotzdem.
+        """
+        return self.version.strip() or __version__
 
 
 @lru_cache

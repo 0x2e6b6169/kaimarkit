@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from .. import __version__
 from ..config import get_settings
 from ..converters import registry
 from ..errors import EngineUnavailable
@@ -19,8 +18,11 @@ async def health() -> HealthResponse:
 
     Der Healthcheck des Containers haengt daran. Wuerde die Antwort auf die Modelle
     warten, gaelte der Start als Fehlschlag.
+
+    Die gemeldete Version kommt aus ``KAIMARKIT_VERSION``; ohne die Variable gilt
+    ``__version__`` aus ``app/__init__.py``. Siehe ``Settings.service_version``.
     """
-    return HealthResponse(status="ok", version=__version__)
+    return HealthResponse(status="ok", version=get_settings().service_version)
 
 
 @router.get("/capabilities", response_model=CapabilitiesResponse)
