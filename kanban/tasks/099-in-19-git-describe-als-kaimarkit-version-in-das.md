@@ -1,13 +1,15 @@
 ---
 id: 99
 title: IN-19 · git describe als KAIMARKIT_VERSION in das Abbild
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-02T16:38:27.503502943+02:00
-updated: 2026-09-02T16:38:27.503502943+02:00
+updated: 2026-09-02T16:45:48.853932863+02:00
 assignee: akar
 depends_on:
     - 98
+claimed_by: akar-32
+claimed_at: 2026-09-02T16:45:48.853932863+02:00
 class: standard
 ---
 

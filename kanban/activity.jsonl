@@ -681,3 +681,5 @@
 {"timestamp":"2026-09-02T16:44:51.65661668+02:00","action":"move","task_id":100,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-02T16:45:03.343519117+02:00","action":"edit","task_id":100,"detail":"FE-9 · Version des laufenden Dienstes im UI anzeigen"}
 {"timestamp":"2026-09-02T16:45:24.454774329+02:00","action":"edit","task_id":100,"detail":"FE-17 · Version des laufenden Dienstes im UI anzeigen"}
+{"timestamp":"2026-09-02T16:45:48.864610682+02:00","action":"move","task_id":99,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-02T16:46:38.267308697+02:00","action":"create","task_id":101,"detail":"FE-18 · Die api-Attrappe in App.test.ts reicht neue Exporte durch"}
