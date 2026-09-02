@@ -654,3 +654,4 @@
 {"timestamp":"2026-09-02T15:40:41.143845128+02:00","action":"move","task_id":93,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-02T15:40:47.330210219+02:00","action":"edit","task_id":93,"detail":"FE-8 · Verweis auf das GitHub-Repository im Kopf"}
 {"timestamp":"2026-09-02T15:40:47.330481021+02:00","action":"release","task_id":93,"detail":"benny-17"}
+{"timestamp":"2026-09-02T15:44:25.650229633+02:00","action":"create","task_id":94,"detail":"PROC-8 · Ein Subagent unterscheidet Ticketrumpf und Auftrag nicht"}
