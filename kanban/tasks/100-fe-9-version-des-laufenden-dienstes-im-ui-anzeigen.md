@@ -1,11 +1,13 @@
 ---
 id: 100
 title: FE-9 · Version des laufenden Dienstes im UI anzeigen
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-02T16:38:53.891700471+02:00
-updated: 2026-09-02T16:38:53.891700471+02:00
+updated: 2026-09-02T16:40:39.688507824+02:00
 assignee: benny
+claimed_by: benny-18
+claimed_at: 2026-09-02T16:40:39.688507824+02:00
 class: standard
 ---
 

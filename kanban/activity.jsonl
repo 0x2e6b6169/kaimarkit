@@ -669,3 +669,6 @@
 {"timestamp":"2026-09-02T16:37:59.673825715+02:00","action":"create","task_id":98,"detail":"BE-33 · /api/health meldet die gebaute Version aus der Umgebung"}
 {"timestamp":"2026-09-02T16:38:27.516441963+02:00","action":"create","task_id":99,"detail":"IN-19 · git describe als KAIMARKIT_VERSION in das Abbild"}
 {"timestamp":"2026-09-02T16:38:53.898775712+02:00","action":"create","task_id":100,"detail":"FE-9 · Version des laufenden Dienstes im UI anzeigen"}
+{"timestamp":"2026-09-02T16:39:13.387213894+02:00","action":"move","task_id":98,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-02T16:40:39.704783482+02:00","action":"move","task_id":100,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-02T16:42:18.411467579+02:00","action":"edit","task_id":93,"detail":"FE-16 · Verweis auf das GitHub-Repository im Kopf"}

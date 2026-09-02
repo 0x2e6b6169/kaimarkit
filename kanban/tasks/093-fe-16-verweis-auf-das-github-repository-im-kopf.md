@@ -1,10 +1,10 @@
 ---
 id: 93
-title: FE-8 · Verweis auf das GitHub-Repository im Kopf
+title: FE-16 · Verweis auf das GitHub-Repository im Kopf
 status: done
 priority: medium
 created: 2026-09-02T15:29:39.533322182+02:00
-updated: 2026-09-02T15:40:47.329103711+02:00
+updated: 2026-09-02T16:42:18.410869025+02:00
 started: 2026-09-02T15:40:41.143566091+02:00
 completed: 2026-09-02T15:40:41.143566091+02:00
 assignee: benny

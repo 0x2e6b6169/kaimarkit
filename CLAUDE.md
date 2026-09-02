@@ -253,6 +253,15 @@ Drei Stellen sind gegen den naheliegenden Schnitt gebaut, damit das aufgeht:
 - `pyproject.toml` gehört allein `BE-1`, einschließlich der Abhängigkeitsgruppe
   `docs` — sonst kollidierte `DOC-1` damit.
 
+**Das Kürzel ist nicht eindeutig, die Board-ID ist es.** Zweimal ist ein Kürzel
+doppelt vergeben worden — `FE-8` und `FE-9` zeigten je auf zwei Tickets —, weil
+beim Anlegen niemand nachgesehen hat, welche Nummern die Reihe schon führt. Für
+die Arbeit macht das nichts; die Verteilung läuft über die ID. Es macht etwas,
+sobald jemand in einer Notiz, einem Commit oder einer Doku-Zeile ein Kürzel
+schreibt: Wer das später liest, kann nicht mehr unterscheiden. Deshalb vor dem
+Anlegen die Reihe durchzählen, und wer ein Ticket in Prosa nennt, nennt beides:
+`FE-16 (#93)`.
+
 Jeder Ticketrumpf hat denselben Aufbau: **Ziel**, **Eigene Dateien**, **Vorgaben**,
 **Prüfung**. Der letzte Abschnitt ist der wichtigste: Er ist es, der einen Subagenten
 allein entscheiden lässt, ob er fertig ist, statt zurückzufragen.

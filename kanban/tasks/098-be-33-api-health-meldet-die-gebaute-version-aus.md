@@ -1,11 +1,13 @@
 ---
 id: 98
 title: BE-33 · /api/health meldet die gebaute Version aus der Umgebung
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-02T16:37:59.663775366+02:00
-updated: 2026-09-02T16:37:59.663775366+02:00
+updated: 2026-09-02T16:39:13.381059082+02:00
 assignee: sophie
+claimed_by: sophie-33
+claimed_at: 2026-09-02T16:39:13.381059082+02:00
 class: standard
 ---
 

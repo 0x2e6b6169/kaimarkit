@@ -20,7 +20,7 @@ beim Berichten nicht zuverlässig, woher ein Satz stammt.
 Kosten: Der PO greppte das Board nach etwas, das dort nie stand. Der Fehler war
 nach zwei Minuten erkannt, aber nur, weil jemand nachgesehen hat.
 
-Bisher **ein** Vorkommen (FE-8, #93, 2026-09-02). Deshalb Backlog und keine Regel.
+Bisher **ein** Vorkommen (FE-16, #93, 2026-09-02). Deshalb Backlog und keine Regel.
 Kommt es ein zweites Mal, gehört die Konsequenz nach CLAUDE.md oder in
 `/work-lane`.
 
