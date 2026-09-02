@@ -24,7 +24,8 @@ const api = vi.hoisted(() => ({
   convertFile: vi.fn(),
 }))
 
-vi.mock('./api', () => ({
+vi.mock('./api', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./api')>()),
   fetchCapabilities: api.fetchCapabilities,
   fetchHealth: api.fetchHealth,
   convertFile: api.convertFile,
@@ -73,6 +74,15 @@ beforeEach(() => {
   vi.clearAllMocks()
   useConversion().clear()
   useConversion().options.value = { engine: 'auto', ocr: null }
+})
+
+// Die Attrappe ersetzt nur, was dieser Test steuern muss. Alles Übrige kommt
+// aus dem echten Modul — sonst fehlte ein neuer Export hier stillschweigend.
+describe('die Attrappe von ./api', () => {
+  it('reicht durch, was sie nicht selbst ersetzt', async () => {
+    const { ApiError } = await import('./api')
+    expect(ApiError).toBeTypeOf('function')
+  })
 })
 
 describe('App', () => {
