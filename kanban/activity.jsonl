@@ -685,3 +685,7 @@
 {"timestamp":"2026-09-02T16:46:38.267308697+02:00","action":"create","task_id":101,"detail":"FE-18 · Die api-Attrappe in App.test.ts reicht neue Exporte durch"}
 {"timestamp":"2026-09-02T16:47:40.722321716+02:00","action":"move","task_id":101,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-02T16:47:44.958414651+02:00","action":"create","task_id":102,"detail":"ORG-4 · Versionsangaben im Quelltext auf 0.2.0"}
+{"timestamp":"2026-09-02T16:50:12.967350624+02:00","action":"edit","task_id":101,"detail":"FE-18 · Die api-Attrappe in App.test.ts reicht neue Exporte durch"}
+{"timestamp":"2026-09-02T16:50:14.138163562+02:00","action":"move","task_id":101,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-02T16:50:15.299506559+02:00","action":"edit","task_id":101,"detail":"FE-18 · Die api-Attrappe in App.test.ts reicht neue Exporte durch"}
+{"timestamp":"2026-09-02T16:50:15.301386514+02:00","action":"release","task_id":101,"detail":"benny-19"}

@@ -1,22 +1,26 @@
 ---
 id: 101
 title: FE-18 · Die api-Attrappe in App.test.ts reicht neue Exporte durch
-status: in-progress
+status: done
 priority: medium
 created: 2026-09-02T16:46:38.261202148+02:00
-updated: 2026-09-02T16:47:40.71424987+02:00
+updated: 2026-09-02T16:50:15.298784822+02:00
+started: 2026-09-02T16:50:14.1377958+02:00
+completed: 2026-09-02T16:50:14.1377958+02:00
 assignee: benny
-claimed_by: benny-19
-claimed_at: 2026-09-02T16:47:40.71424987+02:00
 class: standard
 ---
 
 ## Ziel
 
 Die Attrappe von `./api` in `App.test.ts` zählt jeden Export einzeln auf. Ein
-neuer Export im API-Client fehlt dort, bis jemand daran denkt — und dann ist er
-im Test nicht `undefined` mit Fehlermeldung, sondern schlicht nicht da. Die
-Attrappe soll durchreichen, was sie nicht selbst ersetzt.
+neuer Export im API-Client fehlt dort, bis jemand daran denkt — und wer ihn
+dann benutzt, bringt die ganze Testdatei zum Scheitern. Die Attrappe soll
+durchreichen, was sie nicht selbst ersetzt.
+
+*(Berichtigt am 02.09.2026: Der Rumpf sagte zuerst, der fehlende Export laufe
+still ins Leere. Das war eine Vermutung, keine Beobachtung — Vitest legt einen
+Proxy über den Namensraum und wirft. Siehe die Notiz am Ende.)*
 
 ## Herkunft
 
@@ -66,3 +70,19 @@ Prüfung. Die 104 bestehenden Tests bleiben, wie sie sind.
    Anpassung.
 3. `npm run typecheck`
 4. `npm run build`
+
+[[2026-09-02]] Wed 16:50
+## Ergebnis (benny-19)
+
+Die Attrappe von `./api` nutzt jetzt `importOriginal` und spreizt das echte Modul; ersetzt bleiben nur `fetchCapabilities`, `fetchHealth`, `convertFile` und das absichtlich vereinfachte `messageFromError`. Das Muster stammt von der `./download`-Attrappe fünf Zeilen tiefer.
+
+Rot vor grün, beide Läufe:
+
+- vor dem Umbau, mit der neuen Zusicherung: Test Files 1 failed | 8 passed (9), Tests 1 failed | 104 passed (105)
+- nach dem Umbau: Test Files 9 passed (9), Tests 105 passed (105)
+
+Beide Zahlen wie im Rumpf erwartet. `npm run typecheck` und `npm run build` ohne Befund.
+
+**Befund zur Formulierung im Rumpf.** „Vor der Änderung ist sie undefined" trifft nicht ganz: Vitest legt einen Proxy über den attrappierten Modulnamensraum und wirft beim Zugriff auf einen fehlenden Export — `No "ApiError" export is defined on the "./api" mock.` Am Ticket ändert das nichts, die Zusicherung ist vorher rot und nachher grün. Es ändert die Einschätzung des Schadens: Ein Test, der einen neuen Export benutzt hätte, wäre nicht still danebengelaufen, sondern hätte die ganze Datei zum Scheitern gebracht.
+
+Weder `api.ts` noch `App.vue` angefasst. Keine Aussage unter `docs/` betroffen — die Änderung ändert kein Verhalten, das der Nutzer sieht.
