@@ -31,8 +31,11 @@ curl -sf localhost:8080/api/health
 ```
 
 ```json
-{ "status": "ok", "version": "0.1.0" }
+{ "status": "ok", "version": "v0.1.0-12-ga22a6c5" }
 ```
+
+Die Version ist die des gebauten Abbilds — `git describe` auf der bauenden
+Maschine. Ein Bau ohne Git-Verlauf meldet `0.1.0`.
 
 ## Die erste Datei
 
