@@ -3,6 +3,9 @@
 Wie das Projekt aufgebaut ist, wie man eine weitere Engine ergänzt und wie das
 Board die Arbeit verteilt.
 
+Der Quelltext steht unter der MIT-Lizenz; ihren Wortlaut hält `LICENSE` in der
+Wurzel des Repositorys fest.
+
 ## Der Aufbau
 
 Ein Repository, zwei Anwendungen, ein Abbild. Das Backend liefert die API und hängt

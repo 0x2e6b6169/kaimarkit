@@ -44,3 +44,7 @@ Die Dokumentation ist die einzige Quelle für Bedienung und Betrieb. Sie liegt u
 
 Den verbindlichen Wortlaut der Schnittstelle hält [`contracts/api.md`](contracts/api.md)
 fest.
+
+## Lizenz
+
+kaimarkit steht unter der MIT-Lizenz. Den Wortlaut hält [`LICENSE`](LICENSE) fest.
