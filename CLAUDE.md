@@ -262,6 +262,10 @@ schreibt: Wer das später liest, kann nicht mehr unterscheiden. Deshalb vor dem
 Anlegen die Reihe durchzählen, und wer ein Ticket in Prosa nennt, nennt beides:
 `FE-16 (#93)`.
 
+Und findet sich eine Doppelung erst später: **Das ältere Ticket behält sein
+Kürzel, das jüngere weicht.** Verweise zeigen rückwärts — ein Kürzel, auf das
+schon gezeigt wird, ist kein freier Name mehr.
+
 Jeder Ticketrumpf hat denselben Aufbau: **Ziel**, **Eigene Dateien**, **Vorgaben**,
 **Prüfung**. Der letzte Abschnitt ist der wichtigste: Er ist es, der einen Subagenten
 allein entscheiden lässt, ob er fertig ist, statt zurückzufragen.
