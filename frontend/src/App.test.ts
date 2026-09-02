@@ -92,6 +92,23 @@ describe('App', () => {
     expect(wrapper.find('[role="log"][aria-live="polite"]').exists()).toBe(true)
   })
 
+  it('verweist im Kopf auf das Repository', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    // Gesucht wird ueber den zugaenglichen Namen, nicht ueber eine Klasse oder
+    // ein `data-test`: Genau diesen Namen bekommt zu hoeren, wer den Verweis
+    // nicht sieht. Das Zeichen selbst ist versteckt und traegt keinen Text.
+    const link = wrapper.get('header a[aria-label="kaimarkit auf GitHub"]')
+    expect(link.attributes('href')).toBe('https://github.com/0x2e6b6169/kaimarkit')
+    expect(link.attributes('target')).toBe('_blank')
+    expect(link.attributes('rel')).toBe('noopener noreferrer')
+    expect(link.get('svg').attributes('aria-hidden')).toBe('true')
+  })
+
   it('nimmt Dateien aus der Dropzone an und reicht die Vorschau bis in die Zeile durch', async () => {
     api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
     api.convertFile.mockImplementation(async (file: File) =>
