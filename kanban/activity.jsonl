@@ -809,3 +809,4 @@
 {"timestamp":"2026-09-03T14:59:57.300806896+02:00","action":"move","task_id":118,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-03T14:59:58.030423299+02:00","action":"edit","task_id":118,"detail":"DOC-17 · Zwei Stellen, die BE-35 unwahr gemacht hat"}
 {"timestamp":"2026-09-03T14:59:58.030769858+02:00","action":"release","task_id":118,"detail":"akar-39"}
+{"timestamp":"2026-09-03T15:01:05.847353725+02:00","action":"move","task_id":91,"detail":"backlog -\u003e todo"}

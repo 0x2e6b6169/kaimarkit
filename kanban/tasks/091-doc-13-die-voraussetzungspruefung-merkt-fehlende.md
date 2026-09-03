@@ -1,10 +1,11 @@
 ---
 id: 91
 title: DOC-13 · Die Voraussetzungspruefung merkt fehlende Docker-Rechte nicht
-status: backlog
+status: todo
 priority: medium
 created: 2026-09-01T18:40:51.760156559+02:00
-updated: 2026-09-01T18:40:51.760156559+02:00
+updated: 2026-09-03T15:01:05.827736794+02:00
+started: 2026-09-03T15:01:05.845475184+02:00
 assignee: akar
 tags:
     - docs
