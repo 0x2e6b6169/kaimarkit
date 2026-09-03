@@ -699,3 +699,9 @@
 {"timestamp":"2026-09-02T17:10:18.937257257+02:00","action":"move","task_id":103,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-02T17:10:24.573312361+02:00","action":"edit","task_id":103,"detail":"IN-20 · Bau ohne .git bricht in der Docs-Stufe ab"}
 {"timestamp":"2026-09-02T17:10:24.573597546+02:00","action":"release","task_id":103,"detail":"akar-33"}
+{"timestamp":"2026-09-03T11:20:25.138513139+02:00","action":"create","task_id":104,"detail":"FE-19 · Kopfzeile ohne Formatliste (GitHub #4)"}
+{"timestamp":"2026-09-03T11:20:25.66712149+02:00","action":"create","task_id":105,"detail":"FE-20 · Enginewahl als Schaltergruppe mit Erklärung, im Browser gemerkt (GitHub #3)"}
+{"timestamp":"2026-09-03T11:20:26.19186798+02:00","action":"create","task_id":106,"detail":"BE-34 · OCR auf Bildern liefert keinen Text: Befund im Abbild (GitHub #2)"}
+{"timestamp":"2026-09-03T11:20:26.714953535+02:00","action":"create","task_id":107,"detail":"BE-35 · POST /api/convert/url: Seite holen, Namen ableiten, nur öffentliche Adressen (GitHub #5)"}
+{"timestamp":"2026-09-03T11:20:27.292797467+02:00","action":"create","task_id":108,"detail":"FE-21 · URL-Liste im UI, jede Zeile ein Eintrag in der Warteschlange (GitHub #5)"}
+{"timestamp":"2026-09-03T11:20:27.850912354+02:00","action":"create","task_id":109,"detail":"DOC-15 · Doku der URL-Konvertierung: API, Oberfläche, Grenzen (GitHub #5)"}
