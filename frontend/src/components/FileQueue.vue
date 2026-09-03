@@ -40,16 +40,24 @@ function toggle(id: number): void {
 const announcements = ref<{ id: number; text: string }[]>([])
 let nextAnnouncement = 1
 
+/**
+ * Der Satz, der eine Zeile ansagt.
+ *
+ * Bei einer fertigen Datei mit Warnungen steht der Wortlaut darin, nicht bloss
+ * ihre Zahl: Wer sieht, liest ihn an der Zeile; wer zuhoert, erfuhr sonst nur,
+ * dass es etwas zu lesen gaebe. Und vorgelesen wird jede Warnung, nicht die
+ * erste mit einem Zusatz — die uebrigen liessen sich nur dort nachlesen, wo der
+ * Zuhoerer gerade nicht hinsieht.
+ */
 function sentence(entry: QueueEntry): string {
   switch (entry.status) {
     case 'running':
       return `${entry.filename} wird konvertiert.`
-    case 'ok':
-      return entry.warnings.length
-        ? `${entry.filename} ist fertig, mit ${entry.warnings.length} ${
-            entry.warnings.length === 1 ? 'Warnung' : 'Warnungen'
-          }.`
-        : `${entry.filename} ist fertig.`
+    case 'ok': {
+      if (!entry.warnings.length) return `${entry.filename} ist fertig.`
+      const word = entry.warnings.length === 1 ? 'Warnung' : 'Warnungen'
+      return `${entry.filename} ist fertig, mit ${entry.warnings.length} ${word}: ${entry.warnings.join(' ')}`
+    }
     case 'failed':
       return `${entry.filename} ist fehlgeschlagen: ${entry.error ?? 'ohne Meldung'}`
     case 'aborted':
