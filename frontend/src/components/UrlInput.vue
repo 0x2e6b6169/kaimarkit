@@ -9,11 +9,15 @@
  * ein Dokument liegt. Seine Meldung landet als `failed` an der Zeile in der
  * Warteschlange, nicht hier.
  *
- * Was durchkam, verschwindet aus dem Feld und lebt in der Warteschlange weiter —
- * solange sie Platz hat. Über ihre Grenze `limits.max_files` entscheidet sie
- * selbst, und was sie deshalb nicht mehr aufnimmt, meldet die Seite.
- * Was liegen blieb, bleibt stehen und wird benannt — sonst ließe es sich nicht
- * berichtigen, und der Nutzer erführe nie, welche Zeile fehlte.
+ * Was liegen blieb, bleibt stehen. Das gilt für beide Fälle, aus demselben
+ * Grund: Wäre die Zeile weg, ließe sie sich weder berichtigen noch wiederholen.
+ * Eine Zeile ohne Schema bleibt sofort stehen und wird zusätzlich benannt.
+ * Eine gültige geht hinaus und kommt zurück, wenn die Warteschlange keinen Platz
+ * mehr hat — über ihre Grenze `limits.max_files` entscheidet sie selbst. Dass es
+ * an der Grenze lag, sagt die Seite; welche Adressen es traf, zeigt das Feld.
+ *
+ * Nur was wirklich in der Warteschlange steht, verschwindet daraus. Die Seite
+ * gibt dafür `keep` zurück, sobald sie die Adressen weitergereicht hat.
  */
 import { computed, ref } from 'vue'
 
@@ -26,6 +30,9 @@ withDefaults(defineProps<{ disabled?: boolean }>(), { disabled: false })
 
 const text = ref('')
 const rejected = ref<string[]>([])
+
+/** Die zuletzt abgeschickten Zeilen — `keep` stellt daraus ihre Reihenfolge her. */
+let submitted: string[] = []
 
 /** Die Zeilen ohne Leerraum und ohne die leeren. */
 const lines = computed(() =>
@@ -40,11 +47,34 @@ function hasScheme(line: string): boolean {
 }
 
 function submit(): void {
-  const accepted = lines.value.filter(hasScheme)
-  rejected.value = lines.value.filter((line) => !hasScheme(line))
+  submitted = lines.value
+  const accepted = submitted.filter(hasScheme)
+  rejected.value = submitted.filter((line) => !hasScheme(line))
   text.value = rejected.value.join('\n')
   if (accepted.length) emit('urls', accepted)
 }
+
+/**
+ * Legt die Adressen zurück ins Feld, die keinen Platz mehr fanden.
+ *
+ * Die Warteschlange nimmt der Reihe nach auf, liegen bleibt also das Ende des
+ * Stapels. Zusammen mit den Zeilen ohne Schema steht danach wieder da, was
+ * nicht durchkam — in der eingegebenen Reihenfolge.
+ */
+function keep(unplaced: readonly string[]): void {
+  if (!unplaced.length) return
+  const placed = submitted.filter(hasScheme).length - unplaced.length
+  let seen = 0
+  text.value = submitted
+    .filter((line) => {
+      if (!hasScheme(line)) return true
+      seen += 1
+      return seen > placed
+    })
+    .join('\n')
+}
+
+defineExpose({ keep })
 </script>
 
 <template>

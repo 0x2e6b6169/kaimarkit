@@ -4,7 +4,8 @@
  * Das Feld fuer Webadressen. Geprueft wird, was es weitergibt und was es
  * zurueckhaelt: Leerzeilen und Leerraum verschwinden, eine Zeile ohne Schema
  * wird markiert und bleibt stehen, alles Uebrige geht hinaus und das Feld ist
- * danach leer.
+ * danach leer. Und was die Warteschlange nicht mehr aufnahm, legt `keep`
+ * zurueck — an seinen alten Platz zwischen den uebrigen Zeilen.
  */
 
 import { describe, expect, it } from 'vitest'
@@ -62,6 +63,24 @@ describe('UrlInput', () => {
     ])
     expect((wrapper.get('textarea').element as HTMLTextAreaElement).value).toBe('')
     expect(wrapper.find('[data-test="url-rejected"]').exists()).toBe(false)
+  })
+
+  it('legt zurueck, was keinen Platz fand, in der eingegebenen Reihenfolge', async () => {
+    const wrapper = mount(UrlInput)
+
+    await type(wrapper, 'https://example.com/a\nbeispiel.de\nhttps://example.com/b')
+    await wrapper.get('[data-test="url-submit"]').trigger('click')
+
+    expect(wrapper.emitted('urls')).toEqual([[['https://example.com/a', 'https://example.com/b']]])
+
+    // Die Warteschlange nahm nur die erste Adresse auf. Die zweite steht danach
+    // wieder da, wo sie stand: hinter der Zeile ohne Schema.
+    wrapper.vm.keep(['https://example.com/b'])
+    await wrapper.vm.$nextTick()
+
+    expect((wrapper.get('textarea').element as HTMLTextAreaElement).value).toBe(
+      'beispiel.de\nhttps://example.com/b',
+    )
   })
 
   it('schickt nichts ab, wenn keine Zeile ein Schema hat', async () => {

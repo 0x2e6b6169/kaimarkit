@@ -435,11 +435,20 @@ describe('useConversion mit einer Grenze', () => {
     })
 
     queue.enqueue(filesNamed(15))
-    queue.enqueueUrls(Array.from({ length: 8 }, (_, index) => `https://example.com/${index}`))
+    const unplaced = queue.enqueueUrls(
+      Array.from({ length: 8 }, (_, index) => `https://example.com/${index}`),
+    )
 
     expect(queue.entries.value).toHaveLength(20)
     expect(queue.entries.value.filter((entry) => entry.source === 'url')).toHaveLength(5)
     expect(queue.rejected.value).toBe(3)
+
+    // Aufgenommen wird der Reihe nach; zurueck kommt darum das Ende des Stapels.
+    expect(unplaced).toEqual([
+      'https://example.com/5',
+      'https://example.com/6',
+      'https://example.com/7',
+    ])
   })
 
   it('weist ohne bekannte Grenze nichts ab', () => {
@@ -451,7 +460,7 @@ describe('useConversion mit einer Grenze', () => {
     })
 
     queue.enqueue(filesNamed(50))
-    queue.enqueueUrls(['https://example.com/'])
+    expect(queue.enqueueUrls(['https://example.com/'])).toEqual([])
 
     expect(queue.entries.value).toHaveLength(51)
     expect(queue.rejected.value).toBe(0)

@@ -42,6 +42,17 @@ const { entries, options, busy, maxEntries, rejected, enqueue, enqueueUrls, abor
 const { extensions, error: capabilitiesError, load, reload } = useCapabilities()
 
 /**
+ * Adressen aus dem Feld in die Warteschlange, und was dort keinen Platz mehr
+ * fand, zurück ins Feld: Die Meldung unten nennt die Zahl, das Feld die
+ * Adressen. Sonst wüsste der Nutzer nicht, welche er wiederholen muss.
+ */
+const urlInput = ref<InstanceType<typeof UrlInput> | null>(null)
+
+function submitUrls(urls: string[]): void {
+  urlInput.value?.keep(enqueueUrls(urls))
+}
+
+/**
  * Welchen Stand der Dienst fährt. Der Wert kommt aus `/api/health`, einmal beim
  * Laden und danach nicht wieder.
  *
@@ -211,7 +222,7 @@ async function downloadAll(): Promise<void> {
 
       <FileDropZone :extensions="extensions" @files="enqueue" />
 
-      <UrlInput @urls="enqueueUrls" />
+      <UrlInput ref="urlInput" @urls="submitUrls" />
 
       <section aria-labelledby="queue-heading" class="flex flex-col gap-3">
         <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
