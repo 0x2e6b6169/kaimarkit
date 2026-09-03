@@ -188,15 +188,19 @@ Diese fünf Variablen braucht nur, wer `docker-compose.traefik.yml` mitgibt.
 | Variable | Standard | Wirkung |
 | --- | --- | --- |
 | `TRAEFIK_NETWORK` | `traefik-web` | Das Docker-Netz, in dem Traefik läuft. Es muss bereits existieren. |
-| `TRAEFIK_ENTRYPOINT` | `websecure` | Der Traefik-Entrypoint, an dem der Router hängt. |
-| `TRAEFIK_CERTRESOLVER` | `myresolver` | Der Certresolver für das Zertifikat. |
-| `KAIMARKIT_DOMAIN` | `kaimarkit.example.com` | Der Hostname, unter dem der Dienst antwortet. |
+| `TRAEFIK_ENTRYPOINT` | `websecure` | Der Traefik-Entrypoint, an dem der Router hängt. Beispielwert. |
+| `TRAEFIK_CERTRESOLVER` | `myresolver` | Der Certresolver für das Zertifikat. Beispielwert. |
+| `KAIMARKIT_DOMAIN` | `kaimarkit.example.com` | Der Hostname, unter dem der Dienst antwortet. Hinter Authelia muss er unter deren Cookie-Domäne liegen. |
 | `KAIMARKIT_TRAEFIK_NAME` | `kaimarkit` | Namensraum der Traefik-Namen: Router, `…-api`, Dienst und die eigene Middleware `…-auth`. |
 
 Der letzte Wert trennt zwei Instanzen hinter derselben Traefik. Diese Namen gelten je
 Traefik-Instanz, nicht je Container; zwei Aufbauten mit demselben Wert legen einander
 lahm. Was daraus im Einzelnen wird und wie sich das nachprüfen lässt, steht unter
 [Traefik](traefik.md#der-namensraum-der-traefik-namen).
+
+`TRAEFIK_ENTRYPOINT` und `TRAEFIK_CERTRESOLVER` sind Beispielwerte und keine
+Voreinstellungen: Beide Namen stammen aus der statischen Konfiguration der
+vorhandenen Traefik und müssen dort genauso lauten.
 
 Der Compose-Dienst heißt unabhängig davon weiterhin `kaimarkit`. `docker compose logs
 kaimarkit` und die Makefile-Ziele bleiben also, wie sie sind.
@@ -231,3 +235,9 @@ Der Zusatz hinter dem `@` nennt den Traefik-Anbieter und gehört zum Wert: Eine
 Authelia, die ihre Middleware aus einer Datei bezieht, heißt `authelia@file`. Beide
 Wege, die Stolperstelle mit dem Anbieter und der Umstieg von einer früheren Fassung
 stehen unter [Authelia](authelia.md).
+
+Zwei Bedingungen betreffen nicht diese Variablen, sondern Authelias eigene
+Konfiguration: `KAIMARKIT_DOMAIN` muss unter deren Cookie-Domäne liegen, und deren
+`access_control` braucht eine Regel für diesen Namen. Fehlt das erste, antwortet
+Authelia mit 400, bevor sich jemand anmelden kann; fehlt das zweite, greift die
+`default_policy`. Beides steht ausführlich unter [Authelia](authelia.md).
