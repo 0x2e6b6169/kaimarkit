@@ -733,3 +733,15 @@
 {"timestamp":"2026-09-03T11:37:32.024285774+02:00","action":"edit","task_id":111,"detail":"ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-lock"}
 {"timestamp":"2026-09-03T11:37:32.025570788+02:00","action":"release","task_id":111,"detail":"akar-35"}
 {"timestamp":"2026-09-03T11:37:32.900432597+02:00","action":"move","task_id":111,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T11:39:22.671044242+02:00","action":"edit","task_id":107,"detail":"BE-35 · POST /api/convert/url: Seite holen, Namen ableiten, nur öffentliche Adressen (GitHub #5)"}
+{"timestamp":"2026-09-03T11:40:32.549179635+02:00","action":"edit","task_id":105,"detail":"FE-20 · Enginewahl als Schaltergruppe mit Erklärung, im Browser gemerkt (GitHub #3)"}
+{"timestamp":"2026-09-03T11:40:35.729874425+02:00","action":"move","task_id":105,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T11:40:48.068476377+02:00","action":"edit","task_id":105,"detail":"FE-20 · Enginewahl als Schaltergruppe mit Erklärung, im Browser gemerkt (GitHub #3)"}
+{"timestamp":"2026-09-03T11:40:48.069220896+02:00","action":"release","task_id":105,"detail":"benny-21"}
+{"timestamp":"2026-09-03T11:41:05.032572912+02:00","action":"edit","task_id":107,"detail":"BE-35 · POST /api/convert/url: Seite holen, Namen ableiten, nur öffentliche Adressen (GitHub #5)"}
+{"timestamp":"2026-09-03T11:41:05.032942603+02:00","action":"release","task_id":107,"detail":"sophie-36"}
+{"timestamp":"2026-09-03T11:41:14.158288438+02:00","action":"move","task_id":107,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T11:41:51.443246173+02:00","action":"edit","task_id":106,"detail":"BE-34 · OCR auf Bildern liefert keinen Text: Befund im Abbild (GitHub #2)"}
+{"timestamp":"2026-09-03T11:42:53.967861673+02:00","action":"create","task_id":112,"detail":"DOC-16 · docs/formate.md: warming-Engines werden angeboten, nicht verschwiegen"}
+{"timestamp":"2026-09-03T11:42:54.528834549+02:00","action":"create","task_id":113,"detail":"BE-36 · test_openapi.py prüft die Fehlerantworten von /api/convert/url nicht"}
+{"timestamp":"2026-09-03T11:42:55.065331994+02:00","action":"create","task_id":114,"detail":"BE-37 · Adresssperre in fetching.py: Verbindung an die geprüfte IP binden (DNS-Rebinding)"}

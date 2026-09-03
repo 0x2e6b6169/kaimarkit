@@ -1,16 +1,16 @@
 ---
 id: 107
 title: 'BE-35 · POST /api/convert/url: Seite holen, Namen ableiten, nur öffentliche Adressen (GitHub #5)'
-status: in-progress
+status: done
 priority: medium
 created: 2026-09-03T11:20:26.703137724+02:00
-updated: 2026-09-03T11:27:30.505363665+02:00
+updated: 2026-09-03T11:41:14.13400853+02:00
+started: 2026-09-03T11:41:14.157896608+02:00
+completed: 2026-09-03T11:41:14.157896608+02:00
 assignee: sophie
 tags:
     - backend
     - gh-5
-claimed_by: sophie-36
-claimed_at: 2026-09-03T11:27:30.505363665+02:00
 class: standard
 ---
 
@@ -64,3 +64,26 @@ Der Schnittstellen-Dreiklang (`contracts/api.md`, `backend/app/models.py`, `fron
 4. `grep -rln 'httpx' backend/app/` findet nur `fetching.py`.
 5. `grep -n 'Nichts nachladen' docs/grenzen.md` findet nach dem Merge keinen Satz mehr, der den Endpunkt verschweigt.
 6. `cd frontend && npm run typecheck` grün; `types.ts` ist geändert, nichts sonst im Frontend.
+
+
+## Notiz sophie-36 (2026-09-03)
+
+**Stand:** fertig auf `task/107-convert-url`, Commit `f1d7ff6`. Noch nicht gemerged — Merge-Gate des PO (Tag v0.2.0).
+
+**Dreiklang in einem Commit (`f1d7ff6`), für benny/FE-21:** `contracts/api.md`, `backend/app/models.py`, `frontend/src/types.ts`. Neuer Typ `UrlConvertRequest` (`url: string`, `engine?: string` = `auto`, `ocr?: boolean | null`), neuer `ErrorCode` `invalid_url` (400). Antwort ist immer ein `ConversionEntry`, nur JSON, kein Markdown-Zweig über `Accept`. `filename` kommt mit Endung der geholten Datei (`example-domain.html`, `example-com-papers-paper.pdf`); das Frontend macht `.md` daraus und nummeriert Dubletten selbst. Im Frontend ist nur `types.ts` geändert; `npm run typecheck` grün (Rückgabe 0).
+
+**Neuer ErrorCode war nötig:** `errors.py` hatte nichts, das eine untaugliche Adresse meint; `engine_unsuitable` ist zwar 400, sagt aber etwas anderes. Klasse `InvalidUrl` in `errors.py`.
+
+**Bau:** `app/fetching.py` (neu) — `check_public` löst den Host auf (`socket.getaddrinfo` im Thread) und prüft jede Adresse mit `is_global`; IP-Literale, auch `::ffff:127.0.0.1`, ebenso. Weiterleitungen von Hand (`follow_redirects=False`), Grenze 5, jedes Ziel vor dem Sprung geprüft. Antwort in Blöcken in ein `TemporaryDirectory`, Abbruch beim Überschreiten von `KAIMARKIT_MAX_FILE_SIZE_MB` mitten im Strom (Test zählt die abgerufenen Blöcke). Endung aus `Content-Type` (Tabelle `EXTENSIONS`), sonst Pfadendung, sofern in `PREFERENCES`; sonst 415. Titel per Regex aus den ersten 64 KiB, `html.unescape`, dann Slug (Umlaute, `[^a-z0-9]`→`-`, 80 Zeichen). Abruf unter demselben Semaphor wie Uploads (`uploads._semaphore`), Zeitgrenze `KAIMARKIT_URL_TIMEOUT` (30 s, `anyio.fail_after` über den ganzen Abruf) → `ConversionTimeout` 504. `httpx.HTTPError` → `InvalidUrl`; ferne 4xx/5xx → `InvalidUrl` „antwortet mit 404“. `User-Agent: kaimarkit/<service_version>`. `httpx` nach `dependencies` verschoben, aus `dev` entfernt; nichts installiert.
+
+**Rot vor grün:** `tests/test_fetching.py` (neu) und die `convert_url`-Tests in `test_api.py` scheiterten vor der Umsetzung mit `ImportError: cannot import name 'fetching' from 'app'` (Sammlung von `test_fetching.py` brach ab; 10 Fehler in `test_api.py`). Prüfpunkt 1: uvicorn aus dem Worktree auf Port 18107, `POST /api/convert/url` mit `https://example.com/` → vorher 404, nachher 200 mit `filename: example-domain.html`, `engine: markitdown`, Markdown enthält „Example Domain“; Loopback-Adresse → 400 `invalid_url`. Prozess danach beendet, Port frei.
+
+**Zahlen:** `pytest -q -rs`: 204 gesammelt, 197 ausgewählt (7 slow abgewählt), 197 bestanden, 0 übersprungen. `ruff check .` grün. `grep -rln httpx backend/app/` → nur `fetching.py`. `grep -n 'Nichts nachladen' docs/grenzen.md` → der Punkt nennt `/api/convert/url` jetzt.
+
+**Doku:** `docker/.env.example` und `docs/betrieb/konfiguration.md` (Anwendung) haben `KAIMARKIT_URL_TIMEOUT=30`; `docs/grenzen.md` nur der Punkt „Nichts nachladen“. `docs/api.md` unangetastet (DOC-15).
+
+**Befunde, nicht geändert (fremde Dateien):**
+- `backend/tests/test_openapi.py`: die Tabelle `ERROR_CODES` führt `/api/convert/url` nicht; der Endpunkt nennt 400/413/415/500/504 in `responses=`, geprüft wird das dort aber nicht.
+- `Makefile` (`test-slow-image`) installiert `pytest httpx` ins Abbild; `httpx` ist jetzt schon drin, die Zeile bleibt harmlos.
+- Bekannte Restlücke der Sperre (im Modul-Docstring): Auflösung vor dem Verbindungsaufbau, `httpx` löst danach erneut auf — DNS-Rebinding zwischen beiden Aufrufen käme durch. Abhilfe wäre, an die geprüfte Adresse zu binden (eigener Transport). Kandidat für ein Folgeticket.
+- Der Worktree hat jetzt ein `frontend/node_modules` (per `npm ci`, gitignored), weil `vue-tsc` sonst nicht auffindbar war; verschwindet mit dem Worktree.
