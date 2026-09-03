@@ -160,6 +160,25 @@ Standardschleife (claimen als `<self>-NN` → Worktree → umsetzen → die **Pr
 aus dem Ticketrumpf bestehen → Doku im selben Merge → `--no-ff` merge → Worktree
 entfernen → Ticket auf `done` und Claim freigeben) und endet dann.
 
+**Im Worktree wird früh committet, notfalls als `wip`.** Eine Sitzung kann jederzeit
+an einem Serverfehler sterben — an einem Tag traf es zwei Lanes hintereinander (500,
+dann 529). Was dann committet ist, findet der Nachfolger; was uncommittet im Worktree
+liegt, hängt daran, dass niemand aufräumt. Beim ersten Mal war die eine Lane
+committet und unversehrt, die andere hatte 112 geänderte Zeilen ungesichert liegen.
+Der Merge ist `--no-ff`; wie viele Commits im Zweig stehen, ist für die Geschichte
+gleichgültig. `git rebase -i` gibt es in dieser Umgebung nicht — zusammenfassen geht
+mit `git reset --soft`, oder man lässt es.
+
+**Ein Nachfolger prüft den geretteten Diff, statt ihm zu vertrauen.** Er ist nicht
+dadurch richtig, dass er schon da ist. Und er holt nach, was der Vorgänger noch nicht
+belegt hat — Rot vor grün lässt sich nachträglich zeigen, indem der neue Test gegen
+die alte Quelldatei läuft. Wer das überspringt, hat einen Test, der nie rot war.
+
+**Der Claim behält seinen Namen.** Übernimmt ein Nachfolger, claimt er als
+`<self>-NN` des Vorgängers, nicht unter neuem Namen — sonst sieht die Board-Historie
+aus, als hätten zwei Agenten dasselbe Ticket gebaut. Ein Claim verfällt nach einer
+Stunde; ist er weg, wird er unter demselben Namen neu gesetzt.
+
 Mehrere Subagenten dürfen gleichzeitig laufen, **zwei bis drei**. Die Eltern-Sitzung
 haftet dafür, dass das sinnvoll bleibt: nur so viele wie es kollisionsfreie
 startbereite Tickets gibt, **niemals zwei Subagenten an derselben Datei**, Merges
