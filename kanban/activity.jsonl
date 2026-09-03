@@ -729,3 +729,7 @@
 {"timestamp":"2026-09-03T11:32:57.978328989+02:00","action":"edit","task_id":111,"detail":"ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-lock"}
 {"timestamp":"2026-09-03T11:33:09.574506568+02:00","action":"edit","task_id":111,"detail":"ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-lock"}
 {"timestamp":"2026-09-03T11:33:09.575160406+02:00","action":"unblock","task_id":111,"detail":"ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-lock"}
+{"timestamp":"2026-09-03T11:34:21.614450644+02:00","action":"move","task_id":111,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T11:37:32.024285774+02:00","action":"edit","task_id":111,"detail":"ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-lock"}
+{"timestamp":"2026-09-03T11:37:32.025570788+02:00","action":"release","task_id":111,"detail":"akar-35"}
+{"timestamp":"2026-09-03T11:37:32.900432597+02:00","action":"move","task_id":111,"detail":"in-progress -\u003e done"}

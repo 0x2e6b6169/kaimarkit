@@ -1,10 +1,12 @@
 ---
 id: 111
 title: ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-lock
-status: todo
+status: done
 priority: critical
 created: 2026-09-03T11:27:53.391937908+02:00
-updated: 2026-09-03T11:33:09.572503884+02:00
+updated: 2026-09-03T11:37:32.880671599+02:00
+started: 2026-09-03T11:37:32.895826623+02:00
+completed: 2026-09-03T11:37:32.895826623+02:00
 assignee: akar
 tags:
     - docs
@@ -49,3 +51,6 @@ Fünf Prosa-/Kommentarstellen im Worktree .worktrees/task-111 (Branch task/111-f
 
 [[2026-09-03]] Thu 11:32
 Entscheidung katche, 2026-09-03: Die Vorgabe „das Diff darf nur die zwei Versionszeilen zeigen" ist aufgehoben. Das Ergebnis von `npm install --package-lock-only --allow-remote=all` wird vollständig übernommen: die beiden Versionszeilen, das `"license": "MIT"` fürs Wurzelpaket (Folge von ORG-1, gehört hinein) und die `inBundle`-Einträge unter `@tailwindcss/oxide-wasm32-wasi` (npm-Normalisierung, keine Abhängigkeitsänderung). Die Lock-Datei ist erzeugt, nicht geschrieben; ein von Hand gestutztes Diff wäre beim nächsten `npm install` wieder anders. Prüfung 4 lautet damit: Das Diff nennt genau die sechs Dateien, und in `package-lock.json` ändert sich außer Versionszeilen, `license` und `inBundle` keine Abhängigkeit. Prüfung 2 nach `npm ci` im Worktree nachholen.
+
+[[2026-09-03]] Thu 11:37
+akar-35: Merge 6fbd2af (Ticket-Commit 018b237). Prüfung: grep '0\.1\.0' findet in contracts/, docs/, frontend/src/ und package-lock nur noch Beispielantworten v0.1.0-12-ga22a6c5; typecheck grün, vitest 9 Testdateien / 105 Tests bestanden; mkdocs build --strict ohne Warnung; git diff --stat nennt genau die sechs Dateien. Lock-Diff (npm install --package-lock-only --allow-remote=all, 69+/2-): zwei Versionszeilen 0.1.0→0.2.0, license MIT fürs Wurzelpaket, sechs inBundle-Einträge unter @tailwindcss/oxide-wasm32-wasi (kein resolved/integrity, keine Abhängigkeitsänderung), wie in katches Entscheidung von 11:32. contracts/api.md nur Prosa, models.py und types.ts unberührt. Worktree und Branch entfernt.
