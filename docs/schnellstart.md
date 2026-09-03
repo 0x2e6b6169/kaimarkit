@@ -6,12 +6,28 @@ dabei im Einzelnen geschieht und welche Variablen es gibt, steht unter
 
 ## Was vorher da sein muss
 
-Eine Docker Engine mit dem Compose-Plugin — `docker compose version` muss antworten —
-und rund 6 GB freier Arbeitsspeicher. Der erste Bau backt die Docling-Modelle in das
-Abbild. Er dauert und braucht mehrere Gigabyte Platz; dafür lädt der Dienst zur
-Laufzeit keine Modelle mehr nach. Ins Netz greift er dann nur noch auf Verlangen: Ein
-Aufruf von `/api/convert/url` holt genau die eine Seite, nicht ihre Bilder und nicht
-ihre Stylesheets. Von sich aus schickt er nichts hinaus, auch keine Nutzungsdaten.
+Eine Docker Engine mit dem Compose-Plugin und rund 6 GB freier Arbeitsspeicher. Der
+erste Bau backt die Docling-Modelle in das Abbild. Er dauert und braucht mehrere
+Gigabyte Platz; dafür lädt der Dienst zur Laufzeit keine Modelle mehr nach. Ins Netz
+greift er dann nur noch auf Verlangen: Ein Aufruf von `/api/convert/url` holt genau
+die eine Seite, nicht ihre Bilder und nicht ihre Stylesheets. Von sich aus schickt
+er nichts hinaus, auch keine Nutzungsdaten.
+
+Ob die Engine wirklich erreichbar ist, beantwortet ein Befehl:
+
+```bash
+docker version
+```
+
+Er zeigt neben dem Client einen Abschnitt `Server` mit der Version der Engine und
+kehrt mit 0 zurück. Meldet er stattdessen `permission denied while trying to connect
+to the docker API`, dann läuft die Engine, aber das eigene Konto darf nicht an ihren
+Socket. Es fehlt die Gruppe `docker` — wer in ihr steht, wird auf diesem Rechner
+allerdings effektiv Root. Den Befehl dafür und die Abwägung dazu nennt
+[Lokaler Betrieb](betrieb/lokal.md#was-vorher-da-sein-muss).
+
+`make up` stellt diese Frage vor dem Bau von selbst und bricht ab, bevor die erste
+Stufe anläuft.
 
 ## Starten
 
