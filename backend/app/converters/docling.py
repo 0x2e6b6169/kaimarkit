@@ -29,6 +29,7 @@ installiert, laesst sich dieses Modul trotzdem laden — der Zugriff endet dann 
 
 from __future__ import annotations
 
+import io
 import logging
 import os
 import threading
@@ -63,6 +64,45 @@ ARTIFACTS_ENV = "DOCLING_ARTIFACTS_PATH"
 
 #: Was ``ImageRefMode.PLACEHOLDER`` anstelle eines Bildes ins Markdown setzt.
 PLACEHOLDER = "<!-- image -->"
+
+#: Die Endungen, die Docling als Bild liest — nur sie prüft ``_upright_image``.
+IMAGE_EXTENSIONS: tuple[str, ...] = (".png", ".jpg", ".jpeg", ".tiff")
+
+#: Der EXIF-Tag ``Orientation``; ``1`` heißt „so, wie die Pixel liegen“.
+EXIF_ORIENTATION = 0x0112
+
+
+def _upright_image(path: Path) -> io.BytesIO | None:
+    """Richtet ein Bild nach seiner EXIF-Orientation auf, wenn es eine hat.
+
+    Kameras speichern die Pixel so, wie der Sensor sie liefert, und schreiben die
+    Drehung als EXIF-Orientation daneben. Doclings ``ImageDocumentBackend`` liest
+    den Tag nicht — ``img.convert("RGB")`` in ``image_backend.py``, docling 2.124.
+    Ein Handyfoto im Hochformat kommt bei der Texterkennung deshalb um 90° gedreht
+    an, und EasyOCR findet darin nichts: im Abbild gemessen ``g`` statt drei Zeilen,
+    ohne Warnung (BE-34, GitHub #2).
+
+    Zurück kommt das aufgerichtete Bild als PNG im Speicher, oder ``None``, wenn
+    nichts zu drehen ist. Dann bekommt Docling die Datei wie bisher. Mehrseitige
+    TIFFs bleiben unangetastet: ``exif_transpose`` kennt nur das erste Bild, und
+    Docling liest jede Seite.
+    """
+    if path.suffix.lower() not in IMAGE_EXTENSIONS:
+        return None
+    from PIL import Image, ImageOps
+
+    with Image.open(path) as image:
+        orientation = image.getexif().get(EXIF_ORIENTATION, 1)
+        if orientation == 1 or getattr(image, "n_frames", 1) > 1:
+            return None
+        upright = ImageOps.exif_transpose(image)
+    buffer = io.BytesIO()
+    # ``convert("RGB")`` ist dasselbe, was Doclings Backend gleich danach tut. Es
+    # steht hier, weil PNG nicht jeden Modus speichern kann — ein CMYK-JPEG etwa
+    # scheiterte sonst erst beim Schreiben.
+    upright.convert("RGB").save(buffer, format="PNG")
+    buffer.seek(0)
+    return buffer
 
 
 def _placeholder_warnings(markdown: str, name: str) -> list[str]:
@@ -140,7 +180,16 @@ def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
         converter.initialize_pipeline(fmt)
 
     def run(path: Path) -> str:
-        document = converter.convert(path).document
+        upright = _upright_image(path)
+        if upright is None:
+            source = path
+        else:
+            # Erst hier importiert: Nur ein gedrehtes Bild geht als Strom hinein.
+            # Docling erkennt das Format am Inhalt, der Name liefert die Endung.
+            from docling.datamodel.base_models import DocumentStream
+
+            source = DocumentStream(name=f"{path.stem}.png", stream=upright)
+        document = converter.convert(source).document
         # Bilder werden zu ``PLACEHOLDER``. Was dabei verloren geht, zaehlt der
         # Adapter danach und meldet es in ``warnings``.
         return document.export_to_markdown(image_mode=ImageRefMode.PLACEHOLDER)

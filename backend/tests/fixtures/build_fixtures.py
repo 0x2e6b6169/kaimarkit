@@ -8,9 +8,9 @@ Alle Inhalte entstehen hier, nichts stammt aus fremden Quellen. Jede Datei traeg
 den Baustein ``Kaimarkit Fixture``; darauf verlassen sich die Smoketests in
 ``tests/test_converters.py``.
 
-Acht der zehn Dateien baut die Standardbibliothek. Nur ``tabelle.xlsx`` braucht
-openpyxl und ``bild.png`` Pillow; beide kommen mit ``markitdown[all]`` ohnehin in die
-Entwicklungsumgebung.
+Acht der zwölf Dateien baut die Standardbibliothek. Nur ``tabelle.xlsx`` braucht
+openpyxl und die drei Bilder Pillow; beide kommen mit ``markitdown[all]`` ohnehin
+in die Entwicklungsumgebung.
 """
 
 from __future__ import annotations
@@ -22,6 +22,15 @@ HERE = Path(__file__).parent
 
 #: Der Baustein, auf den sich jeder Smoketest verlaesst.
 MARKER = "Kaimarkit Fixture"
+
+#: Der Satz in scan.png und foto_exif6.jpg. Die OCR-Tests in
+#: ``tests/test_docling_ocr.py`` erwarten ihn im Ergebnis; er hat absichtlich keine
+#: Umlaute, damit sie die Texterkennung prüfen und nicht ihr Zeichenrepertoire.
+SCAN_SENTENCE = "Dieser Satz stammt aus einem Scan."
+
+#: Der EXIF-Tag ``Orientation``. ``6`` heißt „beim Anzeigen um 90 Grad im
+#: Uhrzeigersinn drehen“ — so legen Handys ein hochkant aufgenommenes Foto ab.
+EXIF_ORIENTATION = 0x0112
 
 #: Zeilen der Tabelle in tabelle.pdf und tabelle.xlsx.
 TABLE = [
@@ -352,6 +361,62 @@ def build_png() -> None:
     image.save(HERE / "bild.png", optimize=True)
 
 
+def build_scan_png() -> None:
+    """Ein Scan, wie ihn der Nutzer hochlädt: ein Bild mit einem bekannten Satz.
+
+    Anders als ``bild.png`` ist dieses Bild die Vorlage für einen Test, der den
+    Satz wiederfinden will (BE-34, GitHub #2). Deshalb ist es größer gesetzt und
+    entsteht deterministisch: fester Font, feste Größe, fester Satz. Ein Neubau
+    liefert dasselbe Bild.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+
+    dejavu = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+    if not dejavu.exists():
+        raise SystemExit(
+            "scan.png braucht DejaVuSans.ttf; ohne festen Font ist das Bild nicht reproduzierbar."
+        )
+    font = ImageFont.truetype(str(dejavu), 40)
+
+    image = Image.new("L", (1000, 160), color=255)
+    draw = ImageDraw.Draw(image)
+    draw.text((40, 56), SCAN_SENTENCE, fill=0, font=font)
+    image.save(HERE / "scan.png", optimize=True)
+
+
+def build_exif_jpg() -> None:
+    """Derselbe Satz wie in ``scan.png``, nur wie eine Kamera ihn ablegt.
+
+    Handys speichern die Pixel so, wie der Sensor sie liefert, und notieren die
+    Drehung daneben als EXIF-Orientation. Wer den Tag nicht ausliest, sieht den Satz
+    hochkant; die Texterkennung findet darin nichts (BE-34, GitHub #2).
+
+    Die beiden Vorlagen unterscheiden sich in nichts als dieser Drehung — derselbe
+    Font, dieselbe Größe, derselbe Satz. Der Test in ``tests/test_docling_ocr.py``
+    misst deshalb genau sie und nichts sonst.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+
+    dejavu = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+    if not dejavu.exists():
+        raise SystemExit(
+            "foto_exif6.jpg braucht DejaVuSans.ttf; ohne festen Font ist das Bild"
+            " nicht reproduzierbar."
+        )
+    font = ImageFont.truetype(str(dejavu), 40)
+
+    upright = Image.new("L", (1000, 160), color=255)
+    draw = ImageDraw.Draw(upright)
+    draw.text((40, 56), SCAN_SENTENCE, fill=0, font=font)
+
+    # ``ROTATE_90`` dreht gegen den Uhrzeigersinn. Orientation 6 nimmt diese Drehung
+    # beim Anzeigen zurück: Wer den Tag auswertet, sieht wieder ``upright``.
+    sideways = upright.transpose(Image.Transpose.ROTATE_90)
+    exif = Image.Exif()
+    exif[EXIF_ORIENTATION] = 6
+    sideways.save(HERE / "foto_exif6.jpg", quality=92, exif=exif)
+
+
 def main() -> None:
     for build in (
         build_html,
@@ -364,6 +429,8 @@ def main() -> None:
         build_xlsx,
         build_pptx,
         build_png,
+        build_scan_png,
+        build_exif_jpg,
     ):
         build()
         print(build.__name__)
