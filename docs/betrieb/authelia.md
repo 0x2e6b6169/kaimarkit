@@ -12,14 +12,50 @@ voraus: Die Middleware hängt an dem Router, den jene anlegt.
     auf ihn. Authelia einzurichten — Benutzerdatenbank, Zugriffsregeln, Sitzungen —
     steht in dessen eigener Dokumentation.
 
+## Zwei Eingriffe in Authelias Konfiguration
+
+Bevor `KAIMARKIT_DOMAIN` in `docker/.env` steht, gehören zwei Einträge in Authelias
+eigene Konfiguration. Beide liegen außerhalb von kaimarkit, und beide fallen erst im
+Betrieb auf — jedes Mal mit einer Antwort, die in die falsche Richtung zeigt.
+
+**Die Domäne muss unter Authelias Cookie-Domäne liegen.** Eine Authelia ist für eine
+Domäne zuständig, etwa `example.com`; ihr Sitzungscookie gilt für diese und ihre
+Unterdomänen. Fragt Traefik für einen Host außerhalb davon nach, antwortet Authelia
+mit **400**, und Traefik reicht den Statuscode unverändert durch. Dann kommt keine
+Anfrage durch, und das schon vor der Anmeldung. `KAIMARKIT_DOMAIN` gehört also unter
+dieselbe Domäne wie das Anmeldeportal: `kaimarkit.example.com` zu
+`auth.example.com`.
+
+**Authelias `access_control` braucht eine Regel für diese Domäne.** Fehlt sie, gilt
+die `default_policy`. Steht die auf `deny`, führt der Weg durch die Anmeldung und
+endet danach mit einer Verweigerung: Wer sich anmeldet, kommt trotzdem nicht hinein.
+
+```yaml
+access_control:
+  rules:
+    - domain: kaimarkit.example.com
+      policy: two_factor
+```
+
+Welche `policy` dort steht und welche Bedingungen dazukommen, entscheidet, wer die
+Authelia betreibt; die Schreibweise der Regel steht in Authelias eigener
+Dokumentation.
+
+!!! warning "Eine zweite Cookie-Domäne kostet ein zweites Portal"
+    Wer kaimarkit unter eine andere Domäne stellen will als die vorhandene Authelia,
+    braucht dort eine zweite Cookie-Domäne — und die verlangt je Domäne eine eigene
+    `authelia_url`. Also ein erreichbares Anmeldeportal unter der neuen Domäne, mit
+    eigenem Zertifikat und eigenem Router. Der kürzere Weg ist meist, kaimarkit unter
+    die vorhandene Domäne zu setzen.
+
 ## Was vorher da sein muss
 
 Alles aus [Traefik](traefik.md), dazu:
 
 - Ein laufender Authelia im selben Docker-Netz, unter seinem Containernamen
   erreichbar.
-- Eine Zugriffsregel in Authelia, die `KAIMARKIT_DOMAIN` abdeckt. Ohne sie greift
-  Authelias Standardregel.
+- Eine Zugriffsregel in Authelias `access_control`, die `KAIMARKIT_DOMAIN` abdeckt,
+  und eine Cookie-Domäne, unter der dieser Name liegt — beides wie oben beschrieben.
 - Ein DNS-Eintrag für die Anmeldeseite, etwa `auth.example.com`.
 - Eine ForwardAuth-Middleware, die Traefik kennt. Bringt die vorhandene Authelia
   keine mit, definiert diese Schicht eine eigene — siehe den nächsten Abschnitt.
@@ -248,3 +284,27 @@ Rücksprungziel im Parameter `rd`. Nach der Anmeldung stand die Oberfläche unte
 `KAIMARKIT_DOMAIN` und füllte ihre Enginewahl aus `/api/capabilities` — der Aufruf
 kam also durch dieselbe Middleware. Nach dem Löschen des Sitzungscookies führte
 derselbe Weg wieder zur Anmeldeseite.
+
+## 404 oder 400 — der Statuscode zeigt die Richtung
+
+Antwortet der Dienst überhaupt nicht, entscheidet der Statuscode, wo man sucht:
+
+- **404** — kein Router greift. Die Ursache liegt bei Traefik oder bei den Labels
+  dieser Schicht, etwa beim falschen Zusatz hinter dem `@`.
+- **400**, als Klartext `400 Bad Request` mit `content-length: 15` — etwas hat
+  geantwortet. Die Ursache liegt hinter der Middleware, also bei Authelia. Der
+  nächstliegende Grund ist eine Domäne außerhalb ihrer Cookie-Domäne.
+
+Authelia lässt sich direkt fragen, mit denselben Kopfzeilen, die Traefik ihr schickt:
+
+```bash
+docker run --rm --network <traefik-netz> curlimages/curl -s -o /dev/null -w '%{http_code}\n' \
+  -H "X-Forwarded-Proto: https" -H "X-Forwarded-Host: <domain>" -H "X-Forwarded-Uri: /" \
+  http://<authelia>:9091/api/authz/forward-auth
+```
+
+Dieser Aufruf hat die Ursache am 01.09.2026 am VPS-Aufbau des Nutzers gezeigt: Für
+einen Host außerhalb der Cookie-Domäne antwortete Authelia mit **400**. Vorher waren
+Netz, Middlewarename, Entrypoint, Certresolver, Router-Status und DNS geprüft — alle
+in Ordnung. Der Statuscode allein zeigt in die falsche Richtung; erst die Frage an
+Authelia klärt sie.
