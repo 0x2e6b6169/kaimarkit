@@ -745,3 +745,10 @@
 {"timestamp":"2026-09-03T11:42:53.967861673+02:00","action":"create","task_id":112,"detail":"DOC-16 · docs/formate.md: warming-Engines werden angeboten, nicht verschwiegen"}
 {"timestamp":"2026-09-03T11:42:54.528834549+02:00","action":"create","task_id":113,"detail":"BE-36 · test_openapi.py prüft die Fehlerantworten von /api/convert/url nicht"}
 {"timestamp":"2026-09-03T11:42:55.065331994+02:00","action":"create","task_id":114,"detail":"BE-37 · Adresssperre in fetching.py: Verbindung an die geprüfte IP binden (DNS-Rebinding)"}
+{"timestamp":"2026-09-03T14:15:16.600948367+02:00","action":"move","task_id":112,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:17:30.544187113+02:00","action":"edit","task_id":112,"detail":"DOC-16 · docs/formate.md: warming-Engines werden angeboten, nicht verschwiegen"}
+{"timestamp":"2026-09-03T14:17:31.514089591+02:00","action":"move","task_id":112,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T14:17:37.913760695+02:00","action":"edit","task_id":112,"detail":"DOC-16 · docs/formate.md: warming-Engines werden angeboten, nicht verschwiegen"}
+{"timestamp":"2026-09-03T14:17:37.914279862+02:00","action":"release","task_id":112,"detail":"akar-36"}
+{"timestamp":"2026-09-03T14:18:31.911376867+02:00","action":"move","task_id":108,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:19:22.879028489+02:00","action":"edit","task_id":109,"detail":"DOC-15 · Doku der URL-Konvertierung: API, Oberfläche, Grenzen (GitHub #5)"}

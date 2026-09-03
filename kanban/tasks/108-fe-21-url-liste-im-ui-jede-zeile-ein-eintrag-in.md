@@ -1,10 +1,10 @@
 ---
 id: 108
 title: 'FE-21 · URL-Liste im UI, jede Zeile ein Eintrag in der Warteschlange (GitHub #5)'
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-03T11:20:27.282910036+02:00
-updated: 2026-09-03T11:20:27.282910036+02:00
+updated: 2026-09-03T14:18:31.880777359+02:00
 assignee: benny
 tags:
     - frontend
@@ -12,6 +12,8 @@ tags:
 depends_on:
     - 105
     - 107
+claimed_by: benny-23
+claimed_at: 2026-09-03T14:18:31.880777359+02:00
 class: standard
 ---
 

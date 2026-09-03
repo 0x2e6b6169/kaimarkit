@@ -4,7 +4,7 @@ title: 'DOC-15 · Doku der URL-Konvertierung: API, Oberfläche, Grenzen (GitHub 
 status: todo
 priority: medium
 created: 2026-09-03T11:20:27.8373002+02:00
-updated: 2026-09-03T11:20:27.8373002+02:00
+updated: 2026-09-03T14:19:22.877601961+02:00
 assignee: akar
 tags:
     - docs
@@ -41,3 +41,15 @@ Nicht hier: `docs/betrieb/konfiguration.md` und `docker/.env.example`. Die Varia
 2. `mkdocs build --strict` im Backend-venv läuft ohne Warnung durch.
 3. Das `curl`-Beispiel aus `docs/api.md` liefert gegen `uvicorn app.main:app` die gezeigte Antwortform.
 4. `grep -rn 'Nichts nachladen' docs/` findet keinen Satz mehr, der dem Endpunkt widerspricht.
+
+[[2026-09-03]] Thu 14:19
+Nachtrag von katche, vor dem Claim: In den Abschnitt "Die Matrix" gehoert neben dem
+URL-Satz die Unterscheidung, die DOC-16 (#112) zutage gefoerdert hat. Eine Engine im
+Zustand `warming` steht in `engines` von `GET /api/capabilities` und ist damit
+ausdruecklich waehlbar - eine solche Anfrage wartet, bis das Modell geladen ist
+(`converters/docling.py:226-229`). Aus `formats` faellt sie aber heraus, genau wie
+`unavailable` (`converters/registry.py:161,199`): `engine=auto` nimmt fuer ein PDF
+solange die naechste Engine der Liste. Beides in einem Satz, damit die Matrix nicht
+den Eindruck erweckt, waehlbar und in `formats` sei dasselbe.
+Der Vertrag braucht dazu nichts; er behauptet an keiner Stelle etwas ueber `formats`
+und `warming` (geprueft).
