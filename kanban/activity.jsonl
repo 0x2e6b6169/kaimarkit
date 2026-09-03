@@ -801,3 +801,11 @@
 {"timestamp":"2026-09-03T14:55:02.236835684+02:00","action":"create","task_id":117,"detail":"BE-38 · OCR bei Bildern in Dokumenten: erst messen, dann entscheiden (GitHub #2)"}
 {"timestamp":"2026-09-03T14:55:03.230286894+02:00","action":"create","task_id":118,"detail":"DOC-17 · Zwei Stellen, die BE-35 unwahr gemacht hat"}
 {"timestamp":"2026-09-03T14:56:09.442101849+02:00","action":"create","task_id":119,"detail":"FE-24 · Abgewiesene Adressen bleiben im Textfeld stehen"}
+{"timestamp":"2026-09-03T14:56:34.816474212+02:00","action":"move","task_id":117,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:56:55.16575133+02:00","action":"move","task_id":118,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:57:07.124882159+02:00","action":"move","task_id":119,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:59:45.221952269+02:00","action":"create","task_id":120,"detail":"FE-25 · Vorgelesen wird die Zahl, nicht die Warnung"}
+{"timestamp":"2026-09-03T14:59:50.705210219+02:00","action":"edit","task_id":118,"detail":"DOC-17 · Zwei Stellen, die BE-35 unwahr gemacht hat"}
+{"timestamp":"2026-09-03T14:59:57.300806896+02:00","action":"move","task_id":118,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T14:59:58.030423299+02:00","action":"edit","task_id":118,"detail":"DOC-17 · Zwei Stellen, die BE-35 unwahr gemacht hat"}
+{"timestamp":"2026-09-03T14:59:58.030769858+02:00","action":"release","task_id":118,"detail":"akar-39"}

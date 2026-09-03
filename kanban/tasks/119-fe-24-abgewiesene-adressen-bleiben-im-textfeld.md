@@ -1,13 +1,15 @@
 ---
 id: 119
 title: FE-24 · Abgewiesene Adressen bleiben im Textfeld stehen
-status: todo
+status: in-progress
 priority: low
 created: 2026-09-03T14:56:09.430537774+02:00
-updated: 2026-09-03T14:56:09.430537774+02:00
+updated: 2026-09-03T14:57:07.112311617+02:00
 assignee: benny
 tags:
     - frontend
+claimed_by: benny-26
+claimed_at: 2026-09-03T14:57:07.112311617+02:00
 class: standard
 ---
 

@@ -1,14 +1,16 @@
 ---
 id: 117
 title: 'BE-38 · OCR bei Bildern in Dokumenten: erst messen, dann entscheiden (GitHub #2)'
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-03T14:55:02.223095162+02:00
-updated: 2026-09-03T14:55:02.223095162+02:00
+updated: 2026-09-03T14:56:34.8026098+02:00
 assignee: sophie
 tags:
     - backend
     - gh-2
+claimed_by: sophie-40
+claimed_at: 2026-09-03T14:56:34.8026098+02:00
 class: standard
 ---
 
