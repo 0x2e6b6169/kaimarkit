@@ -9,7 +9,7 @@
  * Faehigkeitsmatrix hier direkt.
  */
 
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import OptionsPanel from '../OptionsPanel.vue'
 import { useCapabilities } from '../../composables/useCapabilities'
@@ -38,30 +38,51 @@ function render(filenames: string[] = [], options: ConvertOptions = defaultOptio
   return mount(OptionsPanel, { props: { modelValue: options, filenames } })
 }
 
-/** Die Werte der Auswahl, ohne den Eintrag `auto`. */
+/** Die waehlbaren Schaltflaechen der Gruppe, ohne den Eintrag `auto`. */
 function offeredEngines(wrapper: ReturnType<typeof render>): string[] {
   return wrapper
-    .findAll('[data-test="engine-select"] option')
-    .map((option) => option.attributes('value') ?? '')
+    .findAll('[data-test="engine-select"] input[type="radio"]')
+    .filter((radio) => radio.attributes('disabled') === undefined)
+    .map((radio) => radio.attributes('value') ?? '')
     .filter((value) => value !== 'auto')
+}
+
+function radio(wrapper: ReturnType<typeof render>, engine: string) {
+  return wrapper.get(`[data-test="engine-select"] input[type="radio"][value="${engine}"]`)
+}
+
+/** Die gestaltete Schaltflaeche um den Radioschalter; sie traegt den Grund im `title`. */
+function chip(wrapper: ReturnType<typeof render>, engine: string) {
+  return wrapper.get(`[data-test="engine-choice-${engine}"] label`)
 }
 
 describe('OptionsPanel', () => {
   beforeEach(() => {
     given()
+    localStorage.clear()
+    vi.restoreAllMocks()
   })
 
-  it('steht auf automatisch und bietet ohne Dateien alle nutzbaren Engines', () => {
-    const wrapper = render()
-    const select = wrapper.get('[data-test="engine-select"]')
-    expect((select.element as HTMLSelectElement).value).toBe('auto')
+  it('zeigt die Wahl aus den Optionen und bietet ohne Dateien alle nutzbaren Engines', () => {
+    const wrapper = render([], { engine: 'markitdown', ocr: null })
+    expect((radio(wrapper, 'markitdown').element as HTMLInputElement).checked).toBe(true)
     expect(offeredEngines(wrapper)).toEqual(['markitdown', 'docling', 'pandoc'])
   })
 
-  it('laesst bei einer .epub nur die Engines uebrig, die epub lesen koennen', () => {
+  it('laesst bei einer .epub nur die Engines waehlbar, die epub lesen koennen', () => {
+    // Die Reihenfolge ist die der Gruppe, nicht die Praeferenz je Endung: Die
+    // Gruppe behaelt ihre Form, ganz gleich, was in der Warteschlange liegt.
     const wrapper = render(['buch.epub'])
-    expect(offeredEngines(wrapper)).toEqual(['pandoc', 'markitdown'])
+    expect(offeredEngines(wrapper)).toEqual(['markitdown', 'pandoc'])
     expect(offeredEngines(wrapper)).not.toContain('docling')
+  })
+
+  it('zeigt eine Engine, die die Warteschlange ausschliesst, als deaktivierte Schaltflaeche', () => {
+    // Nicht versteckt: Sonst aenderte die Gruppe ihre Form mit jeder Datei.
+    const wrapper = render(['buch.epub'])
+    const docling = radio(wrapper, 'docling')
+    expect(docling.attributes('disabled')).toBeDefined()
+    expect(chip(wrapper, 'docling').attributes('title')).toBe('liest diese Dateien nicht')
   })
 
   it('bietet bei gemischten Formaten nur die Schnittmenge', () => {
@@ -71,18 +92,16 @@ describe('OptionsPanel', () => {
 
   it('kennzeichnet eine ladende Engine und laesst sie waehlbar', () => {
     const wrapper = render(['bericht.pdf'])
-    const docling = wrapper
-      .findAll('[data-test="engine-select"] option')
-      .find((option) => option.attributes('value') === 'docling')
-    expect(docling).toBeDefined()
-    expect(docling!.text()).toContain('lädt noch')
-    expect(docling!.attributes('disabled')).toBeUndefined()
+    expect(radio(wrapper, 'docling').attributes('disabled')).toBeUndefined()
+    expect(wrapper.get('[data-test="engine-choice-docling"]').text()).toContain('lädt noch')
   })
 
-  it('bietet eine unavailable gemeldete Engine nicht an', () => {
+  it('zeigt eine unavailable gemeldete Engine deaktiviert als nicht installiert', () => {
     given({ engines: { markitdown: 'ready', docling: 'unavailable', pandoc: 'ready' } })
     const wrapper = render(['bericht.pdf'])
     expect(offeredEngines(wrapper)).toEqual(['markitdown'])
+    expect(radio(wrapper, 'docling').attributes('disabled')).toBeDefined()
+    expect(chip(wrapper, 'docling').attributes('title')).toBe('nicht installiert')
   })
 
   it('bietet nicht an, was in engines gar nicht steht', () => {
@@ -92,6 +111,7 @@ describe('OptionsPanel', () => {
     given({ formats: { ...baseCapabilities.formats, '.md': ['passthrough'] } })
     const wrapper = render(['notizen.md'])
     expect(offeredEngines(wrapper)).toEqual([])
+    expect(wrapper.find('input[type="radio"][value="passthrough"]').exists()).toBe(false)
   })
 
   it('faellt auf automatisch zurueck, wenn die gewaehlte Engine das Format nicht kann', async () => {
@@ -104,13 +124,28 @@ describe('OptionsPanel', () => {
     expect(emitted![0]![0]).toEqual({ engine: 'auto', ocr: null })
   })
 
+  it('laesst beim Ruecksprung auf automatisch den gemerkten Wert stehen', async () => {
+    // Beim naechsten Besuch soll die Engine wieder da sein.
+    localStorage.setItem('kaimarkit.engine', 'docling')
+    const wrapper = render(['bericht.pdf'], { engine: 'docling', ocr: null })
+    await wrapper.setProps({ filenames: ['buch.epub'] })
+    expect(wrapper.emitted('update:modelValue')![0]![0]).toEqual({ engine: 'auto', ocr: null })
+    expect(localStorage.getItem('kaimarkit.engine')).toBe('docling')
+  })
+
   it('meldet die gewaehlte Engine nach aussen', async () => {
     const wrapper = render(['buch.epub'])
-    await wrapper.get('[data-test="engine-select"]').setValue('pandoc')
+    await radio(wrapper, 'pandoc').setValue()
     expect(wrapper.emitted('update:modelValue')![0]![0]).toEqual({
       engine: 'pandoc',
       ocr: null,
     })
+  })
+
+  it('merkt die gewaehlte Engine unter kaimarkit.engine im Browser', async () => {
+    const wrapper = render(['buch.epub'])
+    await radio(wrapper, 'pandoc').setValue()
+    expect(localStorage.getItem('kaimarkit.engine')).toBe('pandoc')
   })
 
   it('zeigt den OCR-Schalter, wenn das Backend OCR meldet', async () => {
@@ -138,13 +173,11 @@ describe('OptionsPanel', () => {
     expect(offeredEngines(wrapper)).toEqual([])
   })
 
-  it('sagt schon in der Voreinstellung, was docling und markitdown kosten', () => {
+  it('sagt neben jedem Namen, wofuer die Engine gut ist', () => {
     // Der Nutzer soll die Dauer nicht erst an der Zeitgrenze erfahren: Die
-    // Saetze stehen da, bevor jemand die Auswahl anfasst.
+    // Halbsaetze stehen da, bevor jemand die Auswahl anfasst.
     const wrapper = render()
-    expect(wrapper.get('[data-test="engine-note-docling"]').text()).toMatch(/Minuten/)
-    expect(wrapper.get('[data-test="engine-note-markitdown"]').text()).toMatch(
-      /Sekundenbruchteil/,
-    )
+    expect(wrapper.get('[data-test="engine-short-docling"]').text()).toMatch(/Minuten/)
+    expect(wrapper.get('[data-test="engine-short-markitdown"]').text()).toMatch(/schnell/)
   })
 })

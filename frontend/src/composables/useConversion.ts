@@ -18,6 +18,15 @@
  * wandelt weiter: BE-30 hat gemessen, dass uvicorn die ASGI-Aufgabe beim
  * Verbindungsabbruch nicht abbricht und der Handler erst an der Zeitgrenze
  * endet. Deshalb verspricht die Oberflaeche nicht mehr als „nicht mehr warten".
+ *
+ * ## Die gemerkte Engine
+ *
+ * Die zuletzt gewaehlte Engine bleibt im Browser, ueber Sitzungen hinweg
+ * (GitHub #3). Der Dienst hat keinen Sitzungszustand und liest kein Cookie;
+ * deshalb `localStorage`, ein Schluessel, und nur hier: Wer den Speicher
+ * anfasst, tut es ueber `rememberEngine`, und die Warteschlange liest ihn beim
+ * Anlegen. Gemerkt wird nur die Engine, nicht der OCR-Schalter. Ohne Eintrag —
+ * oder ohne Speicher, etwa im privaten Fenster — gilt `markitdown`.
  */
 
 import { computed, ref, type ComputedRef, type Ref } from 'vue'
@@ -26,6 +35,37 @@ import type { ConversionEntry, ConvertOptions } from '../types'
 
 /** Hoechstens so viele Dateien laufen gleichzeitig. */
 const MAX_PARALLEL = 2
+
+/** Der Schluessel im `localStorage`, unter dem die gewaehlte Engine steht. */
+const ENGINE_KEY = 'kaimarkit.engine'
+
+/** Die Engine, wenn nichts gemerkt ist. */
+const DEFAULT_ENGINE = 'markitdown'
+
+/**
+ * Liest die gemerkte Engine. `localStorage` kann werfen — privates Fenster,
+ * blockierte Site-Daten —, und dann gilt die Vorgabe.
+ */
+function storedEngine(): string {
+  try {
+    return localStorage.getItem(ENGINE_KEY) || DEFAULT_ENGINE
+  } catch {
+    return DEFAULT_ENGINE
+  }
+}
+
+/**
+ * Merkt eine Engine fuer den naechsten Besuch. Nur eine Wahl des Nutzers
+ * gehoert hierher — der Ruecksprung auf `auto`, wenn eine Engine aus dem
+ * Angebot faellt, ueberschreibt den gemerkten Wert nicht.
+ */
+export function rememberEngine(engine: string): void {
+  try {
+    localStorage.setItem(ENGINE_KEY, engine)
+  } catch {
+    // Ohne Speicher gibt es nichts zu merken; die Wahl gilt fuer diese Sitzung.
+  }
+}
 
 /**
  * Der Lebenslauf einer Zeile. `queued`, `running` und `aborted` gibt es nur im
@@ -79,7 +119,7 @@ export function createConversionQueue(
   const maxParallel = deps.maxParallel ?? MAX_PARALLEL
 
   const entries = ref<QueueEntry[]>([])
-  const options = ref<ConvertOptions>({ engine: 'auto', ocr: null })
+  const options = ref<ConvertOptions>({ engine: storedEngine(), ocr: null })
 
   /**
    * Die Dateien liegen ausserhalb der Reaktivitaet. Ein `File` in einem

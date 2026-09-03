@@ -1,3 +1,5 @@
+// @vitest-environment jsdom
+
 /**
  * Die Warteschlange gegen einen Attrappen-Client.
  *
@@ -7,9 +9,9 @@
  * tatsaechlich erreicht.
  */
 
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ApiError } from '../api'
-import { createConversionQueue, type ConvertFn } from './useConversion'
+import { createConversionQueue, rememberEngine, type ConvertFn } from './useConversion'
 import type { ConversionEntry } from '../types'
 
 /** Laesst alle offenen Microtasks durchlaufen. */
@@ -218,5 +220,42 @@ describe('useConversion', () => {
     await tick()
 
     expect(seen).toEqual([{ engine: 'docling', ocr: true }])
+  })
+
+  describe('die gemerkte Engine', () => {
+    beforeEach(() => {
+      localStorage.clear()
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('waehlt markitdown, wenn nichts gemerkt ist', () => {
+      const queue = createConversionQueue()
+      expect(queue.options.value).toEqual({ engine: 'markitdown', ocr: null })
+    })
+
+    it('schreibt die Wahl unter kaimarkit.engine und liest sie in eine neue Warteschlange zurueck', async () => {
+      rememberEngine('docling')
+      expect(localStorage.getItem('kaimarkit.engine')).toBe('docling')
+      expect(createConversionQueue().options.value.engine).toBe('docling')
+
+      // Auch die geteilte Warteschlange der Anwendung liest den Wert beim Start.
+      vi.resetModules()
+      const fresh = await import('./useConversion')
+      expect(fresh.useConversion().options.value.engine).toBe('docling')
+    })
+
+    it('bleibt bei markitdown und wirft nicht, wenn der Speicher wirft', () => {
+      vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+        throw new Error('Site-Daten blockiert')
+      })
+      vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        throw new Error('Site-Daten blockiert')
+      })
+      expect(createConversionQueue().options.value.engine).toBe('markitdown')
+      expect(() => rememberEngine('docling')).not.toThrow()
+    })
   })
 })
