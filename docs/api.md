@@ -152,6 +152,81 @@ Der Aufruf antwortet mit 200, auch wenn jede einzelne Datei scheiterte — die A
 selbst war ja in Ordnung. Als Anfrage scheitert nur ein zu großer Stapel: mehr als
 `KAIMARKIT_MAX_FILES` Dateien enden mit 413 und `too_many_files`.
 
+## Eine Webseite wandeln — `POST /api/convert/url`
+
+Hier lädt niemand etwas hoch: Der Dienst holt die Seite selbst und wandelt sie
+danach wie eine hochgeladene Datei. Der Rumpf ist JSON, eine Adresse je Aufruf.
+
+| Feld | Typ | Pflicht | Bedeutung |
+|---|---|---|---|
+| `url` | string | ja | die Adresse, `http` oder `https` |
+| `engine` | string | nein | ein Enginename oder `auto` (Standard) |
+| `ocr` | boolean \| null | nein | überschreibt `KAIMARKIT_OCR_ENABLED` |
+
+```bash
+curl -sf -H 'Content-Type: application/json' \
+     -d '{"url": "https://example.com/"}' localhost:8000/api/convert/url
+```
+
+Die Antwort ist immer ein `ConversionEntry` als JSON. Den Markdown-Zweig über
+`Accept`, den `/api/convert` kennt, gibt es hier nicht.
+
+```json
+{
+  "filename": "example-domain.html",
+  "status": "ok",
+  "markdown": "# Example Domain\n\nThis domain is for use in documentation examples ...",
+  "engine": "markitdown",
+  "warnings": [],
+  "duration_ms": 10,
+  "error": null
+}
+```
+
+Den Dateinamen leitet der Dienst ab, statt ihn zu übernehmen. Er kommt aus dem
+`<title>` der Seite: Kleinbuchstaben, Umlaute umgeschrieben (`ä` → `ae`,
+`ß` → `ss`), alles außer `[a-z0-9]` zu `-`, höchstens 80 Zeichen. Fehlt ein Titel —
+bei einer PDF etwa —, entsteht der Name auf dieselbe Art aus Host und Pfad:
+`https://arxiv.org/pdf/2502.16161` wird zu `arxiv-org-pdf-2502-16161.pdf`. Die
+Endung ist die der geholten Datei; sie folgt dem `Content-Type` und sonst dem Pfad.
+Doppelt steht sie nie da: `…/resources/pdf/dummy.pdf` endet auf `-dummy.pdf`, nicht
+auf `-dummy-pdf.pdf`. Gleiche Namen nummeriert der Client, nicht der Dienst.
+
+Nach dem Holen geht die Datei denselben Weg wie ein Upload: Registry, Engine,
+Rückfall. Deshalb gelten dieselben Fehler wie bei `/api/convert`, und `invalid_url`
+kommt dazu:
+
+| HTTP | `code` | Anlass |
+|---|---|---|
+| 400 | `invalid_url` | kein öffentliches http(s), Host nicht auflösbar, Weiterleitung ins Private, mehr als fünf Weiterleitungen, oder die Gegenstelle antwortet nicht mit 2xx |
+| 400 | `engine_unsuitable` | die verlangte Engine kann das gelieferte Format nicht |
+| 400 | `engine_unavailable` | die verlangte Engine ist nicht installiert |
+| 413 | `file_too_large` | die Antwort überschreitet `KAIMARKIT_MAX_FILE_SIZE_MB` |
+| 415 | `unsupported_format` | weder `Content-Type` noch Pfad führen auf eine bekannte Endung |
+| 500 | `conversion_failed` | die Engine ist an der Seite gescheitert |
+| 504 | `conversion_timeout` | über `KAIMARKIT_URL_TIMEOUT` beim Holen oder `KAIMARKIT_CONVERSION_TIMEOUT` beim Wandeln |
+
+Eine gesperrte Adresse nennt die geprüfte Adresse mit. `http://127.0.0.1/` etwa
+antwortet mit 400:
+
+```bash
+curl -s -H 'Content-Type: application/json' \
+     -d '{"url": "http://127.0.0.1/"}' localhost:8000/api/convert/url
+```
+
+```json
+{
+  "detail": "127.0.0.1 zeigt auf 127.0.0.1, und das ist keine öffentliche Adresse.",
+  "code": "invalid_url"
+}
+```
+
+Den Namen umgeht das nicht: `http://localhost:8000/api/health` endet mit derselben
+Meldung, weil der Dienst den Namen auflöst, bevor er verbindet.
+
+Was der Dienst dabei bewusst nicht kann — Seiten hinter einer Anmeldung, Seiten, die
+ihren Inhalt erst per JavaScript aufbauen —, steht unter [Grenzen](grenzen.md).
+
 ## Die Schnittstelle maschinenlesbar
 
 FastAPI erzeugt die Beschreibung selbst. Sie liegt unter `/api/openapi.json`, die

@@ -29,8 +29,20 @@ Jedes ungültige Byte ersetzt er durch `�` und meldet in einer Warnung, wie vi
 Zeichen er ersetzt hat. Steht `�` schon in einer gültigen Datei, gibt es nichts zu
 melden.
 
-Was von dieser Tabelle im Betrieb übrig bleibt, meldet `GET /api/capabilities`. Eine
-Engine, die nicht installiert oder noch nicht geladen ist, erscheint dort nicht.
+Für `POST /api/convert/url` gilt dieselbe Tabelle. Welche Zeile greift, entscheidet
+der Inhaltstyp, den der ferne Server liefert — `text/html` führt auf `.html`,
+`application/pdf` auf `.pdf` —, und erst wenn der nichts hergibt, die Endung im Pfad.
+Eine Adresse, die auf ein PDF zeigt, landet also in der Zeile `.pdf` und bekommt
+dieselbe Engine und dieselben Warnungen wie ein hochgeladenes PDF: Solange Docling
+lädt, wandelt MarkItDown, und die Antwort sagt in `warnings`, dass dabei die Bilder
+verlorengehen.
+
+Was von dieser Tabelle im Betrieb übrig bleibt, meldet `GET /api/capabilities`.
+Wählbar und in `formats` ist dabei nicht dasselbe: Eine Engine, die gerade ihre
+Modelle lädt, steht mit dem Zustand `warming` in `engines` und lässt sich
+ausdrücklich wählen — die Anfrage wartet dann, bis die Modelle geladen sind —, aus
+`formats` fällt sie aber heraus wie eine nicht installierte, und deshalb nimmt
+`engine=auto` für ein PDF solange die nächste Engine der Liste.
 
 ## Auswahl und Rückfall
 

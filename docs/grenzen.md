@@ -92,6 +92,43 @@ sobald der Dienst hochfährt, und lädt sie im Hintergrund; jeder Neustart fäng
 von vorn an. Bis das fertig ist, meldet die Auskunft `warming` und `engine=auto`
 nimmt für ein PDF MarkItDown.
 
+## Webseiten: nur öffentlich, kein JavaScript
+
+`POST /api/convert/url` holt genau eine Seite, und der Dienst prüft vorher, wohin
+er greift. Erlaubt sind `http` und `https`; jede andere Adresse endet mit 400 und
+`invalid_url`. Den Hostnamen löst er auf und prüft **jede** zurückgegebene Adresse:
+Loopback, private Netze, Link-local und alles andere, was nicht öffentlich
+erreichbar ist, weist er ab. Ein Name, der auf eine öffentliche und eine private
+Adresse zeigt, kommt ebenfalls nicht durch. `http://127.0.0.1/` etwa endet mit 400
+und `invalid_url`, und `http://localhost:8000/` genauso — der Name schützt nicht
+davor, weil der Dienst ihn auflöst, bevor er verbindet. Der Grund steht im Betrieb: Der Dienst
+teilt sich sein Docker-Netz mit Traefik und Authelia, und ein ungeprüfter Abruf
+wäre ein Sprungbrett dorthin — bis zu `169.254.169.254`, wo Cloud-Anbieter ihre
+Metadaten anbieten.
+
+Einer Weiterleitung folgt der Dienst höchstens fünfmal, und er prüft das Ziel vor
+jedem Sprung erneut. Wer öfter weiterleitet, bekommt `invalid_url`.
+
+Die geholte Antwort unterliegt derselben Größenprüfung wie ein Upload: Über
+`KAIMARKIT_MAX_FILE_SIZE_MB` bricht der Dienst mitten im Empfang ab und antwortet
+mit 413. Für den Abruf selbst gilt `KAIMARKIT_URL_TIMEOUT` — 30 Sekunden im
+Standard, alle Weiterleitungen eingeschlossen; danach 504. Die Umwandlung danach
+zählt wieder gegen `KAIMARKIT_CONVERSION_TIMEOUT`. Auch der Abruf belegt einen der
+`KAIMARKIT_MAX_CONCURRENT` Plätze: Wer zwanzig Adressen auf einmal schickt, öffnet
+nicht zwanzig Verbindungen zugleich.
+
+Zwei Arten von Seiten liefern trotzdem nichts Brauchbares:
+
+- **Seiten hinter einer Anmeldung.** Der Dienst schickt keine Cookies, keine
+  Kopfzeilen und keine Zugangsdaten mit. Er sieht, was ein fremder Browser ohne
+  Sitzung sieht — meist die Anmeldeseite, und die wandelt er dann auch.
+- **Seiten, die ihren Inhalt erst im Browser aufbauen.** Es läuft kein JavaScript.
+  Was der Server als HTML ausliefert, ist die Seite. Bei einer Anwendung, die ihren
+  Text erst nachlädt, bleibt ein fast leeres Markdown übrig.
+
+Die geholte Datei liegt wie ein Upload in einem eigenen temporären Verzeichnis, das
+nach der Antwort verschwindet — auch dann, wenn die Engine gescheitert ist.
+
 ## Was der Dienst gar nicht tut
 
 - **Nichts aufheben.** Es gibt keine Historie und keinen Zwischenspeicher. Wer ein

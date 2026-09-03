@@ -68,6 +68,18 @@ gescheiterte Datei hält die übrigen nicht auf, sondern zeigt ihre Meldung in d
 eigenen Zeile. Die Vorschau klappt das gewandelte Markdown auf, herunterladen
 lässt es sich einzeln oder als ZIP über alle gelungenen Dateien.
 
+Eine Webseite braucht keinen Download vorweg. Unter „Webseiten, eine Adresse je
+Zeile" steht ein mehrzeiliges Feld; „Webseiten wandeln" schickt jede Zeile ab, und
+der Dienst holt die Seiten selbst. Jede reiht sich danach in dieselbe Warteschlange
+ein wie eine hochgeladene Datei, benannt nach dem Titel der Seite: Aus
+`https://example.com/` wird `example-domain.html`, nicht `example-com.html`. Eine
+Zeile, die
+weder mit `http://` noch mit `https://` beginnt, schickt die Oberfläche gar nicht
+erst ab: Sie bleibt im Feld stehen und wird darunter genannt. Alles Übrige prüft der
+Dienst — ob der Name auflöst, ob er ins offene Netz zeigt, ob dort ein Dokument
+liegt —, und seine Meldung steht dann in der Zeile der Warteschlange. Welche Seiten
+er nicht brauchbar wandelt, steht unter [Grenzen](grenzen.md).
+
 Unter „Optionen" steht die Engine für den nächsten Lauf zur Wahl, als Gruppe von
 Schaltflächen mit einem Halbsatz zu jeder; das Zeichen dahinter öffnet eine längere
 Erklärung, mit der Maus oder per Tab. Vorgewählt ist MarkItDown, die schnelle
