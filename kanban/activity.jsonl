@@ -798,3 +798,5 @@
 {"timestamp":"2026-09-03T14:45:52.009411413+02:00","action":"move","task_id":115,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-03T14:45:57.644620236+02:00","action":"edit","task_id":115,"detail":"FE-22 · limits.max_files begrenzt die Warteschlange, Dateien und URLs zusammen"}
 {"timestamp":"2026-09-03T14:45:57.644938383+02:00","action":"release","task_id":115,"detail":"benny-24"}
+{"timestamp":"2026-09-03T14:55:02.236835684+02:00","action":"create","task_id":117,"detail":"BE-38 · OCR bei Bildern in Dokumenten: erst messen, dann entscheiden (GitHub #2)"}
+{"timestamp":"2026-09-03T14:55:03.230286894+02:00","action":"create","task_id":118,"detail":"DOC-17 · Zwei Stellen, die BE-35 unwahr gemacht hat"}
