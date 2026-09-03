@@ -16,6 +16,7 @@ in die Entwicklungsumgebung.
 from __future__ import annotations
 
 import zipfile
+import zlib
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -27,6 +28,12 @@ MARKER = "Kaimarkit Fixture"
 #: ``tests/test_docling_ocr.py`` erwarten ihn im Ergebnis; er hat absichtlich keine
 #: Umlaute, damit sie die Texterkennung prüfen und nicht ihr Zeichenrepertoire.
 SCAN_SENTENCE = "Dieser Satz stammt aus einem Scan."
+
+#: Der Satz, der in ``bild_im_dokument.docx`` und ``bild_im_dokument.pdf`` allein im
+#: eingebetteten Bild steht — nirgends in der Textebene. Wer ihn im Markdown findet,
+#: hat einen Beleg dafür, dass die Texterkennung das Bild gelesen hat. Auch er kommt
+#: ohne Umlaute aus (BE-38, GitHub #2).
+IMAGE_SENTENCE = "Dieser Satz steckt nur im Bild."
 
 #: Der EXIF-Tag ``Orientation``. ``6`` heißt „beim Anzeigen um 90 Grad im
 #: Uhrzeigersinn drehen“ — so legen Handys ein hochkant aufgenommenes Foto ab.
@@ -169,23 +176,42 @@ def build_odt() -> None:
         archive.writestr("styles.xml", styles)
 
 
-def _write_pdf(name: str, stream: str) -> None:
+def _write_pdf(name: str, stream: str, image: tuple[bytes, int, int] | None = None) -> None:
     """Setzt einen Inhaltsstrom in ein einseitiges PDF und schreibt es.
 
     Der Behaelter ist von Hand gesetzt und unkomprimiert: fuenf Objekte, eine
-    Schrift, eine xref-Tabelle mit gezaehlten Offsets. Beide PDF-Fixtures teilen ihn
+    Schrift, eine xref-Tabelle mit gezaehlten Offsets. Alle PDF-Fixtures teilen ihn
     sich, denn sie unterscheiden sich nur im Inhaltsstrom.
+
+    ``image`` haengt ein Graustufenbild als sechstes Objekt an und meldet es in den
+    Ressourcen der Seite als ``/Im1`` — der Inhaltsstrom zeichnet es dann mit
+    ``/Im1 Do``. Die Rohdaten kommen deflatiert herein; das spart nichts als Platz,
+    aber ein unkomprimiertes Bild machte die Datei zwanzigmal so gross.
     """
     body = stream.encode("ascii")
+
+    resources = b"/Font << /F1 5 0 R >>"
+    if image is not None:
+        resources += b" /XObject << /Im1 6 0 R >>"
 
     objects = [
         b"<< /Type /Catalog /Pages 2 0 R >>",
         b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
         b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] "
-        b"/Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>",
+        b"/Resources << " + resources + b" >> /Contents 4 0 R >>",
         b"<< /Length %d >>\nstream\n" % len(body) + body + b"endstream",
         b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
     ]
+
+    if image is not None:
+        data, width, height = image
+        objects.append(
+            b"<< /Type /XObject /Subtype /Image /Width %d /Height %d /ColorSpace"
+            b" /DeviceGray /BitsPerComponent 8 /Filter /FlateDecode /Length %d >>\nstream\n"
+            % (width, height, len(data))
+            + data
+            + b"\nendstream"
+        )
 
     out = bytearray(b"%PDF-1.4\n")
     offsets = []
@@ -417,6 +443,128 @@ def build_exif_jpg() -> None:
     sideways.save(HERE / "foto_exif6.jpg", quality=92, exif=exif)
 
 
+def _sentence_image(width: int = 900, height: int = 300) -> object:
+    """``IMAGE_SENTENCE`` als Graustufenbild, so wie ``scan.png`` gesetzt.
+
+    Dieselbe Vorlage geht in das docx und in das PDF. Beide Fixtures zeigen damit
+    denselben Satz in derselben Schrift; ein Unterschied im Ergebnis liegt dann am
+    Format und nicht am Bild.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+
+    dejavu = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+    if not dejavu.exists():
+        raise SystemExit(
+            "Die Fixtures mit Bild im Dokument brauchen DejaVuSans.ttf; ohne festen"
+            " Font sind sie nicht reproduzierbar."
+        )
+    font = ImageFont.truetype(str(dejavu), 40)
+
+    image = Image.new("L", (width, height), color=255)
+    ImageDraw.Draw(image).text((40, 130), IMAGE_SENTENCE, fill=0, font=font)
+    return image
+
+
+def build_bild_im_dokument_docx() -> None:
+    """Ein Word-Dokument mit Textebene und einem Bild darin.
+
+    Das ist der Fall aus GitHub-Issue #2: Wer einen abfotografierten Absatz in ein
+    Word-Dokument setzt, gibt eine Datei ab, die zum groessten Teil aus Text besteht.
+    Die Textebene traegt ``MARKER``, das Bild traegt ``IMAGE_SENTENCE`` — und nur
+    dieser Satz belegt, dass die Texterkennung ueberhaupt gelaufen ist.
+    """
+    import io
+
+    buffer = io.BytesIO()
+    _sentence_image().save(buffer, format="PNG", optimize=True)
+    picture = buffer.getvalue()
+
+    content_types = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+        '<Default Extension="xml" ContentType="application/xml"/>'
+        '<Default Extension="png" ContentType="image/png"/>'
+        '<Default Extension="rels"'
+        ' ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+        '<Override PartName="/word/document.xml" ContentType="application/vnd.'
+        'openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+        "</Types>"
+    )
+    rels = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006'
+        '/relationships/officeDocument" Target="word/document.xml"/></Relationships>'
+    )
+    document_rels = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006'
+        '/relationships/image" Target="media/bild.png"/></Relationships>'
+    )
+
+    # Die Ausdehnung in EMU: 900 mal 300 Bildpunkte, mit 96 dpi gerechnet.
+    cx, cy = 8572500, 2857500
+    drawing = (
+        "<w:p><w:r><w:drawing>"
+        '<wp:inline distT="0" distB="0" distL="0" distR="0">'
+        f'<wp:extent cx="{cx}" cy="{cy}"/>'
+        '<wp:docPr id="1" name="Bild 1"/>'
+        '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+        '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+        '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+        '<pic:nvPicPr><pic:cNvPr id="0" name="bild.png"/><pic:cNvPicPr/></pic:nvPicPr>'
+        '<pic:blipFill><a:blip r:embed="rId2"/>'
+        "<a:stretch><a:fillRect/></a:stretch></pic:blipFill>"
+        '<pic:spPr><a:xfrm><a:off x="0" y="0"/>'
+        f'<a:ext cx="{cx}" cy="{cy}"/></a:xfrm>'
+        '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>'
+        "</pic:pic></a:graphicData></a:graphic>"
+        "</wp:inline></w:drawing></w:r></w:p>"
+    )
+    document = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
+        ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
+        ' xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">'
+        "<w:body>"
+        '<w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr>'
+        f"<w:r><w:t>{MARKER}</w:t></w:r></w:p>"
+        "<w:p><w:r><w:t>Ein Absatz aus dem Fixturebestand.</w:t></w:r></w:p>"
+        f"{drawing}"
+        "</w:body></w:document>"
+    )
+
+    target = HERE / "bild_im_dokument.docx"
+    with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("[Content_Types].xml", content_types)
+        archive.writestr("_rels/.rels", rels)
+        archive.writestr("word/document.xml", document)
+        archive.writestr("word/_rels/document.xml.rels", document_rels)
+        archive.writestr("word/media/bild.png", picture)
+
+
+def build_bild_im_dokument_pdf() -> None:
+    """Dasselbe als PDF: eine Textebene, und darunter dasselbe Bild.
+
+    Das Gegenstueck zum docx. Ein PDF mit Textebene laeuft in Docling durch eine
+    andere Pipeline als ein Word-Dokument, und erst der Vergleich beider Dateien
+    zeigt, woran ein fehlender Satz liegt (BE-38, GitHub #2).
+    """
+    image = _sentence_image()
+    data = zlib.compress(image.tobytes(), 9)
+
+    # Das Bild deckt 480 mal 160 Punkte einer Seite von 595 mal 842 — gut fuenfzehn
+    # Prozent. Docling laesst kleine Bilder aus der Texterkennung heraus; deshalb
+    # steht es hier gross auf der Seite und nicht als Briefmarke.
+    stream = (
+        f"BT /F1 16 Tf 72 780 Td ({MARKER}) Tj ET\n"
+        "BT /F1 11 Tf 72 750 Td (Ein Absatz aus dem Fixturebestand.) Tj ET\n"
+        "q 480 0 0 160 72 540 cm /Im1 Do Q\n"
+    )
+    _write_pdf("bild_im_dokument.pdf", stream, image=(data, image.width, image.height))
+
+
 def main() -> None:
     for build in (
         build_html,
@@ -431,6 +579,8 @@ def main() -> None:
         build_png,
         build_scan_png,
         build_exif_jpg,
+        build_bild_im_dokument_docx,
+        build_bild_im_dokument_pdf,
     ):
         build()
         print(build.__name__)

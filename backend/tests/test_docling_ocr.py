@@ -11,9 +11,11 @@ Der Adapter darf die Maschine nicht der Bibliothek ueberlassen: Doclings Vorgabe
 gewaehlte Maschine mit deren Voreinstellungen. Ein nachtraeglich gesetztes
 ``lang`` faellt dabei weg.
 
-Am Ende stehen zwei Tests mit der Marke ``slow``: Sie laden Docling wirklich und
-schicken zwei Bilder mit demselben Satz hindurch — eines aufrecht, eines wie eine
-Kamera es ablegt. Sie laufen nur im Abbild (``make test-slow-image``).
+Am Ende stehen vier Tests mit der Marke ``slow``. Sie laden Docling wirklich und
+laufen nur im Abbild (``make test-slow-image``). Die ersten beiden schicken zwei
+Bilder mit demselben Satz hindurch — eines aufrecht, eines wie eine Kamera es ablegt.
+Die beiden letzten fragen, wie weit die Texterkennung in ein Dokument hineinreicht,
+in dem ein Bild steckt.
 """
 
 from __future__ import annotations
@@ -33,8 +35,17 @@ FIXTURES = Path(__file__).parent / "fixtures"
 SCAN = FIXTURES / "scan.png"
 FOTO = FIXTURES / "foto_exif6.jpg"
 
+BILD_DOCX = FIXTURES / "bild_im_dokument.docx"
+BILD_PDF = FIXTURES / "bild_im_dokument.pdf"
+
 #: Der Satz, den beide Bilder zeigen. Er steht in ``fixtures/build_fixtures.py``.
 SENTENCE = "Dieser Satz stammt aus einem Scan"
+
+#: Der Satz, der in den beiden Dokumenten allein im eingebetteten Bild steht — in
+#: keiner Textebene. Auch er steht in ``fixtures/build_fixtures.py``. Der Punkt am
+#: Ende fehlt hier: Was die Texterkennung liest, ist der Satz, nicht seine
+#: Zeichensetzung.
+IMAGE_SENTENCE = "Dieser Satz steckt nur im Bild"
 
 
 @pytest.fixture(autouse=True)
@@ -108,3 +119,59 @@ def test_ocr_reads_a_photo_that_only_exif_puts_upright() -> None:
     markdown = adapter.DoclingConverter().convert(FOTO, ConvertOptions(ocr=True)).markdown
 
     assert SENTENCE in markdown
+
+
+# --- Wie weit die Texterkennung in ein Dokument hineinreicht -----------------
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(
+    importlib.util.find_spec("docling") is None, reason="docling ist nicht installiert"
+)
+@pytest.mark.skipif(not BILD_PDF.exists(), reason="fixtures/bild_im_dokument.pdf fehlt")
+def test_ocr_reads_an_image_embedded_in_a_pdf() -> None:
+    """Ein PDF mit Textebene und einem Bild darin: Der Satz aus dem Bild kommt zurueck.
+
+    Docling faehrt PDF durch die ``StandardPdfPipeline``, und die schickt die
+    Bildflaechen einer Seite durch EasyOCR. Der zweite Lauf ist die Gegenprobe: Ohne
+    ``ocr`` fehlt der Satz. Erst er belegt, dass der erste Lauf den Satz aus dem Bild
+    liest und nicht aus der Textebene — dort steht er naemlich nicht.
+    """
+    converter = adapter.DoclingConverter()
+
+    mit_ocr = converter.convert(BILD_PDF, ConvertOptions(ocr=True)).markdown
+    ohne_ocr = converter.convert(BILD_PDF, ConvertOptions(ocr=False)).markdown
+
+    assert IMAGE_SENTENCE in mit_ocr
+    assert IMAGE_SENTENCE not in ohne_ocr
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(
+    importlib.util.find_spec("docling") is None, reason="docling ist nicht installiert"
+)
+@pytest.mark.skipif(not BILD_DOCX.exists(), reason="fixtures/bild_im_dokument.docx fehlt")
+def test_ocr_does_not_reach_an_image_embedded_in_a_docx() -> None:
+    """Dasselbe Bild in einem Word-Dokument: Der Satz kommt nicht zurueck.
+
+    Dieser Test haelt eine Grenze der Engine fest, keinen erwuenschten Zustand. Docling
+    2.124.0 gibt ``InputFormat.DOCX`` an die ``SimplePipeline``, und die kennt keine
+    Texterkennung: ``ocr_model`` wird im ganzen Paket ``docling/pipeline/`` nur in
+    ``standard_pdf_pipeline.py`` gebaut, und ``ConvertPipelineOptions`` — die Optionen
+    der ``SimplePipeline`` — fuehrt ``do_ocr`` gar nicht. Es gibt also keinen Schalter,
+    der hier anzuschalten waere; deshalb steht in ``docling.py`` nichts dazu (BE-38,
+    GitHub #2).
+
+    Der Test steht trotzdem hier, weil eine spaetere Docling-Fassung das aendern kann.
+    Faellt er durch, ist das die Meldung, dass die Grenze weg ist — und dass
+    ``docs/grenzen.md`` und die Warnung nachzuziehen sind.
+
+    Zugesichert wird nur, dass ueberhaupt gewarnt wird, nicht der Wortlaut. Dass die
+    Warnung den Grund nicht nennt, ist ein eigener Befund und gehoert in ein eigenes
+    Ticket; dieser Test soll ihm nicht im Weg stehen.
+    """
+    result = adapter.DoclingConverter().convert(BILD_DOCX, ConvertOptions(ocr=True))
+
+    assert IMAGE_SENTENCE not in result.markdown
+    assert adapter.PLACEHOLDER in result.markdown
+    assert result.warnings
