@@ -127,7 +127,16 @@ eigene Lane, höchste Priorität zuerst:
 K=~/go/bin/kanban-md
 $K list --assignee <self> --unblocked --not-blocked --status todo --sort priority -r
 $K move <ID> in-progress --claim <self>-NN
+$K edit <ID> --claim <self>-NN --append-body "…"   # Notiz an ein geclaimtes Ticket
+$K move <ID> done --claim <self>-NN && $K edit <ID> --release
 ```
+
+**Drei Formen, die es nicht gibt, und die trotzdem jeder erfindet.** Es gibt kein
+`note`-Unterkommando — eine Notiz hängt `edit --append-body` an. `--release` kennt nur
+`edit`, nicht `move`; ein Ticket schließt deshalb in zwei Schritten ab. Und `edit`
+verweigert jede Änderung an einem geclaimten Ticket, solange nicht dasselbe `--claim`
+mitkommt — auch dem PO. Wer einen Rumpf berichtigen will, wartet, bis der Claim frei
+ist, statt ihn dem Arbeitenden wegzunehmen.
 
 **Beide Filter sind nötig und meinen Verschiedenes.** `--unblocked` blendet
 Tickets aus, deren `depends_on`-Vorgänger noch offen sind; `--not-blocked` blendet
@@ -237,6 +246,13 @@ gewinnt, nennt Kommentare und Docstrings mit: Zweimal hat ein Ticket dieser Art
 Dateien aufgeführt, die gar keine Meldung enthielten (`errors.py`, `pandoc.py`), und
 einmal eine übersehen, deren Text über zwei Zeilen umbrach. Ein Lauf über den
 Syntaxbaum unterscheidet Zeichenkette von Kommentar; `grep` kann es nicht.
+
+**Ein zeilenweises `grep` über Fließtext belegt nichts.** Eine Aussage in Prosa läuft
+über zwei Zeilen, und dann findet `grep` sie weder vorher noch nachher — die Prüfung
+meldet zweimal null und sieht bestanden aus. So ist DOC-18 fast durchgerutscht;
+akar-41 hat stattdessen über den geflachten Text gesucht und damit vorher null und
+nachher je eine Fundstelle belegt. Wer eine Prüfung auf einen Wortlaut in `docs/`
+schreibt, sucht über den Text ohne Zeilenumbrüche, nicht über die Zeilen.
 
 **Eine Datei auszuschließen ist eine Behauptung über den Quelltext.** BE-33 nannte
 `main.py` und `models.py` ausdrücklich als nicht betroffen — und übersah dabei
