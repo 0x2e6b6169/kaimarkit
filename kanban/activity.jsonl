@@ -759,3 +759,4 @@
 {"timestamp":"2026-09-03T14:20:08.874413743+02:00","action":"edit","task_id":92,"detail":"DOC-14 · KAIMARKIT_DOMAIN muss unter Authelias Cookie-Domaene liegen"}
 {"timestamp":"2026-09-03T14:20:13.632800199+02:00","action":"move","task_id":92,"detail":"backlog -\u003e todo"}
 {"timestamp":"2026-09-03T14:20:20.247173331+02:00","action":"move","task_id":114,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:20:32.822194918+02:00","action":"move","task_id":113,"detail":"todo -\u003e in-progress"}

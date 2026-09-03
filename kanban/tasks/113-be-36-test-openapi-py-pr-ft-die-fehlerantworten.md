@@ -1,13 +1,15 @@
 ---
 id: 113
 title: BE-36 · test_openapi.py prüft die Fehlerantworten von /api/convert/url nicht
-status: todo
+status: in-progress
 priority: low
 created: 2026-09-03T11:42:54.518942358+02:00
-updated: 2026-09-03T11:42:54.518942358+02:00
+updated: 2026-09-03T14:20:32.696439746+02:00
 assignee: sophie
 tags:
     - backend
+claimed_by: sophie-39
+claimed_at: 2026-09-03T14:20:32.696439746+02:00
 class: standard
 ---
 
