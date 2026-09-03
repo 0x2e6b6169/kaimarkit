@@ -31,7 +31,7 @@ kein Konto und keine Anmeldung. Wer eine Anmeldung braucht, setzt
 - [Schnellstart](schnellstart.md) — vom Start des Containers bis zur ersten
   umgewandelten Datei.
 - [Formate](formate.md) — die Matrix aus Endung und Engine, dazu OCR und Rückfall.
-- [API](api.md) — die vier Endpunkte mit Aufrufen für curl.
+- [API](api.md) — die fünf Endpunkte mit Aufrufen für curl.
 - [Betrieb](betrieb/konfiguration.md) — alle Variablen, lokal, hinter Traefik, mit
   Anmeldung.
 - [Entwicklung](entwicklung.md) — Aufbau des Projekts und eine vierte Engine
