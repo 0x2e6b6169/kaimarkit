@@ -800,3 +800,4 @@
 {"timestamp":"2026-09-03T14:45:57.644938383+02:00","action":"release","task_id":115,"detail":"benny-24"}
 {"timestamp":"2026-09-03T14:55:02.236835684+02:00","action":"create","task_id":117,"detail":"BE-38 · OCR bei Bildern in Dokumenten: erst messen, dann entscheiden (GitHub #2)"}
 {"timestamp":"2026-09-03T14:55:03.230286894+02:00","action":"create","task_id":118,"detail":"DOC-17 · Zwei Stellen, die BE-35 unwahr gemacht hat"}
+{"timestamp":"2026-09-03T14:56:09.442101849+02:00","action":"create","task_id":119,"detail":"FE-24 · Abgewiesene Adressen bleiben im Textfeld stehen"}
