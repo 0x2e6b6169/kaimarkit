@@ -2,9 +2,9 @@
 
 Was kaimarkit nicht kann und woran eine Umwandlung scheitert.
 
-## Vier Werte begrenzen einen Aufruf
+## Fünf Werte begrenzen einen Aufruf
 
-Alle vier kommen aus der Umgebung. `docs/betrieb/konfiguration.md` beschreibt sie
+Alle fünf kommen aus der Umgebung. `docs/betrieb/konfiguration.md` beschreibt sie
 im Einzelnen, `docker/.env.example` nennt die Standardwerte.
 
 | Variable | Standard | Was sie begrenzt |
@@ -13,6 +13,7 @@ im Einzelnen, `docker/.env.example` nennt die Standardwerte.
 | `KAIMARKIT_MAX_FILES` | 20 | Dateien je Stapelaufruf |
 | `KAIMARKIT_MAX_CONCURRENT` | 2 | gleichzeitige Umwandlungen |
 | `KAIMARKIT_CONVERSION_TIMEOUT` | 600 | Sekunden je Datei |
+| `KAIMARKIT_URL_TIMEOUT` | 30 | Sekunden je Abruf über `/api/convert/url` |
 
 Die Größe prüft der Dienst schon beim Empfang. Überschreitet die Datei das Limit,
 bricht er ab und antwortet mit 413 und `file_too_large`. Den Rest des Uploads liest
