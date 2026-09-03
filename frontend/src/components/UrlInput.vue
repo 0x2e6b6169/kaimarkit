@@ -9,7 +9,9 @@
  * ein Dokument liegt. Seine Meldung landet als `failed` an der Zeile in der
  * Warteschlange, nicht hier.
  *
- * Was durchkam, verschwindet aus dem Feld und lebt in der Warteschlange weiter.
+ * Was durchkam, verschwindet aus dem Feld und lebt in der Warteschlange weiter —
+ * solange sie Platz hat. Über ihre Grenze `limits.max_files` entscheidet sie
+ * selbst, und was sie deshalb nicht mehr aufnimmt, meldet die Seite.
  * Was liegen blieb, bleibt stehen und wird benannt — sonst ließe es sich nicht
  * berichtigen, und der Nutzer erführe nie, welche Zeile fehlte.
  */

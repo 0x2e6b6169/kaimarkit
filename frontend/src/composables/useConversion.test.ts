@@ -398,3 +398,62 @@ describe('useConversion mit Webadressen', () => {
     expect(client.seen()).toEqual([])
   })
 })
+
+/**
+ * Die Grenze aus `limits.max_files`. Sie zaehlt die Warteschlange als Ganzes,
+ * Dateien und Webadressen zusammen.
+ *
+ * Der Dienst lehnt einen zu grossen Stapel ohnehin ab. Die Oberflaeche sagt es
+ * vorher, statt zwanzig Anfragen loszuschicken, von denen die Haelfte scheitert.
+ */
+describe('useConversion mit einer Grenze', () => {
+  /** Ein Client fuer Adressen, der nie antwortet — hier zaehlt nur, was hineinkommt. */
+  const silentUrls: ConvertUrlFn = () => new Promise<ConversionEntry>(() => {})
+
+  function filesNamed(count: number): File[] {
+    return Array.from({ length: count }, (_, index) => fileNamed(`datei-${index}.pdf`))
+  }
+
+  it('nimmt nur so viele Dateien auf, wie die Grenze zulaesst', () => {
+    const client = stubClient()
+    const queue = createConversionQueue({ convert: client.convert, maxEntries: () => 20 })
+
+    queue.enqueue(filesNamed(21))
+
+    expect(queue.entries.value).toHaveLength(20)
+    expect(queue.rejected.value).toBe(1)
+    // Abgewiesen wird das Ende, nicht der Anfang.
+    expect(queue.entries.value.at(-1)!.filename).toBe('datei-19.pdf')
+  })
+
+  it('zaehlt Dateien und Adressen zusammen gegen dieselbe Grenze', () => {
+    const client = stubClient()
+    const queue = createConversionQueue({
+      convert: client.convert,
+      convertUrl: silentUrls,
+      maxEntries: () => 20,
+    })
+
+    queue.enqueue(filesNamed(15))
+    queue.enqueueUrls(Array.from({ length: 8 }, (_, index) => `https://example.com/${index}`))
+
+    expect(queue.entries.value).toHaveLength(20)
+    expect(queue.entries.value.filter((entry) => entry.source === 'url')).toHaveLength(5)
+    expect(queue.rejected.value).toBe(3)
+  })
+
+  it('weist ohne bekannte Grenze nichts ab', () => {
+    const client = stubClient()
+    const queue = createConversionQueue({
+      convert: client.convert,
+      convertUrl: silentUrls,
+      maxEntries: () => null,
+    })
+
+    queue.enqueue(filesNamed(50))
+    queue.enqueueUrls(['https://example.com/'])
+
+    expect(queue.entries.value).toHaveLength(51)
+    expect(queue.rejected.value).toBe(0)
+  })
+})
