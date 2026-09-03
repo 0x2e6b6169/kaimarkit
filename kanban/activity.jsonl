@@ -705,3 +705,4 @@
 {"timestamp":"2026-09-03T11:20:26.714953535+02:00","action":"create","task_id":107,"detail":"BE-35 · POST /api/convert/url: Seite holen, Namen ableiten, nur öffentliche Adressen (GitHub #5)"}
 {"timestamp":"2026-09-03T11:20:27.292797467+02:00","action":"create","task_id":108,"detail":"FE-21 · URL-Liste im UI, jede Zeile ein Eintrag in der Warteschlange (GitHub #5)"}
 {"timestamp":"2026-09-03T11:20:27.850912354+02:00","action":"create","task_id":109,"detail":"DOC-15 · Doku der URL-Konvertierung: API, Oberfläche, Grenzen (GitHub #5)"}
+{"timestamp":"2026-09-03T11:21:10.852232841+02:00","action":"create","task_id":110,"detail":"IN-21 · Docs-Stufe nach IN-20: baut sie bei jeder Kontextänderung neu?"}
