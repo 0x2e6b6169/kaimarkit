@@ -15,6 +15,19 @@
  * Ein Fehlschlag betrifft nur seine eigene Zeile. Die uebrigen laufen weiter,
  * und die Meldung steht am Eintrag, nicht in der Konsole.
  *
+ * ## Die Grenze
+ *
+ * `limits.max_files` aus `/api/capabilities` begrenzt die Warteschlange als
+ * Ganzes — Dateien und Adressen zusammen, nicht je Quelle. Was darueber
+ * hinausgeht, kommt gar nicht erst herein und wird in `rejected` gezaehlt; die
+ * Oberflaeche sagt es. Der Dienst lehnt einen zu grossen Stapel ohnehin ab, und
+ * es ist besser, das vorher zu sagen, als zwanzig Anfragen loszuschicken, von
+ * denen die Haelfte scheitert.
+ *
+ * Kennt niemand eine Grenze — die Faehigkeiten kamen nicht durch —, gilt keine.
+ * Eine erfundene Voreinstellung waere schlimmer als keine: Sie wiese Dateien ab,
+ * die der Dienst angenommen haette.
+ *
  * Wer nicht laenger warten will, bricht eine laufende Zeile ab. Jede laufende
  * Datei hat dafuer ihren eigenen `AbortController`; die Warteschlange ruft
  * `/api/convert` je Datei auf, ein Abbruch beendet also genau eine Anfrage.
@@ -38,6 +51,7 @@
 
 import { computed, ref, type ComputedRef, type Ref } from 'vue'
 import { convertFile, convertUrl, messageFromError } from '../api'
+import { useCapabilities } from './useCapabilities'
 import type { ConversionEntry, ConvertOptions } from '../types'
 
 /** Hoechstens so viele Dateien laufen gleichzeitig. */
@@ -119,6 +133,10 @@ export interface ConversionQueue {
   options: Ref<ConvertOptions>
   /** Wahr, solange etwas wartet oder laeuft. */
   busy: ComputedRef<boolean>
+  /** Wie viele Eintraege die Warteschlange fasst; null, solange keine Grenze bekannt ist. */
+  maxEntries: ComputedRef<number | null>
+  /** Wie viele beim letzten Hinzufuegen nicht mehr hineinpassten. */
+  rejected: Ref<number>
   enqueue: (files: Iterable<File>) => void
   /** Je Adresse eine Zeile. Leere Zeilen und Schemapruefung macht `UrlInput`. */
   enqueueUrls: (urls: Iterable<string>) => void
@@ -134,14 +152,23 @@ export interface ConversionQueue {
  * Client und eine andere Grenze einsetzt.
  */
 export function createConversionQueue(
-  deps: { convert?: ConvertFn; convertUrl?: ConvertUrlFn; maxParallel?: number } = {},
+  deps: {
+    convert?: ConvertFn
+    convertUrl?: ConvertUrlFn
+    maxParallel?: number
+    /** Die Grenze der Warteschlange. Ohne sie zaehlt `limits.max_files`. */
+    maxEntries?: () => number | null
+  } = {},
 ): ConversionQueue {
   const convert = deps.convert ?? convertFile
   const fetchUrl = deps.convertUrl ?? convertUrl
   const maxParallel = deps.maxParallel ?? MAX_PARALLEL
+  const limitOf = deps.maxEntries ?? (() => useCapabilities().limits.value?.max_files ?? null)
 
   const entries = ref<QueueEntry[]>([])
   const options = ref<ConvertOptions>({ engine: storedEngine(), ocr: null })
+  const maxEntries = computed(limitOf)
+  const rejected = ref(0)
 
   /**
    * Die Quellen liegen ausserhalb der Reaktivitaet. Ein `File` in einem
@@ -173,14 +200,32 @@ export function createConversionQueue(
     })
   }
 
+  /**
+   * Laesst durch, wofuer noch Platz ist, und zaehlt den Rest.
+   *
+   * Der Platz bemisst sich an der ganzen Warteschlange, nicht am Stapel: Wer
+   * fuenfzehn Dateien liegen hat, bringt keine acht Adressen mehr unter.
+   */
+  function admit<T>(incoming: Iterable<T>): T[] {
+    const items = Array.from(incoming)
+    const limit = maxEntries.value
+    if (limit === null) {
+      rejected.value = 0
+      return items
+    }
+    const room = Math.max(0, limit - entries.value.length)
+    rejected.value = Math.max(0, items.length - room)
+    return items.slice(0, room)
+  }
+
   function enqueue(incoming: Iterable<File>): void {
-    for (const file of incoming) push({ kind: 'file', file }, file.name)
+    for (const file of admit(incoming)) push({ kind: 'file', file }, file.name)
     pump()
   }
 
   function enqueueUrls(incoming: Iterable<string>): void {
     // Bis eine Antwort da ist, ist die Adresse alles, was die Zeile benennt.
-    for (const url of incoming) push({ kind: 'url', url }, url)
+    for (const url of admit(incoming)) push({ kind: 'url', url }, url)
     pump()
   }
 
@@ -206,6 +251,9 @@ export function createConversionQueue(
     for (const controller of controllers.values()) controller.abort()
     sources.clear()
     entries.value = []
+    // Die Meldung ueber Abgewiesenes gilt der geleerten Warteschlange und
+    // stimmt fuer die leere nicht mehr.
+    rejected.value = 0
   }
 
   /** Startet so viele wartende Zeilen, wie die Grenze noch zulaesst. */
@@ -266,7 +314,18 @@ export function createConversionQueue(
     entries.value.some((entry) => entry.status === 'queued' || entry.status === 'running'),
   )
 
-  return { entries, options, busy, enqueue, enqueueUrls, abort, remove, clear }
+  return {
+    entries,
+    options,
+    busy,
+    maxEntries,
+    rejected,
+    enqueue,
+    enqueueUrls,
+    abort,
+    remove,
+    clear,
+  }
 }
 
 /**

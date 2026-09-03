@@ -13,7 +13,10 @@
  *   auch nicht, nachdem die Antwort ihr einen Namen wie `seite.html` gegeben
  *   hat.
  * - Jede Zeile bekommt ihre Vorschau ueber den Slot `preview` der
- *   Warteschlange.
+ *   Warteschlange. Was die Warteschlange nicht mehr aufnimmt, weil
+ *   `limits.max_files` erreicht ist, wird hier gemeldet: Die Grenze gilt fuer
+ *   Dateien und Adressen zusammen, also gehoert die Meldung dorthin, wo beide
+ *   zusammenlaufen, und nicht in eine der beiden Eingaben.
  * - „Alles herunterladen" packt die fertigen Ergebnisse zu einem Archiv. Der
  *   Einzeldownload sitzt in der Zeile, weil er nur deren Eintrag braucht; das
  *   Archiv steht hier, weil es alle Zeilen sieht.
@@ -34,7 +37,8 @@ import { useConversion } from './composables/useConversion'
 import { fetchHealth, messageFromError } from './api'
 import { ARCHIVE_FILENAME, downloadArchive, hasResult } from './download'
 
-const { entries, options, busy, enqueue, enqueueUrls, abort, remove } = useConversion()
+const { entries, options, busy, maxEntries, rejected, enqueue, enqueueUrls, abort, remove } =
+  useConversion()
 const { extensions, error: capabilitiesError, load, reload } = useCapabilities()
 
 /**
@@ -233,6 +237,21 @@ async function downloadAll(): Promise<void> {
             Das Archiv steht bereit, sobald nichts mehr läuft.
           </span>
         </div>
+
+        <!--
+          Was nicht mehr hineinpasste. Der Satz nennt beide Zahlen: die Grenze,
+          damit klar ist, woran es lag, und die abgewiesenen, damit klar ist,
+          wie viel fehlt.
+        -->
+        <p
+          v-if="rejected && maxEntries !== null"
+          role="alert"
+          class="rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900"
+          data-test="queue-rejected"
+        >
+          Höchstens {{ maxEntries }} Einträge auf einmal.
+          {{ rejected }} {{ rejected === 1 ? 'wurde' : 'wurden' }} nicht übernommen.
+        </p>
 
         <p
           v-if="archiveError"

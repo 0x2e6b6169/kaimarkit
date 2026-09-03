@@ -428,4 +428,39 @@ describe('App', () => {
     // Eintrags als Dateiname gelesen, faenden sich hier keine Engines mehr.
     expect(wrapper.findComponent(OptionsPanel).props('filenames')).toEqual([])
   })
+
+  it('nimmt nur so viele Eintraege an, wie limits.max_files zulaesst, und sagt es', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    api.convertFile.mockImplementation(async (file: File) => result(file.name, '# Titel'))
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    // Zwoelf Dateien und zehn Adressen: zusammen zwei ueber der Grenze von 20.
+    wrapper
+      .findComponent(FileDropZone)
+      .vm.$emit(
+        'files',
+        Array.from({ length: 12 }, (_, index) => new File(['x'], `datei-${index}.pdf`)),
+      )
+    await nextTick()
+    wrapper
+      .findComponent(UrlInput)
+      .vm.$emit(
+        'urls',
+        Array.from({ length: 10 }, (_, index) => `https://example.com/${index}`),
+      )
+    await nextTick()
+    await flushPromises()
+
+    // Die Grenze zaehlt die Warteschlange als Ganzes, nicht je Quelle.
+    const queue = useConversion()
+    expect(queue.entries.value).toHaveLength(20)
+    expect(queue.entries.value.filter((entry) => entry.source === 'url')).toHaveLength(8)
+
+    const notice = wrapper.get('[data-test="queue-rejected"]')
+    expect(notice.text()).toContain('Höchstens 20 Einträge auf einmal.')
+    expect(notice.text()).toContain('2 wurden nicht übernommen.')
+  })
 })
