@@ -1,10 +1,12 @@
 ---
 id: 104
 title: 'FE-19 · Kopfzeile ohne Formatliste (GitHub #4)'
-status: todo
+status: done
 priority: medium
 created: 2026-09-03T11:20:25.12748426+02:00
-updated: 2026-09-03T11:20:25.12748426+02:00
+updated: 2026-09-03T11:26:18.851837696+02:00
+started: 2026-09-03T11:26:13.637242137+02:00
+completed: 2026-09-03T11:26:13.637242137+02:00
 assignee: benny
 tags:
     - frontend
@@ -33,3 +35,14 @@ Der Kopf der Seite sagt zweimal dasselbe: „Angenommen werden .docx · .epub ·
 1. Vorher rot: `grep -n 'Angenommen werden' frontend/src/App.vue` findet die Stelle. Nachher findet es nichts.
 2. `cd frontend && npm run test` grün, `npm run typecheck` grün (ein unbenutztes `formats` fiele hier auf), `npm run build` grün.
 3. Im Test: `.pdf` steht im Text der Dropzone und nicht im Text des `<header>`.
+
+[[2026-09-03]] Thu 11:26
+## Ergebnis (benny-20)
+
+Der Satz „Angenommen werden …“ und das computed `formats` sind aus `App.vue` heraus; die Dropzone bekommt `extensions` weiterhin. Die drei Zusicherungen in `App.test.ts` sind umgedreht: „.docx · .epub · .pdf“ steht im Text der FileDropZone, `.pdf` nicht im Text des `<header>`. Rot vor grün belegt: Mit der alten `App.vue` schlagen genau diese drei Tests fehl.
+
+- Vitest vorher: Test Files 9 passed (9) / Tests 105 passed (105)
+- Vitest nachher: Test Files 9 passed (9) / Tests 105 passed (105)
+- typecheck und build grün; `grep -n 'Angenommen werden' frontend/src/App.vue` leer
+- `grep -rn 'Angenommen werden' docs/` leer, in `docs/` nichts zu berichtigen
+- Merge-Commit d1db109

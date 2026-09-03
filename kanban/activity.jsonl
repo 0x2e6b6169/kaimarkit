@@ -706,3 +706,16 @@
 {"timestamp":"2026-09-03T11:20:27.292797467+02:00","action":"create","task_id":108,"detail":"FE-21 · URL-Liste im UI, jede Zeile ein Eintrag in der Warteschlange (GitHub #5)"}
 {"timestamp":"2026-09-03T11:20:27.850912354+02:00","action":"create","task_id":109,"detail":"DOC-15 · Doku der URL-Konvertierung: API, Oberfläche, Grenzen (GitHub #5)"}
 {"timestamp":"2026-09-03T11:21:10.852232841+02:00","action":"create","task_id":110,"detail":"IN-21 · Docs-Stufe nach IN-20: baut sie bei jeder Kontextänderung neu?"}
+{"timestamp":"2026-09-03T11:22:45.701444466+02:00","action":"move","task_id":102,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T11:22:52.379701752+02:00","action":"move","task_id":104,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T11:23:24.173459908+02:00","action":"move","task_id":106,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T11:25:46.901278805+02:00","action":"edit","task_id":102,"detail":"ORG-4 · Versionsangaben im Quelltext auf 0.2.0"}
+{"timestamp":"2026-09-03T11:26:00.703869714+02:00","action":"move","task_id":102,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T11:26:12.319923034+02:00","action":"edit","task_id":102,"detail":"ORG-4 · Versionsangaben im Quelltext auf 0.2.0"}
+{"timestamp":"2026-09-03T11:26:12.320210859+02:00","action":"release","task_id":102,"detail":"sophie-34"}
+{"timestamp":"2026-09-03T11:26:13.108330769+02:00","action":"edit","task_id":104,"detail":"FE-19 · Kopfzeile ohne Formatliste (GitHub #4)"}
+{"timestamp":"2026-09-03T11:26:13.6374583+02:00","action":"move","task_id":104,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T11:26:18.852299615+02:00","action":"edit","task_id":104,"detail":"FE-19 · Kopfzeile ohne Formatliste (GitHub #4)"}
+{"timestamp":"2026-09-03T11:26:18.852530724+02:00","action":"release","task_id":104,"detail":"benny-20"}
+{"timestamp":"2026-09-03T11:27:30.529941852+02:00","action":"move","task_id":107,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T11:27:35.997308405+02:00","action":"move","task_id":105,"detail":"todo -\u003e in-progress"}

@@ -1,16 +1,18 @@
 ---
 id: 105
 title: 'FE-20 · Enginewahl als Schaltergruppe mit Erklärung, im Browser gemerkt (GitHub #3)'
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-03T11:20:25.65723296+02:00
-updated: 2026-09-03T11:20:25.65723296+02:00
+updated: 2026-09-03T11:27:35.978787313+02:00
 assignee: benny
 tags:
     - frontend
     - gh-3
 depends_on:
     - 104
+claimed_by: benny-21
+claimed_at: 2026-09-03T11:27:35.978787313+02:00
 class: standard
 ---
 

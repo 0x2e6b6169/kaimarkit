@@ -1,14 +1,16 @@
 ---
 id: 107
 title: 'BE-35 · POST /api/convert/url: Seite holen, Namen ableiten, nur öffentliche Adressen (GitHub #5)'
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-03T11:20:26.703137724+02:00
-updated: 2026-09-03T11:20:26.703137724+02:00
+updated: 2026-09-03T11:27:30.505363665+02:00
 assignee: sophie
 tags:
     - backend
     - gh-5
+claimed_by: sophie-36
+claimed_at: 2026-09-03T11:27:30.505363665+02:00
 class: standard
 ---
 
