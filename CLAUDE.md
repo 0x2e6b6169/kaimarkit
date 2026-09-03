@@ -217,6 +217,20 @@ bleibt:
    zwischen zwei Wellen `/clear`en und sich aus `kanban-md list` neu orientieren —
    nie mitten in der Verteilung.
 
+**Eine widerlegte Annahme wird im Ticketrumpf berichtigt, nicht in einer Nachricht.**
+Ein Auftrag an einen Subagenten wird aus dem Rumpf abgeschrieben. Wer eine überholte
+Angabe nur der Lane mitteilt, hat sie im Rumpf stehengelassen — und der nächste
+Subagent bekommt sie wieder, weil er kein Gedächtnis der Korrektur hat. Zweimal an
+einem Tag ist genau das passiert: BE-39 stützte sich auf „eine Warnung stand da", der
+Nutzer hat das widerrufen, und der Satz stand danach im Auftrag des Nachfolgers
+erneut. Die Lane hat es beide Male abgefangen; darauf ist kein Verlass.
+
+Hält ein Claim den Rumpf gesperrt — `kanban-md` verweigert `edit` ohne dasselbe
+`--claim` —, gilt beides: Die Lane wiederholt die Berichtigung in **jedem** Auftrag,
+bis der Claim frei ist, und der PO hängt sie danach an den Rumpf. Eine Berichtigung
+benennt, was dort stand, statt es stillschweigend zu ersetzen; wer den Rumpf später
+liest, soll sehen, dass die Annahme einmal anders lautete.
+
 ---
 
 ## Der Ticketschnitt
