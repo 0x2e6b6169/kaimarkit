@@ -29,6 +29,10 @@ function failed(filename: string, error: string | null = 'Kaputt.'): DownloadEnt
   return { filename, status: 'failed', markdown: null, error }
 }
 
+function failedUrl(url: string, error: string | null = 'Kaputt.'): DownloadEntry {
+  return { filename: url, source: 'url', status: 'failed', markdown: null, error }
+}
+
 async function read(blob: Blob): Promise<JSZip> {
   return JSZip.loadAsync(await blob.arrayBuffer())
 }
@@ -146,6 +150,35 @@ describe('buildArchive', () => {
 
     expect(names(zip)).toEqual(['_errors.txt', 'passwd.md'])
     expect(await zip.file(ERROR_FILENAME)!.async('string')).toBe('boot.ini: kaputt\n')
+  })
+
+  it('nennt eine gescheiterte Adresse mit der Adresse, nicht mit einem Namensrest', async () => {
+    const zip = await read(
+      await buildArchive([failedUrl('https://example.com/', 'Zeitgrenze erreicht')]),
+    )
+
+    expect(await zip.file(ERROR_FILENAME)!.async('string')).toBe(
+      'https://example.com/: Zeitgrenze erreicht\n',
+    )
+  })
+
+  it('laesst die Zeile einer gescheiterten Datei unveraendert', async () => {
+    const zip = await read(
+      await buildArchive([
+        {
+          filename: '../../etc/passwd',
+          source: 'file',
+          status: 'failed',
+          markdown: null,
+          error: 'kaputt',
+        },
+        failed('bericht.pdf', 'kaputt'),
+      ]),
+    )
+
+    expect(await zip.file(ERROR_FILENAME)!.async('string')).toBe(
+      'passwd: kaputt\nbericht.pdf: kaputt\n',
+    )
   })
 
   it('nimmt weder Wartende noch Laufende auf — sie sind nicht gescheitert', async () => {

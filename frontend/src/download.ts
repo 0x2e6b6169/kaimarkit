@@ -31,6 +31,8 @@ export interface DownloadEntry {
   status: 'queued' | 'running' | 'ok' | 'failed' | 'aborted'
   markdown: string | null
   error: string | null
+  /** Datei oder Webadresse. Fehlt die Angabe, gilt der Eintrag als Datei. */
+  source?: 'file' | 'url'
 }
 
 /** Liegt im Archiv, sobald eine Datei gescheitert ist. */
@@ -78,6 +80,23 @@ export function markdownFilename(filename: string | null | undefined): string {
   return `${stem}.md`
 }
 
+/**
+ * Wie ein gescheiterter Eintrag in `_errors.txt` heisst.
+ *
+ * Eine Datei nennt ihren Namen ohne Pfad, wie im Archiv. Eine Adresse nennt sich
+ * selbst: `sanitizeFilename` behaelt nur, was hinter dem letzten Schraegstrich
+ * steht, und von `https://example.com/` bleibt dabei nichts uebrig ausser
+ * `upload`. Wer das Archiv oeffnet, soll lesen, welche Seite gescheitert ist.
+ *
+ * Steuerzeichen fallen auch hier weg — jeder Eintrag bekommt eine Zeile, und
+ * ein Zeilenumbruch mitten in der Adresse waere eine zweite.
+ */
+function errorLabel(entry: DownloadEntry): string {
+  if (entry.source !== 'url') return sanitizeFilename(entry.filename)
+  const cleaned = (entry.filename ?? '').replace(CONTROL_CHARS, '').trim()
+  return cleaned || FALLBACK_NAME
+}
+
 /** Haengt `-2`, `-3` an, bis der Name im Archiv noch frei ist. */
 function unique(name: string, taken: Set<string>): string {
   let candidate = name
@@ -113,7 +132,7 @@ export async function buildArchive(entries: readonly DownloadEntry[]): Promise<B
     if (hasResult(entry)) {
       zip.file(unique(markdownFilename(entry.filename), taken), entry.markdown ?? '')
     } else if (entry.status === 'failed') {
-      errors.push(`${sanitizeFilename(entry.filename)}: ${entry.error || UNKNOWN_ERROR}`)
+      errors.push(`${errorLabel(entry)}: ${entry.error || UNKNOWN_ERROR}`)
     }
   }
   if (errors.length > 0) zip.file(ERROR_FILENAME, `${errors.join('\n')}\n`)
