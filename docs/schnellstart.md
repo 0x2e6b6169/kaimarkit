@@ -35,7 +35,8 @@ curl -sf localhost:8080/api/health
 ```
 
 Die Version ist die des gebauten Abbilds — `git describe` auf der bauenden
-Maschine. Ein Bau ohne Git-Verlauf meldet `0.1.0`.
+Maschine. Ein Bau ohne Git-Verlauf meldet `__version__` aus
+`backend/app/__init__.py`, die Nummer ohne `v`.
 
 ## Die erste Datei
 

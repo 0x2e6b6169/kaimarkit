@@ -43,9 +43,9 @@ const { extensions, error: capabilitiesError, load, reload } = useCapabilities()
  * wandelt trotzdem um. Ein Fehlerbanner für eine Fußnote wäre aus dem
  * Verhältnis.
  *
- * Die Zeichenkette geht unverändert auf den Bildschirm. Heute steht dort
- * `0.1.0`, später etwas wie `v0.1.0-12-ga22a6c5`; welche Form sie hat,
- * entscheidet der Dienst.
+ * Die Zeichenkette geht unverändert auf den Bildschirm: aus dem Git-Tag gebaut
+ * etwas wie `v0.1.0-12-ga22a6c5`, ohne Git-Verlauf die nackte Nummer aus
+ * `backend/app/__init__.py`; welche Form sie hat, entscheidet der Dienst.
  */
 const version = ref<string | null>(null)
 

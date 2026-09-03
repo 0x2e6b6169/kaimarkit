@@ -92,9 +92,9 @@ export async function fetchCapabilities(): Promise<CapabilitiesResponse> {
 /**
  * Der Stand des laufenden Dienstes. Die Oberfläche zeigt daraus nur die Version.
  *
- * `version` ist eine undurchsichtige Zeichenkette: Heute ist es `0.1.0`, sobald
- * das Abbild aus dem Git-Tag baut, etwas wie `v0.1.0-12-ga22a6c5`. Wer sie
- * anzeigt, gibt sie unverändert weiter.
+ * `version` ist eine undurchsichtige Zeichenkette: aus dem Git-Tag gebaut etwas
+ * wie `v0.1.0-12-ga22a6c5`, ohne Git-Verlauf die nackte Nummer aus
+ * `backend/app/__init__.py`. Wer sie anzeigt, gibt sie unverändert weiter.
  */
 export async function fetchHealth(): Promise<HealthResponse> {
   const response = await request('/health', {
