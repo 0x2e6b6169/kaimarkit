@@ -1,16 +1,16 @@
 ---
 id: 106
 title: 'BE-34 · OCR auf Bildern liefert keinen Text: Befund im Abbild (GitHub #2)'
-status: in-progress
+status: done
 priority: high
 created: 2026-09-03T11:20:26.183542324+02:00
-updated: 2026-09-03T14:19:46.065724308+02:00
+updated: 2026-09-03T14:35:35.037092741+02:00
+started: 2026-09-03T14:35:34.305954375+02:00
+completed: 2026-09-03T14:35:34.305954375+02:00
 assignee: sophie
 tags:
     - backend
     - gh-2
-claimed_by: sophie-37
-claimed_at: 2026-09-03T14:19:46.066272023+02:00
 class: standard
 ---
 
@@ -85,3 +85,31 @@ Dieselben Aufrufe gegen das Abbild, das auf :8080 läuft (b9904f91448f vom 01.09
 1. **Ein Foto vom Handy.** Kameras speichern die Pixel quer und schreiben die Drehung als EXIF-Orientation. Doclings `ImageDocumentBackend` öffnet das Bild mit `img.convert("RGB")` und wertet den Tag nicht aus (`docling/backend/image_backend.py`, kein `exif_transpose`). EasyOCR sieht dann Text um 90° gedreht und findet nichts — Markdown `g`, keine Warnung. Das ist der eine Fall in der Messung, der leer bleibt, und er liegt im Backend: Der Adapter kann das Bild vor der Übergabe aufrichten. **Das wird hier behoben.**
 2. **`engine=auto` in den ersten Minuten nach dem Start.** Solange Docling `warming` meldet, nimmt die Registry für `.png`/`.jpg` MarkItDown; das liefert leer, und die Antwort sagt es in `warnings` („MarkItDown hat in X keinen Text gefunden.“). Im Frontend steht dann „1 Warnung“ an der Datei. `/api/health` meldet in dieser Zeit `ok` — das ist so gebaut, der Zustand steht in `/api/capabilities`. `docs/grenzen.md` beschreibt das schon.
 3. Der OCR-Schalter im Frontend ist keine Ursache: Nicht angeklickt schickt er `ocr` nicht mit, und dann gilt die Vorgabe `true`.
+
+
+## Umsetzung (sophie-37, 2026-09-03)
+
+**Ursache.** Der eine leere Fall der Messung liegt an der EXIF-Orientation, nicht an OCR. Doclings `ImageDocumentBackend` öffnet ein Bild mit `img.convert("RGB")` und wertet den Tag `Orientation` nicht aus (docling 2.124). Ein Handyfoto legt die Pixel quer ab und notiert die Drehung nur dort; EasyOCR sieht den Text um 90° gedreht und findet nichts.
+
+**Änderung.** `backend/app/converters/docling.py` bekommt `_upright_image(path)`. Die Funktion liest bei den vier Bildendungen den Tag, richtet das Bild mit `PIL.ImageOps.exif_transpose` auf und gibt es als PNG im Speicher zurück; `run()` reicht es über `DocumentStream` an Docling. Ohne Tag, bei Orientation 1 und bei mehrseitigen TIFFs bleibt der Weg wie bisher — dieselbe Datei, derselbe Pfad. Das `convert("RGB")` vor dem Schreiben ist dasselbe, was Doclings Backend gleich danach tut; es steht dort, weil PNG nicht jeden Modus speichern kann. Konvention 3 bleibt gewahrt: Alles, was PIL oder Docling werfen, landet in `convert()` und wird zu `EngineFailed`.
+
+**Neuer Fixture.** `build_fixtures.py` baut `foto_exif6.jpg` — denselben Satz wie `scan.png`, nur um 90° gegen den Uhrzeigersinn gespeichert und mit Orientation 6 versehen. Beide Vorlagen unterscheiden sich in nichts als der Drehung; `exif_transpose` bildet die eine auf die andere ab (mittlere Abweichung 0,14 von 255, gegen 14,96 bei 180° verdreht).
+
+**Rot vor grün.** Mit dem alten Adapter, sonst allem Neuen: `tests/test_docling_ocr.py` im Abbild `1 failed, 1 passed, 2 deselected` — der aufrechte Scan bestand, das Foto fiel. Nach der Änderung bestehen beide.
+
+**Zahlen.**
+
+- `make test-slow-image`: 154 gesammelt, 9 ausgewählt, **9 bestanden**, 145 abgewählt, 178 s.
+- `pytest -q -rs` im Backend: 154 gesammelt, 145 ausgewählt, **145 bestanden**, 9 abgewählt, 15 s. Die slow-Tests erscheinen dort nicht als übersprungen, sondern als abgewählt — `addopts = ["-m", "not slow"]` in `backend/pyproject.toml` nimmt sie über die Marke heraus, nicht über `skipif`. Die Zahl stieg von 7 auf 9; verschluckt wird nichts.
+- `ruff check .`: sauber.
+
+**Nachweis am Container.** Abbild neu gebaut (`make build`), eigener Container auf 127.0.0.1:18034, nach `"docling":"ready"`. `curl -F file=@foto_exif6.jpg -F ocr=true` liefert `## Dieser Satz stammt aus einem Scan.`, `warnings: []`, 6862 ms; ohne `ocr` und mit `engine=docling` dasselbe in 6106 ms. `scan.png` unverändert grün. Container entfernt.
+
+**Was aus den beiden anderen Erklärungen folgt.**
+
+1. *Warming-Rückfall auf MarkItDown.* Bleibt, wie er ist, und ist kein Fehler: In den ersten Minuten nach dem Start nimmt `engine=auto` für `.png`/`.jpg` MarkItDown, das Ergebnis ist leer, und die Antwort sagt es in `warnings`. `docs/grenzen.md` beschreibt das schon. Wer sicher OCR will, nennt Docling ausdrücklich. Ob das Frontend diesen Zustand deutlich genug zeigt — „1 Warnung" an der Datei —, ist eine Frage an benny, nicht an diese Lane.
+2. *Der OCR-Schalter im Frontend* ist keine Ursache. Nicht angeklickt schickt er `ocr` nicht mit; dann gilt `KAIMARKIT_OCR_ENABLED`, Vorgabe `true`. Gemessen: dieselben Ergebnisse mit und ohne `ocr`.
+
+**`docs/grenzen.md` bleibt unverändert.** Der Abschnitt „Gescannte Seiten ohne OCR bleiben leer" sagt nichts, was durch diese Änderung falsch wird: Er handelt von Vorlagen ohne Textebene und vom Warming-Rückfall, beides gilt weiter.
+
+Zweig `task/106-ocr-images`, Commit `86b5c0f`, Merge `b772ca2`.

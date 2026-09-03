@@ -1,11 +1,12 @@
 ---
 id: 92
 title: DOC-14 · KAIMARKIT_DOMAIN muss unter Authelias Cookie-Domaene liegen
-status: todo
+status: done
 priority: high
 created: 2026-09-01T19:10:53.816072854+02:00
-updated: 2026-09-03T14:20:13.501586806+02:00
+updated: 2026-09-03T14:27:02.238236529+02:00
 started: 2026-09-03T14:20:13.632175283+02:00
+completed: 2026-09-03T14:26:50.275354889+02:00
 assignee: akar
 tags:
     - docs
@@ -90,3 +91,50 @@ Uebergabe.
 In der Doku steht die Domaene als Platzhalter, nicht als fester Name. Der Aufbau des
 Nutzers laeuft inzwischen unter kaimarkit.0x2e6b6169.de; die alte Domaene aus dem
 Befund gehoert nicht in die Seite.
+
+[[2026-09-03]] Thu 14:26
+Umgesetzt in Merge 9111827 (Commit 8994bc8), Zweig task/92-authelia-cookie-domain entfernt.
+
+Reihenfolge der Ueberschriften in docs/betrieb/authelia.md nach der Aenderung:
+`# Authelia` -> `## Zwei Eingriffe in Authelias Konfiguration` (neu) -> `## Was
+vorher da sein muss` -> `## Starten` -> `## Zwei Wege zur Middleware` -> `## @docker
+oder @file` -> `## Der Name der eigenen Middleware folgt dem Namensraum` -> `## Die
+API bleibt erreichbar` -> `## Pruefen` -> `## 404 oder 400 — der Statuscode zeigt die
+Richtung` (neu). Der neue Abschnitt steht vor `Starten`, wo docker/.env kopiert und
+KAIMARKIT_DOMAIN gesetzt wird — wer von oben liest, hat die Domaenenbedingung und die
+access_control-Regel vorher gelesen. Die Bedingung steht ausdruecklich nicht im
+Fehlersuche-Abschnitt; der ganz am Ende erklaert nur, wohin 404 und 400 zeigen. Auch
+die Liste 'Was vorher da sein muss' verweist jetzt auf beides statt nur auf die
+Zugriffsregel.
+
+Beleg fuer den 400er: steht mit Datum und Herkunft in der Seite — 'Dieser Aufruf hat
+die Ursache am 01.09.2026 am VPS-Aufbau des Nutzers gezeigt: Fuer einen Host
+ausserhalb der Cookie-Domaene antwortete Authelia mit 400.' Uebernommener Befund,
+keine eigene Messung; hier laeuft keine Authelia, der Aufruf wurde nicht wiederholt.
+Die Domaene steht ueberall als Platzhalter (kaimarkit.example.com, auth.example.com);
+kaimarkit.6b6a.de kommt in der Seite nicht vor.
+
+Konvention 6, Abgleich docker/.env.example gegen docs/betrieb/konfiguration.md: Drei
+Variablen haben einen Kommentar bekommen, alle drei sind in konfiguration.md
+gleichlautend beschrieben.
+- KAIMARKIT_DOMAIN: neuer Kommentarblock (Cookie-Domaene, 400 vor der Anmeldung,
+  access_control/default_policy, Verweis auf authelia.md). In konfiguration.md die
+  Tabellenzeile ergaenzt ('Hinter Authelia muss er unter deren Cookie-Domaene
+  liegen') und am Ende des Authelia-Abschnitts ein Absatz, der beide Bedingungen
+  nennt und auf authelia.md verweist.
+- TRAEFIK_ENTRYPOINT und TRAEFIK_CERTRESOLVER: Punkt 6 des Rumpfs ist drin. Neuer
+  Kommentar 'Beispielwerte, keine Voreinstellungen: Entrypoint und Certresolver
+  muessen so heissen wie in der statischen Konfiguration der vorhandenen Traefik.'
+  In konfiguration.md beide Tabellenzeilen um 'Beispielwert.' ergaenzt, dazu ein
+  Absatz unter der Traefik-Tabelle mit derselben Aussage. Keine weitere Variable
+  angefasst.
+
+mkdocs build --strict in der pyenv-Umgebung claude-code: laeuft durch, keine Warnung
+und kein Fehler. Die rote Bannermeldung zu MkDocs 2.0 kommt vom Material-Theme, ist
+eine Herstellernotiz und keine Bauwarnung.
+
+Befund fuer den PO, nicht geaendert: docker/.env.example schreibt Umlaute
+durchgaengig in ASCII-Umschrift ('noetig', 'Groesse'), obwohl Gedankenstriche darin
+stehen, die Datei also UTF-8 ist. Die neuen Kommentare folgen dieser
+Dateikonvention, damit vier Zeilen nicht aus zweihundert herausfallen. Die ganze
+Datei umzustellen waere ein eigenes Ticket.

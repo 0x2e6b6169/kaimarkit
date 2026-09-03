@@ -760,3 +760,27 @@
 {"timestamp":"2026-09-03T14:20:13.632800199+02:00","action":"move","task_id":92,"detail":"backlog -\u003e todo"}
 {"timestamp":"2026-09-03T14:20:20.247173331+02:00","action":"move","task_id":114,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-03T14:20:32.822194918+02:00","action":"move","task_id":113,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:21:24.041932448+02:00","action":"move","task_id":92,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:22:39.42556508+02:00","action":"edit","task_id":113,"detail":"BE-36 · test_openapi.py prüft die Fehlerantworten von /api/convert/url nicht"}
+{"timestamp":"2026-09-03T14:22:46.929062828+02:00","action":"move","task_id":113,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T14:22:48.210141181+02:00","action":"edit","task_id":113,"detail":"BE-36 · test_openapi.py prüft die Fehlerantworten von /api/convert/url nicht"}
+{"timestamp":"2026-09-03T14:22:48.210596545+02:00","action":"release","task_id":113,"detail":"sophie-39"}
+{"timestamp":"2026-09-03T14:25:06.529876241+02:00","action":"edit","task_id":114,"detail":"BE-37 · Adresssperre in fetching.py: Verbindung an die geprüfte IP binden (DNS-Rebinding)"}
+{"timestamp":"2026-09-03T14:25:13.918383433+02:00","action":"move","task_id":114,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T14:25:20.345398712+02:00","action":"edit","task_id":114,"detail":"BE-37 · Adresssperre in fetching.py: Verbindung an die geprüfte IP binden (DNS-Rebinding)"}
+{"timestamp":"2026-09-03T14:25:20.346809043+02:00","action":"release","task_id":114,"detail":"sophie-38"}
+{"timestamp":"2026-09-03T14:26:48.12283806+02:00","action":"edit","task_id":92,"detail":"DOC-14 · KAIMARKIT_DOMAIN muss unter Authelias Cookie-Domaene liegen"}
+{"timestamp":"2026-09-03T14:26:50.276022966+02:00","action":"move","task_id":92,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T14:27:02.239509198+02:00","action":"edit","task_id":92,"detail":"DOC-14 · KAIMARKIT_DOMAIN muss unter Authelias Cookie-Domaene liegen"}
+{"timestamp":"2026-09-03T14:27:02.240591747+02:00","action":"release","task_id":92,"detail":"akar-37"}
+{"timestamp":"2026-09-03T14:30:30.130328629+02:00","action":"edit","task_id":108,"detail":"FE-21 · URL-Liste im UI, jede Zeile ein Eintrag in der Warteschlange (GitHub #5)"}
+{"timestamp":"2026-09-03T14:30:31.952094995+02:00","action":"move","task_id":108,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T14:30:40.448167428+02:00","action":"edit","task_id":108,"detail":"FE-21 · URL-Liste im UI, jede Zeile ein Eintrag in der Warteschlange (GitHub #5)"}
+{"timestamp":"2026-09-03T14:30:40.449173738+02:00","action":"release","task_id":108,"detail":"benny-23"}
+{"timestamp":"2026-09-03T14:31:37.208974851+02:00","action":"move","task_id":109,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:35:27.547556659+02:00","action":"edit","task_id":106,"detail":"BE-34 · OCR auf Bildern liefert keinen Text: Befund im Abbild (GitHub #2)"}
+{"timestamp":"2026-09-03T14:35:34.306230588+02:00","action":"move","task_id":106,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T14:35:35.037939668+02:00","action":"edit","task_id":106,"detail":"BE-34 · OCR auf Bildern liefert keinen Text: Befund im Abbild (GitHub #2)"}
+{"timestamp":"2026-09-03T14:35:35.039853851+02:00","action":"release","task_id":106,"detail":"sophie-37"}
+{"timestamp":"2026-09-03T14:37:19.31121781+02:00","action":"create","task_id":115,"detail":"FE-22 · limits.max_files begrenzt die Warteschlange, Dateien und URLs zusammen"}
+{"timestamp":"2026-09-03T14:37:20.072540398+02:00","action":"create","task_id":116,"detail":"FE-23 · _errors.txt nennt bei URLs die Adresse, nicht \"upload\""}

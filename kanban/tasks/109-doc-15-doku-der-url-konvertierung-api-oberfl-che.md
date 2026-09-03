@@ -1,10 +1,10 @@
 ---
 id: 109
 title: 'DOC-15 · Doku der URL-Konvertierung: API, Oberfläche, Grenzen (GitHub #5)'
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-03T11:20:27.8373002+02:00
-updated: 2026-09-03T14:19:22.877601961+02:00
+updated: 2026-09-03T14:31:37.188854458+02:00
 assignee: akar
 tags:
     - docs
@@ -12,6 +12,8 @@ tags:
 depends_on:
     - 107
     - 108
+claimed_by: akar-38
+claimed_at: 2026-09-03T14:31:37.188854458+02:00
 class: standard
 ---
 
