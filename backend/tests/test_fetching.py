@@ -7,6 +7,7 @@ schreibt, der eine braucht, hat den falschen Ort gewählt.
 
 from __future__ import annotations
 
+import ipaddress
 import socket
 import tempfile
 from collections.abc import AsyncIterator, Callable, Iterator
@@ -79,6 +80,37 @@ def serve(monkeypatch: pytest.MonkeyPatch) -> Callable[[Handler], list[httpx.Req
         return seen
 
     return install
+
+
+@pytest.fixture
+def rebinding_dns(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Ein gegnerischer DNS: erst die oeffentliche Adresse, danach die private.
+
+    So sieht die Pruefung eine oeffentliche Adresse, und der Verbindungsaufbau
+    saehe eine private — genau die Luecke, um die es hier geht.
+    """
+    calls: list[str] = []
+
+    def resolve(host: str) -> list[str]:
+        calls.append(host)
+        return [PUBLIC] if len(calls) == 1 else [PRIVATE]
+
+    monkeypatch.setattr(fetching, "_resolve", resolve)
+
+
+def connect_target(request: httpx.Request) -> str:
+    """Wohin ein echter Transport verbaende.
+
+    Steht im Host schon eine Adresse, ist sie das Ziel. Steht dort ein Name, loest
+    der Transport ihn im Augenblick des Verbindungsaufbaus selbst auf — das ist
+    die zweite Aufloesung, die ``httpx`` sonst hinter unserem Ruecken macht.
+    """
+    host = request.url.host
+    try:
+        ipaddress.ip_address(host)
+    except ValueError:
+        return fetching._resolve(host)[0]
+    return host
 
 
 def html(title: str | None, body: str = "<p>Hallo</p>") -> httpx.Response:
@@ -236,7 +268,7 @@ async def test_a_public_ipv6_host_is_allowed(serve, tmp_path: Path) -> None:
 
 async def test_a_redirect_into_a_private_network_is_rejected(serve, tmp_path: Path) -> None:
     def handler(request: httpx.Request) -> httpx.Response:
-        if request.url.host == "example.com":
+        if request.headers["host"] == "example.com":
             return httpx.Response(302, headers={"location": "http://192.168.1.1/"})
         return html("Router")
 
@@ -245,7 +277,7 @@ async def test_a_redirect_into_a_private_network_is_rejected(serve, tmp_path: Pa
     with pytest.raises(InvalidUrl):
         await fetch_page("https://example.com/", tmp_path)
 
-    assert [request.url.host for request in seen] == ["example.com"]
+    assert [request.headers["host"] for request in seen] == ["example.com"]
 
 
 async def test_a_redirect_to_a_public_address_is_followed(serve, tmp_path: Path) -> None:
@@ -273,6 +305,43 @@ async def test_more_than_five_redirects_are_rejected(serve, tmp_path: Path) -> N
         await fetch_page("https://example.com/0", tmp_path)
 
     assert len(seen) == 6
+
+
+async def test_the_connection_goes_to_the_checked_address(
+    serve, tmp_path: Path, rebinding_dns: None
+) -> None:
+    """Wechselt der Name zwischen Pruefung und Verbindung, gilt die geprueste Adresse."""
+    seen = serve(lambda request: html("Rebinding"))
+
+    await fetch_page("https://example.com/", tmp_path)
+
+    assert [connect_target(request) for request in seen] == [PUBLIC]
+    assert seen[0].headers["host"] == "example.com"
+    assert seen[0].extensions["sni_hostname"] == "example.com"
+
+
+async def test_the_pinned_request_keeps_path_and_port(serve, tmp_path: Path) -> None:
+    seen = serve(lambda request: html("Port"))
+
+    await fetch_page("https://example.com:8443/blog/post?a=1", tmp_path)
+
+    assert str(seen[0].url) == f"https://{PUBLIC}:8443/blog/post?a=1"
+    assert seen[0].headers["host"] == "example.com:8443"
+
+
+async def test_every_redirect_hop_is_pinned_too(serve, tmp_path: Path) -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/alt":
+            return httpx.Response(301, headers={"location": "https://v6.example/neu"})
+        return html("Neu")
+
+    seen = serve(handler)
+
+    page = await fetch_page("https://example.com/alt", tmp_path)
+
+    assert page.filename == "neu.html"
+    assert [request.url.host for request in seen] == [PUBLIC, NAMES["v6.example"][0]]
+    assert [request.headers["host"] for request in seen] == ["example.com", "v6.example"]
 
 
 # ── Grenzen und Fehler ────────────────────────────────────────────────────────
