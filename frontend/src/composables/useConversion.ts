@@ -5,6 +5,13 @@
  * Das Backend bremst zwar selbst, aber ohne Begrenzung im Frontend saehe der
  * Nutzer zwanzig laufende Zeilen, von denen sich nichts bewegt.
  *
+ * Eine Zeile kommt aus einer Datei **oder** aus einer Webadresse. Von da an
+ * unterscheiden sie sich in zweierlei: welcher Endpunkt gerufen wird und woher
+ * der Name kommt. Eine Datei bringt ihren Namen mit; eine Adresse steht so
+ * lange als Name in der Zeile, bis die Antwort einen `filename` aus dem
+ * Seitentitel mitbringt. Alles Uebrige — Grenze, Optionen, Abbruch, Archiv —
+ * gilt fuer beide gleich.
+ *
  * Ein Fehlschlag betrifft nur seine eigene Zeile. Die uebrigen laufen weiter,
  * und die Meldung steht am Eintrag, nicht in der Konsole.
  *
@@ -30,7 +37,7 @@
  */
 
 import { computed, ref, type ComputedRef, type Ref } from 'vue'
-import { convertFile, messageFromError } from '../api'
+import { convertFile, convertUrl, messageFromError } from '../api'
 import type { ConversionEntry, ConvertOptions } from '../types'
 
 /** Hoechstens so viele Dateien laufen gleichzeitig. */
@@ -73,10 +80,15 @@ export function rememberEngine(engine: string): void {
  */
 export type QueueStatus = 'queued' | 'running' | 'ok' | 'failed' | 'aborted'
 
+/** Woher eine Zeile kommt. Ausserhalb der Reaktivitaet, siehe `sources`. */
+export type QueueSource = { kind: 'file'; file: File } | { kind: 'url'; url: string }
+
 /** Eine Zeile der Warteschlange. */
 export interface QueueEntry {
   /** Stabil ueber die Lebensdauer der Zeile, auch wenn zwei Dateien gleich heissen. */
   id: number
+  /** Datei oder Webadresse. Nur eine Adresse taugt nicht als Dateiname. */
+  source: QueueSource['kind']
   filename: string
   status: QueueStatus
   markdown: string | null
@@ -94,6 +106,13 @@ export type ConvertFn = (
   signal: AbortSignal,
 ) => Promise<ConversionEntry>
 
+/** Dasselbe fuer `/api/convert/url`. */
+export type ConvertUrlFn = (
+  url: string,
+  options: ConvertOptions,
+  signal: AbortSignal,
+) => Promise<ConversionEntry>
+
 export interface ConversionQueue {
   entries: Ref<QueueEntry[]>
   /** Engine und OCR fuer den naechsten Start. FE-5 bindet die Optionen daran. */
@@ -101,6 +120,8 @@ export interface ConversionQueue {
   /** Wahr, solange etwas wartet oder laeuft. */
   busy: ComputedRef<boolean>
   enqueue: (files: Iterable<File>) => void
+  /** Je Adresse eine Zeile. Leere Zeilen und Schemapruefung macht `UrlInput`. */
+  enqueueUrls: (urls: Iterable<string>) => void
   /** Beendet das Warten auf eine laufende Zeile. Wartende und fertige bleiben. */
   abort: (id: number) => void
   remove: (id: number) => void
@@ -113,20 +134,21 @@ export interface ConversionQueue {
  * Client und eine andere Grenze einsetzt.
  */
 export function createConversionQueue(
-  deps: { convert?: ConvertFn; maxParallel?: number } = {},
+  deps: { convert?: ConvertFn; convertUrl?: ConvertUrlFn; maxParallel?: number } = {},
 ): ConversionQueue {
   const convert = deps.convert ?? convertFile
+  const fetchUrl = deps.convertUrl ?? convertUrl
   const maxParallel = deps.maxParallel ?? MAX_PARALLEL
 
   const entries = ref<QueueEntry[]>([])
   const options = ref<ConvertOptions>({ engine: storedEngine(), ocr: null })
 
   /**
-   * Die Dateien liegen ausserhalb der Reaktivitaet. Ein `File` in einem
+   * Die Quellen liegen ausserhalb der Reaktivitaet. Ein `File` in einem
    * reaktiven Objekt kaeme als Proxy zurueck, und `FormData.append` will das
    * echte Objekt.
    */
-  const files = new Map<number, File>()
+  const sources = new Map<number, QueueSource>()
 
   /** Einer je laufender Zeile, angelegt beim Start und am Ende wieder entfernt. */
   const controllers = new Map<number, AbortController>()
@@ -134,21 +156,31 @@ export function createConversionQueue(
   let nextId = 1
   let running = 0
 
+  /** Legt eine Zeile an. Den Namen bringt der Aufrufer mit, die Quelle auch. */
+  function push(source: QueueSource, filename: string): void {
+    const id = nextId++
+    sources.set(id, source)
+    entries.value.push({
+      id,
+      source: source.kind,
+      filename,
+      status: 'queued',
+      markdown: null,
+      engine: null,
+      warnings: [],
+      error: null,
+      durationMs: null,
+    })
+  }
+
   function enqueue(incoming: Iterable<File>): void {
-    for (const file of incoming) {
-      const id = nextId++
-      files.set(id, file)
-      entries.value.push({
-        id,
-        filename: file.name,
-        status: 'queued',
-        markdown: null,
-        engine: null,
-        warnings: [],
-        error: null,
-        durationMs: null,
-      })
-    }
+    for (const file of incoming) push({ kind: 'file', file }, file.name)
+    pump()
+  }
+
+  function enqueueUrls(incoming: Iterable<string>): void {
+    // Bis eine Antwort da ist, ist die Adresse alles, was die Zeile benennt.
+    for (const url of incoming) push({ kind: 'url', url }, url)
     pump()
   }
 
@@ -165,14 +197,14 @@ export function createConversionQueue(
   function remove(id: number): void {
     // Sonst laeuft die Anfrage weiter, obwohl niemand mehr auf sie wartet.
     abort(id)
-    files.delete(id)
+    sources.delete(id)
     const index = entries.value.findIndex((entry) => entry.id === id)
     if (index >= 0) entries.value.splice(index, 1)
   }
 
   function clear(): void {
     for (const controller of controllers.values()) controller.abort()
-    files.clear()
+    sources.clear()
     entries.value = []
   }
 
@@ -191,18 +223,25 @@ export function createConversionQueue(
   }
 
   async function run(entry: QueueEntry): Promise<void> {
-    const file = files.get(entry.id)
-    if (!file) return
+    const source = sources.get(entry.id)
+    if (!source) return
     const controller = new AbortController()
     controllers.set(entry.id, controller)
     try {
-      const result = await convert(file, { ...options.value }, controller.signal)
+      const request = { ...options.value }
+      const result =
+        source.kind === 'file'
+          ? await convert(source.file, request, controller.signal)
+          : await fetchUrl(source.url, request, controller.signal)
       // Ein Ergebnis, das nach dem Abbruch noch eintrifft, aendert nichts mehr:
       // Der Nutzer hat schon aufgehoert zu warten.
       if (controller.signal.aborted) {
         entry.status = 'aborted'
         return
       }
+      // Erst jetzt hat eine Adresse einen Namen: Der Dienst leitet ihn aus dem
+      // Seitentitel ab. Eine Datei behaelt den ihren.
+      if (source.kind === 'url' && result.filename) entry.filename = result.filename
       entry.status = result.status
       entry.markdown = result.markdown
       entry.engine = result.engine
@@ -227,7 +266,7 @@ export function createConversionQueue(
     entries.value.some((entry) => entry.status === 'queued' || entry.status === 'running'),
   )
 
-  return { entries, options, busy, enqueue, abort, remove, clear }
+  return { entries, options, busy, enqueue, enqueueUrls, abort, remove, clear }
 }
 
 /**

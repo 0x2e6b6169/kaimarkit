@@ -6,9 +6,12 @@
  *
  * Was hier zusammenlaeuft:
  *
- * - Die Dropzone meldet Dateien, die Warteschlange nimmt sie an.
+ * - Die Dropzone meldet Dateien, das Adressfeld meldet Webseiten; die
+ *   Warteschlange nimmt beides an und behandelt es von da an gleich.
  * - Die Optionen gelten fuer den naechsten Start; die Dateinamen schraenken die
- *   Enginewahl ein.
+ *   Enginewahl ein. Eine Webadresse hat keine Endung und schraenkt nichts ein —
+ *   auch nicht, nachdem die Antwort ihr einen Namen wie `seite.html` gegeben
+ *   hat.
  * - Jede Zeile bekommt ihre Vorschau ueber den Slot `preview` der
  *   Warteschlange.
  * - „Alles herunterladen" packt die fertigen Ergebnisse zu einem Archiv. Der
@@ -25,12 +28,13 @@ import FileDropZone from './components/FileDropZone.vue'
 import FileQueue from './components/FileQueue.vue'
 import MarkdownPreview from './components/MarkdownPreview.vue'
 import OptionsPanel from './components/OptionsPanel.vue'
+import UrlInput from './components/UrlInput.vue'
 import { useCapabilities } from './composables/useCapabilities'
 import { useConversion } from './composables/useConversion'
 import { fetchHealth, messageFromError } from './api'
 import { ARCHIVE_FILENAME, downloadArchive, hasResult } from './download'
 
-const { entries, options, busy, enqueue, abort, remove } = useConversion()
+const { entries, options, busy, enqueue, enqueueUrls, abort, remove } = useConversion()
 const { extensions, error: capabilitiesError, load, reload } = useCapabilities()
 
 /**
@@ -63,8 +67,17 @@ onMounted(() => {
   void loadVersion()
 })
 
-/** Die Dateinamen schraenken die Enginewahl ein — siehe `OptionsPanel`. */
-const filenames = computed(() => entries.value.map((entry) => entry.filename))
+/**
+ * Die Dateinamen schraenken die Enginewahl ein — siehe `OptionsPanel`.
+ *
+ * Zeilen aus einer Webadresse bleiben draussen. Vor der Antwort ist ihr Name
+ * eine Adresse und keine Datei, danach ein aus dem Seitentitel abgeleiteter
+ * Name mit `.html` — der wuerde das Angebot auf die Engines fuer HTML
+ * verengen, obwohl der Nutzer nichts dergleichen ausgewaehlt hat.
+ */
+const filenames = computed(() =>
+  entries.value.filter((entry) => entry.source === 'file').map((entry) => entry.filename),
+)
 
 const succeeded = computed(() => entries.value.filter((entry) => entry.status === 'ok').length)
 const failed = computed(() => entries.value.filter((entry) => entry.status === 'failed').length)
@@ -94,7 +107,8 @@ watch(busy, (running, before) => {
   // „abgebrochen" steht neben „fehlgeschlagen", nicht darin — ein Abbruch ist
   // die Entscheidung des Nutzers und kein Fehler. Ohne Abbruch bleibt der Satz,
   // wie er war.
-  const lead = aborted.value ? 'Der Lauf ist zu Ende' : 'Alle Dateien sind fertig'
+  // „Alles", nicht „alle Dateien": In der Warteschlange stehen auch Webseiten.
+  const lead = aborted.value ? 'Der Lauf ist zu Ende' : 'Alles ist fertig'
   announce(`${lead}: ${parts.join(', ')}.`)
 })
 
@@ -192,6 +206,8 @@ async function downloadAll(): Promise<void> {
       <OptionsPanel v-model="options" :filenames="filenames" />
 
       <FileDropZone :extensions="extensions" @files="enqueue" />
+
+      <UrlInput @urls="enqueueUrls" />
 
       <section aria-labelledby="queue-heading" class="flex flex-col gap-3">
         <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">

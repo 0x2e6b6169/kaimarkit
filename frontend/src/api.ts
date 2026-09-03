@@ -28,6 +28,7 @@ import type {
   ErrorCode,
   ErrorResponse,
   HealthResponse,
+  UrlConvertRequest,
 } from './types'
 
 const API_BASE = '/api'
@@ -127,6 +128,34 @@ export async function convertFile(
     method: 'POST',
     headers: { Accept: 'application/json' },
     body,
+    signal,
+  })
+  return (await response.json()) as ConversionEntry
+}
+
+/**
+ * Eine Webseite nach Markdown.
+ *
+ * Anders als `/api/convert` nimmt dieser Endpunkt JSON und kennt keinen
+ * Markdown-Zweig ueber `Accept`; die Antwort ist immer ein `ConversionEntry`.
+ * Ihr `filename` stammt aus dem Seitentitel und ist der Name, unter dem der
+ * Eintrag ab dann in der Warteschlange steht.
+ *
+ * Wie bei `convertFile` heisst `ocr: null` „nichts mitschicken", und ein
+ * Abbruch ueber `signal` endet mit dem `AbortError` des Browsers.
+ */
+export async function convertUrl(
+  url: string,
+  options: ConvertOptions,
+  signal?: AbortSignal,
+): Promise<ConversionEntry> {
+  const body: UrlConvertRequest = { url, engine: options.engine }
+  if (options.ocr !== null) body.ocr = options.ocr
+
+  const response = await request('/convert/url', {
+    method: 'POST',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
     signal,
   })
   return (await response.json()) as ConversionEntry
