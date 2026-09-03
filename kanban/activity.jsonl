@@ -825,3 +825,23 @@
 {"timestamp":"2026-09-03T15:13:06.021692947+02:00","action":"create","task_id":124,"detail":"DOC-19 · Der Schnellstart prueft die Docker-Voraussetzung falsch"}
 {"timestamp":"2026-09-03T15:13:22.74061016+02:00","action":"edit","task_id":122,"detail":"BE-40 · MarkItDown bei docx: keine base64-Flut, dafür eine Warnung"}
 {"timestamp":"2026-09-03T15:13:23.60456932+02:00","action":"edit","task_id":124,"detail":"DOC-19 · Der Schnellstart prüft die Docker-Voraussetzung falsch"}
+{"timestamp":"2026-09-03T15:13:42.30311295+02:00","action":"edit","task_id":119,"detail":"FE-24 · Abgewiesene Adressen bleiben im Textfeld stehen"}
+{"timestamp":"2026-09-03T15:13:43.144535009+02:00","action":"move","task_id":119,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T15:13:49.127782032+02:00","action":"edit","task_id":119,"detail":"FE-24 · Abgewiesene Adressen bleiben im Textfeld stehen"}
+{"timestamp":"2026-09-03T15:13:49.12845733+02:00","action":"release","task_id":119,"detail":"benny-26"}
+{"timestamp":"2026-09-03T15:14:31.056192675+02:00","action":"move","task_id":123,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T15:14:50.291897606+02:00","action":"move","task_id":124,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T15:15:01.597112744+02:00","action":"move","task_id":121,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T15:15:01.895497315+02:00","action":"move","task_id":120,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T15:18:33.851869345+02:00","action":"edit","task_id":123,"detail":"DOC-18 · OCR greift in PDF und Bilddateien, sonst nirgends"}
+{"timestamp":"2026-09-03T15:18:33.852358791+02:00","action":"release","task_id":123,"detail":"akar-41"}
+{"timestamp":"2026-09-03T15:18:36.29230615+02:00","action":"edit","task_id":124,"detail":"DOC-19 · Der Schnellstart prüft die Docker-Voraussetzung falsch"}
+{"timestamp":"2026-09-03T15:18:36.986439705+02:00","action":"move","task_id":124,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T15:18:44.425218414+02:00","action":"edit","task_id":124,"detail":"DOC-19 · Der Schnellstart prüft die Docker-Voraussetzung falsch"}
+{"timestamp":"2026-09-03T15:18:44.434250616+02:00","action":"release","task_id":124,"detail":"akar-42"}
+{"timestamp":"2026-09-03T15:18:55.852236743+02:00","action":"edit","task_id":123,"detail":"DOC-18 · OCR greift in PDF und Bilddateien, sonst nirgends"}
+{"timestamp":"2026-09-03T15:18:55.852543594+02:00","action":"claim","task_id":123,"detail":"akar-41"}
+{"timestamp":"2026-09-03T15:18:56.666455356+02:00","action":"edit","task_id":123,"detail":"DOC-18 · OCR greift in PDF und Bilddateien, sonst nirgends"}
+{"timestamp":"2026-09-03T15:18:57.41300953+02:00","action":"move","task_id":123,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T15:18:58.373252624+02:00","action":"edit","task_id":123,"detail":"DOC-18 · OCR greift in PDF und Bilddateien, sonst nirgends"}
+{"timestamp":"2026-09-03T15:18:58.3740691+02:00","action":"release","task_id":123,"detail":"akar-41"}

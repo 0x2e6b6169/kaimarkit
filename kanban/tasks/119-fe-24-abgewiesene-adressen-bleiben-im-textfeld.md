@@ -1,15 +1,15 @@
 ---
 id: 119
 title: FE-24 · Abgewiesene Adressen bleiben im Textfeld stehen
-status: in-progress
+status: done
 priority: low
 created: 2026-09-03T14:56:09.430537774+02:00
-updated: 2026-09-03T14:57:07.112311617+02:00
+updated: 2026-09-03T15:13:49.126156134+02:00
+started: 2026-09-03T15:13:43.14412863+02:00
+completed: 2026-09-03T15:13:43.14412863+02:00
 assignee: benny
 tags:
     - frontend
-claimed_by: benny-26
-claimed_at: 2026-09-03T14:57:07.112311617+02:00
 class: standard
 ---
 
@@ -50,3 +50,7 @@ Nicht hier: `frontend/src/download.ts`, `frontend/src/api.ts`, `frontend/src/typ
 - Ein Test belegt, dass das Feld leer wird, wenn alle Adressen Platz finden.
 - `npm run test`, `npm run typecheck`, `npm run build` grün. Basislinie nach FE-22:
   10 Dateien / 134 Tests.
+
+Umgesetzt. `enqueueUrls` gibt zurueck, wofuer kein Platz mehr war; `UrlInput` legt es ueber `keep()` zurueck ins Feld — zwischen den Zeilen ohne Schema, in der eingegebenen Reihenfolge. App.vue reicht beides zusammen (`submitUrls`). Die Meldung aus FE-22 blieb unveraendert; die Kopfprosa in UrlInput.vue war danach unwahr und ist berichtigt. Rot vor gruen: Der App-Test mit 18 belegten Plaetzen und fuenf Adressen fiel vorher durch, weil das Feld leer war. Vitest vorher 10 Dateien / 134 Tests, nachher 10 / 137 (zwei App-Tests, ein UrlInput-Test; zwei bestehende useConversion-Tests um den Rueckgabewert erweitert). typecheck und build gruen.
+
+Befund, nicht geaendert (aelter als dieses Ticket): Der FE-22-Test 'nimmt nur so viele Eintraege an, wie limits.max_files zulaesst, und sagt es' in App.test.ts braucht auf ruhiger Maschine 2,5 bis 3,7 s von 5 s Vitest-Zeitgrenze und faellt unter Last anderer Lanes reproduzierbar mit Timeout durch — auch ohne die Aenderungen dieses Tickets (zweimal am gestashten Stand belegt, load ~9). Zwanzig Eintraege werden dort vollstaendig gewandelt, obwohl der Test nur die Aufnahme prueft; ein Wandeln, das stehen bleibt, macht ihn schnell (so geloest im neuen Test). Gruener Gesamtlauf entstand bei load 3,73.

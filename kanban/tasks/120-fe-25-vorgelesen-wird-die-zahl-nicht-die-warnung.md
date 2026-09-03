@@ -1,15 +1,17 @@
 ---
 id: 120
 title: FE-25 · Vorgelesen wird die Zahl, nicht die Warnung
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-03T14:59:45.209459852+02:00
-updated: 2026-09-03T14:59:45.209459852+02:00
+updated: 2026-09-03T15:15:01.880067269+02:00
 assignee: benny
 tags:
     - frontend
 depends_on:
     - 119
+claimed_by: benny-27
+claimed_at: 2026-09-03T15:15:01.880067269+02:00
 class: standard
 ---
 
