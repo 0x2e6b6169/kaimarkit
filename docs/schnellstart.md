@@ -8,8 +8,10 @@ dabei im Einzelnen geschieht und welche Variablen es gibt, steht unter
 
 Eine Docker Engine mit dem Compose-Plugin — `docker compose version` muss antworten —
 und rund 6 GB freier Arbeitsspeicher. Der erste Bau backt die Docling-Modelle in das
-Abbild. Er dauert und braucht mehrere Gigabyte Platz; dafür holt der Dienst zur
-Laufzeit nichts mehr aus dem Netz.
+Abbild. Er dauert und braucht mehrere Gigabyte Platz; dafür lädt der Dienst zur
+Laufzeit keine Modelle mehr nach. Ins Netz greift er dann nur noch auf Verlangen: Ein
+Aufruf von `/api/convert/url` holt genau die eine Seite, nicht ihre Bilder und nicht
+ihre Stylesheets. Von sich aus schickt er nichts hinaus, auch keine Nutzungsdaten.
 
 ## Starten
 
