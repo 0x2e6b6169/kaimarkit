@@ -5,11 +5,47 @@ kein Reverse Proxy davor. Für einen Rechner unter dem Schreibtisch reicht das.
 
 ## Was vorher da sein muss
 
-Docker Engine mit dem Compose-Plugin (`docker compose version` muss antworten) und
-etwa 6 GB freier Arbeitsspeicher — so viel gibt `KAIMARKIT_MEM_LIMIT` dem Container.
-Der erste Bau backt die Docling-Modelle in das Abbild und dauert entsprechend lange;
-es braucht mehrere Gigabyte Platz. Dafür holt der Dienst zur Laufzeit nichts mehr
-aus dem Netz.
+Docker Engine mit dem Compose-Plugin und etwa 6 GB freier Arbeitsspeicher — so viel
+gibt `KAIMARKIT_MEM_LIMIT` dem Container. Der erste Bau backt die Docling-Modelle in
+das Abbild und dauert entsprechend lange; es braucht mehrere Gigabyte Platz. Dafür
+holt der Dienst zur Laufzeit nichts mehr aus dem Netz.
+
+Ob die Engine wirklich erreichbar ist, beantwortet ein Befehl:
+
+```bash
+docker version
+```
+
+Er zeigt neben dem Client einen Abschnitt `Server` mit der Version der Engine und
+kehrt mit 0 zurück. Steht dort stattdessen
+
+```text
+permission denied while trying to connect to the docker API
+at unix:///var/run/docker.sock
+```
+
+dann läuft die Engine, aber das eigene Konto darf nicht an ihren Socket. Es fehlt die
+Gruppe `docker`:
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+Danach neu anmelden, sonst wirkt die neue Gruppe im laufenden Login nicht.
+
+!!! warning "Was die Gruppe `docker` einschließt"
+    Wer den Docker-Daemon ansprechen darf, wird auf diesem Rechner effektiv Root:
+    Ein Container, der das Wurzelverzeichnis des Hosts einhängt, genügt dafür. Auf
+    dem eigenen Server nimmt man das üblicherweise in Kauf; auf einer Maschine mit
+    mehreren Konten ist es eine Entscheidung.
+
+`docker compose version` beantwortet diese Frage **nicht**. Der Befehl fragt allein
+das Plugin und antwortet auch dann, wenn der Daemon unerreichbar bleibt — eine
+Prüfung also, die besteht, während der erste echte Aufruf scheitert.
+
+`make up` stellt die Frage vor dem Bau von selbst und bricht ab, bevor die erste
+Stufe anläuft. Ein Bau, der erst nach zwanzig Minuten am fehlenden Recht scheitert,
+wäre die schlechtere Reihenfolge.
 
 ## Drei Schritte
 
