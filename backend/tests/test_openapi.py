@@ -43,6 +43,7 @@ from app.uploads import _semaphore
 ERROR_CODES: dict[str, set[str]] = {
     "/api/convert": {"400", "413", "415", "500", "504"},
     "/api/convert/batch": {"413"},
+    "/api/convert/url": {"400", "413", "415", "500", "504"},
 }
 
 
@@ -123,7 +124,7 @@ def test_openapi_publishes_every_declared_type(client: TestClient) -> None:
 
 
 def test_openapi_names_the_error_codes_of_each_endpoint(client: TestClient) -> None:
-    """Beide Endpunkte fuehren die Fehlercodes, die der Vertrag ihnen zuschreibt.
+    """Jeder Endpunkt fuehrt die Fehlercodes, die der Vertrag ihm zuschreibt.
 
     Die Codes entstehen im Ausnahmebehandler, nicht im Endpunkt. FastAPI sieht sie
     deshalb nicht; ohne ``responses=`` verspricht ``/api/docs`` nur 200 und 422.
@@ -144,6 +145,7 @@ def test_openapi_binds_each_endpoint_to_its_model(client: TestClient) -> None:
 
     assert schema_of(document, "/api/convert")["$ref"].endswith("/ConversionEntry")
     assert schema_of(document, "/api/convert/batch")["$ref"].endswith("/BatchResponse")
+    assert schema_of(document, "/api/convert/url")["$ref"].endswith("/ConversionEntry")
 
 
 def test_openapi_keeps_the_second_branch(client: TestClient) -> None:
