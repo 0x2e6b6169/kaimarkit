@@ -68,6 +68,15 @@ gescheiterte Datei hält die übrigen nicht auf, sondern zeigt ihre Meldung in d
 eigenen Zeile. Die Vorschau klappt das gewandelte Markdown auf, herunterladen
 lässt es sich einzeln oder als ZIP über alle gelungenen Dateien.
 
+Unter „Optionen" steht die Engine für den nächsten Lauf zur Wahl, als Gruppe von
+Schaltflächen mit einem Halbsatz zu jeder; das Zeichen dahinter öffnet eine längere
+Erklärung, mit der Maus oder per Tab. Vorgewählt ist MarkItDown, die schnelle
+Engine. Die Wahl bleibt im Browser gemerkt und steht nach dem nächsten Aufruf der
+Seite wieder da. Eine Engine, die gerade nicht in Frage kommt — nicht installiert,
+oder in der Warteschlange liegt eine Datei, die sie nicht liest —, bleibt sichtbar,
+ist aber nicht wählbar. „automatisch" überlässt die Wahl dem Dienst, wie im nächsten
+Abschnitt beschrieben.
+
 Eine laufende Zeile zählt mit, wie lange sie schon läuft. Wem es zu lange dauert,
 der drückt „Nicht mehr warten": Die Zeile steht danach auf „abgebrochen", die
 nächste wartende Datei rückt nach, und die Warteschlange zählt den Abbruch nicht

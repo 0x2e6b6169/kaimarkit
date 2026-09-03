@@ -14,14 +14,19 @@
  *    Engines uebrig, die *jede* dieser Endungen lesen koennen. Bei einer
  *    einzelnen `.epub` faellt docling deshalb heraus.
  * 2. **Der Zustand.** `warming` bleibt waehlbar und wird gekennzeichnet — das
- *    Modell laedt noch, die erste Anfrage wartet. `unavailable` erscheint nicht,
- *    und wer in `engines` gar nicht steht, ebenfalls nicht: `formats` fuehrt
- *    `.md` mit `passthrough`, aber durchgereicht wird Markdown ohnehin — eine
- *    Wahl gibt es dort nicht.
+ *    Modell laedt noch, die erste Anfrage wartet. `unavailable` ist nicht
+ *    waehlbar, und wer in `engines` gar nicht steht, erscheint nicht: `formats`
+ *    fuehrt `.md` mit `passthrough`, aber durchgereicht wird Markdown ohnehin —
+ *    eine Wahl gibt es dort nicht.
  *
- * Faellt die gewaehlte Engine durch einen dieser Filter, springt die Auswahl auf
- * `automatisch` zurueck. Sonst stuende dort ein Name, den der Dienst mit 400
- * zurueckwiese.
+ * Was durch einen Filter faellt, bleibt als deaktivierte Schaltflaeche stehen;
+ * die Gruppe behaelt ihre Form. Faellt die gewaehlte Engine durch, springt die
+ * Auswahl auf `automatisch` zurueck. Sonst stuende dort ein Name, den der
+ * Dienst mit 400 zurueckwiese.
+ *
+ * Die Wahl des Nutzers merkt sich `rememberEngine` fuer den naechsten Besuch;
+ * der Ruecksprung auf `automatisch` geht nicht durch diese Funktion und laesst
+ * den gemerkten Wert stehen. Beim naechsten Besuch ist die Engine wieder da.
  *
  * Die Optionen gelten fuer den naechsten Start, nicht rueckwirkend: Was bereits
  * konvertiert ist, bleibt, wie es ist.
@@ -30,6 +35,7 @@
 import { computed, onMounted, watch } from 'vue'
 import EngineSelect from './EngineSelect.vue'
 import { useCapabilities } from '../composables/useCapabilities'
+import { rememberEngine } from '../composables/useConversion'
 import type { ConvertOptions } from '../types'
 
 const props = withDefaults(
@@ -44,7 +50,8 @@ const props = withDefaults(
 
 const emit = defineEmits<{ 'update:modelValue': [value: ConvertOptions] }>()
 
-const { engines, ocrAvailable, enginesFor, supports, loading, error, load } = useCapabilities()
+const { capabilities, engines, ocrAvailable, enginesFor, supports, loading, error, load } =
+  useCapabilities()
 
 onMounted(() => void load())
 
@@ -73,10 +80,23 @@ function update(patch: Partial<ConvertOptions>): void {
   emit('update:modelValue', { ...props.modelValue, ...patch })
 }
 
+/** Die Wahl des Nutzers: gilt fuer den naechsten Lauf und bleibt im Browser. */
+function choose(name: string): void {
+  rememberEngine(name)
+  update({ engine: name })
+}
+
 // Eine Engine, die aus der Auswahl gefallen ist, darf nicht gewaehlt bleiben.
-watch(offered, (list) => {
-  if (engine.value !== 'auto' && !list.includes(engine.value)) update({ engine: 'auto' })
-})
+// Solange die Faehigkeiten fehlen, ist noch nichts entschieden: Die gemerkte
+// Engine wartet, bis der Dienst gesagt hat, was er anbietet.
+watch(
+  offered,
+  (list) => {
+    if (!capabilities.value) return
+    if (engine.value !== 'auto' && !list.includes(engine.value)) update({ engine: 'auto' })
+  },
+  { immediate: true },
+)
 
 function onOcrChange(event: Event): void {
   update({ ocr: (event.target as HTMLInputElement).checked })
@@ -91,16 +111,12 @@ function onOcrChange(event: Event): void {
     <p v-else-if="loading" class="text-sm text-slate-500">Fähigkeiten werden geladen …</p>
 
     <div class="flex flex-wrap items-start gap-x-6 gap-y-3">
-      <div class="flex items-baseline gap-2">
-        <label for="options-engine" class="text-sm">Engine</label>
-        <EngineSelect
-          id="options-engine"
-          :model-value="engine"
-          :engines="offered"
-          :states="engines"
-          @update:model-value="update({ engine: $event })"
-        />
-      </div>
+      <EngineSelect
+        :model-value="engine"
+        :engines="offered"
+        :states="engines"
+        @update:model-value="choose"
+      />
 
       <!-- Der OCR-Schalter steht nur da, wenn das Backend OCR meldet. -->
       <div v-if="ocrAvailable" class="flex items-center gap-2" data-test="ocr-field">
