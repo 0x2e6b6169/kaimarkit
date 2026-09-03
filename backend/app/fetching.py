@@ -15,11 +15,11 @@ und zu ``169.254.169.254``, wo Cloud-Anbieter ihre Metadaten anbieten. Deshalb
 wird der Hostname aufgelöst und **jede** zurückgegebene Adresse geprüft; ein Name,
 der auf eine öffentliche und eine private Adresse zeigt, wird abgewiesen.
 
-Bekannte Einschränkung: Geprüft wird die Auflösung vor dem Verbindungsaufbau, und
-``httpx`` löst den Namen danach noch einmal auf. Ein Name, dessen Antwort zwischen
-beiden Aufrufen wechselt, käme durch. Das ist derselbe Rest, den jede Prüfung
-dieser Bauart lässt; dagegen hilft nur, die Verbindung selbst an die geprüfte
-Adresse zu binden.
+Und die Verbindung geht an die geprüfte Adresse, nicht noch einmal an den Namen.
+Sonst bliebe eine Lücke: ``httpx`` löst den Namen beim Verbindungsaufbau erneut
+auf, und ein gegnerischer DNS, der zwischen beiden Auflösungen von einer
+öffentlichen auf eine private Adresse wechselt, käme an der Sperre vorbei. Wie
+das Binden gemacht ist, steht bei ``fetch_page``.
 
 Diese Datei ist die einzige außerhalb der Tests, die ``httpx`` importiert. Was
 ``httpx`` an Fehlern wirft, endet hier als ``ConversionError``; kein
@@ -170,11 +170,12 @@ def _resolve(host: str) -> list[str]:
     ]
 
 
-async def check_public(url: str) -> None:
-    """Wirft ``InvalidUrl``, wenn die Adresse nicht öffentlich erreichbar ist.
+async def check_public(url: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address:
+    """Gibt die Adresse zurück, an die verbunden werden darf.
 
     Geprüft wird das Schema, dann jede Adresse, auf die der Host zeigt. Loopback,
     private Netze, Link-local und alles, was ``is_global`` verneint, sind gesperrt.
+    Zeigt der Name auf mehrere geprüfte Adressen, gilt die erste.
     """
     parts = urlsplit(url)
     if parts.scheme not in {"http", "https"}:
@@ -182,9 +183,11 @@ async def check_public(url: str) -> None:
     host = parts.hostname
     if not host:
         raise InvalidUrl(f"{url}: die Adresse nennt keinen Host.")
-    for address in await _addresses_of(host):
+    addresses = await _addresses_of(host)
+    for address in addresses:
         if not address.is_global:
             raise InvalidUrl(f"{host} zeigt auf {address}, und das ist keine öffentliche Adresse.")
+    return addresses[0]
 
 
 async def _addresses_of(host: str) -> list[ipaddress.IPv4Address | ipaddress.IPv6Address]:
@@ -214,8 +217,16 @@ async def fetch_page(url: str, directory: Path) -> FetchedPage:
     """Holt die Seite nach ``directory`` und leitet ihren Namen ab.
 
     Weiterleitungen werden von Hand verfolgt, damit jedes Ziel vor dem Sprung
-    geprüft wird. Die Zeitgrenze ``KAIMARKIT_URL_TIMEOUT`` gilt für den ganzen
-    Abruf, alle Sprünge eingeschlossen.
+    geprüft wird — und jeder Sprung geht an die Adresse, die eben geprüft wurde.
+    Die Zeitgrenze ``KAIMARKIT_URL_TIMEOUT`` gilt für den ganzen Abruf, alle
+    Sprünge eingeschlossen.
+
+    Gebunden wird, indem im Ziel der Name durch die geprüfte Adresse ersetzt wird.
+    Der Name bleibt an den beiden Stellen stehen, an denen die Gegenstelle ihn
+    braucht: im ``Host``-Header und in ``sni_hostname``. Letzteres reicht ``httpx``
+    an ``httpcore`` weiter, das daraus den ``server_hostname`` des TLS-Handschlags
+    macht — die Zertifikatsprüfung bleibt also an und prüft weiter den Namen, nicht
+    die Adresse.
     """
     settings = get_settings()
     target = url
@@ -228,8 +239,14 @@ async def fetch_page(url: str, directory: Path) -> FetchedPage:
                 headers={"User-Agent": f"kaimarkit/{settings.service_version}"},
             ) as client:
                 for _ in range(REDIRECT_LIMIT + 1):
-                    await check_public(target)
-                    async with client.stream("GET", target) as response:
+                    address = await check_public(target)
+                    parts = httpx.URL(target)
+                    async with client.stream(
+                        "GET",
+                        parts.copy_with(host=str(address)),
+                        headers={"Host": parts.netloc.decode("ascii")},
+                        extensions={"sni_hostname": parts.host},
+                    ) as response:
                         if response.is_redirect:
                             target = urljoin(target, response.headers["location"])
                             continue
