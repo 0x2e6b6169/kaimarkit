@@ -50,10 +50,10 @@ Eine Endung außerhalb der Tabelle lehnt der Dienst mit 415 (`unsupported_format
 
 Docling lädt beim Start Layout- und Tabellenmodelle in den Speicher. Das dauert
 und geschieht deshalb im Hintergrund: `GET /api/health` antwortet sofort, während
-Docling noch lädt. Solange gilt die Engine als `warming` — `GET /api/capabilities`
-bietet sie nicht an, und `engine=auto` nimmt für ein PDF die nächste Engine der
-Liste. Wer Docling ausdrücklich verlangt, wartet stattdessen, bis die Modelle da
-sind.
+Docling noch lädt. Solange gilt die Engine als `warming`: `GET /api/capabilities`
+nennt sie unter `engines` mit diesem Zustand, in `formats` steht sie noch nicht,
+und `engine=auto` nimmt für ein PDF die nächste Engine der Präferenzliste. Wer
+Docling ausdrücklich verlangt, wartet stattdessen, bis die Modelle da sind.
 
 Fehlen die Modelle oder ist die Bibliothek nicht installiert, meldet der Dienst
 400 (`engine_unavailable`), sobald jemand Docling ausdrücklich verlangt. Bei
