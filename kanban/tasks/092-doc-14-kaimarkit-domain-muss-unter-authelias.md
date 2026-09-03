@@ -1,10 +1,11 @@
 ---
 id: 92
 title: DOC-14 · KAIMARKIT_DOMAIN muss unter Authelias Cookie-Domaene liegen
-status: backlog
+status: todo
 priority: high
 created: 2026-09-01T19:10:53.816072854+02:00
-updated: 2026-09-01T21:29:50.16357183+02:00
+updated: 2026-09-03T14:20:13.501586806+02:00
+started: 2026-09-03T14:20:13.632175283+02:00
 assignee: akar
 tags:
     - docs
@@ -77,3 +78,15 @@ Die Dokumentation muss also **beides** nennen, in der Reihenfolge, in der man da
 Beides sind Änderungen an **Authelias** Konfiguration, nicht an unserer. Genau deshalb gehören sie auf unsere Seite: Wer kaimarkit hinter eine vorhandene Authelia hängt, erfährt sonst nirgends, was er dort tun muss.
 
 Der Aufbau des Nutzers läuft seither unter `kaimarkit.0x2e6b6169.de`.
+
+[[2026-09-03]] Thu 14:20
+Nachtrag von katche vor der Freigabe, zur zweiten Pruefzeile: Der Aufruf ist am
+01.09.2026 am Aufbau des Nutzers ausgefuehrt worden, das Ergebnis steht oben im
+Befund (X-Forwarded-Host: kaimarkit.6b6a.de -> 400). Diese Lane kann ihn nicht
+wiederholen; der VPS gehoert dem Nutzer, und hier laeuft keine Authelia. Die Zeile
+meint deshalb: den vorhandenen Beleg unveraendert uebernehmen, mit Datum und
+Herkunft, statt einen Aufruf zu erfinden, der nie gelaufen ist. Kein Grund zur
+Uebergabe.
+In der Doku steht die Domaene als Platzhalter, nicht als fester Name. Der Aufbau des
+Nutzers laeuft inzwischen unter kaimarkit.0x2e6b6169.de; die alte Domaene aus dem
+Befund gehoert nicht in die Seite.

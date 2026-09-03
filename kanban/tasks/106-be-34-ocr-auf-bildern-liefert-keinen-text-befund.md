@@ -4,13 +4,13 @@ title: 'BE-34 · OCR auf Bildern liefert keinen Text: Befund im Abbild (GitHub #
 status: in-progress
 priority: high
 created: 2026-09-03T11:20:26.183542324+02:00
-updated: 2026-09-03T11:41:51.442530267+02:00
+updated: 2026-09-03T14:19:46.065724308+02:00
 assignee: sophie
 tags:
     - backend
     - gh-2
-claimed_by: sophie-35
-claimed_at: 2026-09-03T11:41:51.442954215+02:00
+claimed_by: sophie-37
+claimed_at: 2026-09-03T14:19:46.066272023+02:00
 class: standard
 ---
 

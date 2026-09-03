@@ -1,14 +1,16 @@
 ---
 id: 114
 title: 'BE-37 · Adresssperre in fetching.py: Verbindung an die geprüfte IP binden (DNS-Rebinding)'
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-03T11:42:55.055749229+02:00
-updated: 2026-09-03T11:42:55.055749229+02:00
+updated: 2026-09-03T14:20:20.147017326+02:00
 assignee: sophie
 tags:
     - backend
     - gh-5
+claimed_by: sophie-38
+claimed_at: 2026-09-03T14:20:20.147017326+02:00
 class: standard
 ---
 

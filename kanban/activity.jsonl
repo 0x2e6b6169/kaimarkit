@@ -752,3 +752,10 @@
 {"timestamp":"2026-09-03T14:17:37.914279862+02:00","action":"release","task_id":112,"detail":"akar-36"}
 {"timestamp":"2026-09-03T14:18:31.911376867+02:00","action":"move","task_id":108,"detail":"todo -\u003e in-progress"}
 {"timestamp":"2026-09-03T14:19:22.879028489+02:00","action":"edit","task_id":109,"detail":"DOC-15 · Doku der URL-Konvertierung: API, Oberfläche, Grenzen (GitHub #5)"}
+{"timestamp":"2026-09-03T14:19:44.752162732+02:00","action":"edit","task_id":106,"detail":"BE-34 · OCR auf Bildern liefert keinen Text: Befund im Abbild (GitHub #2)"}
+{"timestamp":"2026-09-03T14:19:44.752507956+02:00","action":"release","task_id":106,"detail":"sophie-35"}
+{"timestamp":"2026-09-03T14:19:46.066667962+02:00","action":"edit","task_id":106,"detail":"BE-34 · OCR auf Bildern liefert keinen Text: Befund im Abbild (GitHub #2)"}
+{"timestamp":"2026-09-03T14:19:46.067062201+02:00","action":"claim","task_id":106,"detail":"sophie-37"}
+{"timestamp":"2026-09-03T14:20:08.874413743+02:00","action":"edit","task_id":92,"detail":"DOC-14 · KAIMARKIT_DOMAIN muss unter Authelias Cookie-Domaene liegen"}
+{"timestamp":"2026-09-03T14:20:13.632800199+02:00","action":"move","task_id":92,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-03T14:20:20.247173331+02:00","action":"move","task_id":114,"detail":"todo -\u003e in-progress"}
