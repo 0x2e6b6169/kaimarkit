@@ -55,6 +55,17 @@ Jede Fehlerantwort hat denselben Rumpf:
 | `engine_unavailable` | 400 | angeforderte Engine ist nicht installiert |
 | `conversion_failed` | 500 | die Engine scheiterte |
 | `conversion_timeout` | 504 | über `KAIMARKIT_CONVERSION_TIMEOUT` |
+| `invalid_url` | 400 | Adresse für `/api/convert/url` taugt nicht: kein öffentliches http(s), nicht auflösbar, Weiterleitung ins Private, zu viele Weiterleitungen, keine Antwort mit Dokument |
+
+### `UrlConvertRequest`
+
+Der Rumpf von `POST /api/convert/url`, als JSON.
+
+| Feld | Typ | Pflicht | Bedeutung |
+|---|---|---|---|
+| `url` | string | ja | die Adresse, `http` oder `https` |
+| `engine` | string | nein | Enginename oder `auto` (Standard) |
+| `ocr` | boolean \| null | nein | überschreibt `KAIMARKIT_OCR_ENABLED` |
 
 ---
 
@@ -213,3 +224,54 @@ Der Aufruf antwortet mit 200, auch wenn jede einzelne Datei scheiterte — die
 Anfrage selbst war ja in Ordnung. Auch eine unbekannte Endung bleibt ein Fehler ihres
 Eintrags: Was `/api/convert` mit 415 abweist, wird hier zu `status: "failed"` mit dem
 Grund in `error`. Für den Stapel als Ganzes bleibt allein 413 (zu viele Dateien).
+
+---
+
+## `POST /api/convert/url`
+
+Eine Seite aus dem Netz nach Markdown. Der Rumpf ist ein `UrlConvertRequest`,
+ein Aufruf je Adresse — das Frontend ruft ihn je Zeile auf, wie `/api/convert` je
+Datei.
+
+```bash
+curl -sf -H 'Content-Type: application/json' \
+     -d '{"url": "https://example.com/"}' localhost:8000/api/convert/url
+```
+
+Die Antwort ist immer ein `ConversionEntry`; einen Markdown-Zweig über `Accept`
+gibt es hier nicht.
+
+```json
+{
+  "filename": "example-domain.html",
+  "status": "ok",
+  "markdown": "# Example Domain\n\n...",
+  "engine": "markitdown",
+  "warnings": [],
+  "duration_ms": 412,
+  "error": null
+}
+```
+
+**`filename` ist abgeleitet, nicht übernommen.** Der Name kommt aus dem `<title>`
+der Seite: Kleinbuchstaben, Umlaute umgeschrieben (`ä` → `ae`, `ß` → `ss`), alles
+außer `[a-z0-9]` zu `-`, Mehrfach-Bindestriche zusammengezogen, Ränder beschnitten,
+höchstens 80 Zeichen. Ohne `<title>` — bei einer PDF etwa — entsteht er auf dieselbe
+Art aus Host und Pfad: `https://example.org/papers/paper.pdf` wird zu
+`example-org-papers-paper.pdf`. Die Endung ist die der geholten Datei, aus dem
+`Content-Type` (`text/html` → `.html`, `application/pdf` → `.pdf`) oder sonst aus
+dem Pfad; das Frontend macht daraus `.md`, wie bei einem Upload. Gleiche Namen
+nummeriert der Client, nicht der Dienst.
+
+**Nur öffentliches http(s).** Loopback, private Netze, Link-local und alles, was
+nicht öffentlich erreichbar ist, weist der Dienst mit 400 `invalid_url` ab — auch
+dann, wenn erst eine Weiterleitung dorthin führt. Der Hostname wird aufgelöst und
+jede zurückgegebene Adresse geprüft. Höchstens fünf Weiterleitungen. Kein
+JavaScript: Was der Server als HTML liefert, ist die Seite.
+
+Danach geht die Datei denselben Weg wie ein Upload: Registry, Engine, Rückfall.
+Deshalb gelten dieselben Fehler wie bei `/api/convert`, dazu `invalid_url`. Die
+Antwort des fernen Servers unterliegt `KAIMARKIT_MAX_FILE_SIZE_MB` (413, abgebrochen
+beim Empfang), der Abruf `KAIMARKIT_URL_TIMEOUT` (504) und die Umwandlung
+`KAIMARKIT_CONVERSION_TIMEOUT` (504). Führt der `Content-Type` auf keine bekannte
+Endung und der Pfad auch nicht, antwortet der Dienst mit 415.

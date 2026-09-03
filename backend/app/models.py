@@ -31,11 +31,25 @@ class ErrorCode(StrEnum):
     ENGINE_UNAVAILABLE = "engine_unavailable"
     CONVERSION_FAILED = "conversion_failed"
     CONVERSION_TIMEOUT = "conversion_timeout"
+    INVALID_URL = "invalid_url"
 
 
 class ErrorResponse(BaseModel):
     detail: str
     code: ErrorCode
+
+
+class UrlConvertRequest(BaseModel):
+    """Der Rumpf von ``POST /api/convert/url``.
+
+    ``engine`` und ``ocr`` bedeuten dasselbe wie die Formularfelder von
+    ``/api/convert``. ``url`` bleibt eine Zeichenkette und kein ``HttpUrl``: Was
+    kein http(s) ist, soll als 400 ``invalid_url`` enden, nicht als 422.
+    """
+
+    url: str
+    engine: str = "auto"
+    ocr: bool | None = None
 
 
 class ConversionEntry(BaseModel):

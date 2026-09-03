@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     # damit ein nackt gestartetes Backend sich verhaelt wie die Auslieferung.
     conversion_timeout: int = 600
     pandoc_timeout: int = 60
+    # Zeitgrenze je Abruf fuer ``/api/convert/url``, Weiterleitungen eingeschlossen.
+    # Die Umwandlung danach unterliegt ``conversion_timeout`` wie ein Upload.
+    url_timeout: int = 30
 
     # Engines
     default_engine: str = "auto"

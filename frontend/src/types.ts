@@ -17,10 +17,21 @@ export type ErrorCode =
   | 'engine_unavailable'
   | 'conversion_failed'
   | 'conversion_timeout'
+  | 'invalid_url'
 
 export interface ErrorResponse {
   detail: string
   code: ErrorCode
+}
+
+/**
+ * Rumpf von `POST /api/convert/url`. `engine` und `ocr` bedeuten dasselbe wie
+ * die Formularfelder von `/api/convert`; fehlt `engine`, gilt `auto`.
+ */
+export interface UrlConvertRequest {
+  url: string
+  engine?: string
+  ocr?: boolean | null
 }
 
 /**
