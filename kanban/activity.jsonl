@@ -845,3 +845,11 @@
 {"timestamp":"2026-09-03T15:18:57.41300953+02:00","action":"move","task_id":123,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-03T15:18:58.373252624+02:00","action":"edit","task_id":123,"detail":"DOC-18 · OCR greift in PDF und Bilddateien, sonst nirgends"}
 {"timestamp":"2026-09-03T15:18:58.3740691+02:00","action":"release","task_id":123,"detail":"akar-41"}
+{"timestamp":"2026-09-03T15:48:08.345955022+02:00","action":"edit","task_id":120,"detail":"FE-25 · Vorgelesen wird die Zahl, nicht die Warnung"}
+{"timestamp":"2026-09-03T15:48:09.632727284+02:00","action":"move","task_id":120,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T15:48:11.521673873+02:00","action":"edit","task_id":120,"detail":"FE-25 · Vorgelesen wird die Zahl, nicht die Warnung"}
+{"timestamp":"2026-09-03T15:48:11.522230028+02:00","action":"release","task_id":120,"detail":"benny-27"}
+{"timestamp":"2026-09-03T15:48:25.316554614+02:00","action":"edit","task_id":120,"detail":"FE-25 · Vorgelesen wird die Zahl, nicht die Warnung"}
+{"timestamp":"2026-09-03T15:48:25.316907438+02:00","action":"claim","task_id":120,"detail":"benny-27"}
+{"timestamp":"2026-09-03T15:48:27.49421901+02:00","action":"edit","task_id":120,"detail":"FE-25 · Vorgelesen wird die Zahl, nicht die Warnung"}
+{"timestamp":"2026-09-03T15:48:27.494602986+02:00","action":"release","task_id":120,"detail":"benny-27"}
