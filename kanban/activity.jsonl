@@ -853,3 +853,4 @@
 {"timestamp":"2026-09-03T15:48:25.316907438+02:00","action":"claim","task_id":120,"detail":"benny-27"}
 {"timestamp":"2026-09-03T15:48:27.49421901+02:00","action":"edit","task_id":120,"detail":"FE-25 · Vorgelesen wird die Zahl, nicht die Warnung"}
 {"timestamp":"2026-09-03T15:48:27.494602986+02:00","action":"release","task_id":120,"detail":"benny-27"}
+{"timestamp":"2026-09-03T15:52:43.847436463+02:00","action":"edit","task_id":121,"detail":"BE-39 · Die Warnung nennt den Grund und den Umweg (GitHub #2)"}
