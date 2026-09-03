@@ -4,11 +4,13 @@ title: ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-l
 status: todo
 priority: critical
 created: 2026-09-03T11:27:53.391937908+02:00
-updated: 2026-09-03T11:27:53.391937908+02:00
+updated: 2026-09-03T11:32:57.977238361+02:00
 assignee: akar
 tags:
     - docs
     - frontend
+blocked: true
+block_reason: npm install --package-lock-only ändert 69 Zeilen, nicht zwei
 class: standard
 ---
 
@@ -43,3 +45,9 @@ Nicht anfassen: `backend/app/config.py:51`. Dort steht `v0.1.0` als Beispiel fü
 2. `cd frontend && npm run typecheck && npm run test` grün.
 3. `mkdocs build --strict` im Backend-venv ohne Warnung.
 4. `git diff --stat` des Ticket-Commits nennt genau die sechs Dateien.
+
+[[2026-09-03]] Thu 11:31
+Fünf Prosa-/Kommentarstellen im Worktree .worktrees/task-111 (Branch task/111-fallback-version-prose) geändert, unkommittiert: contracts/api.md:75, docs/api.md:42, docs/schnellstart.md:38, frontend/src/api.ts:95, frontend/src/App.vue:47 — die Zahl durch den Verweis auf __version__ aus backend/app/__init__.py (Nummer ohne v) ersetzt; grep '0\.1\.0' findet dort nur noch die Beispielantworten v0.1.0-12-ga22a6c5. mkdocs build --strict im Worktree ohne Warnung. Typecheck/vitest im Worktree nicht gelaufen (kein node_modules, Symlink verweigert). Blocker package-lock.json: npm 12.0.1 (Node 22.23) hat allow-remote=none als Standard und bricht mit EALLOWREMOTE beim Optional-Paket @tailwindcss/oxide-wasm32-wasi ab; mit --allow-remote=all läuft es durch, das Diff zeigt aber 69 Einfügungen: die zwei Versionszeilen, dazu '"license": "MIT"' für das Wurzelpaket und sechs neue inBundle-Einträge unter node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules (@emnapi/core, @emnapi/runtime, @emnapi/wasi-threads, @napi-rs/wasm-runtime, @tybys/wasm-util, tslib). Das ist npm 12, das Metadaten nachträgt, die die alte npm-Version nie geschrieben hat, keine Abhängigkeitsänderung. Lock im Worktree zurückgesetzt. Nächster Schritt (Entscheidung katche): entweder die 69 Zeilen als npm-12-Nachtrag akzeptieren und den Lock so committen, oder nur die zwei Versionszeilen im Lock ändern (widerspricht der Vorgabe 'nicht von Hand'). contracts/api.md nur Prosa; models.py und types.ts unberührt.
+
+[[2026-09-03]] Thu 11:32
+Entscheidung katche, 2026-09-03: Die Vorgabe „das Diff darf nur die zwei Versionszeilen zeigen" ist aufgehoben. Das Ergebnis von `npm install --package-lock-only --allow-remote=all` wird vollständig übernommen: die beiden Versionszeilen, das `"license": "MIT"` fürs Wurzelpaket (Folge von ORG-1, gehört hinein) und die `inBundle`-Einträge unter `@tailwindcss/oxide-wasm32-wasi` (npm-Normalisierung, keine Abhängigkeitsänderung). Die Lock-Datei ist erzeugt, nicht geschrieben; ein von Hand gestutztes Diff wäre beim nächsten `npm install` wieder anders. Prüfung 4 lautet damit: Das Diff nennt genau die sechs Dateien, und in `package-lock.json` ändert sich außer Versionszeilen, `license` und `inBundle` keine Abhängigkeit. Prüfung 2 nach `npm ci` im Worktree nachholen.
