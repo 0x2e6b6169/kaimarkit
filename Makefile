@@ -37,7 +37,8 @@ VENV       := $(PYENV_ROOT)/versions/claude-code
 VENV_BIN   := $(VENV)/bin
 
 .PHONY: help up up-traefik up-authelia down logs build dev test test-slow \
-        test-slow-image lint docs-serve docs-release check-env check-venv
+        test-slow-image lint docs-serve docs-release check-env check-docker \
+        check-venv
 
 help: ## Diese Uebersicht anzeigen
 	@echo "kaimarkit — verfuegbare Ziele:"
@@ -50,22 +51,22 @@ help: ## Diese Uebersicht anzeigen
 
 # ── Betrieb ──────────────────────────────────────────────────────────────────
 
-up: check-env ## Dienst bauen und starten
+up: check-env check-docker ## Dienst bauen und starten
 	$(COMPOSE) up -d --build
 
-up-traefik: check-env ## Dienst hinter Traefik starten
+up-traefik: check-env check-docker ## Dienst hinter Traefik starten
 	$(COMPOSE_TRAEFIK) up -d --build
 
-up-authelia: check-env ## Dienst hinter Traefik und Authelia starten
+up-authelia: check-env check-docker ## Dienst hinter Traefik und Authelia starten
 	$(COMPOSE_AUTHELIA) up -d --build
 
-down: check-env ## Dienst beenden und Container entfernen
+down: check-env check-docker ## Dienst beenden und Container entfernen
 	$(COMPOSE) down
 
-logs: check-env ## Ausgabe des Dienstes mitlesen
+logs: check-env check-docker ## Ausgabe des Dienstes mitlesen
 	$(COMPOSE) logs -f
 
-build: check-env ## Nur das Abbild bauen, nichts starten
+build: check-env check-docker ## Nur das Abbild bauen, nichts starten
 	$(COMPOSE) build
 
 
@@ -93,7 +94,7 @@ test-slow: check-venv ## Die slow-Tests lokal; ohne Docling ueberspringen sie si
 # pytest und httpx fehlen ihm und kommen fuer den Lauf dazu. Das Backend haengt
 # nur lesend darin, der Container verschwindet danach. Setzt "make build"
 # voraus und laesst einen laufenden Dienst unberuehrt.
-test-slow-image: check-env ## Die slow-Tests im Abbild, wo Docling steht — dauert
+test-slow-image: check-env check-docker ## Die slow-Tests im Abbild, wo Docling steht — dauert
 	@set -a; . ./$(ENV_FILE); set +a; \
 	 docker run --rm -u root -v "$(CURDIR)/backend:/src:ro" -w /src \
 	   "$$KAIMARKIT_IMAGE:$$KAIMARKIT_TAG" \
@@ -123,6 +124,18 @@ check-env:
 	@test -f $(ENV_FILE) || { \
 	  echo "$(ENV_FILE) fehlt. Compose setzt sonst still leere Werte ein."; \
 	  echo "Anlegen mit: cp docker/.env.example $(ENV_FILE)"; exit 1; }
+
+# Fragt den Daemon, nicht das Plugin: "docker compose version" antwortet auch
+# ohne Zugriff auf den Socket. "docker version" braucht einen Aufruf ueber den
+# Socket und ist damit die Pruefung, die das Recht wirklich belegt. Eine einzelne
+# API-Anfrage genuegt dafuer; "docker info" sammelt den ganzen Daemon-Zustand ein
+# und braucht ein Vielfaches der Zeit.
+check-docker:
+	@docker version --format '{{.Server.Version}}' >/dev/null 2>&1 || { \
+	  echo "Der Docker-Daemon antwortet nicht:"; \
+	  docker version 2>&1 | tail -n 1; \
+	  echo 'Fehlt die Gruppe: sudo usermod -aG docker $$USER, danach neu anmelden.'; \
+	  echo "Was die Gruppe einschließt, steht in docs/betrieb/lokal.md."; exit 1; }
 
 check-venv:
 	@test -x $(VENV_BIN)/python || { \
