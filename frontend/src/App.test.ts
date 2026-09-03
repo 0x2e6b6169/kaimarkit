@@ -463,4 +463,66 @@ describe('App', () => {
     expect(notice.text()).toContain('Höchstens 20 Einträge auf einmal.')
     expect(notice.text()).toContain('2 wurden nicht übernommen.')
   })
+
+  it('laesst die Adressen im Feld stehen, fuer die kein Platz mehr ist', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    // Hier zaehlt allein die Aufnahme. Bliebe die Wandlung nicht stehen, liefen
+    // zwanzig Ergebnisse durch die Warteschlange, ohne etwas zu belegen.
+    const pending = () => new Promise<ConversionEntry>(() => {})
+    api.convertFile.mockImplementation(pending)
+    api.convertUrl.mockImplementation(pending)
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    // Achtzehn der zwanzig Plaetze sind belegt, fuenf Adressen kommen dazu.
+    wrapper
+      .findComponent(FileDropZone)
+      .vm.$emit(
+        'files',
+        Array.from({ length: 18 }, (_, index) => new File(['x'], `datei-${index}.pdf`)),
+      )
+    await nextTick()
+
+    const field = wrapper.get('textarea')
+    await field.setValue(
+      Array.from({ length: 5 }, (_, index) => `https://example.com/${index}`).join('\n'),
+    )
+    await wrapper.get('[data-test="url-submit"]').trigger('click')
+    await nextTick()
+    await flushPromises()
+
+    const queue = useConversion()
+    expect(queue.entries.value).toHaveLength(20)
+    expect(queue.entries.value.filter((entry) => entry.source === 'url')).toHaveLength(2)
+
+    // Die Meldung nennt die Zahl, das Feld nennt die Adressen — sonst waeren
+    // sie zum Wiederholen verloren.
+    expect(wrapper.get('[data-test="queue-rejected"]').text()).toContain(
+      '3 wurden nicht übernommen.',
+    )
+    expect((field.element as HTMLTextAreaElement).value).toBe(
+      'https://example.com/2\nhttps://example.com/3\nhttps://example.com/4',
+    )
+  })
+
+  it('leert das Feld, wenn jede Adresse Platz findet', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    api.convertUrl.mockImplementation(async () => result('seite.html', '# Titel'))
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    const field = wrapper.get('textarea')
+    await field.setValue('https://example.com/a\nhttps://example.com/b')
+    await wrapper.get('[data-test="url-submit"]').trigger('click')
+    await nextTick()
+    await flushPromises()
+
+    expect(useConversion().entries.value).toHaveLength(2)
+    expect((field.element as HTMLTextAreaElement).value).toBe('')
+    expect(wrapper.find('[data-test="queue-rejected"]').exists()).toBe(false)
+  })
 })

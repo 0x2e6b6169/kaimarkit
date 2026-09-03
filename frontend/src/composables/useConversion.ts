@@ -24,6 +24,11 @@
  * es ist besser, das vorher zu sagen, als zwanzig Anfragen loszuschicken, von
  * denen die Haelfte scheitert.
  *
+ * Bei Adressen bleibt es nicht bei der Zahl: `enqueueUrls` gibt zurueck, was
+ * nicht mehr hineinpasste, damit das Feld sie wieder aufnehmen kann. Eine
+ * Datei laesst sich nicht in die Dropzone zuruecklegen, eine Adresse schon —
+ * und ohne sie waere sie zum Wiederholen verloren.
+ *
  * Kennt niemand eine Grenze — die Faehigkeiten kamen nicht durch —, gilt keine.
  * Eine erfundene Voreinstellung waere schlimmer als keine: Sie wiese Dateien ab,
  * die der Dienst angenommen haette.
@@ -138,8 +143,11 @@ export interface ConversionQueue {
   /** Wie viele beim letzten Hinzufuegen nicht mehr hineinpassten. */
   rejected: Ref<number>
   enqueue: (files: Iterable<File>) => void
-  /** Je Adresse eine Zeile. Leere Zeilen und Schemapruefung macht `UrlInput`. */
-  enqueueUrls: (urls: Iterable<string>) => void
+  /**
+   * Je Adresse eine Zeile. Leere Zeilen und Schemapruefung macht `UrlInput`.
+   * Zurueck kommt, wofuer kein Platz mehr war — in der uebergebenen Reihenfolge.
+   */
+  enqueueUrls: (urls: Iterable<string>) => string[]
   /** Beendet das Warten auf eine laufende Zeile. Wartende und fertige bleiben. */
   abort: (id: number) => void
   remove: (id: number) => void
@@ -201,32 +209,35 @@ export function createConversionQueue(
   }
 
   /**
-   * Laesst durch, wofuer noch Platz ist, und zaehlt den Rest.
+   * Teilt einen Stapel in das, wofuer noch Platz ist, und den Rest.
    *
    * Der Platz bemisst sich an der ganzen Warteschlange, nicht am Stapel: Wer
    * fuenfzehn Dateien liegen hat, bringt keine acht Adressen mehr unter.
+   * Aufgenommen wird der Reihe nach; liegen bleibt also immer das Ende.
    */
-  function admit<T>(incoming: Iterable<T>): T[] {
+  function admit<T>(incoming: Iterable<T>): { admitted: T[]; unplaced: T[] } {
     const items = Array.from(incoming)
     const limit = maxEntries.value
     if (limit === null) {
       rejected.value = 0
-      return items
+      return { admitted: items, unplaced: [] }
     }
     const room = Math.max(0, limit - entries.value.length)
     rejected.value = Math.max(0, items.length - room)
-    return items.slice(0, room)
+    return { admitted: items.slice(0, room), unplaced: items.slice(room) }
   }
 
   function enqueue(incoming: Iterable<File>): void {
-    for (const file of admit(incoming)) push({ kind: 'file', file }, file.name)
+    for (const file of admit(incoming).admitted) push({ kind: 'file', file }, file.name)
     pump()
   }
 
-  function enqueueUrls(incoming: Iterable<string>): void {
+  function enqueueUrls(incoming: Iterable<string>): string[] {
+    const { admitted, unplaced } = admit(incoming)
     // Bis eine Antwort da ist, ist die Adresse alles, was die Zeile benennt.
-    for (const url of admit(incoming)) push({ kind: 'url', url }, url)
+    for (const url of admitted) push({ kind: 'url', url }, url)
     pump()
+    return unplaced
   }
 
   /**
