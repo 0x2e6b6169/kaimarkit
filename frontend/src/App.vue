@@ -66,8 +66,6 @@ onMounted(() => {
 /** Die Dateinamen schraenken die Enginewahl ein — siehe `OptionsPanel`. */
 const filenames = computed(() => entries.value.map((entry) => entry.filename))
 
-const formats = computed(() => extensions.value.join(' · '))
-
 const succeeded = computed(() => entries.value.filter((entry) => entry.status === 'ok').length)
 const failed = computed(() => entries.value.filter((entry) => entry.status === 'failed').length)
 const aborted = computed(() => entries.value.filter((entry) => entry.status === 'aborted').length)
@@ -163,8 +161,7 @@ async function downloadAll(): Promise<void> {
         </div>
         <p class="text-slate-600">
           kaimarkit wandelt Dokumente nach Markdown, damit man den Kontext liest, den man
-          einem Sprachmodell gibt.<template v-if="formats">
-            Angenommen werden {{ formats }}.</template>
+          einem Sprachmodell gibt.
         </p>
       </header>
 

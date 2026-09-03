@@ -95,8 +95,11 @@ describe('App', () => {
 
     const text = wrapper.text()
     expect(text).toContain('kaimarkit wandelt Dokumente nach Markdown')
-    // Die Endungen kommen aus /api/capabilities, alphabetisch sortiert.
-    expect(text).toContain('Angenommen werden .docx · .epub · .pdf.')
+    // Die Endungen kommen aus /api/capabilities, alphabetisch sortiert. Sie stehen
+    // nur in der Dropzone, wo sie zur Handlung gehören — der Kopf wiederholt sie
+    // nicht (GitHub #4).
+    expect(wrapper.findComponent(FileDropZone).text()).toContain('.docx · .epub · .pdf')
+    expect(wrapper.get('header').text()).not.toContain('.pdf')
     expect(text).toContain('Noch keine Dateien ausgewählt.')
 
     // Die Warteschlange bleibt eingehaengt, auch ohne Dateien: Sonst saehe sie
@@ -312,7 +315,8 @@ describe('App', () => {
     await flushPromises()
 
     expect(wrapper.find('[data-test="capabilities-error"]').exists()).toBe(false)
-    expect(wrapper.text()).toContain('Angenommen werden .docx · .epub · .pdf.')
+    expect(wrapper.findComponent(FileDropZone).text()).toContain('.docx · .epub · .pdf')
+    expect(wrapper.get('header').text()).not.toContain('.pdf')
   })
 
   it('zeigt die Version des Dienstes unverändert an', async () => {
@@ -343,7 +347,8 @@ describe('App', () => {
     expect(wrapper.findAll('[role="alert"]')).toHaveLength(0)
 
     // Und die Seite steht wie zuvor.
-    expect(wrapper.text()).toContain('Angenommen werden .docx · .epub · .pdf.')
+    expect(wrapper.findComponent(FileDropZone).text()).toContain('.docx · .epub · .pdf')
+    expect(wrapper.get('header').text()).not.toContain('.pdf')
     expect(wrapper.text()).toContain('Noch keine Dateien ausgewählt.')
   })
 })
