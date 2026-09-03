@@ -14,6 +14,8 @@ dependencies = [
     "pydantic>=2.7",
     "pydantic-settings>=2.3",
     "python-multipart>=0.0.9",
+    # Holt die Seite fuer /api/convert/url. Nur app/fetching.py importiert es.
+    "httpx>=0.27",
     # Die Engines. Torch steht hier nicht: es kommt ueber docling und wird im
     # Dockerfile aus dem CPU-Index geholt.
     "markitdown[all]>=0.1",
@@ -25,7 +27,6 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
-    "httpx>=0.27",
     "ruff>=0.6",
 ]
 # Getrennt von der Laufzeit, damit MkDocs nicht im Container landet.

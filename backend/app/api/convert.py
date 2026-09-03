@@ -23,7 +23,14 @@ from ..config import get_settings
 from ..converters.base import ConvertOptions
 from ..converters.registry import convert_with_fallback
 from ..errors import ConversionError, TooManyFiles
-from ..models import BatchResponse, ConversionEntry, ConversionStatus, ErrorResponse
+from ..fetching import fetched_page
+from ..models import (
+    BatchResponse,
+    ConversionEntry,
+    ConversionStatus,
+    ErrorResponse,
+    UrlConvertRequest,
+)
 from ..packaging import build_archive
 from ..uploads import run_conversion, sanitize_filename, stored_upload
 
@@ -75,6 +82,33 @@ CONVERT_RESPONSES: dict[int | str, dict[str, object]] = {
 BATCH_RESPONSES: dict[int | str, dict[str, object]] = {
     200: {"content": {ZIP_MEDIA_TYPE: {"schema": {"type": "string", "format": "binary"}}}},
     413: {"model": ErrorResponse, "description": "`too_many_files` — ueber `KAIMARKIT_MAX_FILES`."},
+}
+
+#: Die Adresse kommt als Fehler dazu; sonst antwortet der Endpunkt wie ``/convert``,
+#: nur ohne den Markdown-Zweig — es gibt hier nur JSON.
+URL_RESPONSES: dict[int | str, dict[str, object]] = {
+    400: {
+        "model": ErrorResponse,
+        "description": "`invalid_url` — kein oeffentliches http(s), nicht aufloesbar, "
+        "Weiterleitung ins Private oder mehr als fuenf Weiterleitungen; sonst "
+        "`engine_unsuitable` oder `engine_unavailable` wie bei `/convert`.",
+    },
+    413: {
+        "model": ErrorResponse,
+        "description": "`file_too_large` — die Antwort ueberschreitet "
+        "`KAIMARKIT_MAX_FILE_SIZE_MB`.",
+    },
+    415: {
+        "model": ErrorResponse,
+        "description": "`unsupported_format` — der Inhaltstyp fuehrt auf keine bekannte "
+        "Endung.",
+    },
+    500: {"model": ErrorResponse, "description": "`conversion_failed` — die Engine scheiterte."},
+    504: {
+        "model": ErrorResponse,
+        "description": "`conversion_timeout` — ueber `KAIMARKIT_URL_TIMEOUT` beim Holen "
+        "oder `KAIMARKIT_CONVERSION_TIMEOUT` beim Wandeln.",
+    },
 }
 
 
@@ -165,6 +199,35 @@ async def convert_batch(
         build_archive(entries),
         media_type=ZIP_MEDIA_TYPE,
         headers={"Content-Disposition": _content_disposition(ARCHIVE_NAME)},
+    )
+
+
+@router.post(
+    "/convert/url",
+    response_model=ConversionEntry,
+    responses=URL_RESPONSES,
+)
+async def convert_url(request: UrlConvertRequest) -> ConversionEntry:
+    """Holt eine Seite aus dem Netz und wandelt sie wie eine hochgeladene Datei.
+
+    Nur öffentliche http(s)-Adressen; alles andere ist 400 ``invalid_url``. Der
+    Name im Ergebnis kommt aus dem ``<title>`` der Seite, sonst aus Host und
+    Pfad, und traegt die Endung der geholten Datei — das Frontend macht daraus
+    ``.md``, wie bei einem Upload.
+    """
+    options = ConvertOptions(engine=request.engine or None, ocr=request.ocr)
+    async with fetched_page(request.url) as page:
+        result = await run_conversion(lambda: convert_with_fallback(page.path, options))
+        filename = page.filename
+
+    return ConversionEntry(
+        filename=filename,
+        status=ConversionStatus.OK,
+        markdown=result.markdown,
+        engine=result.engine,
+        warnings=result.warnings,
+        duration_ms=result.duration_ms,
+        error=None,
     )
 
 

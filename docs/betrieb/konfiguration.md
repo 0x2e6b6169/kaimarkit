@@ -73,6 +73,7 @@ gilt: Wo `git describe` etwas liefert, gewinnt es gegen den Eintrag in der Datei
 | `KAIMARKIT_MAX_CONCURRENT` | `2` | Gleichzeitige Umwandlungen. |
 | `KAIMARKIT_CONVERSION_TIMEOUT` | `600` | Zeitgrenze je Datei in Sekunden. |
 | `KAIMARKIT_PANDOC_TIMEOUT` | `60` | Zeitgrenze für den Pandoc-Unterprozess in Sekunden. |
+| `KAIMARKIT_URL_TIMEOUT` | `30` | Zeitgrenze je Abruf für `/api/convert/url` in Sekunden, Weiterleitungen eingeschlossen. |
 | `KAIMARKIT_DEFAULT_ENGINE` | `auto` | `auto` folgt der Präferenzliste im Code. Ein Enginename (`markitdown`, `docling`, `pandoc`) zieht diese Engine überall nach vorn. |
 | `KAIMARKIT_ENABLE_FALLBACK` | `true` | Bei `auto` die nächste geeignete Engine nehmen, wenn die erste scheitert. |
 | `KAIMARKIT_OCR_ENABLED` | `true` | Docling schickt gescannte Seiten und Bilder durch die Texterkennung. |

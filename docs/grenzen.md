@@ -98,7 +98,8 @@ nimmt für ein PDF MarkItDown.
   Ergebnis behalten will, lädt es herunter.
 - **Niemanden erkennen.** Die API kennt keine Anmeldung und keine Kennungen. Eine
   Anmeldung kommt von außen davor, siehe [Authelia](betrieb/authelia.md).
-- **Nichts nachladen.** Zur Laufzeit holt der Dienst nichts aus dem Netz. Alle
-  Modelle stecken im Abbild.
+- **Nichts nachladen.** Alle Modelle stecken im Abbild. Aus dem Netz holt der
+  Dienst zur Laufzeit nur, was ein Aufruf von `/api/convert/url` verlangt: die eine
+  Seite, von einer öffentlichen Adresse, und nichts von sich aus.
 - **Nichts zurückschreiben.** Der Weg führt nur in eine Richtung: nach Markdown.
   Aus Markdown wieder ein PDF zu machen, ist nicht Aufgabe dieses Dienstes.

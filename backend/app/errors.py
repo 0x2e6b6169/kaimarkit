@@ -130,6 +130,18 @@ class ConversionTimeout(ConversionError):
     code = ErrorCode.CONVERSION_TIMEOUT
 
 
+class InvalidUrl(ConversionError):
+    """Die Adresse fuer ``/api/convert/url`` taugt nicht.
+
+    Kein http(s), nicht aufloesbar, nicht oeffentlich, eine Weiterleitung ins
+    Private, zu viele Weiterleitungen — oder der ferne Server antwortet nicht mit
+    einem Dokument.
+    """
+
+    status_code = 400
+    code = ErrorCode.INVALID_URL
+
+
 async def conversion_error_handler(request: Request, exc: ConversionError) -> JSONResponse:
     body = ErrorResponse(detail=exc.detail, code=exc.code)
     return JSONResponse(status_code=exc.status_code, content=body.model_dump(mode="json"))

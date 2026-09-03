@@ -358,3 +358,143 @@ def test_unknown_extension_in_a_batch_stays_the_error_of_its_entry(client: TestC
     assert body["entries"][1]["error"] == "Für .zip gibt es keine Engine."
     assert body["entries"][0]["markdown"] and body["entries"][2]["markdown"]
     assert (body["succeeded"], body["failed"]) == (2, 1)
+
+
+# ── POST /api/convert/url ─────────────────────────────────────────────────────
+
+
+@pytest.fixture
+def fake_net(monkeypatch: pytest.MonkeyPatch):
+    """Namensauflösung und Transport als Attrappen — kein Test hier braucht Netz.
+
+    ``example.com`` zeigt auf eine öffentliche Adresse, alles andere ist unbekannt.
+    Der Aufrufer reicht einen Handler, der die Antwort des fernen Servers spielt.
+    """
+    import httpx
+
+    from app import fetching
+
+    monkeypatch.setattr(
+        fetching,
+        "_resolve",
+        lambda host: ["93.184.216.34"] if host == "example.com" else [],
+    )
+
+    def install(handler) -> None:
+        monkeypatch.setattr(fetching, "_transport", lambda: httpx.MockTransport(handler))
+
+    return install
+
+
+def page(title: str, media_type: str = "text/html; charset=utf-8"):
+    import httpx
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            content=f"<html><head><title>{title}</title></head></html>".encode(),
+            headers={"content-type": media_type},
+        )
+
+    return handler
+
+
+def test_convert_url_answers_a_conversion_entry(client: TestClient, fake_net) -> None:
+    fake_net(page("Example Domain"))
+    install(DummyEngine("markitdown"))
+
+    response = client.post("/api/convert/url", json={"url": "https://example.com/"})
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["filename"] == "example-domain.html"
+    assert body["status"] == "ok"
+    assert body["markdown"] == "# .html von markitdown"
+    assert body["engine"] == "markitdown"
+    assert body["error"] is None
+
+
+def test_convert_url_chooses_the_engine_like_an_upload(client: TestClient, fake_net) -> None:
+    """Eine PDF-Adresse bekommt die Endung ``.pdf`` und damit Doclings Vorrang."""
+    fake_net(page("egal", media_type="application/pdf"))
+    install(DummyEngine("markitdown"), DummyEngine("docling"))
+
+    response = client.post("/api/convert/url", json={"url": "https://example.com/paper.pdf"})
+
+    assert response.status_code == 200
+    assert response.json()["filename"] == "example-com-paper.pdf"
+    assert response.json()["engine"] == "docling"
+
+
+def test_convert_url_passes_the_options_on(client: TestClient, fake_net) -> None:
+    fake_net(page("Seite"))
+    engine = DummyEngine("pandoc")
+    install(engine)
+
+    response = client.post(
+        "/api/convert/url",
+        json={"url": "https://example.com/", "engine": "pandoc", "ocr": False},
+    )
+
+    assert response.status_code == 200
+    assert engine.seen == [ConvertOptions(engine="pandoc", ocr=False)]
+
+
+@pytest.mark.parametrize(
+    "url",
+    ["http://127.0.0.1/", "http://10.0.0.1/", "http://169.254.169.254/", "file:///etc/passwd"],
+)
+def test_convert_url_rejects_non_public_addresses(client: TestClient, fake_net, url: str) -> None:
+    fake_net(page("nie"))
+    install(DummyEngine("markitdown"))
+
+    response = client.post("/api/convert/url", json={"url": url})
+
+    assert response.status_code == 400
+    assert response.json()["code"] == "invalid_url"
+
+
+def test_convert_url_over_the_limit_is_413(
+    client: TestClient, fake_net, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("KAIMARKIT_MAX_FILE_SIZE_MB", "1")
+    get_settings.cache_clear()
+    fake_net(page("x" * (2 * 1024 * 1024)))
+    install(DummyEngine("markitdown"))
+
+    response = client.post("/api/convert/url", json={"url": "https://example.com/"})
+
+    assert response.status_code == 413
+    assert response.json()["code"] == "file_too_large"
+
+
+def test_convert_url_connection_error_is_an_error_response(
+    client: TestClient, fake_net
+) -> None:
+    import httpx
+
+    def refuse(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("Connection refused")
+
+    fake_net(refuse)
+    install(DummyEngine("markitdown"))
+
+    response = client.post("/api/convert/url", json={"url": "https://example.com/"})
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["code"] == "invalid_url"
+    assert "Traceback" not in body["detail"]
+
+
+def test_convert_url_leaves_nothing_behind(
+    client: TestClient, fake_net, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(tempfile, "tempdir", str(tmp_path))
+    fake_net(page("Seite"))
+    # Alle drei scheitern, sonst rettet der Rückfall die Seite — und das ist hier
+    # nicht die Frage.
+    install(*(DummyEngine(name, fails="kaputt") for name in registry.ENGINE_NAMES))
+
+    assert client.post("/api/convert/url", json={"url": "https://example.com/"}).status_code == 500
+    assert list(tmp_path.iterdir()) == []
