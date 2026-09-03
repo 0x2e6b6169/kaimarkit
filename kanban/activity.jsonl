@@ -727,3 +727,5 @@
 {"timestamp":"2026-09-03T11:31:36.150328657+02:00","action":"release","task_id":111,"detail":"ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-lock"}
 {"timestamp":"2026-09-03T11:32:55.832307039+02:00","action":"move","task_id":111,"detail":"review -\u003e todo"}
 {"timestamp":"2026-09-03T11:32:57.978328989+02:00","action":"edit","task_id":111,"detail":"ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-lock"}
+{"timestamp":"2026-09-03T11:33:09.574506568+02:00","action":"edit","task_id":111,"detail":"ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-lock"}
+{"timestamp":"2026-09-03T11:33:09.575160406+02:00","action":"unblock","task_id":111,"detail":"ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-lock"}

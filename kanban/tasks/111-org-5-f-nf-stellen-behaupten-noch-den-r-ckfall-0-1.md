@@ -4,13 +4,11 @@ title: ORG-5 · Fünf Stellen behaupten noch den Rückfall 0.1.0, dazu package-l
 status: todo
 priority: critical
 created: 2026-09-03T11:27:53.391937908+02:00
-updated: 2026-09-03T11:32:57.977238361+02:00
+updated: 2026-09-03T11:33:09.572503884+02:00
 assignee: akar
 tags:
     - docs
     - frontend
-blocked: true
-block_reason: npm install --package-lock-only ändert 69 Zeilen, nicht zwei
 class: standard
 ---
 
