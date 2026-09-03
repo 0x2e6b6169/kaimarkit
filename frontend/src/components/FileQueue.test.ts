@@ -18,6 +18,7 @@ function entry(id: number, filename: string, overrides: Partial<QueueEntry> = {}
   return {
     id,
     filename,
+    source: 'file',
     status: 'queued',
     markdown: null,
     engine: null,

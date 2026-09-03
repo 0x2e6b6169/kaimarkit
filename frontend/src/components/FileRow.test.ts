@@ -25,6 +25,7 @@ function entry(overrides: Partial<QueueEntry> = {}): QueueEntry {
   return {
     id: 1,
     filename: 'bericht.pdf',
+    source: 'file',
     status: 'queued',
     markdown: null,
     engine: null,

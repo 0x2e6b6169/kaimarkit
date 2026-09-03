@@ -11,9 +11,13 @@
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
+import JSZip from 'jszip'
 import { nextTick } from 'vue'
 import App from './App.vue'
 import FileDropZone from './components/FileDropZone.vue'
+import FileQueue from './components/FileQueue.vue'
+import OptionsPanel from './components/OptionsPanel.vue'
+import UrlInput from './components/UrlInput.vue'
 import { useCapabilities } from './composables/useCapabilities'
 import { useConversion } from './composables/useConversion'
 import type { CapabilitiesResponse, ConversionEntry } from './types'
@@ -22,6 +26,7 @@ const api = vi.hoisted(() => ({
   fetchCapabilities: vi.fn(),
   fetchHealth: vi.fn(),
   convertFile: vi.fn(),
+  convertUrl: vi.fn(),
 }))
 
 vi.mock('./api', async (importOriginal) => ({
@@ -29,6 +34,7 @@ vi.mock('./api', async (importOriginal) => ({
   fetchCapabilities: api.fetchCapabilities,
   fetchHealth: api.fetchHealth,
   convertFile: api.convertFile,
+  convertUrl: api.convertUrl,
   messageFromError: (cause: unknown) =>
     cause instanceof Error && cause.message ? cause.message : String(cause),
 }))
@@ -181,7 +187,7 @@ describe('App', () => {
     await nextTick()
 
     expect(wrapper.find('[data-test="app-log"]').text()).toContain(
-      'Alle Dateien sind fertig: 1 gelungen, 1 fehlgeschlagen.',
+      'Alles ist fertig: 1 gelungen, 1 fehlgeschlagen.',
     )
   })
 
@@ -350,5 +356,76 @@ describe('App', () => {
     expect(wrapper.findComponent(FileDropZone).text()).toContain('.docx · .epub · .pdf')
     expect(wrapper.get('header').text()).not.toContain('.pdf')
     expect(wrapper.text()).toContain('Noch keine Dateien ausgewählt.')
+  })
+
+  it('macht aus jeder Zeile des Adressfelds einen Eintrag mit dem Namen aus der Antwort', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    downloads.downloadArchive.mockResolvedValue(undefined)
+    api.convertUrl.mockImplementation(async () => result('example-domain.html', '# Example Domain'))
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    wrapper
+      .findComponent(UrlInput)
+      .vm.$emit('urls', ['https://example.com/', 'https://example.org/'])
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    expect(api.convertUrl).toHaveBeenCalledTimes(2)
+    expect(wrapper.findComponent(FileQueue).text()).toContain('example-domain.html')
+    expect(wrapper.find('[data-test="app-log"]').text()).toContain('Alles ist fertig: 2 gelungen.')
+
+    // Zwei Seiten mit demselben Titel: Die zweite bekommt im Archiv ein `-2`.
+    await wrapper.get('[data-test="download-all"]').trigger('click')
+    await flushPromises()
+
+    const { buildArchive } = await import('./download')
+    const zip = await JSZip.loadAsync(
+      await buildArchive(downloads.downloadArchive.mock.calls[0]![0]),
+    )
+    expect(Object.keys(zip.files).sort()).toEqual(['example-domain-2.md', 'example-domain.md'])
+  })
+
+  it('haelt eine abgelehnte Adresse als failed mit der Meldung des Dienstes fest', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    api.convertUrl.mockRejectedValue(new Error('Die Adresse zeigt nicht ins offene Netz.'))
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    wrapper.findComponent(UrlInput).vm.$emit('urls', ['https://10.0.0.1/'])
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    const queue = useConversion()
+    expect(queue.entries.value[0]!.status).toBe('failed')
+    expect(wrapper.findComponent(FileQueue).text()).toContain(
+      'Die Adresse zeigt nicht ins offene Netz.',
+    )
+  })
+
+  it('laesst eine Adresse die Enginewahl nicht einschraenken', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    api.convertUrl.mockImplementation(async () => result('example-domain.html', '# Titel'))
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    wrapper.findComponent(UrlInput).vm.$emit('urls', ['https://example.com/'])
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    // `.html` steht in dieser Faehigkeitsmatrix gar nicht; wuerde der Name des
+    // Eintrags als Dateiname gelesen, faenden sich hier keine Engines mehr.
+    expect(wrapper.findComponent(OptionsPanel).props('filenames')).toEqual([])
   })
 })
