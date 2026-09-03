@@ -1,10 +1,12 @@
 ---
 id: 115
 title: FE-22 · limits.max_files begrenzt die Warteschlange, Dateien und URLs zusammen
-status: todo
+status: done
 priority: medium
 created: 2026-09-03T14:37:19.300372352+02:00
-updated: 2026-09-03T14:37:19.300372352+02:00
+updated: 2026-09-03T14:45:57.644037432+02:00
+started: 2026-09-03T14:45:52.009107821+02:00
+completed: 2026-09-03T14:45:52.009107821+02:00
 assignee: benny
 tags:
     - frontend
@@ -54,3 +56,5 @@ Nicht hier: `frontend/src/download.ts` (gehört FE-23), `frontend/src/api.ts`,
 - Ein Test für den fehlenden Grenzwert: ohne `limits` wird nichts abgewiesen.
 - `npm run test`, `npm run typecheck`, `npm run build` grün. Die Basislinie vor der
   Arbeit steht in der Notiz (nach FE-21: 10 Dateien / 128 Tests).
+
+Umgesetzt in useConversion: die Warteschlange kennt jetzt eine Grenze. `createConversionQueue` nimmt `maxEntries: () => number | null`; ohne diese Abhaengigkeit liest sie `limits.max_files` aus useCapabilities. Ein neues `admit()` laesst durch, wofuer noch Platz ist — gemessen an `entries.length`, also Dateien und Adressen zusammen — und zaehlt den Rest in `rejected`. Ist keine Grenze bekannt (limits null), gilt keine; `clear()` setzt `rejected` zurueck. App.vue gibt den Satz aus, im Abschnitt Warteschlange neben der Archiv-Fehlermeldung (data-test=queue-rejected, role=alert, gelbe Warnform wie url-rejected): „Höchstens 20 Einträge auf einmal. 2 wurden nicht übernommen." — mit Umlauten im Quelltext und Singular/Plural für die abgewiesene Zahl. FileDropZone blieb unverändert; in UrlInput war ein Satz des Kopfkommentars durch die Änderung falsch geworden („Was durchkam ... lebt in der Warteschlange weiter") und ist im selben Merge berichtigt. Vier neue Tests: drei in useConversion.test.ts (21 Dateien bei Grenze 20, 15 Dateien + 8 Adressen = 20, ohne Grenze nichts abgewiesen), einer in App.test.ts für die Meldung über beide Quellen. Rot vor grün belegt: die drei Queue-Tests fielen vor der Arbeit durch, der App-Test fand die Meldung nicht. Vitest vorher 10 Dateien / 128 Tests, nachher 10 / 132; nach dem Rebase auf main (FE-23 war dazwischen gemergt) 10 / 134, typecheck und build grün.

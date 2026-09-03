@@ -784,3 +784,17 @@
 {"timestamp":"2026-09-03T14:35:35.039853851+02:00","action":"release","task_id":106,"detail":"sophie-37"}
 {"timestamp":"2026-09-03T14:37:19.31121781+02:00","action":"create","task_id":115,"detail":"FE-22 · limits.max_files begrenzt die Warteschlange, Dateien und URLs zusammen"}
 {"timestamp":"2026-09-03T14:37:20.072540398+02:00","action":"create","task_id":116,"detail":"FE-23 · _errors.txt nennt bei URLs die Adresse, nicht \"upload\""}
+{"timestamp":"2026-09-03T14:38:37.310126706+02:00","action":"move","task_id":115,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:38:48.343092192+02:00","action":"move","task_id":116,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T14:40:23.666047112+02:00","action":"move","task_id":109,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T14:40:30.11435349+02:00","action":"edit","task_id":109,"detail":"DOC-15 · Doku der URL-Konvertierung: API, Oberfläche, Grenzen (GitHub #5)"}
+{"timestamp":"2026-09-03T14:40:30.114602617+02:00","action":"release","task_id":109,"detail":"akar-38"}
+{"timestamp":"2026-09-03T14:40:56.560584681+02:00","action":"edit","task_id":109,"detail":"DOC-15 · Doku der URL-Konvertierung: API, Oberfläche, Grenzen (GitHub #5)"}
+{"timestamp":"2026-09-03T14:43:10.479737107+02:00","action":"edit","task_id":116,"detail":"FE-23 · _errors.txt nennt bei URLs die Adresse, nicht \"upload\""}
+{"timestamp":"2026-09-03T14:43:11.213863218+02:00","action":"move","task_id":116,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T14:43:16.380041029+02:00","action":"edit","task_id":116,"detail":"FE-23 · _errors.txt nennt bei URLs die Adresse, nicht \"upload\""}
+{"timestamp":"2026-09-03T14:43:16.380375269+02:00","action":"release","task_id":116,"detail":"benny-25"}
+{"timestamp":"2026-09-03T14:45:47.336091704+02:00","action":"edit","task_id":115,"detail":"FE-22 · limits.max_files begrenzt die Warteschlange, Dateien und URLs zusammen"}
+{"timestamp":"2026-09-03T14:45:52.009411413+02:00","action":"move","task_id":115,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T14:45:57.644620236+02:00","action":"edit","task_id":115,"detail":"FE-22 · limits.max_files begrenzt die Warteschlange, Dateien und URLs zusammen"}
+{"timestamp":"2026-09-03T14:45:57.644938383+02:00","action":"release","task_id":115,"detail":"benny-24"}

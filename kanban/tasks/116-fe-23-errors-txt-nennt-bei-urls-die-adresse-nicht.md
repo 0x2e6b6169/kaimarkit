@@ -1,10 +1,12 @@
 ---
 id: 116
 title: FE-23 · _errors.txt nennt bei URLs die Adresse, nicht "upload"
-status: todo
+status: done
 priority: low
 created: 2026-09-03T14:37:20.062736571+02:00
-updated: 2026-09-03T14:37:20.062736571+02:00
+updated: 2026-09-03T14:43:16.379285738+02:00
+started: 2026-09-03T14:43:11.213619318+02:00
+completed: 2026-09-03T14:43:11.213619318+02:00
 assignee: benny
 tags:
     - frontend
@@ -46,3 +48,5 @@ gehören FE-22.
 - Ein Test belegt, dass die Zeile für einen gescheiterten Eintrag aus einer Datei
   unverändert bleibt.
 - `npm run test`, `npm run typecheck`, `npm run build` grün.
+
+Erledigt auf task/116-errors-url, gemergt als f3f893e. buildArchive beschriftet eine gescheiterte Zeile jetzt ueber den neuen Helfer errorLabel: Eine Datei behaelt sanitizeFilename, ein Eintrag mit source='url' nennt seine Adresse (nur Steuerzeichen fallen weg, damit jeder Eintrag eine Zeile bleibt). DownloadEntry hat dafuer ein optionales Feld source; QueueEntry aus useConversion fuehrt es bereits, ConversionEntry aus types.ts nicht — deshalb optional, der Schnittstellen-Dreiklang bleibt unberuehrt. sanitizeFilename selbst unveraendert, die Namen im Archiv also auch. Rot vor gruen belegt: der neue Test meldete vorher 'upload: Zeitgrenze erreicht' statt 'https://example.com/: Zeitgrenze erreicht'. Vitest 10 Dateien / 128 Tests vorher, 10 Dateien / 130 Tests nachher; typecheck und build gruen, auch nach dem Rebase auf main (d4829e1).
