@@ -62,6 +62,28 @@ Läuft der Aufruf mit `engine=auto` und ist Docling noch nicht bereit, nimmt der
 Dienst für das PDF die nächste Engine der Liste — und die findet dann eben keinen
 Text. Wer sicher OCR will, nennt Docling ausdrücklich und wartet.
 
+## OCR greift nur in PDF und Bilddateien
+
+Wer ein Word-Dokument mit einem abfotografierten Absatz hochlädt, bekommt diesen
+Absatz nicht — auch mit `ocr=true` nicht. Die Texterkennung erreicht zwei Arten von
+Dateien: PDF und die Bildformate `.png`, `.jpg`, `.jpeg` und `.tiff`. In `.docx`,
+`.pptx`, `.xlsx`, `.html` und `.epub` bleibt sie aus.
+
+Der Grund liegt in Docling. Ein PDF läuft dort durch eine eigene Pipeline, und nur
+diese baut das OCR-Modell; jedes andere Format geht an die einfache Pipeline, deren
+Optionen `do_ocr` gar nicht kennen. Es gibt also keinen Schalter, den man umlegen
+könnte: Weder das Feld `ocr` einer Anfrage noch `KAIMARKIT_OCR_ENABLED` wirkt auf
+diese Formate.
+
+In PDF reicht die Texterkennung dafür bis in eingebettete Bilder hinein. Ein Absatz,
+der nur als Bild in der Seite steht, erscheint mit `ocr=true` im Markdown und fehlt
+mit `ocr=false`. Gemessen im Container-Abbild mit docling 2.124.0; eine spätere
+Version kann das ändern.
+
+Der Umweg führt über PDF: das Dokument aus Word, LibreOffice oder dem Programm, aus
+dem es stammt, als PDF speichern und dieses PDF mit `engine=docling` und `ocr=true`
+abgeben.
+
 ## Bilder werden nicht beschrieben
 
 Ein Bild im Dokument erscheint im Markdown als Platzhalter oder als Alt-Text, nie

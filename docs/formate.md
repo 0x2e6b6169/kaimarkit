@@ -78,6 +78,16 @@ wiederverwendet — der erste Aufruf mit umgeschaltetem OCR ist deshalb langsame
 die folgenden. Die Sprachen kommen aus `KAIMARKIT_OCR_LANGS`; ihre Kürzel müssen zu
 der Texterkennung passen, die Docling benutzt.
 
+Die Texterkennung greift dabei nur in PDF und in den Bildformaten `.png`, `.jpg`,
+`.jpeg` und `.tiff`. In `.docx`, `.pptx`, `.xlsx`, `.html` und `.epub` bleibt sie
+aus, und daran ändert weder das Feld `ocr` noch `KAIMARKIT_OCR_ENABLED` etwas:
+Docling schickt diese Formate durch eine Pipeline, die `do_ocr` nicht kennt
+(gemessen im Container-Abbild mit docling 2.124.0). Wer den Text eines
+abfotografierten Absatzes aus einem Word-Dokument braucht, speichert das Dokument
+als PDF und gibt dieses ab. In PDF reicht die Erkennung auch in eingebettete Bilder
+hinein; die Einzelheiten stehen unter
+[Grenzen](grenzen.md#ocr-greift-nur-in-pdf-und-bilddateien).
+
 Bilder übernimmt Docling nicht, es setzt den Platzhalter `<!-- image -->` an ihre
 Stelle — auch dort, wo gar kein Bild stand, sondern eine breite Tabelle, die das
 Modell als Bild eingeordnet hat. Die Antwort sagt das in `warnings` und nennt die
