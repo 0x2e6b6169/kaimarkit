@@ -810,3 +810,18 @@
 {"timestamp":"2026-09-03T14:59:58.030423299+02:00","action":"edit","task_id":118,"detail":"DOC-17 · Zwei Stellen, die BE-35 unwahr gemacht hat"}
 {"timestamp":"2026-09-03T14:59:58.030769858+02:00","action":"release","task_id":118,"detail":"akar-39"}
 {"timestamp":"2026-09-03T15:01:05.847353725+02:00","action":"move","task_id":91,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-03T15:02:24.069800438+02:00","action":"move","task_id":91,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-03T15:03:17.969558058+02:00","action":"edit","task_id":117,"detail":"BE-38 · OCR bei Bildern in Dokumenten: erst messen, dann entscheiden (GitHub #2)"}
+{"timestamp":"2026-09-03T15:10:34.885466651+02:00","action":"edit","task_id":91,"detail":"DOC-13 · Die Voraussetzungspruefung merkt fehlende Docker-Rechte nicht"}
+{"timestamp":"2026-09-03T15:10:35.151975368+02:00","action":"move","task_id":117,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T15:10:41.651211295+02:00","action":"edit","task_id":117,"detail":"BE-38 · OCR bei Bildern in Dokumenten: erst messen, dann entscheiden (GitHub #2)"}
+{"timestamp":"2026-09-03T15:10:41.651550562+02:00","action":"release","task_id":117,"detail":"sophie-40"}
+{"timestamp":"2026-09-03T15:10:49.160823148+02:00","action":"move","task_id":91,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-03T15:10:57.584312974+02:00","action":"edit","task_id":91,"detail":"DOC-13 · Die Voraussetzungspruefung merkt fehlende Docker-Rechte nicht"}
+{"timestamp":"2026-09-03T15:10:57.584885598+02:00","action":"release","task_id":91,"detail":"akar-40"}
+{"timestamp":"2026-09-03T15:13:02.471797306+02:00","action":"create","task_id":121,"detail":"BE-39 · Die Warnung nennt den Grund und den Umweg (GitHub #2)"}
+{"timestamp":"2026-09-03T15:13:03.656363511+02:00","action":"create","task_id":122,"detail":"BE-40 · MarkItDown bei docx: keine base64-Flut, dafuer eine Warnung"}
+{"timestamp":"2026-09-03T15:13:04.881413624+02:00","action":"create","task_id":123,"detail":"DOC-18 · OCR greift in PDF und Bilddateien, sonst nirgends"}
+{"timestamp":"2026-09-03T15:13:06.021692947+02:00","action":"create","task_id":124,"detail":"DOC-19 · Der Schnellstart prueft die Docker-Voraussetzung falsch"}
+{"timestamp":"2026-09-03T15:13:22.74061016+02:00","action":"edit","task_id":122,"detail":"BE-40 · MarkItDown bei docx: keine base64-Flut, dafür eine Warnung"}
+{"timestamp":"2026-09-03T15:13:23.60456932+02:00","action":"edit","task_id":124,"detail":"DOC-19 · Der Schnellstart prüft die Docker-Voraussetzung falsch"}
