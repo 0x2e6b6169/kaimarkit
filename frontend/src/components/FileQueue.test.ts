@@ -79,7 +79,7 @@ describe('FileQueue', () => {
     expect(wrapper.get(live).text()).toBe('a.pdf ist fertig.')
   })
 
-  it('nennt in der Ansage die Zahl der Warnungen', async () => {
+  it('nennt in der Ansage den Wortlaut der Warnung, nicht nur ihre Zahl', async () => {
     const entries = fresh()
     const wrapper = mount(FileQueue, { props: { entries } })
 
@@ -91,7 +91,44 @@ describe('FileQueue', () => {
       ),
     })
 
-    expect(wrapper.get(live).text()).toBe('b.pdf ist fertig, mit 1 Warnung.')
+    expect(wrapper.get(live).text()).toBe('b.pdf ist fertig, mit 1 Warnung: Bild ersetzt.')
+  })
+
+  it('liest bei mehreren Warnungen jede von ihnen vor', async () => {
+    const entries = fresh()
+    const wrapper = mount(FileQueue, { props: { entries } })
+
+    await wrapper.setProps({
+      entries: entries.map((item) =>
+        item.id === 2
+          ? {
+              ...item,
+              status: 'ok' as const,
+              markdown: '# b',
+              warnings: ['Bild ersetzt.', 'Tabelle vereinfacht.'],
+            }
+          : item,
+      ),
+    })
+
+    expect(wrapper.get(live).text()).toBe(
+      'b.pdf ist fertig, mit 2 Warnungen: Bild ersetzt. Tabelle vereinfacht.',
+    )
+  })
+
+  it('laesst den sichtbaren Wortlaut genau einmal an der Zeile stehen', () => {
+    const warning = 'Seite 4 enthielt ein Bild, das durch einen Platzhalter ersetzt wurde.'
+    // Der Eintrag kommt schon fertig herein. Ohne Statusaenderung gibt es keine
+    // Ansage, und was hier steht, steht sichtbar an der Zeile.
+    const wrapper = mount(FileQueue, {
+      props: {
+        entries: [entry(1, 'a.pdf', { status: 'ok', markdown: '# a', warnings: [warning] })],
+      },
+    })
+
+    expect(wrapper.get(live).text()).toBe('')
+    expect(wrapper.text().split(warning)).toHaveLength(2)
+    expect(wrapper.html()).not.toContain(`aria-label="${warning}"`)
   })
 
   it('sagt einen Fehlschlag samt Meldung an', async () => {

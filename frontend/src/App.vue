@@ -124,7 +124,15 @@ watch(busy, (running, before) => {
   // wie er war.
   // „Alles", nicht „alle Dateien": In der Warteschlange stehen auch Webseiten.
   const lead = aborted.value ? 'Der Lauf ist zu Ende' : 'Alles ist fertig'
-  announce(`${lead}: ${parts.join(', ')}.`)
+  // Warnungen gehoeren in die Abschlussansage, aber nicht ausgeschrieben: Die
+  // Warteschlange liest jede einzelne vor, sobald ihre Zeile fertig ist. Hier
+  // zaehlt allein, dass welche vorliegen — sonst klingt ein Lauf mit Warnungen
+  // wie einer ohne.
+  const warned = entries.value.filter((entry) => entry.warnings.length).length
+  const hint = warned
+    ? ` Warnungen stehen an ${warned === 1 ? 'einem Eintrag' : `${warned} Einträgen`}.`
+    : ''
+  announce(`${lead}: ${parts.join(', ')}.${hint}`)
 })
 
 /**

@@ -191,6 +191,29 @@ describe('App', () => {
     )
   })
 
+  it('sagt am Ende, dass Warnungen vorliegen', async () => {
+    api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
+    api.convertFile.mockImplementation(async (file: File) => ({
+      ...result(file.name, '# Titel'),
+      warnings: ['Seite 4 enthielt ein Bild, das durch einen Platzhalter ersetzt wurde.'],
+    }))
+    await resetCapabilities()
+
+    const wrapper = mount(App)
+    await flushPromises()
+
+    wrapper.findComponent(FileDropZone).vm.$emit('files', [new File(['x'], 'gut.pdf')])
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    // Die Abschlussansage zaehlt die Warnungen nicht auf — das tut die
+    // Warteschlange Zeile fuer Zeile. Verschweigen darf sie sie nicht.
+    const log = wrapper.find('[data-test="app-log"]').text()
+    expect(log).toContain('Alles ist fertig: 1 gelungen.')
+    expect(log).toContain('Warnungen stehen an einem Eintrag.')
+  })
+
   it('zaehlt abgebrochene Dateien mit, ohne sie zu den Fehlern zu schlagen', async () => {
     api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
     // Wer abgebrochen wird, antwortet nie von allein — wie `fetch` endet der
@@ -431,7 +454,11 @@ describe('App', () => {
 
   it('nimmt nur so viele Eintraege an, wie limits.max_files zulaesst, und sagt es', async () => {
     api.fetchCapabilities.mockResolvedValue(CAPABILITIES)
-    api.convertFile.mockImplementation(async (file: File) => result(file.name, '# Titel'))
+    // Geprueft wird allein die Aufnahme. Bliebe die Wandlung nicht stehen,
+    // liefen zwanzig Ergebnisse durch die Warteschlange, ohne etwas zu belegen.
+    const pending = () => new Promise<ConversionEntry>(() => {})
+    api.convertFile.mockImplementation(pending)
+    api.convertUrl.mockImplementation(pending)
     await resetCapabilities()
 
     const wrapper = mount(App)
