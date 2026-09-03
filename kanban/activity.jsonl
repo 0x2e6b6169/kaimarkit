@@ -694,3 +694,8 @@
 {"timestamp":"2026-09-02T17:00:23.001000575+02:00","action":"edit","task_id":99,"detail":"IN-19 · git describe als KAIMARKIT_VERSION in das Abbild"}
 {"timestamp":"2026-09-02T17:00:23.001174735+02:00","action":"release","task_id":99,"detail":"akar-32"}
 {"timestamp":"2026-09-02T17:01:31.826372497+02:00","action":"create","task_id":103,"detail":"IN-20 · Bau ohne .git bricht in der Docs-Stufe ab"}
+{"timestamp":"2026-09-02T17:02:50.522975769+02:00","action":"move","task_id":103,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-02T17:10:13.909577062+02:00","action":"edit","task_id":103,"detail":"IN-20 · Bau ohne .git bricht in der Docs-Stufe ab"}
+{"timestamp":"2026-09-02T17:10:18.937257257+02:00","action":"move","task_id":103,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-02T17:10:24.573312361+02:00","action":"edit","task_id":103,"detail":"IN-20 · Bau ohne .git bricht in der Docs-Stufe ab"}
+{"timestamp":"2026-09-02T17:10:24.573597546+02:00","action":"release","task_id":103,"detail":"akar-33"}
