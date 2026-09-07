@@ -888,3 +888,4 @@
 {"timestamp":"2026-09-07T10:03:29.278473272+02:00","action":"move","task_id":128,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-07T10:03:29.950721511+02:00","action":"edit","task_id":128,"detail":"FE-26 · OCR-Reichweite im Options-Panel sichtbar"}
 {"timestamp":"2026-09-07T10:03:29.951156134+02:00","action":"release","task_id":128,"detail":"benny-30"}
+{"timestamp":"2026-09-07T10:36:04.693251672+02:00","action":"create","task_id":130,"detail":"FE-27 · Der Knopf heisst Vorschau, nicht Aufklappen (GitHub #6)"}
