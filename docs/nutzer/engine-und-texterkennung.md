@@ -67,7 +67,7 @@ curl -sf -F file=@tabelle.pdf -F engine=markitdown -F ocr=true \
 }
 ```
 
-In `engine` steht, welche Engine es geworden ist. Wer das Feld beim Aufruf wegzulässt,
+In `engine` steht, welche Engine es geworden ist. Wer das Feld weglässt,
 bekommt `auto`, dasselbe wie „automatisch" in der Oberfläche; `ocr` überschreibt die
 Voreinstellung des Dienstes, so wie der Schalter es tut.
 
@@ -104,8 +104,8 @@ curl -sf $DIENST/api/capabilities
 Der Ausschnitt zeigt zwei Endungen; der Dienst nennt alle, die er annimmt, dazu die
 geltenden Grenzen. Die drei Zustände in `engines` sind dieselben, die am Schalter
 stehen: `ready` ist wählbar, `warming` heißt dort „(lädt noch)", `unavailable` heißt
-„nicht installiert". Die Reihenfolge in `formats` ist die Präferenz — bei
-`engine=auto` kommt der erste Eintrag zum Zug, der gerade bereit ist. In
-`ocr_available` steht, ob die Oberfläche den Schalter zeigt.
+„nicht installiert". Die Reihenfolge in `formats` ist die Präferenz: Bei
+`engine=auto` kommt der erste Eintrag zum Zug. In `ocr_available` steht, ob die
+Oberfläche den Schalter zeigt.
 
 Alle Felder dieser Auskunft stehen unter [API](../admin/api.md).

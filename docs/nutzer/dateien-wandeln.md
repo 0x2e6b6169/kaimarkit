@@ -117,8 +117,8 @@ content-type: text/markdown; charset=utf-8
 Kopfzeilen vertragen kein UTF-8: Aus `lädt` wird dort `l?dt`. Wer den Wortlaut einer
 Warnung braucht, holt ihn aus der JSON-Antwort.
 
-Die verlangt, wer statt der Datei alles will, was auch die Zeile in der
-Warteschlange zeigt — Engine, Dauer, Warnungen:
+Wer statt der Datei alles will, was auch die Zeile in der Warteschlange zeigt —
+Engine, Dauer, Warnungen —, verlangt JSON:
 
 ```bash
 curl -sf -F file=@bericht.docx -H 'Accept: application/json' $DIENST/api/convert

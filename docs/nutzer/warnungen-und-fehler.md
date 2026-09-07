@@ -48,8 +48,7 @@ curl -sf -F file=@bericht.docx -H 'Accept: application/json' $DIENST/api/convert
 }
 ```
 
-`warnings` ist immer da und leer, wenn nichts anzumerken war. `status` bleibt `ok`:
-Das Ergebnis liegt vor, es fehlt nur etwas darin.
+`warnings` ist immer da und leer, wenn nichts anzumerken war; `status` bleibt `ok`.
 
 ## Ein roter Kasten: es kam kein Ergebnis heraus
 
