@@ -118,8 +118,65 @@ def test_capabilities_reports_limits_from_settings(
     body = client.get("/api/capabilities").json()
 
     assert body["limits"] == {"max_file_size_mb": 7, "max_files": 3, "conversion_timeout_s": 11}
-    assert body["ocr_available"] is False
     assert body["default_engine"] == "auto"
+
+
+def test_ocr_available_ignores_the_default(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """``ocr_available`` sagt, ob der Dienst Texterkennung anbietet, nicht ob sie vorgeht.
+
+    Das Frontend blendet den Schalter an diesem Feld aus. Haengt es an
+    ``KAIMARKIT_OCR_ENABLED``, kann niemand die Texterkennung einschalten, sobald
+    sie nicht ohnehin schon vorgeht — obwohl das Feld ``ocr`` am Aufruf die
+    Voreinstellung je Anfrage ueberschreiben darf.
+    """
+    monkeypatch.setenv("KAIMARKIT_OCR_ENABLED", "false")
+    get_settings.cache_clear()
+    install(DummyEngine("docling"))
+
+    body = client.get("/api/capabilities").json()
+
+    assert body["engines"]["docling"] == "ready"
+    assert body["ocr_available"] is True
+
+
+def test_ocr_available_while_docling_warms(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Eine ladende Engine bietet Texterkennung an — der Schalter steht von Anfang an da.
+
+    Wer Docling waehrend des Warmlaufs verlangt, wartet an dessen Sperre und bekommt
+    ein richtiges Ergebnis, nur spaeter. Ein Schalter, der erst verschwindet und nach
+    einer halben Minute wiederkommt, waere schlechter als einer, der bleibt.
+    """
+    monkeypatch.setenv("KAIMARKIT_OCR_ENABLED", "false")
+    get_settings.cache_clear()
+    install(DummyEngine("docling", ready=False))
+
+    body = client.get("/api/capabilities").json()
+
+    assert body["engines"]["docling"] == "warming"
+    assert body["ocr_available"] is True
+
+
+def test_ocr_available_is_false_without_docling(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Ohne Docling gibt es keine Texterkennung, auch wenn die Voreinstellung sie fordert."""
+
+    class SelfReporting(DummyEngine):
+        def state(self) -> str:
+            return "unavailable"
+
+    monkeypatch.setenv("KAIMARKIT_OCR_ENABLED", "true")
+    get_settings.cache_clear()
+    install(DummyEngine("markitdown"), SelfReporting("docling", ready=False))
+
+    body = client.get("/api/capabilities").json()
+
+    assert body["engines"]["docling"] == "unavailable"
+    assert body["ocr_available"] is False
 
 
 def test_engine_that_cannot_be_loaded_counts_as_unavailable(

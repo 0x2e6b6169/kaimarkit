@@ -11,6 +11,9 @@ from ..models import CapabilitiesResponse, EngineState, HealthResponse, Limits
 
 router = APIRouter(tags=["meta"])
 
+#: Die einzige Engine, die Text aus Bildern liest. ``ocr_available`` haengt an ihr.
+OCR_ENGINE = "docling"
+
 
 @router.get("/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
@@ -49,7 +52,14 @@ async def capabilities() -> CapabilitiesResponse:
             max_files=settings.max_files,
             conversion_timeout_s=settings.conversion_timeout,
         ),
-        ocr_available=settings.ocr_enabled,
+        # Nicht ``settings.ocr_enabled``: Das ist die Voreinstellung, und das Feld
+        # ``ocr`` am Aufruf darf sie je Anfrage ueberschreiben. Gefragt ist, ob der
+        # Dienst Texterkennung ueberhaupt anbietet — also ob Docling da ist. Eine
+        # Engine im Warmlauf zaehlt mit: Wer sie dann verlangt, wartet an ihrer
+        # Sperre und bekommt ein richtiges Ergebnis, nur spaeter. Ein Schalter, der
+        # eine halbe Minute lang verschwindet und danach wiederkommt, waere fuer den
+        # Leser der Oberflaeche schlechter als einer, der von Anfang an steht.
+        ocr_available=engines[OCR_ENGINE] is not EngineState.UNAVAILABLE,
         default_engine=settings.default_engine,
     )
 
