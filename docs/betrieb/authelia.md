@@ -136,9 +136,9 @@ Kopfzeilen durchreicht — kaimarkit braucht sie zwar nicht, aber eine Authelia,
 gar keine durchreicht, verrät später niemandem, wer angemeldet war.
 
 Die eigene Middleware bleibt immer definiert, auch wenn kein Router sie benutzt. Eine
-leere `AUTHELIA_VERIFY_URL` stört dabei nicht: Traefik 3.6.25 führte die ungenutzte
-Definition unter `/api/http/middlewares` auf `enabled`, ohne Fehler und ohne Eintrag
-im Log.
+leere `AUTHELIA_VERIFY_URL` stört dabei nicht: Am 01.09.2026 führte Traefik 3.6.25
+die ungenutzte Definition unter `/api/http/middlewares` auf `enabled`, ohne Fehler
+und ohne Eintrag im Log.
 
 ## `@docker` oder `@file` — der Zusatz entscheidet
 
@@ -148,8 +148,8 @@ heißt `authelia@docker`, wenn sie ihre Middleware per Container-Label definiert
 falschen Zusatz findet Traefik sie nicht.
 
 Der Fehler sieht nicht nach einem Tippfehler aus, und er ist folgenreich: Der Router
-verschwindet. Gemessen mit Traefik 3.6.25 gegen einen absichtlich falschen Wert
-`authelia@file` — der Router stand unter `/api/http/routers` auf `"status":
+verschwindet. Am 01.09.2026 mit Traefik 3.6.25 gegen einen absichtlich falschen Wert
+`authelia@file` gemessen — der Router stand unter `/api/http/routers` auf `"status":
 "disabled"` mit dem Fehler `middleware "authelia@file" does not exist`, und der Pfad
 `/` antwortete mit 404. Der `/api`-Router blieb dabei unberührt: Er hat seine eigene
 Variable und antwortete weiter mit 401.
@@ -218,9 +218,9 @@ verlangt eine Anmeldung, Skripte kommen nicht durch.
 
 **Leer lassen** — die API steht offen, die Oberfläche bleibt geschützt. Traefik
 liest ein leeres `middlewares=` als „keine Middleware“: Der Router bleibt aktiv und
-meldet keinen Fehler. Geprüft mit Traefik 3.6.7 — der Router stand auf `enabled`,
-die Middlewareliste war leer, und ein Aufruf auf `/api` kam durch, während derselbe
-Aufruf auf `/` an Authelia hängenblieb. Ein auskommentierter Block in der
+meldet keinen Fehler. Am 31.08.2026 mit Traefik 3.6.7 geprüft — der Router stand auf
+`enabled`, die Middlewareliste war leer, und ein Aufruf auf `/api` kam durch, während
+derselbe Aufruf auf `/` an Authelia hängenblieb. Ein auskommentierter Block in der
 Compose-Datei erübrigt sich damit; die leere Variable genügt.
 
 **Eine engere Middleware**, etwa `meine-allowlist@docker` — der Mittelweg: eine
@@ -264,8 +264,8 @@ curl -si https://kaimarkit.example.com/ | head -1    # 302 zur Anmeldeseite
 curl -sf https://kaimarkit.example.com/api/health    # bei leerer Variable: 200
 ```
 
-Die Wahl der Middleware ist gegen Traefik 3.6.25 durchgemessen, jedes Mal an
-`/api/http/routers` abgelesen statt aus der Compose-Datei geschlossen:
+Die Wahl der Middleware ist am 01.09.2026 gegen Traefik 3.6.25 durchgemessen, jedes
+Mal an `/api/http/routers` abgelesen statt aus der Compose-Datei geschlossen:
 
 | `KAIMARKIT_MIDDLEWARES` | Router | Antwort auf `/` |
 | --- | --- | --- |
@@ -278,9 +278,9 @@ Die 401 stammt aus dem Messaufbau, in dem an Authelias Stelle ein Dienst stand, 
 jede Anfrage abweist. Eine echte Authelia antwortet an dieser Stelle mit 302 auf die
 Anmeldeseite. Beides heißt dasselbe: Die Anfrage erreichte kaimarkit nicht.
 
-Der vollständige Durchlauf ist gegen Authelia 4.38.19 hinter Traefik 3.6 gelaufen.
-Ein Aufruf ohne Sitzung endete mit 302 auf der Anmeldeseite, und zwar mit dem
-Rücksprungziel im Parameter `rd`. Nach der Anmeldung stand die Oberfläche unter
+Der vollständige Durchlauf ist am 31.08.2026 gegen Authelia 4.38.19 hinter Traefik
+3.6 gelaufen. Ein Aufruf ohne Sitzung endete mit 302 auf der Anmeldeseite, und zwar
+mit dem Rücksprungziel im Parameter `rd`. Nach der Anmeldung stand die Oberfläche unter
 `KAIMARKIT_DOMAIN` und füllte ihre Enginewahl aus `/api/capabilities` — der Aufruf
 kam also durch dieselbe Middleware. Nach dem Löschen des Sitzungscookies führte
 derselbe Weg wieder zur Anmeldeseite.
