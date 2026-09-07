@@ -1,8 +1,10 @@
-"""Der MarkItDown-Adapter, ohne Fixtures aus dem Repo.
+"""Der MarkItDown-Adapter.
 
-Die Beispieldateien entstehen im Test selbst. Die gesammelten Fixtures unter
-``tests/fixtures/`` gehoeren BE-9; dieser Test kommt ohne sie aus und laeuft
-deshalb auch, bevor es sie gibt.
+Die meisten Beispieldateien entstehen im Test selbst; nur der Fall „Bild im
+Word-Dokument" greift auf ``tests/fixtures/bild_im_dokument.docx`` zurück. Diese
+Vorlage stammt aus der Messung in BE-38 und führt ihren Satz allein im eingebetteten
+Bild — sie noch einmal nachzubauen, hieße zwei Fassungen desselben Dokuments zu
+pflegen.
 """
 
 from __future__ import annotations
@@ -17,6 +19,8 @@ from app.converters.markitdown import MarkItDownConverter, get_converter
 from app.errors import EngineFailed, EngineUnavailable
 
 pytest.importorskip("markitdown", reason="MarkItDown ist nicht installiert")
+
+FIXTURES = Path(__file__).parent / "fixtures"
 
 _CONTENT_TYPES = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
@@ -146,3 +150,59 @@ def test_fehlende_bibliothek_endet_in_engine_unavailable(
     assert converter.available() is False
     with pytest.raises(EngineUnavailable):
         converter.convert(tmp_path / "egal.docx", ConvertOptions())
+
+
+#: Die Warnung, die ein Bild im Dokument auslöst — vier Sätze: was in der Vorlage
+#: steckt, was im Markdown fehlt, warum, und was dagegen hilft.
+_BILDWARNUNG = (
+    "In bild_im_dokument.docx steckt ein Bild. Sein Inhalt fehlt im Markdown."
+    " MarkItDown liest keinen Text aus Bildern. Wer ihn braucht, speichert das"
+    " Dokument als PDF und lädt es mit der Engine docling und eingeschalteter"
+    " Texterkennung erneut hoch."
+)
+
+
+def test_bild_im_docx_hinterlaesst_keine_data_uri() -> None:
+    """Der Kern von BE-40: Was MarkItDown nicht lesen kann, steht auch nicht da.
+
+    MarkItDown setzt ein eingebettetes Bild als Data-URI ins Markdown. Lesbar ist es
+    dort nicht, und in einem Kontextfenster steht es nur im Weg.
+    """
+    result = get_converter().convert(FIXTURES / "bild_im_dokument.docx", ConvertOptions())
+    assert "data:image/" not in result.markdown
+    assert "Kaimarkit Fixture" in result.markdown
+
+
+def test_bild_im_docx_wird_gemeldet() -> None:
+    """Und der Nutzer erfährt, dass etwas fehlt — samt Weg zum Inhalt."""
+    result = get_converter().convert(FIXTURES / "bild_im_dokument.docx", ConvertOptions())
+    assert result.warnings == [_BILDWARNUNG]
+
+
+def test_alt_text_bleibt_stehen_und_fremde_ziele_auch(tmp_path: Path) -> None:
+    """Zwei Gegenproben in einer Datei.
+
+    Der Alt-Text ist das Einzige, was MarkItDown aus einem Bild übernimmt; er
+    bleibt. Und ein Bild, das auf eine Adresse zeigt, fällt gar nicht unter diese
+    Regel — sein Inhalt liegt weiterhin dort, wohin die Adresse führt.
+    """
+    seite = tmp_path / "seite.html"
+    seite.write_text(
+        "<html><body><p>Ein Absatz.</p>"
+        '<img alt="Foto der Rechnung" src="data:image/png;base64,iVBORw0KGgo=">'
+        '<img src="data:image/png;base64,iVBORw0KGgo=">'
+        '<img alt="Logo" src="https://example.org/logo.png">'
+        "</body></html>",
+        encoding="utf-8",
+    )
+    result = get_converter().convert(seite, ConvertOptions())
+    assert "data:image/" not in result.markdown
+    assert "![Foto der Rechnung]()" in result.markdown
+    assert "![]()" in result.markdown
+    assert "![Logo](https://example.org/logo.png)" in result.markdown
+    assert result.warnings == [
+        "In seite.html stecken 2 Bilder. Ihr Inhalt fehlt im Markdown."
+        " MarkItDown liest keinen Text aus Bildern. Wer ihn braucht, speichert das"
+        " Dokument als PDF und lädt es mit der Engine docling und eingeschalteter"
+        " Texterkennung erneut hoch."
+    ]
