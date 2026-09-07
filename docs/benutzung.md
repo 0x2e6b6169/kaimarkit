@@ -5,8 +5,8 @@ außer einem Browser und der Adresse, unter der der Dienst antwortet. Wer den
 Dienst selbst starten will, findet den Weg unter [Schnellstart](schnellstart.md);
 wer ihn aus einem Programm heraus rufen will, unter [API](api.md).
 
-Ein Wort kommt auf der Seite immer wieder vor: **Engine**. So heißt das Programm,
-das die eigentliche Umwandlung macht. Der Dienst bringt drei davon mit, und sie
+Ein Wort kommt immer wieder vor: **Engine**. So heißt das Programm, das die
+Umwandlung ausführt. Der Dienst bringt drei davon mit, und sie
 liefern zu derselben Datei unterschiedliche Ergebnisse. Welche das sind und was
 sie unterscheidet, steht unter [Formate](formate.md).
 
@@ -18,8 +18,8 @@ dort los; wer klickt, bekommt die Dateiauswahl. Mit der Tastatur führt der
 Tabulator auf das Feld, die Leertaste öffnet die Auswahl. Mehrere Dateien auf
 einmal sind erlaubt.
 
-Unter der Beschriftung stehen die Endungen, die der Dienst gerade annimmt. Sie
-kommen von ihm selbst, nicht aus einer Liste in der Seite.
+Unter der Beschriftung stehen die Endungen, die der Dienst gerade annimmt. Er
+meldet sie selbst; hier steht keine feste Liste.
 
 Der Dienst nimmt nur eine begrenzte Zahl von Einträgen auf einmal. Ist sie
 erreicht, erscheint unter der Warteschlange ein Hinweis mit beiden Zahlen: wie
@@ -56,7 +56,8 @@ Eine Zeile nennt ihren Zustand als Zeichen und als Wort, damit auch ohne
 Farbunterschied dasselbe dasteht:
 
 - `◦ wartet` — noch nicht an der Reihe.
-- `◐ läuft` — dahinter zählt die Zeile mit, wie lange schon: `läuft · 0:47`.
+- `◐ läuft` — daneben zählt die Zeile mit, wie lange sie schon läuft:
+  `läuft · 0:47`.
 - `✓ fertig` — daneben stehen Engine und Dauer.
 - `✗ fehlgeschlagen` — die Meldung des Dienstes steht darunter in einem roten
   Kasten.
@@ -71,13 +72,13 @@ zugleich auf, auf sie zu warten.
 
 ## Die Optionen
 
-Über der Dropzone steht der Abschnitt „Optionen". Was dort eingestellt ist, gilt
+Über dem gestrichelten Feld steht der Abschnitt „Optionen". Was dort eingestellt ist, gilt
 für den nächsten Lauf. Bereits umgewandelte Dateien bleiben, wie sie sind.
 
 ### Die Engine wählen
 
 Die Engines stehen als Gruppe von Schaltern untereinander, „automatisch" zuerst.
-Neben jedem Namen steht ein Halbsatz, und das runde `i` dahinter öffnet die
+Neben jedem Namen steht ein Halbsatz, und das runde „i" dahinter öffnet die
 längere Erklärung — mit der Maus beim Darüberfahren, mit der Tastatur beim
 Anspringen. Escape schließt sie wieder. Wer einen Screenreader benutzt, bekommt
 den Text beim Anspringen vorgelesen.
@@ -96,7 +97,7 @@ Nicht jede Engine ist immer wählbar:
 - Genauso ergeht es einer Engine, die auf diesem Dienst gar nicht installiert
   ist. Der Hinweis lautet dann „nicht installiert".
 - Eine Engine, die gerade noch ihre Modelle lädt, heißt „(lädt noch)" und bleibt
-  wählbar. Die erste Anfrage wartet dann eben, bis sie so weit ist.
+  wählbar. Die erste Anfrage wartet dann, bis sie so weit ist.
 
 Fällt die gewählte Engine aus der Auswahl — etwa weil eine Datei dazukam, die sie
 nicht liest —, springt die Wahl auf „automatisch" zurück.
@@ -108,7 +109,7 @@ Texterkennung anbietet. Rührt ihn niemand an, gilt die Voreinstellung des
 Dienstes; das steht dann auch daneben.
 
 Neben dem Schalter steht, wo er wirkt: **nur in PDF und Bilddateien**. Das runde
-`i` dahinter zählt die Formate auf und nennt den Umweg. In einer .docx-, .pptx-,
+„i" dahinter zählt die Formate auf und nennt den Umweg. In einer .docx-, .pptx-,
 .xlsx-, .html- oder .epub-Datei bleibt die Texterkennung aus, auch wenn der
 Schalter an ist. Wer den Text aus einem Bild darin braucht, speichert das Dokument
 als PDF und lädt es erneut hoch. Ausführlich steht das unter
@@ -171,7 +172,7 @@ Danach steht die Zeile auf „abgebrochen", und die nächste wartende Datei rüc
 nach. Als Fehlschlag zählt der Abbruch nicht — entschieden hat ihn der Nutzer,
 gescheitert ist nichts.
 
-## Wenn die Seite meldet, der Dienst antworte nicht
+## Wenn der Dienst nicht antwortet
 
 Ganz oben erscheint dann ein roter Kasten mit der Meldung und einem Knopf „Erneut
 versuchen". Solange der Dienst schweigt, kennt die Seite weder die Engines noch
@@ -179,5 +180,5 @@ die erlaubten Endungen; die Auswahl bleibt leer. Der Knopf fragt noch einmal
 nach. Hilft das nicht, ist der Dienst selbst nicht erreichbar — dann hilft nur,
 wer ihn betreibt.
 
-Am unteren Rand der Seite steht klein die Version des Dienstes. Sie ist die eine
-Angabe, die eine Fehlermeldung an den Betreiber brauchbar macht.
+Am unteren Rand der Seite steht klein die Version des Dienstes. Wer dem Betreiber
+einen Fehler meldet, nennt sie mit.
