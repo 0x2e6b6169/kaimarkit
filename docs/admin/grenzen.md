@@ -4,7 +4,7 @@ Was kaimarkit nicht kann und woran eine Umwandlung scheitert.
 
 ## Fünf Werte begrenzen einen Aufruf
 
-Alle fünf kommen aus der Umgebung. `docs/betrieb/konfiguration.md` beschreibt sie
+Alle fünf kommen aus der Umgebung. `docs/admin/konfiguration.md` beschreibt sie
 im Einzelnen, `docker/.env.example` nennt die Standardwerte.
 
 | Variable | Standard | Was sie begrenzt |
