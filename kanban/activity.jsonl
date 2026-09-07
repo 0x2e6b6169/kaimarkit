@@ -902,3 +902,4 @@
 {"timestamp":"2026-09-07T11:18:07.217923078+02:00","action":"release","task_id":131,"detail":"akar-43"}
 {"timestamp":"2026-09-07T11:19:46.225318085+02:00","action":"create","task_id":132,"detail":"FE-28 · MarkdownPreview bekommt keinen Dateinamen"}
 {"timestamp":"2026-09-07T11:19:46.863480912+02:00","action":"create","task_id":133,"detail":"FE-29 · Grund fuer nicht waehlbare Engine nur per title"}
+{"timestamp":"2026-09-07T11:30:16.218387774+02:00","action":"create","task_id":134,"detail":"DOC-24 · Nutzer- und Admin-Dokumentation sauber trennen"}
