@@ -5,7 +5,7 @@ Die Endpunkte unter `/api` mit Beispielaufrufen für curl.
 Der verbindliche Wortlaut steht in `contracts/api.md`; diese Seite zeigt, wie man die
 Endpunkte benutzt. Jede Anfrage steht für sich: Der Dienst legt nichts ab, und die
 hochgeladene Datei ist gelöscht, sobald die Antwort steht. Eine Authentifizierung
-gibt es nicht; wer eine braucht, setzt [Authelia](betrieb/authelia.md) davor.
+gibt es nicht; wer eine braucht, setzt [Authelia](authelia.md) davor.
 
 !!! note "Der Port in den Beispielen"
     Alle Aufrufe hier nennen `localhost:8000`, den Port des Backends in der

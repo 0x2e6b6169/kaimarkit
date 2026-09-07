@@ -2,13 +2,13 @@
 
 Diese Seite beschreibt, was auf dem Bildschirm passiert. Sie setzt nichts voraus
 außer einem Browser und der Adresse, unter der der Dienst antwortet. Wer den
-Dienst selbst starten will, findet den Weg unter [Schnellstart](schnellstart.md);
-wer ihn aus einem Programm heraus rufen will, unter [API](api.md).
+Dienst selbst starten will, findet den Weg unter [Schnellstart](../admin/schnellstart.md);
+wer ihn aus einem Programm heraus rufen will, unter [API](../admin/api.md).
 
 Ein Wort kommt immer wieder vor: **Engine**. So heißt das Programm, das die
 Umwandlung ausführt. Der Dienst bringt drei davon mit, und sie
 liefern zu derselben Datei unterschiedliche Ergebnisse. Welche das sind und was
-sie unterscheidet, steht unter [Formate](formate.md).
+sie unterscheidet, steht unter [Formate](../admin/formate.md).
 
 ## Dateien hinzufügen
 
@@ -24,7 +24,7 @@ meldet sie selbst; hier steht keine feste Liste.
 Der Dienst nimmt nur eine begrenzte Zahl von Einträgen auf einmal. Ist sie
 erreicht, erscheint unter der Warteschlange ein Hinweis mit beiden Zahlen: wie
 viele hineinpassen und wie viele draußen blieben. Diese und die übrigen Grenzen
-stehen unter [Grenzen](grenzen.md#funf-werte-begrenzen-einen-aufruf).
+stehen unter [Grenzen](../admin/grenzen.md#funf-werte-begrenzen-einen-aufruf).
 
 ## Webseiten wandeln
 
@@ -44,7 +44,7 @@ wird `example-domain.html`. Fanden nicht alle Adressen Platz, stehen die übrige
 wieder im Feld — von dort lassen sie sich gleich noch einmal abschicken.
 
 Welche Seiten der Dienst nicht brauchbar wandelt, steht unter
-[Grenzen](grenzen.md#webseiten-nur-offentlich-kein-javascript).
+[Grenzen](../admin/grenzen.md#webseiten-nur-offentlich-kein-javascript).
 
 ## Die Warteschlange
 
@@ -113,7 +113,7 @@ Neben dem Schalter steht, wo er wirkt: **nur in PDF und Bilddateien**. Das runde
 .xlsx-, .html- oder .epub-Datei bleibt die Texterkennung aus, auch wenn der
 Schalter an ist. Wer den Text aus einem Bild darin braucht, speichert das Dokument
 als PDF und lädt es erneut hoch. Ausführlich steht das unter
-[Grenzen](grenzen.md#ocr-greift-nur-in-pdf-und-bilddateien).
+[Grenzen](../admin/grenzen.md#ocr-greift-nur-in-pdf-und-bilddateien).
 
 ## Warnungen lesen
 
@@ -165,7 +165,7 @@ Herunterladen geht einzeln oder im Ganzen:
 An einer laufenden Zeile steht „Nicht mehr warten". Der Knopf hält, was sein Name
 sagt, und nicht mehr: Er beendet das Warten des Browsers. Der Dienst wandelt die
 Datei im Hintergrund zu Ende und gibt seinen Platz erst dann oder an der
-[Zeitgrenze](grenzen.md#die-zeitgrenze-beendet-den-wartevorgang-nicht-die-engine)
+[Zeitgrenze](../admin/grenzen.md#die-zeitgrenze-beendet-den-wartevorgang-nicht-die-engine)
 wieder frei.
 
 Danach steht die Zeile auf „abgebrochen", und die nächste wartende Datei rückt

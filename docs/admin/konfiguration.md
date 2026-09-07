@@ -39,7 +39,7 @@ die `.dockerignore` in der Wurzel des dortigen Baums.
 ### Welchen Stand der Dienst meldet
 
 `KAIMARKIT_VERSION` sagt, was wirklich läuft. Der Wert erscheint unter
-[`/api/health`](../api.md) und in der Fußzeile der Oberfläche. Ermittelt wird er
+[`/api/health`](api.md) und in der Fußzeile der Oberfläche. Ermittelt wird er
 einmal beim Bauen, auf der Maschine, die das `.git` hat:
 
 ```bash
@@ -86,7 +86,7 @@ gilt: Wo `git describe` etwas liefert, gewinnt es gegen den Eintrag in der Datei
 Die Größe prüft der Dienst schon während des Empfangs. Eine Prüfung danach käme zu
 spät — dann läge die Datei bereits vollständig im Speicher. Was die Grenzen für Größe,
 Anzahl, Gleichzeitigkeit und Dauer im Einzelnen bewirken, steht unter
-[Grenzen](../grenzen.md).
+[Grenzen](grenzen.md).
 
 `KAIMARKIT_ENABLE_FALLBACK` gilt nur für `engine=auto`. Eine im Aufruf ausdrücklich
 genannte Engine ersetzt der Dienst nie durch eine andere. `KAIMARKIT_OCR_ENABLED`
@@ -120,7 +120,7 @@ INFO:docling.document_converter:Finished converting document rechnung.pdf in 326
 ```
 
 Sie kommt oft erst nach der Fehlermeldung, weil die Engine weiterrechnet, wenn der
-Wartevorgang längst beendet ist ([Grenzen](../grenzen.md)). Diese Zahl ist die
+Wartevorgang längst beendet ist ([Grenzen](grenzen.md)). Diese Zahl ist die
 gesuchte: Wer die Zeitgrenze über sie setzt, lässt das Dokument durch.
 
 Die Zeit geht dabei fast vollständig in die Texterkennung gescannter Seiten. Ein PDF

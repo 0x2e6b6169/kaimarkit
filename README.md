@@ -32,15 +32,15 @@ Die Dokumentation ist die einzige Quelle für Bedienung und Betrieb. Sie liegt u
 [`docs/`](docs/index.md), im laufenden Container unter `/docs`, als Vorschau über
 `make docs-serve` auf <http://127.0.0.1:8001>.
 
-- [Schnellstart](docs/schnellstart.md) — vom Start des Containers bis zur ersten
+- [Schnellstart](docs/admin/schnellstart.md) — vom Start des Containers bis zur ersten
   umgewandelten Datei
-- [Formate](docs/formate.md) — welche Endung welche Engine bekommt
-- [API](docs/api.md) — die Endpunkte mit Aufrufen für curl
-- [Betrieb](docs/betrieb/konfiguration.md) — alle Variablen, lokal, hinter Traefik,
+- [Formate](docs/admin/formate.md) — welche Endung welche Engine bekommt
+- [API](docs/admin/api.md) — die Endpunkte mit Aufrufen für curl
+- [Betrieb](docs/admin/konfiguration.md) — alle Variablen, lokal, hinter Traefik,
   mit Anmeldung
 - [Entwicklung](docs/entwicklung.md) — der Aufbau des Projekts und eine vierte
   Engine ergänzen
-- [Grenzen](docs/grenzen.md) — was das Werkzeug nicht kann
+- [Grenzen](docs/admin/grenzen.md) — was das Werkzeug nicht kann
 
 Den verbindlichen Wortlaut der Schnittstelle hält [`contracts/api.md`](contracts/api.md)
 fest.
