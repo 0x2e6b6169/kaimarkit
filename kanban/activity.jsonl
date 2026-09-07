@@ -895,3 +895,10 @@
 {"timestamp":"2026-09-07T10:40:48.629215947+02:00","action":"edit","task_id":130,"detail":"FE-27 · Der Knopf heisst Vorschau, nicht Aufklappen (GitHub #6)"}
 {"timestamp":"2026-09-07T10:40:48.629743106+02:00","action":"release","task_id":130,"detail":"benny-31"}
 {"timestamp":"2026-09-07T11:09:52.808642659+02:00","action":"create","task_id":131,"detail":"DOC-23 · Eigene Seite fuer die Bedienung der Oberflaeche"}
+{"timestamp":"2026-09-07T11:11:50.330319488+02:00","action":"move","task_id":131,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-07T11:18:05.769503704+02:00","action":"edit","task_id":131,"detail":"DOC-23 · Eigene Seite fuer die Bedienung der Oberflaeche"}
+{"timestamp":"2026-09-07T11:18:06.512793905+02:00","action":"move","task_id":131,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-07T11:18:07.217498327+02:00","action":"edit","task_id":131,"detail":"DOC-23 · Eigene Seite fuer die Bedienung der Oberflaeche"}
+{"timestamp":"2026-09-07T11:18:07.217923078+02:00","action":"release","task_id":131,"detail":"akar-43"}
+{"timestamp":"2026-09-07T11:19:46.225318085+02:00","action":"create","task_id":132,"detail":"FE-28 · MarkdownPreview bekommt keinen Dateinamen"}
+{"timestamp":"2026-09-07T11:19:46.863480912+02:00","action":"create","task_id":133,"detail":"FE-29 · Grund fuer nicht waehlbare Engine nur per title"}

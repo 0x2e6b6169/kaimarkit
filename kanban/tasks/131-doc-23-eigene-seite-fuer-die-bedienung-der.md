@@ -1,10 +1,12 @@
 ---
 id: 131
 title: DOC-23 · Eigene Seite fuer die Bedienung der Oberflaeche
-status: todo
+status: done
 priority: high
 created: 2026-09-07T11:09:52.799107404+02:00
-updated: 2026-09-07T11:09:52.799107404+02:00
+updated: 2026-09-07T11:18:07.216931188+02:00
+started: 2026-09-07T11:18:06.512514647+02:00
+completed: 2026-09-07T11:18:06.512514647+02:00
 assignee: akar
 tags:
     - docs
@@ -56,3 +58,49 @@ voraussetzt.
   Codeblock mit `docker` oder `curl`).
 - `docs/schnellstart.md` behält die Voraussetzungen und den curl-Weg unverändert;
   "Über die Oberfläche" existiert dort nur noch als Verweis.
+
+[[2026-09-07]] Mon 11:18
+
+## Ergebnis akar-43
+
+Neue Seite `docs/benutzung.md` (nav: "Oberfläche", zwischen Schnellstart und
+Formate), Verweis in `docs/index.md`, Abschnitt "Über die Oberfläche" in
+`docs/schnellstart.md` auf 34 Wörter Verweis gekürzt. Merge 223700f.
+
+**Rot vor grün.** Vor der Arbeit schlugen vier Prüfpunkte fehl: Seite fehlt,
+nicht im nav, 368 Wörter im Abschnitt statt < 60, kein Verweis auf benutzung.md.
+`mkdocs build --strict` war vorher schon grün — dieser Punkt ist ein
+Regressionsschutz, kein Beleg. Danach: 0 Fundstellen `docker|curl` im
+geflachten Text und in Codeblöcken, 34 Wörter, Rückgabewert 0 und 0
+WARNING/ERROR-Zeilen. Der `schnellstart.md`-Diff ist ein einziger Hunk ab
+Zeile 80; Voraussetzungen, Start und alle curl-Wege stehen unverändert.
+
+**Was am alten Abschnitt nicht mehr stimmte** (geprüft gegen `frontend/src/`
+und `backend/app/`):
+
+- **Warnungen kamen gar nicht vor.** Seit BE-39 (`_placeholder_warnings` /
+  `_detour` in `converters/docling.py`) und BE-40
+  (`_embedded_image_warnings` in `converters/markitdown.py`) nennt eine
+  Warnung Grund und Umweg. Die neue Seite zitiert beide Wortlaute.
+- **Der OCR-Schalter fehlte vollständig.** FE-26 hat ihn um den Kurzsatz
+  "wirkt nur in PDF und Bilddateien" und ein tastaturerreichbares Info-Zeichen
+  ergänzt (`components/OptionsPanel.vue`, `data-test="ocr-short"` /
+  `"ocr-info"`). Neuer Unterabschnitt "Text in Bildern erkennen".
+- **"Die Vorschau klappt das gewandelte Markdown auf"** war zu dünn. Der Knopf
+  heißt seit FE-27 "Vorschau" bzw. "Vorschau schließen"
+  (`components/FileRow.vue`), und darin stehen zwei Reiter "Vorschau" und
+  "Rohtext" plus "Kopieren" (`components/MarkdownPreview.vue`).
+- **"wie im nächsten Abschnitt beschrieben"** zeigte auf "Welche Engine kommt
+  zum Zug?" in schnellstart.md und wäre nach dem Umzug ins Leere gelaufen.
+  Ersetzt durch die Erklärung selbst.
+- **Der Zustand `warming` fehlte.** `EngineSelect.vue` zeigt "(lädt noch)"
+  und lässt die Engine wählbar; der alte Text kannte nur wählbar/nicht wählbar.
+- **Der Rücksprung auf "automatisch"** fehlte
+  (`OptionsPanel.vue`, `watch(offered, …)`).
+
+Neu belegt und vorher nirgends beschrieben: Zeichen und Wort je Zustand
+(`FileRow.vue`, `BADGES`), mitlaufende Dauer `läuft · 0:47`, höchstens zwei
+gleichzeitig (`MAX_PARALLEL` in `useConversion.ts`), "Entfernen", die
+Grenze `limits.max_files` samt Rückgabe der Adressen ins Feld
+(`UrlInput.keep`), `kaimarkit.zip` und `_errors.txt` (`download.ts`),
+das Banner "Der Dienst antwortet nicht" und die Version im Fuß (`App.vue`).
