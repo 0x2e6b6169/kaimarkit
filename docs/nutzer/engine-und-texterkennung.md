@@ -1,52 +1,54 @@
 # Engine und Texterkennung wählen
 
-Über dem gestrichelten Feld steht der Abschnitt „Optionen". Was dort eingestellt ist, gilt
-für den nächsten Lauf. Bereits umgewandelte Dateien bleiben, wie sie sind.
+Welche Engine Deine Datei wandelt und ob sie Text aus Bildern liest, stellst Du über
+dem gestrichelten Feld unter „Optionen" ein. Was Du dort änderst, gilt für den
+nächsten Lauf; bereits umgewandelte Dateien bleiben, wie sie sind.
 
 ## Die Engine wählen
 
-Die Engines stehen als Gruppe von Schaltern untereinander, „automatisch" zuerst.
-Neben jedem Namen steht ein Halbsatz, und das runde „i" dahinter öffnet die
-längere Erklärung — mit der Maus beim Darüberfahren, mit der Tastatur beim
-Anspringen. Escape schließt sie wieder. Wer einen Screenreader benutzt, bekommt
-den Text beim Anspringen vorgelesen.
+Deine Wahl triffst Du an einer Gruppe von Schaltern untereinander, „automatisch"
+zuerst. Was ein Name bedeutet, sagt Dir der Halbsatz daneben, und das runde „i"
+dahinter öffnet die längere Erklärung — mit der Maus beim Darüberfahren, mit der
+Tastatur beim Anspringen. Escape schließt sie wieder. Benutzt Du einen
+Screenreader, bekommst Du den Text beim Anspringen vorgelesen.
 
 „automatisch" überlässt die Wahl dem Dienst. Er nimmt zur Dateiendung die erste
 Engine seiner Liste, die gerade bereit ist; scheitert sie, nimmt er die nächste
 und nennt den Grund in den Warnungen. Vorgewählt ist markitdown, die schnelle
-Engine. Die Wahl bleibt im Browser gemerkt und steht beim nächsten Aufruf der
-Seite wieder da.
+Engine. Deine Wahl merkt sich der Browser; beim nächsten Aufruf der Seite steht
+sie wieder da.
 
 Nicht jede Engine ist immer wählbar:
 
-- Eine Engine, die eine der Dateien in der Warteschlange nicht liest, bleibt
+- Eine Engine, die eine der Dateien in Deiner Warteschlange nicht liest, bleibt
   sichtbar und wird blass. Fährt der Mauszeiger darüber, nennt ein Hinweis den
   Grund: „liest diese Dateien nicht".
 - Genauso ergeht es einer Engine, die auf diesem Dienst gar nicht installiert
   ist. Der Hinweis lautet dann „nicht installiert".
 - Eine Engine, die gerade noch ihre Modelle lädt, heißt „(lädt noch)" und bleibt
-  wählbar. Die erste Anfrage wartet dann, bis sie so weit ist.
+  wählbar. Deine erste Anfrage wartet dann, bis sie so weit ist.
 
-Fällt die gewählte Engine aus der Auswahl — etwa weil eine Datei dazukam, die sie
-nicht liest —, springt die Wahl auf „automatisch" zurück.
+Fällt Deine Engine aus der Auswahl — etwa weil eine Datei dazukam, die sie nicht
+liest —, springt die Wahl auf „automatisch" zurück.
 
 ## Text in Bildern erkennen
 
-Der Schalter „Text in Bildern erkennen (OCR)" steht nur da, wenn der Dienst die
-Texterkennung anbietet. Rührt ihn niemand an, gilt die Voreinstellung des
-Dienstes; das steht dann auch daneben.
+Steckt Dein Text in Bildern, schalte „Text in Bildern erkennen (OCR)" ein. Den
+Schalter zeigt die Oberfläche nur, wenn der Dienst die Texterkennung anbietet.
+Rührst Du ihn nicht an, gilt die Voreinstellung des Dienstes; das steht dann auch
+daneben.
 
 Neben dem Schalter steht, wo er wirkt: **nur in PDF und Bilddateien**. Das runde
 „i" dahinter zählt die Formate auf und nennt den Umweg. In einer .docx-, .pptx-,
-.xlsx-, .html- oder .epub-Datei bleibt die Texterkennung aus, auch wenn der
-Schalter an ist. Wer den Text aus einem Bild darin braucht, speichert das Dokument
-als PDF und lädt es erneut hoch. Ausführlich steht das unter
+.xlsx-, .html- oder .epub-Datei bleibt die Texterkennung aus, auch wenn Du den
+Schalter anschaltest. Brauchst Du den Text aus einem Bild darin, speicher das
+Dokument als PDF und lade es erneut hoch. Ausführlich steht das unter
 [Grenzen](../admin/grenzen.md#ocr-greift-nur-in-pdf-und-bilddateien).
 
 ## Beides über die Schnittstelle
 
-Was die Optionen einstellen, sind zwei Felder am Aufruf: `engine` und `ocr`.
-`$DIENST` steht für die Adresse, unter der die Oberfläche antwortet.
+Dieselben zwei Einstellungen sind am Aufruf zwei Felder: `engine` und `ocr`. Setz
+`$DIENST` auf die Adresse, unter der die Oberfläche antwortet.
 
 ```bash
 curl -sf -F file=@tabelle.pdf -F engine=markitdown -F ocr=true \
@@ -67,19 +69,19 @@ curl -sf -F file=@tabelle.pdf -F engine=markitdown -F ocr=true \
 }
 ```
 
-In `engine` steht, welche Engine es geworden ist. Wer das Feld weglässt,
-bekommt `auto`, dasselbe wie „automatisch" in der Oberfläche; `ocr` überschreibt die
+In `engine` steht, welche Engine es geworden ist. Lässt Du das Feld weg, bekommst
+Du `auto`, dasselbe wie „automatisch" in der Oberfläche; `ocr` überschreibt die
 Voreinstellung des Dienstes, so wie der Schalter es tut.
 
-Eine ausdrücklich genannte Engine ersetzt der Dienst nie durch eine andere. Kann sie
-das Format nicht, antwortet er mit 400, statt still eine andere zu nehmen:
+Nennst Du eine Engine ausdrücklich, ersetzt der Dienst sie nie durch eine andere.
+Kann sie das Format nicht, antwortet er mit 400, statt still eine andere zu nehmen:
 
 ```json
 { "detail": "Engine pandoc kann .pdf nicht wandeln.", "code": "engine_unsuitable" }
 ```
 
-Was gerade zur Wahl steht, nennt `/api/capabilities`. Aus derselben Auskunft baut die
-Oberfläche ihre Schaltergruppe:
+Was gerade zur Wahl steht, nennt `/api/capabilities`. Aus derselben Auskunft baut
+die Oberfläche ihre Schaltergruppe:
 
 ```bash
 curl -sf $DIENST/api/capabilities
@@ -101,11 +103,11 @@ curl -sf $DIENST/api/capabilities
 }
 ```
 
-Der Ausschnitt zeigt zwei Endungen; der Dienst nennt alle, die er annimmt, dazu die
-geltenden Grenzen. Die drei Zustände in `engines` sind dieselben, die am Schalter
-stehen: `ready` ist wählbar, `warming` heißt dort „(lädt noch)", `unavailable` heißt
-„nicht installiert". Die Reihenfolge in `formats` ist die Präferenz: Bei
-`engine=auto` kommt der erste Eintrag zum Zug. In `ocr_available` steht, ob die
-Oberfläche den Schalter zeigt.
+Der Dienst nennt alle Endungen, die er annimmt, dazu die geltenden Grenzen;
+oben stehen zwei davon. Die drei Zustände in `engines` sind dieselben, die am
+Schalter stehen: `ready` ist wählbar, `warming` heißt dort „(lädt noch)",
+`unavailable` heißt „nicht installiert". Die Reihenfolge in `formats` ist die
+Präferenz: Bei `engine=auto` kommt der erste Eintrag zum Zug. In `ocr_available`
+steht, ob die Oberfläche den Schalter zeigt.
 
 Alle Felder dieser Auskunft stehen unter [API](../admin/api.md).

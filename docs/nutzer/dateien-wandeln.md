@@ -1,42 +1,40 @@
 # Eine Datei wandeln
 
-Diese Seite beschreibt den Weg von der Datei zum Markdown: hinzufügen, warten,
-ansehen, herunterladen. Sie zeigt ihn zweimal — in der Oberfläche und als Aufruf
-der Schnittstelle. Die Oberfläche ruft dieselben Endpunkte auf, die auch ein
-Skript benutzt.
+Du legst Deine Datei ab, wartest kurz, siehst Dir das Markdown an und lädst es
+herunter. Denselben Weg gehst Du als Aufruf der Schnittstelle — die Oberfläche
+ruft dieselben Endpunkte auf, die auch ein Skript benutzt.
 
-Ein Wort kommt immer wieder vor: **Engine**. So heißt das Programm, das die
-Umwandlung ausführt. Der Dienst bringt drei davon mit, und sie liefern zu
-derselben Datei unterschiedliche Ergebnisse. Wer selbst wählen will, findet den
-Weg unter [Engine und Texterkennung wählen](engine-und-texterkennung.md); was die
-drei unterscheidet, steht unter [Formate](../admin/formate.md).
+Ein Wort begegnet Dir dabei immer wieder: **Engine**. So heißt das Programm, das
+die Umwandlung ausführt. Der Dienst bringt drei davon mit, und sie liefern zu
+derselben Datei unterschiedliche Ergebnisse. Wählen kannst Du selbst; wie das
+geht, steht unter [Engine und Texterkennung wählen](engine-und-texterkennung.md),
+und was die drei unterscheidet, unter [Formate](../admin/formate.md).
 
-Eine Adresse statt einer Datei geht auch — das steht unter
+Hast Du statt einer Datei eine Adresse, führt Dein Weg über
 [Eine Webseite wandeln](webseiten-wandeln.md).
 
 ## Dateien hinzufügen
 
-Auf der Seite liegt ein großes gestricheltes Feld: „Dateien hierher ziehen oder
-auswählen". Beides geht. Wer Dateien aus dem Dateimanager darauf zieht, lässt sie
-dort los; wer klickt, bekommt die Dateiauswahl. Mit der Tastatur führt der
-Tabulator auf das Feld, die Leertaste öffnet die Auswahl. Mehrere Dateien auf
-einmal sind erlaubt.
+Zieh Deine Dateien aus dem Dateimanager auf das große gestrichelte Feld „Dateien
+hierher ziehen oder auswählen" und lass sie dort los. Ein Klick darauf öffnet
+stattdessen die Dateiauswahl. Mit der Tastatur führt Dich der Tabulator auf das
+Feld, die Leertaste öffnet die Auswahl. Mehrere Dateien auf einmal sind erlaubt.
 
-Unter der Beschriftung stehen die Endungen, die der Dienst gerade annimmt. Er
-meldet sie selbst; hier steht keine feste Liste.
+Welche Endungen der Dienst gerade annimmt, steht unter der Beschriftung — er
+meldet sie selbst.
 
-Der Dienst nimmt nur eine begrenzte Zahl von Einträgen auf einmal. Ist sie
-erreicht, erscheint unter der Warteschlange ein Hinweis mit beiden Zahlen: wie
-viele hineinpassen und wie viele draußen blieben. Diese und die übrigen Grenzen
-stehen unter [Grenzen](../admin/grenzen.md#funf-werte-begrenzen-einen-aufruf).
+Legst Du mehr Einträge auf einmal ab, als der Dienst aufnimmt, erscheint unter der
+Warteschlange ein Hinweis mit beiden Zahlen: wie viele hineinpassen und wie viele
+draußen blieben. Diese und die übrigen Grenzen stehen unter
+[Grenzen](../admin/grenzen.md#funf-werte-begrenzen-einen-aufruf).
 
-## Die Warteschlange
+## Den Fortschritt verfolgen
 
-Jede Datei und jede Adresse bekommt eine eigene Zeile, in der Reihenfolge des
-Hinzufügens. Die Zeile erscheint sofort, auch wenn ihre Umwandlung noch nicht
-begonnen hat: Es laufen höchstens zwei auf einmal, die übrigen warten.
+Jede Datei und jede Adresse bekommt eine eigene Zeile, in der Reihenfolge, in der
+Du sie hinzugefügt hast. Die Zeile erscheint sofort, auch wenn ihre Umwandlung
+noch nicht begonnen hat: Es laufen höchstens zwei auf einmal, die übrigen warten.
 
-Eine Zeile nennt ihren Zustand als Zeichen und als Wort, damit auch ohne
+Wie weit eine Zeile ist, sagt sie als Zeichen und als Wort, damit auch ohne
 Farbunterschied dasselbe dasteht:
 
 - `◦ wartet` — noch nicht an der Reihe.
@@ -48,23 +46,23 @@ Farbunterschied dasselbe dasteht:
 - `⊘ abgebrochen` — siehe [Nicht mehr warten](#nicht-mehr-warten).
 
 Eine gescheiterte Datei hält die übrigen nicht auf. Ihre Meldung bleibt in ihrer
-eigenen Zeile, und die nächste Datei rückt nach. Über der Liste steht, wie viele
-von wie vielen fertig sind, und daneben die Zahl der Fehlschläge.
+eigenen Zeile, und die nächste Datei rückt nach. Über der Liste steht, wie
+viele von wie vielen fertig sind, und daneben die Zahl der Fehlschläge.
 
-„Entfernen" nimmt eine Zeile aus der Liste. Läuft sie gerade, hört der Browser
-zugleich auf, auf sie zu warten.
+Mit „Entfernen" nimmst Du eine Zeile aus der Liste. Läuft sie gerade, hört der
+Browser zugleich auf, auf sie zu warten.
 
 ## Ansehen und herunterladen
 
-An einer fertigen Zeile steht „Vorschau". Der Knopf klappt das Ergebnis auf und
-heißt danach „Vorschau schließen".
+„Vorschau" an einer fertigen Zeile klappt das Ergebnis auf; der Knopf heißt
+danach „Vorschau schließen".
 
-Aufgeklappt stehen zwei Reiter zur Wahl: „Vorschau" zeigt das Markdown gesetzt,
+Aufgeklappt hast Du zwei Reiter zur Wahl: „Vorschau" zeigt das Markdown gesetzt,
 mit Überschriften und Tabellen; „Rohtext" zeigt es Zeichen für Zeichen, so wie es
-ein Sprachmodell bekommt. „Kopieren" legt den Rohtext in die Zwischenablage und
+ein Sprachmodell bekommt. „Kopieren" legt den Rohtext in Deine Zwischenablage und
 meldet, ob es geklappt hat.
 
-Herunterladen geht einzeln oder im Ganzen:
+Herunterladen kannst Du einzeln oder im Ganzen:
 
 - „Herunterladen" an der Zeile legt eine Datei ab. Sie heißt wie die Vorlage, nur
   mit der Endung `.md`: aus `bericht.pdf` wird `bericht.md`.
@@ -76,27 +74,27 @@ Herunterladen geht einzeln oder im Ganzen:
 
 ## Nicht mehr warten
 
-An einer laufenden Zeile steht „Nicht mehr warten". Der Knopf hält, was sein Name
-sagt, und nicht mehr: Er beendet das Warten des Browsers. Der Dienst wandelt die
-Datei im Hintergrund zu Ende und gibt seinen Platz erst dann oder an der
+Dauert Dir eine laufende Zeile zu lange, beendest Du mit „Nicht mehr warten" das
+Warten des Browsers — und nicht mehr als das. Der Dienst wandelt die Datei im
+Hintergrund zu Ende und gibt seinen Platz erst dann oder an der
 [Zeitgrenze](../admin/grenzen.md#die-zeitgrenze-beendet-den-wartevorgang-nicht-die-engine)
 wieder frei.
 
 Danach steht die Zeile auf „abgebrochen", und die nächste wartende Datei rückt
-nach. Als Fehlschlag zählt der Abbruch nicht — entschieden hat ihn der Nutzer,
+nach. Als Fehlschlag zählt der Abbruch nicht — entschieden hast Du ihn,
 gescheitert ist nichts.
 
 ## Dieselbe Datei über die Schnittstelle
 
-Die Beispiele schreiben `$DIENST` für die Adresse, unter der die Oberfläche antwortet —
-dieselbe, die im Browser in der Adresszeile steht:
+Setz `$DIENST` auf die Adresse, unter der die Oberfläche antwortet — dieselbe, die
+bei Dir im Browser in der Adresszeile steht:
 
 ```bash
 DIENST=http://localhost:8080
 ```
 
-Eine Datei schicken und das Markdown als Datei zurückbekommen, das Gegenstück zu
-„Herunterladen":
+So schickst Du eine Datei hin und bekommst das Markdown als Datei zurück, das
+Gegenstück zu „Herunterladen":
 
 ```bash
 curl -sf -F file=@bericht.docx $DIENST/api/convert -o bericht.md
@@ -112,11 +110,11 @@ content-type: text/markdown; charset=utf-8
 ```
 
 Gab es Warnungen, kommt `x-warnings` dazu. Kopfzeilen vertragen kein UTF-8, deshalb
-steht der Text dort auf ASCII heruntergebrochen: Aus `lädt` wird `l?dt`. Wer den
-Wortlaut einer Warnung braucht, holt ihn aus der JSON-Antwort.
+steht der Text dort auf ASCII heruntergebrochen: Aus `lädt` wird `l?dt`. Brauchst Du
+den Wortlaut einer Warnung, hol ihn aus der JSON-Antwort.
 
-Wer statt der Datei alles will, was auch die Zeile in der Warteschlange zeigt —
-Engine, Dauer, Warnungen —, verlangt JSON:
+Willst Du statt der Datei alles, was auch die Zeile in der Warteschlange zeigt —
+Engine, Dauer, Warnungen —, verlang JSON:
 
 ```bash
 curl -sf -F file=@bericht.docx -H 'Accept: application/json' $DIENST/api/convert
@@ -134,9 +132,9 @@ curl -sf -F file=@bericht.docx -H 'Accept: application/json' $DIENST/api/convert
 }
 ```
 
-Mehrere Dateien nimmt `/api/convert/batch` in einem Aufruf. Es antwortet mit einem
-Archiv, in dem je eine `.md` liegt, und legt `_errors.txt` dazu, sobald eine Datei
-scheiterte — dasselbe, was „Alles herunterladen" packt:
+Mehrere Dateien gibst Du `/api/convert/batch` in einem Aufruf mit. Es antwortet mit
+einem Archiv, in dem je eine `.md` liegt, und legt `_errors.txt` dazu, sobald eine
+Datei scheiterte — dasselbe, was „Alles herunterladen" packt:
 
 ```bash
 curl -sf -F file=@bericht.docx -F file=@liste.csv \
@@ -144,7 +142,7 @@ curl -sf -F file=@bericht.docx -F file=@liste.csv \
 ```
 
 Auch hier nimmt eine gescheiterte Datei die übrigen nicht mit. Mit
-`-H 'Accept: application/json'` kommt statt des Archivs eine Liste der Einträge,
-dazu die Zählung `total`, `succeeded` und `failed`.
+`-H 'Accept: application/json'` bekommst Du statt des Archivs eine Liste der
+Einträge, dazu die Zählung `total`, `succeeded` und `failed`.
 
 Alle Endpunkte, Felder und Fehlercodes stehen unter [API](../admin/api.md).

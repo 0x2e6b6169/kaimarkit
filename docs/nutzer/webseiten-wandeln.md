@@ -1,8 +1,8 @@
 # Eine Webseite wandeln
 
-Eine Webseite braucht keinen Umweg über den eigenen Rechner. Unter „Webseiten,
-eine Adresse je Zeile" steht ein mehrzeiliges Feld; „Webseiten wandeln" schickt
-jede Zeile ab, und der Dienst holt die Seiten selbst.
+Eine Webseite musst Du nicht erst auf Deinen Rechner laden. Trag ihre Adresse in
+das mehrzeilige Feld unter „Webseiten, eine Adresse je Zeile" ein und schick sie
+mit „Webseiten wandeln" ab; der Dienst holt die Seiten selbst.
 
 Eine Zeile, die weder mit `http://` noch mit `https://` beginnt, schickt die
 Oberfläche gar nicht erst ab. Sie bleibt im Feld stehen und wird darunter
@@ -13,14 +13,14 @@ Zeile der Warteschlange.
 Jede geholte Seite reiht sich in dieselbe Warteschlange ein wie eine hochgeladene
 Datei. Ihren Namen bekommt sie aus dem Titel der Seite: Aus `https://example.com/`
 wird `example-domain.html`. Fanden nicht alle Adressen Platz, stehen die übrigen
-wieder im Feld — von dort lassen sie sich gleich noch einmal abschicken.
+wieder im Feld — von dort schickst Du sie gleich noch einmal ab.
 
 Welche Seiten der Dienst nicht brauchbar wandelt, steht unter
 [Grenzen](../admin/grenzen.md#webseiten-nur-offentlich-kein-javascript).
 
 ## Dieselbe Adresse über die Schnittstelle
 
-`/api/convert/url` nimmt eine Adresse je Aufruf, als JSON. `$DIENST` steht für die
+`/api/convert/url` nimmt eine Adresse je Aufruf, als JSON. Setz `$DIENST` auf die
 Adresse, unter der die Oberfläche antwortet:
 
 ```bash
@@ -53,8 +53,8 @@ Eine Zeile ohne `http://` oder `https://` schickt die Oberfläche gar nicht erst
 { "detail": "example.com: nur http- und https-Adressen werden geholt.", "code": "invalid_url" }
 ```
 
-Denselben Code bekommt eine Adresse, die nicht ins offene Netz zeigt — auch dann,
-wenn erst eine Weiterleitung dorthin führt:
+Denselben Code bekommst Du für eine Adresse, die nicht ins offene Netz zeigt —
+auch dann, wenn erst eine Weiterleitung dorthin führt:
 
 ```json
 {
