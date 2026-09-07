@@ -50,10 +50,10 @@ Gegen Listen spricht sonst, dass Compose sie aneinanderhängt, statt einzelne Ei
 zu ersetzen — eine dritte Schicht bekäme dann ein zweites Label daneben statt eines
 geänderten. Das gilt für `ports` und `volumes`, nicht für `labels` und nicht für
 `environment`: Deren Listen macht Compose beim Laden zu Maps und führt sie danach über
-die Schlüssel zusammen. Nachgemessen mit Compose v5.1.4, zwei Dateien in Listenform,
-ein Schlüssel in beiden — er stand danach einmal da, mit dem Wert der zweiten Datei;
-die Schlüssel aus nur einer Datei blieben alle erhalten. Für `environment` ergab
-dieselbe Messung dasselbe, auch bei gemischten Formen. Die
+die Schlüssel zusammen. Am 01.09.2026 mit Compose v5.1.4 nachgemessen, zwei Dateien
+in Listenform, ein Schlüssel in beiden — er stand danach einmal da, mit dem Wert der
+zweiten Datei; die Schlüssel aus nur einer Datei blieben alle erhalten. Für
+`environment` ergab dieselbe Messung dasselbe, auch bei gemischten Formen. Die
 [Authelia-Schicht](authelia.md) ersetzt Einträge von hier also weiterhin.
 
 Die Labels im Einzelnen. `<name>` steht für `KAIMARKIT_TRAEFIK_NAME`, voreingestellt
@@ -102,9 +102,10 @@ Containernamen; dafür gibt es `KAIMARKIT_CONTAINER_NAME`.
     Konfiguration, verwirft Traefik **beide**. Nach außen antwortet dann keiner von
     beiden — und den Containern sieht man nichts an, sie laufen ja.
 
-    Nachgemessen mit Traefik 3.6.25: Zwei kaimarkit unter verschiedenen Domains, beide
-    mit demselben `KAIMARKIT_TRAEFIK_NAME`. Danach führte `/api/http/routers` keinen
-    der beiden Router mehr auf, beide Domains antworteten mit 404, und im Protokoll
+    Am 01.09.2026 mit Traefik 3.6.25 nachgemessen: Zwei kaimarkit unter verschiedenen
+    Domains, beide mit demselben `KAIMARKIT_TRAEFIK_NAME`. Danach führte
+    `/api/http/routers` keinen der beiden Router mehr auf, beide Domains antworteten
+    mit 404, und im Protokoll
     stand `Router defined multiple times with different configurations` mit den Namen
     beider Container. Nachdem die zwei Aufbauten verschiedene Werte bekamen, lief
     jeder wieder unter seiner eigenen Domain.
