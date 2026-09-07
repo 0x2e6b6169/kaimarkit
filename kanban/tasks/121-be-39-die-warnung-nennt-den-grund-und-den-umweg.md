@@ -1,16 +1,16 @@
 ---
 id: 121
 title: 'BE-39 · Die Warnung nennt den Grund und den Umweg (GitHub #2)'
-status: in-progress
+status: done
 priority: high
 created: 2026-09-03T15:13:02.423738476+02:00
-updated: 2026-09-07T09:38:33.725123771+02:00
+updated: 2026-09-07T09:46:08.559729031+02:00
+started: 2026-09-07T09:46:07.803649772+02:00
+completed: 2026-09-07T09:46:07.803649772+02:00
 assignee: sophie
 tags:
     - backend
     - gh-2
-claimed_by: sophie-41
-claimed_at: 2026-09-07T09:38:33.725600941+02:00
 class: standard
 ---
 
@@ -118,3 +118,79 @@ Test; BE-40 kann `markitdown.py` unberührt besitzen.
 
 Der Claim bleibt `sophie-41`. Wer übernimmt, benutzt denselben Namen oder gibt ihn vorher
 frei — `kanban-md` verlangt bei jeder Änderung denselben Claim.
+
+## Ergebnis (sophie-41, Uebernahme des geretteten Stands)
+
+Der gerettete Commit `be3904f` war brauchbar, aber nicht fertig: Der dritte Fall
+(PDF/Bilddatei mit schon eingeschalteter Texterkennung) nannte keinen Grund, sondern
+nur einen Zustand („Die Texterkennung war bereits eingeschaltet."), und die Aussage im
+docx-Fall war zu breit — sie schloss Bilddateien aus, in denen Docling sehr wohl Text
+liest. Beides ist berichtigt.
+
+**Der fertige Wortlaut, wörtlich.** Der erste Teil ist unverändert und zählt weiter mit
+(„ein Bild … Sein Inhalt fehlt" / „3 Bilder … Ihr Inhalt fehlt"). Angehängt wird je nach
+Format und Schalter genau einer von drei Sätzen samt Umweg:
+
+1. `.docx`, `.pptx`, `.xlsx`, `.html`, `.htm`:
+
+    Docling hat in bild.docx ein Bild durch einen Platzhalter ersetzt. Sein Inhalt
+    fehlt im Markdown. Text aus einem Bild liest Docling nur in einer PDF-Datei oder
+    in einer Bilddatei. Wer ihn braucht, speichert das Dokument als PDF und lädt es
+    mit eingeschalteter Texterkennung erneut hoch.
+
+2. PDF und Bilddateien, Texterkennung aus:
+
+    Docling hat in bericht.pdf ein Bild durch einen Platzhalter ersetzt. Sein Inhalt
+    fehlt im Markdown. Ohne eingeschaltete Texterkennung liest Docling den Text aus
+    einem Bild nicht. Wer ihn braucht, schaltet die Texterkennung ein und lädt die
+    Datei erneut hoch.
+
+3. PDF und Bilddateien, Texterkennung an:
+
+    Docling hat in bericht.pdf ein Bild durch einen Platzhalter ersetzt. Sein Inhalt
+    fehlt im Markdown. Auch mit eingeschalteter Texterkennung nimmt Docling Bilder
+    nicht ins Markdown auf. Ein Blick ins Original zeigt, was dort stand.
+
+**Die Auflage ist eingehalten.** Kein Satz spricht von MarkItDown, keiner behauptet eine
+Warnung, die es nicht gibt. Beide Umwege sind in diesem Stand begehbar: Die Enginewahl
+steht im Frontend, der OCR-Schalter kommt aus `/api/capabilities` und ist ohne Klick
+`true`, und `PREFERENCES` in `registry.py` führt für `.pdf` ohnehin `docling` an erster
+Stelle — wer dem docx-Hinweis folgt und das PDF hochlädt, landet auch mit `engine=auto`
+bei Docling. Nachgesehen, nicht angenommen.
+
+Der dritte Satz ist zahlneutral formuliert („nimmt Docling Bilder nicht ins Markdown
+auf … was dort stand"), weil derselbe Text auch an einer Meldung über vierzehn
+Platzhalter hängt.
+
+**Rot vor grün, nachgeholt und mit dem endgültigen Wortlaut wiederholt.** Neue
+`docling.py` weggenommen (`git checkout main -- backend/app/converters/docling.py`),
+`pytest -q -rs tests/test_docling.py`: **5 failed, 16 passed, 5 deselected**. Fünf, nicht
+drei: die drei neuen Fälle plus die zwei vorhandenen Platzhaltertests, deren erwarteter
+Text sich mitändert. Danach zurückgeholt, alles grün.
+
+**Zahlen.** `pytest -q -rs` im Backend: **214 gesammelt, 203 ausgewählt, 203 bestanden,
+11 abgewählt** (die `slow`-Tests über `addopts = -m "not slow"`), 0 übersprungen.
+Nach dem Merge auf `main` noch einmal dieselben Zahlen. `ruff check .`: All checks
+passed. `mkdocs build --strict`: Rückgabewert 0, keine Build-Warnung (die rote Meldung
+des Material-Themes ist ein Herstellerhinweis).
+
+**Der alte Wortlaut über alle Tests gegrept.** „Platzhalter ersetzt" / „Inhalt fehlt im
+Markdown" steht nur in `backend/tests/test_docling.py` und in `docling.py` selbst — beide
+gehören diesem Ticket. `contracts/api.md:175` und `frontend/src/components/FileRow.test.ts:114`
+führen einen anderen, erfundenen Beispieltext („Seite 4 enthielt ein Bild, das durch
+einen Platzhalter ersetzt wurde."); der ist von dieser Änderung nicht berührt und bleibt
+unangetastet.
+
+**Doku im selben Merge.** `docs/formate.md` zitierte die Warnung und hörte nach dem
+ersten Teil auf; nach dieser Änderung hätte das Zitat als ganze Meldung gelesen. Ein Satz
+nennt jetzt, was folgt. Die Seite gehörte DOC-18 (#123), das ist geschlossen; kein
+offenes Ticket führt sie. `docs/grenzen.md` bleibt unberührt und wahr.
+
+**Befund für den PO (melden statt ändern).** `ruff format --check` würde im Backend acht
+Dateien umformatieren, zwei davon meine — es sind durchweg alte Stellen mit
+Zeilenumbrüchen, die `ruff format` zusammenzöge (Zeilenlänge). Das Projekt fährt nur
+`ruff check` (Makefile-Ziel `lint`); `ruff format` steht nirgends. Entweder man nimmt es
+auf und formatiert einmal alles, oder man lässt es ausdrücklich weg. Nichts geändert.
+
+Commits `b3a373e` und `109aef4` auf `task/121-warning-reason`, Merge `e5b90aa` (--no-ff,
+unter flock). Worktree entfernt, Zweig gelöscht.

@@ -869,3 +869,7 @@
 {"timestamp":"2026-09-07T09:44:37.48572314+02:00","action":"create","task_id":126,"detail":"DOC-? · Arbeitsspeicher-Groessen ohne Datum"}
 {"timestamp":"2026-09-07T09:44:46.37346544+02:00","action":"edit","task_id":125,"detail":"DOC-20 · Docling-Versionsangabe ohne Datum"}
 {"timestamp":"2026-09-07T09:44:47.182654428+02:00","action":"edit","task_id":126,"detail":"DOC-21 · Arbeitsspeicher-Groessen ohne Datum"}
+{"timestamp":"2026-09-07T09:46:06.81422408+02:00","action":"edit","task_id":121,"detail":"BE-39 · Die Warnung nennt den Grund und den Umweg (GitHub #2)"}
+{"timestamp":"2026-09-07T09:46:07.803969953+02:00","action":"move","task_id":121,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-07T09:46:08.561013505+02:00","action":"edit","task_id":121,"detail":"BE-39 · Die Warnung nennt den Grund und den Umweg (GitHub #2)"}
+{"timestamp":"2026-09-07T09:46:08.561595072+02:00","action":"release","task_id":121,"detail":"sophie-41"}
