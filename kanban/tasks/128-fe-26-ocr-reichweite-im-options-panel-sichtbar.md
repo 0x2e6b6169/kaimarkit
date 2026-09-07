@@ -1,16 +1,16 @@
 ---
 id: 128
 title: FE-26 · OCR-Reichweite im Options-Panel sichtbar
-status: in-progress
+status: done
 priority: medium
 created: 2026-09-07T09:55:45.859306412+02:00
-updated: 2026-09-07T09:57:00.362846072+02:00
+updated: 2026-09-07T10:03:29.950087517+02:00
+started: 2026-09-07T10:03:29.277987043+02:00
+completed: 2026-09-07T10:03:29.277987043+02:00
 assignee: benny
 tags:
     - frontend
     - gh-2
-claimed_by: benny-30
-claimed_at: 2026-09-07T09:57:00.362846072+02:00
 class: standard
 ---
 
@@ -50,3 +50,49 @@ Wahl getroffen wird.
 - Der ausführliche Text ist per Tastaturfokus erreichbar, nicht nur per Hover; ein Test
   belegt das (z. B. Tab auf das Icon, Text sichtbar/erreichbar für AT).
 - `npm run test`, `npm run typecheck` sauber.
+
+
+---
+
+## Ergebnis benny-30
+
+Umgesetzt in `frontend/src/components/OptionsPanel.vue`, Tests in
+`frontend/src/components/__tests__/OptionsPanel.test.ts`. Branch
+`task/128-ocr-scope`, Merge `1dae416`.
+
+**Der Wortlaut.** Offen neben dem Schalter steht „wirkt nur in PDF und
+Bilddateien". Hinter dem Info-Zeichen: „Die Texterkennung liest Bildtext nur in
+PDF und in den Bildformaten .png, .jpg, .jpeg und .tiff. In .docx, .pptx, .xlsx,
+.html und .epub bleibt sie aus — auch dann, wenn dieser Schalter an ist. Der
+Umweg führt über PDF: das Dokument als PDF speichern und erneut hochladen."
+Inhaltlich aus `docs/grenzen.md`, Abschnitt „OCR greift nur in PDF und
+Bilddateien"; die Seite selbst blieb unangetastet.
+
+**Ohne Maus erreichbar.** Das Info-Zeichen ist ein `<button type="button">` und
+damit von sich aus im Tabulatorlauf. Es öffnet den Text bei `@focus` und
+`@mouseenter`, schließt bei `@blur`, `@mouseleave` und `@keydown.escape`, führt
+`aria-expanded` mit und hängt den Absatz per `aria-describedby` an — ein
+Screenreader liest den vollen Wortlaut beim Anspringen, unabhängig davon, ob der
+Absatz gerade sichtbar ist. Der Absatz trägt `role="tooltip"`, das `aria-label`
+des Zeichens lautet „Erklärung zur Reichweite der Texterkennung". Der Fokusring
+kommt aus `*:focus-visible` in `style.css`, nichts neu gebaut. Das ist dasselbe
+Muster wie in `EngineSelect.vue`; die Lane hat es dort schon einmal belegt.
+
+**Kein Zustand über das Nötige hinaus.** Ein `ref` für „offen", eine `useId`-
+Kennung gegen Kollisionen, sonst nichts. Der Hinweis steht innerhalb des
+`v-if="ocrAvailable"`-Blocks und hängt an keiner Datei in der Warteschlange.
+
+**Rot vor grün.** Vier neue Tests, vor der Änderung drei davon rot:
+„Tests 3 failed | 16 passed (19)", jeweils „Unable to get
+[data-test=\"ocr-short\"] / [data-test=\"ocr-info\"]". Der vierte Test (der
+Hinweis fehlt ohne `ocrAvailable`) war vorher trivial grün und sichert seitdem
+das `v-if`.
+
+**Danach.** `npm run test`: Test Files 10 passed (10), Tests 144 passed (144) —
+die 140 des Ausgangsstands plus vier. `npm run typecheck` und `npm run build`
+ohne Befund.
+
+**Gemeldet statt geändert:** nichts. Am Rand nur eine Anmerkung zum Schnitt:
+Weil die Aussage aus `docs/grenzen.md` jetzt an zwei Stellen steht, zieht eine
+spätere Änderung dort diese Komponente mit. Der Docblock sagt das; ein Ticket,
+das `docs/grenzen.md` anfasst, sollte `OptionsPanel.vue` mit besitzen.
