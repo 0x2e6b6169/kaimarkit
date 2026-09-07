@@ -1,10 +1,10 @@
 """Der MarkItDown-Adapter.
 
 Die meisten Beispieldateien entstehen im Test selbst; nur der Fall „Bild im
-Word-Dokument" greift auf ``tests/fixtures/bild_im_dokument.docx`` zurueck. Diese
-Vorlage stammt aus der Messung in BE-38 und fuehrt ihren Satz allein im
-eingebetteten Bild — sie noch einmal nachzubauen, hiesse zwei Fassungen desselben
-Dokuments zu pflegen.
+Word-Dokument" greift auf ``tests/fixtures/bild_im_dokument.docx`` zurück. Diese
+Vorlage stammt aus der Messung in BE-38 und führt ihren Satz allein im eingebetteten
+Bild — sie noch einmal nachzubauen, hieße zwei Fassungen desselben Dokuments zu
+pflegen.
 """
 
 from __future__ import annotations
@@ -152,8 +152,8 @@ def test_fehlende_bibliothek_endet_in_engine_unavailable(
         converter.convert(tmp_path / "egal.docx", ConvertOptions())
 
 
-#: Die Warnung, die ein Bild im Dokument setzt — vier Saetze: was steckt darin, was
-#: fehlt, warum, und was dagegen hilft.
+#: Die Warnung, die ein Bild im Dokument auslöst — vier Sätze: was in der Vorlage
+#: steckt, was im Markdown fehlt, warum, und was dagegen hilft.
 _BILDWARNUNG = (
     "In bild_im_dokument.docx steckt ein Bild. Sein Inhalt fehlt im Markdown."
     " MarkItDown liest keinen Text aus Bildern. Wer ihn braucht, speichert das"
@@ -165,8 +165,8 @@ _BILDWARNUNG = (
 def test_bild_im_docx_hinterlaesst_keine_data_uri() -> None:
     """Der Kern von BE-40: Was MarkItDown nicht lesen kann, steht auch nicht da.
 
-    MarkItDown haengt ein eingebettetes Bild als Data-URI ins Markdown. Lesbar ist
-    es dort nicht, und in einem Kontextfenster steht es nur im Weg.
+    MarkItDown setzt ein eingebettetes Bild als Data-URI ins Markdown. Lesbar ist es
+    dort nicht, und in einem Kontextfenster steht es nur im Weg.
     """
     result = get_converter().convert(FIXTURES / "bild_im_dokument.docx", ConvertOptions())
     assert "data:image/" not in result.markdown
@@ -174,7 +174,7 @@ def test_bild_im_docx_hinterlaesst_keine_data_uri() -> None:
 
 
 def test_bild_im_docx_wird_gemeldet() -> None:
-    """Und der Nutzer erfaehrt, dass etwas fehlt — samt Weg zum Inhalt."""
+    """Und der Nutzer erfährt, dass etwas fehlt — samt Weg zum Inhalt."""
     result = get_converter().convert(FIXTURES / "bild_im_dokument.docx", ConvertOptions())
     assert result.warnings == [_BILDWARNUNG]
 
@@ -182,9 +182,9 @@ def test_bild_im_docx_wird_gemeldet() -> None:
 def test_alt_text_bleibt_stehen_und_fremde_ziele_auch(tmp_path: Path) -> None:
     """Zwei Gegenproben in einer Datei.
 
-    Der Alt-Text ist das Einzige, was MarkItDown aus einem Bild uebernimmt; er
-    bleibt. Und ein Bild, das auf eine Adresse zeigt, faellt gar nicht unter diese
-    Regel — dessen Inhalt liegt weiterhin dort, wo er hingehoert.
+    Der Alt-Text ist das Einzige, was MarkItDown aus einem Bild übernimmt; er
+    bleibt. Und ein Bild, das auf eine Adresse zeigt, fällt gar nicht unter diese
+    Regel — sein Inhalt liegt weiterhin dort, wohin die Adresse führt.
     """
     seite = tmp_path / "seite.html"
     seite.write_text(
