@@ -1,19 +1,21 @@
 # Warnungen und Fehler verstehen
 
-Die Oberfläche kennt drei Kästen: einen gelben und einen roten an der Zeile
-einer Datei, und einen roten ganz oben auf der Seite. Der oberste meint nicht
-eine Datei, sondern den Dienst. Jeder der drei Fälle hat sein Gegenstück in der
-Antwort der Schnittstelle; die Aufrufe unten schreiben `$DIENST` für die Adresse,
-unter der die Oberfläche antwortet.
+Steht an Deiner Datei ein farbiger Kasten, sagt Dir die Farbe, woran Du bist: Ein
+gelber Kasten heißt, das Ergebnis liegt vor, aber unvollständig; ein roter heißt,
+es kam keins heraus. Ein roter Kasten ganz oben auf der Seite meint nicht Deine
+Datei, sondern den Dienst.
 
-## Ein gelber Kasten: etwas fehlt im Ergebnis
+Jeder der drei Fälle hat sein Gegenstück in der Antwort der Schnittstelle. Setz in
+den Aufrufen `$DIENST` auf die Adresse, unter der die Oberfläche antwortet.
 
-Ein gelber Kasten an einer Zeile ist keine Fehlermeldung. Die Datei ist
+## Etwas fehlt im Ergebnis
+
+Ein gelber Kasten an einer Zeile ist keine Fehlermeldung. Deine Datei ist
 umgewandelt, das Ergebnis liegt vor — aber etwas aus der Vorlage steht nicht
-darin. Genau dafür ist dieser Dienst da: Er zeigt, was ankommt.
+darin. Genau dafür ist dieser Dienst da: Er zeigt Dir, was ankommt.
 
-Eine Warnung bleibt nicht bei der Feststellung. Sie nennt den Grund und den
-Umweg. Zwei Beispiele, wie sie tatsächlich dastehen:
+Eine Warnung bleibt nicht bei der Feststellung; sie nennt Dir den Grund und den
+Umweg. So stehen zwei davon tatsächlich da:
 
 > In bericht.docx steckt ein Bild. Sein Inhalt fehlt im Markdown. MarkItDown
 > liest keinen Text aus Bildern. Wer ihn braucht, speichert das Dokument als PDF
@@ -25,10 +27,10 @@ Umweg. Zwei Beispiele, wie sie tatsächlich dastehen:
 > Bild nicht. Wer ihn braucht, schaltet die Texterkennung ein und lädt die Datei
 > erneut hoch.
 
-Der letzte Satz ist der wichtigste: Er sagt, was zu tun ist. Manchmal ist es die
-andere Engine, manchmal der Schalter darüber, manchmal ein Blick ins Original.
+Der letzte Satz ist der wichtigste: Er sagt Dir, was zu tun ist. Manchmal ist es
+die andere Engine, manchmal der Schalter darüber, manchmal ein Blick ins Original.
 
-Denselben Wortlaut liefert die Schnittstelle im Feld `warnings`:
+Denselben Wortlaut liefert Dir die Schnittstelle im Feld `warnings`:
 
 ```bash
 curl -sf -F file=@bericht.docx -H 'Accept: application/json' $DIENST/api/convert
@@ -50,13 +52,14 @@ curl -sf -F file=@bericht.docx -H 'Accept: application/json' $DIENST/api/convert
 
 `warnings` ist immer da und leer, wenn nichts anzumerken war; `status` bleibt `ok`.
 
-## Ein roter Kasten: es kam kein Ergebnis heraus
+## Es kam kein Ergebnis heraus
 
-In dem Kasten steht die Meldung des Dienstes. Eine gescheiterte Datei hält die
-übrigen nicht auf; die nächste rückt nach.
+Im roten Kasten an der Zeile steht die Meldung des Dienstes. Eine gescheiterte
+Datei hält Dir die übrigen nicht auf; die nächste rückt nach.
 
-Über die Schnittstelle ist das keine 200-Antwort, sondern ein Fehlercode. Im Rumpf
-steht dieselbe Meldung, dazu ein Kürzel, an dem ein Programm den Fall erkennt:
+Über die Schnittstelle bekommst Du dann keine 200-Antwort, sondern einen
+Fehlercode. Im Rumpf steht dieselbe Meldung, dazu ein Kürzel, an dem ein Programm
+den Fall erkennt:
 
 ```bash
 curl -s -F file=@notiz.xyz -H 'Accept: application/json' $DIENST/api/convert
@@ -66,10 +69,10 @@ curl -s -F file=@notiz.xyz -H 'Accept: application/json' $DIENST/api/convert
 { "detail": "Für .xyz gibt es keine Engine.", "code": "unsupported_format" }
 ```
 
-`curl -sf` verschluckt diesen Rumpf; wer die Meldung sehen will, lässt das `-f` weg.
-Im Stapel über `/api/convert/batch` scheitert die Anfrage deswegen nicht: Die Datei
-wird ein Eintrag mit `status: "failed"` und dem Grund in `error`, die übrigen laufen
-weiter.
+`curl -sf` verschluckt diesen Rumpf; willst Du die Meldung sehen, lass das `-f`
+weg. Im Stapel über `/api/convert/batch` scheitert Deine Anfrage deswegen nicht:
+Die Datei wird ein Eintrag mit `status: "failed"` und dem Grund in `error`, die
+übrigen laufen weiter.
 
 ```json
 {
@@ -90,13 +93,13 @@ Welches Kürzel zu welchem Anlass gehört, steht vollständig unter
 
 Ganz oben erscheint dann ein roter Kasten mit der Meldung und einem Knopf „Erneut
 versuchen". Solange der Dienst schweigt, kennt die Seite weder die Engines noch
-die erlaubten Endungen; die Auswahl bleibt leer. Der Knopf fragt noch einmal
-nach. Hilft das nicht, ist der Dienst selbst nicht erreichbar — dann hilft nur,
-wer ihn betreibt.
+die erlaubten Endungen; Deine Auswahl bleibt leer. Der Knopf fragt noch einmal
+nach. Hilft das nicht, ist der Dienst selbst nicht erreichbar — dann hilft Dir
+nur, wer ihn betreibt.
 
-Am unteren Rand der Seite steht klein die Version des Dienstes. Wer dem Betreiber
-einen Fehler meldet, nennt sie mit. Sie kommt aus `/api/health`, und derselbe
-Aufruf beantwortet auch die Frage, ob der Dienst überhaupt noch da ist:
+Am unteren Rand der Seite steht klein die Version des Dienstes. Meldest Du dem
+Betreiber einen Fehler, nenn sie mit. Sie kommt aus `/api/health`, und derselbe
+Aufruf beantwortet Dir auch die Frage, ob der Dienst überhaupt noch da ist:
 
 ```bash
 curl -sf $DIENST/api/health
@@ -106,4 +109,4 @@ curl -sf $DIENST/api/health
 { "status": "ok", "version": "0.2.0" }
 ```
 
-Bleibt diese Antwort aus, liegt es nicht an der Datei.
+Bleibt diese Antwort aus, liegt es nicht an Deiner Datei.

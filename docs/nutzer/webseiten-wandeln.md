@@ -1,11 +1,11 @@
 # Eine Webseite wandeln
 
-Eine Webseite braucht keinen Umweg über den eigenen Rechner. Unter „Webseiten,
-eine Adresse je Zeile" steht ein mehrzeiliges Feld; „Webseiten wandeln" schickt
-jede Zeile ab, und der Dienst holt die Seiten selbst.
+Eine Webseite musst Du nicht erst auf Deinen Rechner laden. Trag ihre Adresse in
+das mehrzeilige Feld unter „Webseiten, eine Adresse je Zeile" ein — eine je Zeile
+— und schick sie mit „Webseiten wandeln" ab; der Dienst holt die Seiten selbst.
 
 Eine Zeile, die weder mit `http://` noch mit `https://` beginnt, schickt die
-Oberfläche gar nicht erst ab. Sie bleibt im Feld stehen und wird darunter
+Oberfläche gar nicht erst ab. Sie bleibt Dir im Feld stehen und wird darunter
 genannt. Alles Weitere prüft der Dienst — ob der Name auflöst, ob er ins offene
 Netz zeigt, ob dort ein Dokument liegt —, und seine Meldung steht dann in der
 Zeile der Warteschlange.
@@ -13,14 +13,14 @@ Zeile der Warteschlange.
 Jede geholte Seite reiht sich in dieselbe Warteschlange ein wie eine hochgeladene
 Datei. Ihren Namen bekommt sie aus dem Titel der Seite: Aus `https://example.com/`
 wird `example-domain.html`. Fanden nicht alle Adressen Platz, stehen die übrigen
-wieder im Feld — von dort lassen sie sich gleich noch einmal abschicken.
+wieder im Feld — von dort schickst Du sie gleich noch einmal ab.
 
 Welche Seiten der Dienst nicht brauchbar wandelt, steht unter
 [Grenzen](../admin/grenzen.md#webseiten-nur-offentlich-kein-javascript).
 
 ## Dieselbe Adresse über die Schnittstelle
 
-`/api/convert/url` nimmt eine Adresse je Aufruf, als JSON. `$DIENST` steht für die
+`/api/convert/url` nimmt eine Adresse je Aufruf, als JSON. Setz `$DIENST` auf die
 Adresse, unter der die Oberfläche antwortet:
 
 ```bash
@@ -40,21 +40,21 @@ curl -sf -H 'Content-Type: application/json' \
 }
 ```
 
-In `filename` steht derselbe Name, den auch die Warteschlange anzeigt. Einen
+In `filename` steht derselbe Name, den Dir auch die Warteschlange anzeigt. Einen
 Markdown-Zweig über `Accept`, wie ihn `/api/convert` kennt, gibt es hier nicht: Die
 Antwort ist immer JSON. Neben `url` nimmt der Rumpf `engine` und `ocr`, dieselben
 zwei Optionen wie beim Upload.
 
 Eine Zeile ohne `http://` oder `https://` schickt die Oberfläche gar nicht erst ab.
-Über die Schnittstelle antwortet der Dienst darauf selbst, mit 400 und dem Code
+Über die Schnittstelle antwortet der Dienst Dir darauf selbst, mit 400 und dem Code
 `invalid_url`:
 
 ```json
 { "detail": "example.com: nur http- und https-Adressen werden geholt.", "code": "invalid_url" }
 ```
 
-Denselben Code bekommt eine Adresse, die nicht ins offene Netz zeigt — auch dann,
-wenn erst eine Weiterleitung dorthin führt:
+Denselben Code bekommst Du für eine Adresse, die nicht ins offene Netz zeigt —
+auch dann, wenn erst eine Weiterleitung dorthin führt:
 
 ```json
 {
