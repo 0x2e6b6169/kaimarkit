@@ -103,18 +103,17 @@ curl -sf -F file=@bericht.docx $DIENST/api/convert -o bericht.md
 ```
 
 Der Rumpf der Antwort ist das Markdown, sonst nichts. Wie die Datei heißt, steht in
-`content-disposition`, die Engine in `x-engine`, und gab es Warnungen, kommt
-`x-warnings` dazu:
+`content-disposition`, die Engine in `x-engine`:
 
 ```text
 content-disposition: attachment; filename="bericht.md"; filename*=UTF-8''bericht.md
 x-engine: markitdown
-x-warnings: In bericht.docx steckt ein Bild. Sein Inhalt fehlt im Markdown. MarkItDown liest keinen Text aus Bildern. Wer ihn braucht, speichert das Dokument als PDF und l?dt es mit der Engine docling und eingeschalteter Texterkennung erneut hoch.
 content-type: text/markdown; charset=utf-8
 ```
 
-Kopfzeilen vertragen kein UTF-8: Aus `lädt` wird dort `l?dt`. Wer den Wortlaut einer
-Warnung braucht, holt ihn aus der JSON-Antwort.
+Gab es Warnungen, kommt `x-warnings` dazu. Kopfzeilen vertragen kein UTF-8, deshalb
+steht der Text dort auf ASCII heruntergebrochen: Aus `lädt` wird `l?dt`. Wer den
+Wortlaut einer Warnung braucht, holt ihn aus der JSON-Antwort.
 
 Wer statt der Datei alles will, was auch die Zeile in der Warteschlange zeigt —
 Engine, Dauer, Warnungen —, verlangt JSON:
