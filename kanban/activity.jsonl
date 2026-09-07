@@ -919,3 +919,8 @@
 {"timestamp":"2026-09-07T12:06:40.37109582+02:00","action":"release","task_id":136,"detail":"akar-45"}
 {"timestamp":"2026-09-07T12:08:28.348895332+02:00","action":"create","task_id":137,"detail":"BE-41 · ocr_available meldet die Voreinstellung, nicht die Verfuegbarkeit"}
 {"timestamp":"2026-09-07T12:37:42.67045776+02:00","action":"move","task_id":137,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-07T12:38:49.762918051+02:00","action":"move","task_id":137,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-07T12:42:12.915301433+02:00","action":"edit","task_id":137,"detail":"BE-41 · ocr_available meldet die Voreinstellung, nicht die Verfuegbarkeit"}
+{"timestamp":"2026-09-07T12:42:17.50131054+02:00","action":"move","task_id":137,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-07T12:42:18.110450245+02:00","action":"edit","task_id":137,"detail":"BE-41 · ocr_available meldet die Voreinstellung, nicht die Verfuegbarkeit"}
+{"timestamp":"2026-09-07T12:42:18.110788022+02:00","action":"release","task_id":137,"detail":"sophie-45"}
