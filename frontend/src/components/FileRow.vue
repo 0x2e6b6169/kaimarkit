@@ -168,7 +168,7 @@ const previewId = computed(() => `file-row-${props.entry.id}-preview`)
         :aria-controls="previewId"
         @click="emit('toggle', entry.id)"
       >
-        {{ expanded ? 'Zuklappen' : 'Aufklappen' }}
+        {{ expanded ? 'Vorschau schließen' : 'Vorschau' }}
       </button>
 
       <button
