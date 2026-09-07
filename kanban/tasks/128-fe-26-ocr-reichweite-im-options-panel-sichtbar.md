@@ -1,14 +1,16 @@
 ---
 id: 128
 title: FE-26 · OCR-Reichweite im Options-Panel sichtbar
-status: todo
+status: in-progress
 priority: medium
 created: 2026-09-07T09:55:45.859306412+02:00
-updated: 2026-09-07T09:55:45.859306412+02:00
+updated: 2026-09-07T09:57:00.362846072+02:00
 assignee: benny
 tags:
     - frontend
     - gh-2
+claimed_by: benny-30
+claimed_at: 2026-09-07T09:57:00.362846072+02:00
 class: standard
 ---
 
