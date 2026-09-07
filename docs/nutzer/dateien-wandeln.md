@@ -1,10 +1,9 @@
 # Eine Datei wandeln
 
 Diese Seite beschreibt den Weg von der Datei zum Markdown: hinzufügen, warten,
-ansehen, herunterladen. Sie setzt nichts voraus außer einem Browser und der
-Adresse, unter der der Dienst antwortet. Wer den Dienst selbst starten will,
-findet den Weg unter [Schnellstart](../admin/schnellstart.md); wer ihn aus einem
-Programm heraus rufen will, unter [API](../admin/api.md).
+ansehen, herunterladen. Sie zeigt ihn zweimal — in der Oberfläche und als Aufruf
+der Schnittstelle. Die Oberfläche ruft dieselben Endpunkte auf, die auch ein
+Skript benutzt; heraus kommt beide Male dasselbe.
 
 Ein Wort kommt immer wieder vor: **Engine**. So heißt das Programm, das die
 Umwandlung ausführt. Der Dienst bringt drei davon mit, und sie liefern zu
@@ -86,3 +85,68 @@ wieder frei.
 Danach steht die Zeile auf „abgebrochen", und die nächste wartende Datei rückt
 nach. Als Fehlschlag zählt der Abbruch nicht — entschieden hat ihn der Nutzer,
 gescheitert ist nichts.
+
+## Dieselbe Datei über die Schnittstelle
+
+Was die Oberfläche tut, geht auch aus einem Skript oder von der Kommandozeile. Die
+Beispiele schreiben `$DIENST` für die Adresse, unter der die Oberfläche antwortet —
+dieselbe, die im Browser in der Adresszeile steht:
+
+```bash
+DIENST=http://localhost:8080
+```
+
+Eine Datei schicken und das Markdown als Datei zurückbekommen, das Gegenstück zu
+„Herunterladen":
+
+```bash
+curl -sf -F file=@bericht.docx $DIENST/api/convert -o bericht.md
+```
+
+Der Rumpf der Antwort ist das Markdown, sonst nichts. Wie die Datei heißt, steht in
+`content-disposition`, die Engine in `x-engine`, und gab es Warnungen, kommt
+`x-warnings` dazu:
+
+```text
+content-disposition: attachment; filename="bericht.md"; filename*=UTF-8''bericht.md
+x-engine: markitdown
+x-warnings: In bericht.docx steckt ein Bild. Sein Inhalt fehlt im Markdown. MarkItDown liest keinen Text aus Bildern. Wer ihn braucht, speichert das Dokument als PDF und l?dt es mit der Engine docling und eingeschalteter Texterkennung erneut hoch.
+content-type: text/markdown; charset=utf-8
+```
+
+Kopfzeilen vertragen kein UTF-8: Aus `lädt` wird dort `l?dt`. Wer den Wortlaut einer
+Warnung braucht, holt ihn aus der JSON-Antwort.
+
+Die verlangt, wer statt der Datei alles will, was auch die Zeile in der
+Warteschlange zeigt — Engine, Dauer, Warnungen:
+
+```bash
+curl -sf -F file=@bericht.docx -H 'Accept: application/json' $DIENST/api/convert
+```
+
+```json
+{
+  "filename": "bericht.docx",
+  "status": "ok",
+  "markdown": "# Kaimarkit Fixture\n\nEin Absatz aus dem Fixturebestand.",
+  "engine": "markitdown",
+  "warnings": [],
+  "duration_ms": 71,
+  "error": null
+}
+```
+
+Mehrere Dateien nimmt `/api/convert/batch` in einem Aufruf. Es antwortet mit einem
+Archiv, in dem je eine `.md` liegt, und legt `_errors.txt` dazu, sobald eine Datei
+scheiterte — dasselbe, was „Alles herunterladen" packt:
+
+```bash
+curl -sf -F file=@bericht.docx -F file=@liste.csv \
+     $DIENST/api/convert/batch -o ergebnis.zip
+```
+
+Auch hier nimmt eine gescheiterte Datei die übrigen nicht mit. Mit
+`-H 'Accept: application/json'` kommt statt des Archivs eine Liste der Einträge,
+dazu die Zählung `total`, `succeeded` und `failed`.
+
+Alle Endpunkte, Felder und Fehlercodes stehen unter [API](../admin/api.md).
