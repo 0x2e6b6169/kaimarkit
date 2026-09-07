@@ -445,8 +445,8 @@ def test_placeholders_become_a_warning_with_their_count(
     assert result.warnings == [
         "Docling hat in bericht.pdf 3 Bilder durch Platzhalter ersetzt."
         " Ihr Inhalt fehlt im Markdown."
-        " Auch mit eingeschalteter Texterkennung nimmt Docling das Bild selbst nicht"
-        " ins Markdown auf. Ein Blick ins Original zeigt, was an dieser Stelle stand."
+        " Auch mit eingeschalteter Texterkennung nimmt Docling Bilder nicht ins"
+        " Markdown auf. Ein Blick ins Original zeigt, was dort stand."
     ]
 
 
@@ -461,8 +461,8 @@ def test_a_single_placeholder_is_counted_as_one(
     assert result.warnings == [
         "Docling hat in bericht.pdf ein Bild durch einen Platzhalter ersetzt."
         " Sein Inhalt fehlt im Markdown."
-        " Auch mit eingeschalteter Texterkennung nimmt Docling das Bild selbst nicht"
-        " ins Markdown auf. Ein Blick ins Original zeigt, was an dieser Stelle stand."
+        " Auch mit eingeschalteter Texterkennung nimmt Docling Bilder nicht ins"
+        " Markdown auf. Ein Blick ins Original zeigt, was dort stand."
     ]
 
 
@@ -541,6 +541,6 @@ def test_a_placeholder_with_ocr_on_points_at_the_original(
     assert result.warnings == [
         "Docling hat in bericht.pdf ein Bild durch einen Platzhalter ersetzt."
         " Sein Inhalt fehlt im Markdown."
-        " Auch mit eingeschalteter Texterkennung nimmt Docling das Bild selbst nicht"
-        " ins Markdown auf. Ein Blick ins Original zeigt, was an dieser Stelle stand."
+        " Auch mit eingeschalteter Texterkennung nimmt Docling Bilder nicht ins"
+        " Markdown auf. Ein Blick ins Original zeigt, was dort stand."
     ]

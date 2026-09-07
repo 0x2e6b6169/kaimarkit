@@ -93,7 +93,10 @@ Stelle — auch dort, wo gar kein Bild stand, sondern eine breite Tabelle, die d
 Modell als Bild eingeordnet hat. Die Antwort sagt das in `warnings` und nennt die
 Zahl: „Docling hat in breit.pdf 14 Bilder durch Platzhalter ersetzt. Ihr Inhalt
 fehlt im Markdown." Bei einem einzigen Platzhalter steht dort „ein Bild durch
-einen Platzhalter".
+einen Platzhalter". Danach nennt dieselbe Warnung, warum an dieser Stelle nichts
+steht und was hilft: In einem Word-, PowerPoint-, Excel- oder HTML-Dokument der
+Weg über PDF, bei ausgeschalteter Texterkennung der Schalter selbst, und bei
+schon eingeschalteter Texterkennung ein Blick ins Original.
 
 Wo die vorgebackenen Modelle liegen, sagt `DOCLING_ARTIFACTS_PATH`. Die Variable
 gehört Docling, nicht kaimarkit; das Container-Abbild setzt sie, damit zur Laufzeit

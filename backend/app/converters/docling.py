@@ -137,8 +137,8 @@ def _detour(suffix: str, ocr: bool) -> str:
             " Datei erneut hoch."
         )
     return (
-        "Auch mit eingeschalteter Texterkennung nimmt Docling das Bild selbst nicht"
-        " ins Markdown auf. Ein Blick ins Original zeigt, was an dieser Stelle stand."
+        "Auch mit eingeschalteter Texterkennung nimmt Docling Bilder nicht ins"
+        " Markdown auf. Ein Blick ins Original zeigt, was dort stand."
     )
 
 
