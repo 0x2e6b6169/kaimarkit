@@ -1,13 +1,15 @@
 ---
 id: 136
 title: DOC-26 · Nutzer-Bereich vollstaendiger schreiben, API-Weg ergaenzen
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-07T11:54:11.282319702+02:00
-updated: 2026-09-07T11:54:11.282319702+02:00
+updated: 2026-09-07T11:55:54.56830364+02:00
 assignee: akar
 tags:
     - docs
+claimed_by: akar-45
+claimed_at: 2026-09-07T11:55:54.56830364+02:00
 class: standard
 ---
 

@@ -4,7 +4,7 @@ title: DOC-23 · Eigene Seite fuer die Bedienung der Oberflaeche
 status: done
 priority: high
 created: 2026-09-07T11:09:52.799107404+02:00
-updated: 2026-09-07T11:18:07.216931188+02:00
+updated: 2026-09-07T11:56:09.186549071+02:00
 started: 2026-09-07T11:18:06.512514647+02:00
 completed: 2026-09-07T11:18:06.512514647+02:00
 assignee: akar
@@ -104,3 +104,9 @@ gleichzeitig (`MAX_PARALLEL` in `useConversion.ts`), "Entfernen", die
 Grenze `limits.max_files` samt Rückgabe der Adressen ins Feld
 (`UrlInput.keep`), `kaimarkit.zip` und `_errors.txt` (`download.ts`),
 das Banner "Der Dienst antwortet nicht" und die Version im Fuß (`App.vue`).
+
+## Auflage aufgehoben (2026-09-07, katche)
+
+Die Vorgabe "Kein Docker- oder curl-Beispiel auf der neuen Seite" ist durch DOC-26
+(#136) aufgehoben: Ein Aufruf über die Schnittstelle gehört seither ausdrücklich in
+den Nutzer-Bereich, als zweiter Weg neben der Oberfläche.

@@ -4,7 +4,7 @@ title: DOC-24 · Nutzer- und Admin-Dokumentation sauber trennen
 status: done
 priority: high
 created: 2026-09-07T11:30:16.173220563+02:00
-updated: 2026-09-07T11:39:58.514462026+02:00
+updated: 2026-09-07T11:56:09.955532265+02:00
 started: 2026-09-07T11:39:57.910770928+02:00
 completed: 2026-09-07T11:39:57.910770928+02:00
 assignee: akar
@@ -143,3 +143,9 @@ nennt `docs/betrieb/konfiguration.md`, der Ticketschnitt-Abschnitt zweimal
 `docs/formate.md`) und `.claude/skills/work-lane/SKILL.md`. Ein Nachfolgeticket
 sollte sie besitzen; sie liegen in drei fremden Lanes und gehörten nicht in
 dieses.
+
+## Auflage aufgehoben (2026-09-07, katche)
+
+Die Prüfung "Kein Docker- oder curl-Beispiel im Nutzer-Bereich" ist durch DOC-26
+(#136) aufgehoben: Ein Aufruf über die Schnittstelle gehört seither ausdrücklich in
+den Nutzer-Bereich, als zweiter Weg neben der Oberfläche.
