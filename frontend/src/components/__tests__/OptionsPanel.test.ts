@@ -160,6 +160,54 @@ describe('OptionsPanel', () => {
     })
   })
 
+  it('sagt beim OCR-Schalter ohne Zutun, wo die Texterkennung wirkt', () => {
+    // Wer den Schalter bei einem .docx anlegt und nichts bekommt, soll die
+    // Grenze schon vorher gelesen haben — nicht erst am leeren Ergebnis raten.
+    const wrapper = render()
+    expect(wrapper.get('[data-test="ocr-short"]').text()).toMatch(/nur .*PDF/i)
+  })
+
+  it('haengt den Langtext per aria-describedby an das Info-Zeichen', () => {
+    const wrapper = render()
+    const info = wrapper.get('[data-test="ocr-info"]')
+    expect(info.element.tagName).toBe('BUTTON')
+    expect(info.attributes('type')).toBe('button')
+    expect(info.attributes('aria-label')).toBeTruthy()
+
+    const describedBy = info.attributes('aria-describedby')
+    expect(describedBy).toBeTruthy()
+    const long = wrapper.get(`#${describedBy}`)
+    expect(long.text()).toMatch(/\.docx/)
+    expect(long.text()).toMatch(/\.tiff/)
+    expect(long.text()).toMatch(/PDF/)
+  })
+
+  it('oeffnet den Langtext bei Tastaturfokus und schliesst ihn mit Escape', async () => {
+    // Ein reines :hover waere ohne Maus unerreichbar.
+    const wrapper = render()
+    const info = wrapper.get('[data-test="ocr-info"]')
+    const long = wrapper.get('[data-test="ocr-long"]')
+    expect(long.attributes('hidden')).toBeDefined()
+
+    await info.trigger('focus')
+    expect(long.attributes('hidden')).toBeUndefined()
+
+    await info.trigger('keydown', { key: 'Escape' })
+    expect(long.attributes('hidden')).toBeDefined()
+
+    await info.trigger('mouseenter')
+    expect(long.attributes('hidden')).toBeUndefined()
+    await info.trigger('mouseleave')
+    expect(long.attributes('hidden')).toBeDefined()
+  })
+
+  it('laesst den Hinweis weg, wenn es keinen OCR-Schalter gibt', () => {
+    given({ ocr_available: false })
+    const wrapper = render()
+    expect(wrapper.find('[data-test="ocr-short"]').exists()).toBe(false)
+    expect(wrapper.find('[data-test="ocr-info"]').exists()).toBe(false)
+  })
+
   it('laesst den OCR-Schalter weg, wenn das Backend kein OCR meldet', () => {
     given({ ocr_available: false })
     const wrapper = render()

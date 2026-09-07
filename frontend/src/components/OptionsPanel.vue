@@ -30,9 +30,24 @@
  *
  * Die Optionen gelten fuer den naechsten Start, nicht rueckwirkend: Was bereits
  * konvertiert ist, bleibt, wie es ist.
+ *
+ * ## Warum neben dem OCR-Schalter steht, wo er wirkt
+ *
+ * Die Texterkennung erreicht nur PDF und Bilddateien. Wer sie bei einem .docx
+ * mit fotografiertem Absatz einschaltet, bekommt den Absatz trotzdem nicht und
+ * kann am leeren Ergebnis nicht erkennen, ob das ein Fehler ist oder die
+ * Grenze. Der Kurzsatz steht deshalb offen neben dem Schalter; die Aufzaehlung
+ * der Formate und der Umweg ueber PDF stehen hinter dem Info-Zeichen. Es
+ * oeffnet bei Hover **und** bei Tastaturfokus, schliesst mit Escape und haengt
+ * per `aria-describedby` am Zeichen — ein Screenreader liest den Text beim
+ * Anspringen mit, ob er gerade sichtbar ist oder nicht.
+ *
+ * Die Aussage stammt aus `docs/grenzen.md`, Abschnitt „OCR greift nur in PDF
+ * und Bilddateien"; wer sie dort aendert, aendert sie hier mit. Sie gilt
+ * statisch: Die Warteschlange geht sie nichts an.
  */
 
-import { computed, onMounted, watch } from 'vue'
+import { computed, onMounted, ref, useId, watch } from 'vue'
 import EngineSelect from './EngineSelect.vue'
 import { useCapabilities } from '../composables/useCapabilities'
 import { rememberEngine } from '../composables/useConversion'
@@ -101,6 +116,12 @@ watch(
 function onOcrChange(event: Event): void {
   update({ ocr: (event.target as HTMLInputElement).checked })
 }
+
+/** Eine eigene Kennung je Instanz, damit `aria-describedby` nicht kollidiert. */
+const ocrLongId = `options-ocr-${useId()}-long`
+
+/** Ob die ausfuehrliche Erklaerung zur OCR-Reichweite gerade offen steht. */
+const ocrLongOpen = ref(false)
 </script>
 
 <template>
@@ -119,7 +140,11 @@ function onOcrChange(event: Event): void {
       />
 
       <!-- Der OCR-Schalter steht nur da, wenn das Backend OCR meldet. -->
-      <div v-if="ocrAvailable" class="flex items-center gap-2" data-test="ocr-field">
+      <div
+        v-if="ocrAvailable"
+        class="flex flex-wrap items-center gap-x-2 gap-y-0.5"
+        data-test="ocr-field"
+      >
         <input
           id="options-ocr"
           type="checkbox"
@@ -131,6 +156,40 @@ function onOcrChange(event: Event): void {
         <label for="options-ocr" class="text-sm">Text in Bildern erkennen (OCR)</label>
         <span v-if="modelValue.ocr === null" class="text-xs text-slate-500">
           folgt der Voreinstellung des Dienstes
+        </span>
+
+        <span class="text-xs text-slate-500" data-test="ocr-short">
+          wirkt nur in PDF und Bilddateien
+        </span>
+
+        <span class="relative">
+          <button
+            type="button"
+            class="size-5 rounded-full border border-slate-400 text-xs leading-none text-slate-600"
+            aria-label="Erklärung zur Reichweite der Texterkennung"
+            :aria-describedby="ocrLongId"
+            :aria-expanded="ocrLongOpen"
+            data-test="ocr-info"
+            @mouseenter="ocrLongOpen = true"
+            @mouseleave="ocrLongOpen = false"
+            @focus="ocrLongOpen = true"
+            @blur="ocrLongOpen = false"
+            @keydown.escape="ocrLongOpen = false"
+          >
+            i
+          </button>
+          <p
+            :id="ocrLongId"
+            role="tooltip"
+            class="absolute left-0 top-full z-10 mt-1 w-72 max-w-[calc(100vw-2rem)] rounded border border-slate-300 bg-white p-2 text-xs text-slate-600 shadow"
+            :hidden="!ocrLongOpen"
+            data-test="ocr-long"
+          >
+            Die Texterkennung liest Bildtext nur in PDF und in den Bildformaten .png,
+            .jpg, .jpeg und .tiff. In .docx, .pptx, .xlsx, .html und .epub bleibt sie
+            aus — auch dann, wenn dieser Schalter an ist. Der Umweg führt über PDF:
+            das Dokument als PDF speichern und erneut hochladen.
+          </p>
         </span>
       </div>
     </div>
