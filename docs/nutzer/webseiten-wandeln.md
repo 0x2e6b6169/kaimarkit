@@ -1,8 +1,8 @@
 # Eine Webseite wandeln
 
 Eine Webseite musst Du nicht erst auf Deinen Rechner laden. Trag ihre Adresse in
-das mehrzeilige Feld unter „Webseiten, eine Adresse je Zeile" ein — eine je Zeile
-— und schick sie mit „Webseiten wandeln" ab; der Dienst holt die Seiten selbst.
+das mehrzeilige Feld unter „Webseiten, eine Adresse je Zeile" ein und schick sie
+mit „Webseiten wandeln" ab; der Dienst holt die Seiten selbst.
 
 Eine Zeile, die weder mit `http://` noch mit `https://` beginnt, schickt die
 Oberfläche gar nicht erst ab. Sie bleibt im Feld stehen und wird darunter

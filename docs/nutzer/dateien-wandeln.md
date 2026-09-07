@@ -6,9 +6,9 @@ ruft dieselben Endpunkte auf, die auch ein Skript benutzt.
 
 Ein Wort begegnet Dir dabei immer wieder: **Engine**. So heißt das Programm, das
 die Umwandlung ausführt. Der Dienst bringt drei davon mit, und sie liefern zu
-derselben Datei unterschiedliche Ergebnisse. Wählen kannst Du selbst — wie, steht
-unter [Engine und Texterkennung wählen](engine-und-texterkennung.md); was die drei
-unterscheidet, steht unter [Formate](../admin/formate.md).
+derselben Datei unterschiedliche Ergebnisse. Wählen kannst Du selbst; wie das
+geht, steht unter [Engine und Texterkennung wählen](engine-und-texterkennung.md),
+und was die drei unterscheidet, unter [Formate](../admin/formate.md).
 
 Hast Du statt einer Datei eine Adresse, führt Dein Weg über
 [Eine Webseite wandeln](webseiten-wandeln.md).
@@ -20,8 +20,8 @@ hierher ziehen oder auswählen" und lass sie dort los. Ein Klick darauf öffnet
 stattdessen die Dateiauswahl. Mit der Tastatur führt Dich der Tabulator auf das
 Feld, die Leertaste öffnet die Auswahl. Mehrere Dateien auf einmal sind erlaubt.
 
-Welche Endungen der Dienst gerade annimmt, steht unter der Beschriftung. Er meldet
-sie selbst.
+Welche Endungen der Dienst gerade annimmt, steht unter der Beschriftung — er
+meldet sie selbst.
 
 Legst Du mehr Einträge auf einmal ab, als der Dienst aufnimmt, erscheint unter der
 Warteschlange ein Hinweis mit beiden Zahlen: wie viele hineinpassen und wie viele
