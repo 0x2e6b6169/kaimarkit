@@ -1,16 +1,18 @@
 ---
 id: 122
 title: 'BE-40 · MarkItDown bei docx: keine base64-Flut, dafür eine Warnung'
-status: todo
+status: in-progress
 priority: high
 created: 2026-09-03T15:13:03.634213602+02:00
-updated: 2026-09-03T15:13:22.739087007+02:00
+updated: 2026-09-07T09:47:26.510840872+02:00
 assignee: sophie
 tags:
     - backend
     - gh-2
 depends_on:
     - 121
+claimed_by: sophie-44
+claimed_at: 2026-09-07T09:47:26.510840872+02:00
 class: standard
 ---
 
