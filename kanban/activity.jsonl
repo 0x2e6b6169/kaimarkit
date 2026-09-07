@@ -854,3 +854,18 @@
 {"timestamp":"2026-09-03T15:48:27.49421901+02:00","action":"edit","task_id":120,"detail":"FE-25 · Vorgelesen wird die Zahl, nicht die Warnung"}
 {"timestamp":"2026-09-03T15:48:27.494602986+02:00","action":"release","task_id":120,"detail":"benny-27"}
 {"timestamp":"2026-09-03T15:52:43.847436463+02:00","action":"edit","task_id":121,"detail":"BE-39 · Die Warnung nennt den Grund und den Umweg (GitHub #2)"}
+{"timestamp":"2026-09-07T09:33:05.441349536+02:00","action":"move","task_id":86,"detail":"backlog -\u003e todo"}
+{"timestamp":"2026-09-07T09:38:21.560133907+02:00","action":"move","task_id":86,"detail":"todo -\u003e in-progress"}
+{"timestamp":"2026-09-07T09:38:24.116214534+02:00","action":"edit","task_id":121,"detail":"BE-39 · Die Warnung nennt den Grund und den Umweg (GitHub #2)"}
+{"timestamp":"2026-09-07T09:38:24.116909327+02:00","action":"release","task_id":121,"detail":"sophie-41"}
+{"timestamp":"2026-09-07T09:38:33.726066378+02:00","action":"edit","task_id":121,"detail":"BE-39 · Die Warnung nennt den Grund und den Umweg (GitHub #2)"}
+{"timestamp":"2026-09-07T09:38:33.726556285+02:00","action":"claim","task_id":121,"detail":"sophie-41"}
+{"timestamp":"2026-09-07T09:43:14.28159528+02:00","action":"edit","task_id":86,"detail":"DOC-12 · Eine Versionsnummer in der Prosa veraltet von selbst"}
+{"timestamp":"2026-09-07T09:43:15.148775291+02:00","action":"move","task_id":86,"detail":"in-progress -\u003e done"}
+{"timestamp":"2026-09-07T09:43:17.187522702+02:00","action":"edit","task_id":86,"detail":"DOC-12 · Eine Versionsnummer in der Prosa veraltet von selbst"}
+{"timestamp":"2026-09-07T09:43:17.188136665+02:00","action":"release","task_id":86,"detail":"akar-42"}
+{"timestamp":"2026-09-07T09:44:19.504993644+02:00","action":"edit","task_id":86,"detail":"DOC-12 · Eine Versionsnummer in der Prosa veraltet von selbst"}
+{"timestamp":"2026-09-07T09:44:36.882915474+02:00","action":"create","task_id":125,"detail":"DOC-? · Docling-Versionsangabe ohne Datum"}
+{"timestamp":"2026-09-07T09:44:37.48572314+02:00","action":"create","task_id":126,"detail":"DOC-? · Arbeitsspeicher-Groessen ohne Datum"}
+{"timestamp":"2026-09-07T09:44:46.37346544+02:00","action":"edit","task_id":125,"detail":"DOC-20 · Docling-Versionsangabe ohne Datum"}
+{"timestamp":"2026-09-07T09:44:47.182654428+02:00","action":"edit","task_id":126,"detail":"DOC-21 · Arbeitsspeicher-Groessen ohne Datum"}

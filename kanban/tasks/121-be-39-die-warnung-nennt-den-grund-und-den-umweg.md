@@ -4,13 +4,13 @@ title: 'BE-39 · Die Warnung nennt den Grund und den Umweg (GitHub #2)'
 status: in-progress
 priority: high
 created: 2026-09-03T15:13:02.423738476+02:00
-updated: 2026-09-03T15:52:43.846807733+02:00
+updated: 2026-09-07T09:38:33.725123771+02:00
 assignee: sophie
 tags:
     - backend
     - gh-2
 claimed_by: sophie-41
-claimed_at: 2026-09-03T15:52:43.847056905+02:00
+claimed_at: 2026-09-07T09:38:33.725600941+02:00
 class: standard
 ---
 
