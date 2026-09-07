@@ -153,7 +153,7 @@ describe('App', () => {
     // Vor dem Aufklappen ist keine Vorschau da; sie kostet dann auch nichts.
     expect(wrapper.find('[data-test="rendered"]').exists()).toBe(false)
 
-    const expand = wrapper.findAll('button').find((button) => button.text() === 'Aufklappen')
+    const expand = wrapper.findAll('button').find((button) => button.text() === 'Vorschau')
     expect(expand).toBeDefined()
     await expand!.trigger('click')
 
