@@ -68,6 +68,11 @@ PLACEHOLDER = "<!-- image -->"
 #: Die Endungen, die Docling als Bild liest — nur sie prüft ``_upright_image``.
 IMAGE_EXTENSIONS: tuple[str, ...] = (".png", ".jpg", ".jpeg", ".tiff")
 
+#: Die Endungen, bei denen Docling nie eine Texterkennung laufen laesst. Docling gibt
+#: sie an die ``SimplePipeline``, und deren Optionen kennen ``do_ocr`` nicht; der
+#: Schalter ``ocr`` bleibt hier folgenlos (BE-38, GitHub #2).
+NO_OCR_EXTENSIONS: tuple[str, ...] = (".docx", ".pptx", ".xlsx", ".html", ".htm")
+
 #: Der EXIF-Tag ``Orientation``; ``1`` heißt „so, wie die Pixel liegen“.
 EXIF_ORIENTATION = 0x0112
 
@@ -105,13 +110,49 @@ def _upright_image(path: Path) -> io.BytesIO | None:
     return buffer
 
 
-def _placeholder_warnings(markdown: str, name: str) -> list[str]:
+def _detour(suffix: str, ocr: bool) -> str:
+    """Der Grund und der Umweg, passend zu Format und OCR-Schalter.
+
+    Drei Faelle, und sie schliessen einander aus. In einem Word-, PowerPoint-,
+    Excel- oder HTML-Dokument liest Docling nie aus Bildern; dort hilft nur, dasselbe
+    Dokument als PDF abzugeben (BE-38, im Abbild gemessen). Bei PDF und Bilddateien
+    haengt es am Schalter: Steht er aus, holt ein zweiter Lauf den Text meist heraus;
+    stand er schon an, ist nichts mehr einzuschalten. Dann verspricht die Warnung auch
+    nichts mehr, sondern schickt den Leser ins Original — das Bild selbst nimmt Docling
+    ohnehin nie ins Markdown auf, es setzt ``PLACEHOLDER`` an seine Stelle.
+
+    Beide Umwege sind in diesem Stand begehbar: Die Enginewahl steht im Frontend, und
+    fuer ``.pdf`` ist Docling ohnehin die erste Wahl der Registry.
+    """
+    if suffix in NO_OCR_EXTENSIONS:
+        return (
+            "Text aus einem Bild liest Docling nur in einer PDF-Datei oder in einer"
+            " Bilddatei. Wer ihn braucht, speichert das Dokument als PDF und lädt es"
+            " mit eingeschalteter Texterkennung erneut hoch."
+        )
+    if not ocr:
+        return (
+            "Ohne eingeschaltete Texterkennung liest Docling den Text aus einem Bild"
+            " nicht. Wer ihn braucht, schaltet die Texterkennung ein und lädt die"
+            " Datei erneut hoch."
+        )
+    return (
+        "Auch mit eingeschalteter Texterkennung nimmt Docling Bilder nicht ins"
+        " Markdown auf. Ein Blick ins Original zeigt, was dort stand."
+    )
+
+
+def _placeholder_warnings(markdown: str, path: Path, ocr: bool) -> list[str]:
     """Warnt, wenn im Markdown Platzhalter statt Inhalt stehen.
 
     Doclings Modell ordnet manches als Bild ein, was Text ist — eine breite Tabelle
     etwa. Der Export setzt dafuer ``<!-- image -->`` ein, und wer das Ergebnis liest,
     sieht sonst nicht, dass ein Stueck der Vorlage fehlt. Die Zahl steht in der
     Warnung: Ein ersetztes Bild ist etwas anderes als vierzehn.
+
+    Die Warnung nennt drei Dinge: was fehlt, warum Docling es an dieser Stelle nicht
+    liest, und was dagegen hilft. Der Grund allein hat den Nutzer nicht weitergebracht
+    (BE-39, GitHub #2); den Umweg liefert ``_detour``.
     """
     count = markdown.count(PLACEHOLDER)
     if count == 0:
@@ -122,7 +163,8 @@ def _placeholder_warnings(markdown: str, name: str) -> list[str]:
     else:
         ersetzt = f"{count} Bilder durch Platzhalter"
         fehlt = "Ihr Inhalt fehlt im Markdown."
-    return [f"Docling hat in {name} {ersetzt} ersetzt. {fehlt}"]
+    detour = _detour(path.suffix.lower(), ocr)
+    return [f"Docling hat in {path.name} {ersetzt} ersetzt. {fehlt} {detour}"]
 
 
 def _build_pipeline(ocr: bool) -> Callable[[Path], str]:
@@ -266,7 +308,7 @@ class DoclingConverter:
         return ConversionResult(
             markdown=markdown,
             engine=self.name,
-            warnings=_placeholder_warnings(markdown, path.name),
+            warnings=_placeholder_warnings(markdown, path, ocr),
         )
 
     def _pipeline(self, ocr: bool) -> Callable[[Path], str]:
