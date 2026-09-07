@@ -18,10 +18,14 @@ class: standard
 Docling ist im Abbild gepinnt, die Zahl veraltet also erst, wenn jemand den Pin hebt.
 Das Datum fehlt trotzdem; dieselbe Klasse wie DOC-12 (#86).
 
+**Pfad berichtigt (2026-09-07, katche):** DOC-24 hat die Doku umgezogen. Die
+Fundstellen liegen jetzt unter `docs/admin/formate.md` und `docs/admin/grenzen.md`;
+die Zeilennummern gelten nicht mehr, erst neu greppen.
+
 ## Eigene Dateien
 
-- `docs/formate.md` (Abschnitt "Docling")
-- `docs/grenzen.md` (dieselbe Stelle)
+- `docs/admin/formate.md` (Abschnitt "Docling")
+- `docs/admin/grenzen.md` (dieselbe Stelle)
 
 ## Vorgaben
 

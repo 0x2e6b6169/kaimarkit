@@ -22,9 +22,13 @@ die Warnung aus BE-14 (#47), die sagt, dass ein Teil der Vorlage fehlt. Genau di
 Auskunft, wegen der es dieses Projekt gibt, bleibt auf dem dokumentierten Weg
 unsichtbar.
 
+**Pfad berichtigt (2026-09-07, katche):** DOC-24 hat `docs/betrieb/` aufgelöst; die
+Seite liegt jetzt unter `docs/admin/lokal.md`. Prüfen, ob der Abschnitt dort noch so
+heißt, bevor die Arbeit beginnt.
+
 ## Eigene Dateien
 
-- `docs/betrieb/lokal.md` (Abschnitt "Pruefen, ob der Dienst antwortet")
+- `docs/admin/lokal.md` (Abschnitt "Pruefen, ob der Dienst antwortet")
 
 Nur dieser Abschnitt. Die Abschnitte "Drei Schritte" und "Was vorher da sein muss"
 gehoeren BE-17 (#56).

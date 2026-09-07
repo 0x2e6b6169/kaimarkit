@@ -18,10 +18,14 @@ class: standard
 ohne Datum. Sie wachsen mit dem Abbild, ohne dass jemand die Seite anfasst — dieselbe
 Klasse wie DOC-12 (#86).
 
+**Pfad berichtigt (2026-09-07, katche):** DOC-24 hat `docs/betrieb/` aufgelöst. Die
+Fundstellen liegen jetzt unter `docs/admin/lokal.md` und `docs/admin/konfiguration.md`;
+die Zeilennummern gelten nicht mehr, erst neu greppen.
+
 ## Eigene Dateien
 
-- `docs/betrieb/lokal.md`
-- `docs/betrieb/konfiguration.md`
+- `docs/admin/lokal.md`
+- `docs/admin/konfiguration.md`
 
 ## Vorgaben
 

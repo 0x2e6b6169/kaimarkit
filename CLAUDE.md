@@ -86,7 +86,7 @@ umgestellt werden soll.
 Fehlerfall.
 
 **6. Eine Quelle für den Betrieb.** `docker/.env.example` und
-`docs/betrieb/konfiguration.md` beschreiben dieselben Variablen und werden gemeinsam
+`docs/admin/konfiguration.md` beschreiben dieselben Variablen und werden gemeinsam
 geändert. Die Dokumentation ist die einzige Quelle für Betrieb und Bedienung; es gibt
 kein zweites README daneben.
 
@@ -261,11 +261,12 @@ sollen.
 
 **In `docs/` gilt das Eigentum je Abschnitt, nicht je Seite.** Eine Doku-Seite ist
 nach Lesern gegliedert, nicht nach Erbauern; jede Lane braucht ein Stück davon. Ein
-Ticket nennt deshalb den Abschnitt mit: `docs/formate.md` (Abschnitt „Docling").
+Ticket nennt deshalb den Abschnitt mit: `docs/admin/formate.md` (Abschnitt „Docling").
 Wer eine Seite anlegt, besitzt ihren Aufbau; wer den Gegenstand baut, besitzt die
 Aussagen über ihn. Zwei offene Tickets im selben Abschnitt bleiben ein Schnittfehler.
 Ein Abschnitt, den jedes Ticket anfassen müsste, folgt der Engpassdatei, zu der er
-gehört: `docs/formate.md` (Abschnitt „Die Matrix") gehört `BE-2`, so wie `registry.py`.
+gehört: `docs/admin/formate.md` (Abschnitt „Die Matrix") gehört `BE-2`, so wie
+`registry.py`.
 
 **Ein Ticket besitzt selten nur die Dateien, die es im Titel führt.** Ein neuer
 Zustand oder Typ wandert durch alles, was ihn weiterreicht — ein `aborted` in der

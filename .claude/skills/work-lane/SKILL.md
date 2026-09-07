@@ -118,7 +118,7 @@ Repeat until your lane is empty **and** no subagent of yours is still running:
      subagent's own code is still its bug and gets fixed.
    - Update the **documentation** (`docs/` pages + `CLAUDE.md`) for any
      user-visible behaviour or architecture/convention change. Note that
-     `docker/.env.example` and `docs/betrieb/konfiguration.md` are a pair
+     `docker/.env.example` and `docs/admin/konfiguration.md` are a pair
      (CLAUDE.md convention 6) — a new variable touches both.
    - **Docs are owned per section, not per page.** Fix what your change made
      false — even on a page another ticket created — and report what was already

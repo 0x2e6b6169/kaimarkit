@@ -20,9 +20,12 @@ einem Bild nur der Alt-Text im Markdown, nicht sein Inhalt." Das ist durch BE-40
 in `warnings` meldet, mit Grund und Umweg (docling.py + markitdown.py, Wortlaut in den
 Notizen von #121 und #122).
 
+**Pfad berichtigt (2026-09-07, katche):** DOC-24 hat die Seite nach
+`docs/admin/formate.md` verschoben.
+
 ## Eigene Dateien
 
-- `docs/formate.md` (Abschnitt "MarkItDown")
+- `docs/admin/formate.md` (Abschnitt "MarkItDown")
 
 ## Vorgaben
 
