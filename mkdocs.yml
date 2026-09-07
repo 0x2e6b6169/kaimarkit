@@ -60,14 +60,18 @@ markdown_extensions:
 
 nav:
   - Start: index.md
-  - Schnellstart: schnellstart.md
-  - Oberfläche: benutzung.md
-  - Formate: formate.md
-  - API: api.md
-  - Betrieb:
-      - Konfiguration: betrieb/konfiguration.md
-      - Lokaler Betrieb: betrieb/lokal.md
-      - Traefik: betrieb/traefik.md
-      - Authelia: betrieb/authelia.md
+  - Für Nutzer:
+      - Eine Datei wandeln: nutzer/dateien-wandeln.md
+      - Eine Webseite wandeln: nutzer/webseiten-wandeln.md
+      - Engine und Texterkennung wählen: nutzer/engine-und-texterkennung.md
+      - Warnungen und Fehler verstehen: nutzer/warnungen-und-fehler.md
+  - Für Admins:
+      - Schnellstart: admin/schnellstart.md
+      - Lokaler Betrieb: admin/lokal.md
+      - Konfiguration: admin/konfiguration.md
+      - Formate und Engines: admin/formate.md
+      - Hinter Traefik: admin/traefik.md
+      - Anmeldung mit Authelia: admin/authelia.md
+      - Grenzen: admin/grenzen.md
+      - API: admin/api.md
   - Entwicklung: entwicklung.md
-  - Grenzen: grenzen.md

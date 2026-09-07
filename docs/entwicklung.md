@@ -196,12 +196,12 @@ Präferenz. Die Registry lädt das Modul erst beim ersten Zugriff.
 **6. Die Abhängigkeit nachziehen.** Ein Python-Paket gehört nach
 `backend/pyproject.toml`, ein Programm in `docker/Dockerfile`. Braucht die Engine
 eine Einstellung, kommt sie als `KAIMARKIT_*`-Variable in `config.py`, in
-`docker/.env.example` und in [Konfiguration](betrieb/konfiguration.md) — die drei
+`docker/.env.example` und in [Konfiguration](admin/konfiguration.md) — die drei
 gehören zusammen.
 
 **7. Prüfen und beschreiben.** Ein Test unter `backend/tests/` mit einer Attrappe
 statt der echten Bibliothek; was die echten Modelle braucht, bekommt die Markierung
-`slow`. Und die Matrix in [Formate](formate.md) nennt danach die neue Engine, sonst
+`slow`. Und die Matrix in [Formate](admin/formate.md) nennt danach die neue Engine, sonst
 weiß niemand, dass es sie gibt.
 
 ## Dark Mode und die Farbpalette

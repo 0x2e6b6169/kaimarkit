@@ -4,7 +4,7 @@ Was kaimarkit nicht kann und woran eine Umwandlung scheitert.
 
 ## Fünf Werte begrenzen einen Aufruf
 
-Alle fünf kommen aus der Umgebung. `docs/betrieb/konfiguration.md` beschreibt sie
+Alle fünf kommen aus der Umgebung. `docs/admin/konfiguration.md` beschreibt sie
 im Einzelnen, `docker/.env.example` nennt die Standardwerte.
 
 | Variable | Standard | Was sie begrenzt |
@@ -157,7 +157,7 @@ nach der Antwort verschwindet — auch dann, wenn die Engine gescheitert ist.
 - **Nichts aufheben.** Es gibt keine Historie und keinen Zwischenspeicher. Wer ein
   Ergebnis behalten will, lädt es herunter.
 - **Niemanden erkennen.** Die API kennt keine Anmeldung und keine Kennungen. Eine
-  Anmeldung kommt von außen davor, siehe [Authelia](betrieb/authelia.md).
+  Anmeldung kommt von außen davor, siehe [Authelia](authelia.md).
 - **Nichts nachladen.** Alle Modelle stecken im Abbild. Aus dem Netz holt der
   Dienst zur Laufzeit nur, was ein Aufruf von `/api/convert/url` verlangt: die eine
   Seite, von einer öffentlichen Adresse, und nichts von sich aus.

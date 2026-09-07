@@ -123,7 +123,7 @@ Die erste Umwandlung von der Kommandozeile aus:
 curl -sf -F file=@bericht.pdf localhost:8080/api/convert -o bericht.md
 ```
 
-Weitere Aufrufe stehen unter [API](../api.md).
+Weitere Aufrufe stehen unter [API](api.md).
 
 ## Mitlesen, beenden, aufräumen
 

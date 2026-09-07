@@ -8,6 +8,20 @@ zerfallen in Wortreihen, Fußnoten landen mitten im Satz, und eine eingescannte 
 liefert überhaupt keinen Text. Das Modell antwortet trotzdem. kaimarkit schiebt einen
 Schritt dazwischen: Es zeigt das Markdown, bevor es jemand weiterreicht.
 
+## Diese Dokumentation hat zwei Teile
+
+**[Für Nutzer](nutzer/dateien-wandeln.md)** — die Arbeit im Browser. Eine Datei
+oder eine Webseite wandeln, Engine und Texterkennung wählen, eine Warnung lesen.
+Diese Seiten setzen nichts voraus außer einem Browser und der Adresse, unter der
+der Dienst antwortet.
+
+**[Für Admins](admin/schnellstart.md)** — den Dienst bereitstellen. Installieren,
+konfigurieren, hinter Traefik stellen, eine Anmeldung davorsetzen, Grenzen setzen,
+die Schnittstelle ansprechen. Diese Seiten setzen Terminal, Docker und curl voraus.
+
+Wer am Quelltext mitarbeitet, findet den Aufbau des Projekts unter
+[Entwicklung](entwicklung.md).
+
 ## Drei Engines, eine Auswahl je Endung
 
 MarkItDown ist die schnelle Engine ohne Modelle und ohne Texterkennung. Docling liest
@@ -16,26 +30,12 @@ Modelle im Speicher. Pandoc bedient die Formate, die sonst niemand liest — `.o
 `.rtf`, `.tex` —, kann PDF aber nicht lesen.
 
 Welche Endung welche Engine bekommt und in welcher Reihenfolge, steht unter
-[Formate](formate.md). Wer die Wahl selbst treffen will, nennt die Engine im Aufruf;
-der Dienst ersetzt sie dann nie durch eine andere.
+[Formate](admin/formate.md). Wer die Wahl selbst treffen will, nennt die Engine im
+Aufruf; der Dienst ersetzt sie dann nie durch eine andere.
 
 ## Der Dienst legt nichts ab
 
 Eine hochgeladene Datei liegt während der Umwandlung in einer temporären Datei und
 ist danach gelöscht, auch wenn die Engine gescheitert ist. Es gibt keine Historie,
 kein Konto und keine Anmeldung. Wer eine Anmeldung braucht, setzt
-[Authelia](betrieb/authelia.md) davor.
-
-## Wohin als Nächstes
-
-- [Schnellstart](schnellstart.md) — vom Start des Containers bis zur ersten
-  umgewandelten Datei.
-- [Die Oberfläche](benutzung.md) — die Bedienung im Browser, ohne Terminal und
-  ohne API.
-- [Formate](formate.md) — die Matrix aus Endung und Engine, dazu OCR und Rückfall.
-- [API](api.md) — die fünf Endpunkte mit Aufrufen für curl.
-- [Betrieb](betrieb/konfiguration.md) — alle Variablen, lokal, hinter Traefik, mit
-  Anmeldung.
-- [Entwicklung](entwicklung.md) — Aufbau des Projekts und eine vierte Engine
-  ergänzen.
-- [Grenzen](grenzen.md) — was das Werkzeug nicht kann.
+[Authelia](admin/authelia.md) davor.

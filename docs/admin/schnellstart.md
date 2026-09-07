@@ -2,7 +2,7 @@
 
 Diese Seite führt vom Start des Containers bis zur ersten umgewandelten Datei. Was
 dabei im Einzelnen geschieht und welche Variablen es gibt, steht unter
-[Lokaler Betrieb](betrieb/lokal.md) und [Konfiguration](betrieb/konfiguration.md).
+[Lokaler Betrieb](lokal.md) und [Konfiguration](konfiguration.md).
 
 ## Was vorher da sein muss
 
@@ -24,7 +24,7 @@ kehrt mit 0 zurück. Meldet er stattdessen `permission denied while trying to co
 to the docker API`, dann läuft die Engine, aber das eigene Konto darf nicht an ihren
 Socket. Es fehlt die Gruppe `docker` — wer in ihr steht, wird auf diesem Rechner
 allerdings effektiv Root. Den Befehl dafür und die Abwägung dazu nennt
-[Lokaler Betrieb](betrieb/lokal.md#was-vorher-da-sein-muss).
+[Lokaler Betrieb](lokal.md#was-vorher-da-sein-muss).
 
 `make up` stellt diese Frage vor dem Bau von selbst und bricht ab, bevor die erste
 Stufe anläuft.
@@ -81,7 +81,7 @@ Die Oberfläche liegt unter <http://127.0.0.1:8080>, die Dokumentation daneben u
 `/docs`, die maschinenlesbare Beschreibung der Schnittstelle unter `/api/docs`.
 
 Wie man sie bedient — Dateien ablegen, Webseiten wandeln, Optionen, Vorschau,
-Warnungen —, steht unter [Die Oberfläche](benutzung.md).
+Warnungen —, steht unter [Die Oberfläche](../nutzer/dateien-wandeln.md).
 
 ## Welche Engine kommt zum Zug?
 
