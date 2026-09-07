@@ -151,6 +151,19 @@ describe('FileRow', () => {
     expect(wrapper.get('#file-row-1-preview').text()).toContain('Das Ergebnis umfasst 9 Zeichen Markdown.')
   })
 
+  it('nennt den Knopf nach dem, was er zeigt', async () => {
+    const wrapper = mount(FileRow, {
+      props: { entry: entry({ status: 'ok', markdown: '# Bericht' }) },
+    })
+
+    // Der Knopf benennt die Sache, nicht die Bewegung: Wer ihn liest, soll wissen,
+    // was er zu sehen bekommt.
+    expect(wrapper.get('[aria-expanded]').text()).toBe('Vorschau')
+
+    await wrapper.setProps({ expanded: true })
+    expect(wrapper.get('[aria-expanded]').text()).toBe('Vorschau schließen')
+  })
+
   it('ueberlaesst den aufgeklappten Inhalt dem Slot preview', async () => {
     const wrapper = mount(FileRow, {
       props: { entry: entry({ status: 'ok', markdown: '# Bericht' }), expanded: true },
