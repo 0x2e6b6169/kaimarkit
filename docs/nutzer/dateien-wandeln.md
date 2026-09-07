@@ -3,7 +3,7 @@
 Diese Seite beschreibt den Weg von der Datei zum Markdown: hinzufügen, warten,
 ansehen, herunterladen. Sie zeigt ihn zweimal — in der Oberfläche und als Aufruf
 der Schnittstelle. Die Oberfläche ruft dieselben Endpunkte auf, die auch ein
-Skript benutzt; heraus kommt beide Male dasselbe.
+Skript benutzt.
 
 Ein Wort kommt immer wieder vor: **Engine**. So heißt das Programm, das die
 Umwandlung ausführt. Der Dienst bringt drei davon mit, und sie liefern zu
@@ -88,8 +88,7 @@ gescheitert ist nichts.
 
 ## Dieselbe Datei über die Schnittstelle
 
-Was die Oberfläche tut, geht auch aus einem Skript oder von der Kommandozeile. Die
-Beispiele schreiben `$DIENST` für die Adresse, unter der die Oberfläche antwortet —
+Die Beispiele schreiben `$DIENST` für die Adresse, unter der die Oberfläche antwortet —
 dieselbe, die im Browser in der Adresszeile steht:
 
 ```bash
