@@ -80,39 +80,8 @@ Markdown, Engine, Warnungen und Dauer in einem Objekt. Alle Aufrufe stehen unter
 Die Oberfläche liegt unter <http://127.0.0.1:8080>, die Dokumentation daneben unter
 `/docs`, die maschinenlesbare Beschreibung der Schnittstelle unter `/api/docs`.
 
-Dateien kommen per Ablegen oder über die Dateiauswahl hinein. Die Warteschlange
-führt jede einzeln auf und nennt nach dem Durchlauf Engine und Dauer; eine
-gescheiterte Datei hält die übrigen nicht auf, sondern zeigt ihre Meldung in der
-eigenen Zeile. Die Vorschau klappt das gewandelte Markdown auf, herunterladen
-lässt es sich einzeln oder als ZIP über alle gelungenen Dateien.
-
-Eine Webseite braucht keinen Download vorweg. Unter „Webseiten, eine Adresse je
-Zeile" steht ein mehrzeiliges Feld; „Webseiten wandeln" schickt jede Zeile ab, und
-der Dienst holt die Seiten selbst. Jede reiht sich danach in dieselbe Warteschlange
-ein wie eine hochgeladene Datei, benannt nach dem Titel der Seite: Aus
-`https://example.com/` wird `example-domain.html`, nicht `example-com.html`. Eine
-Zeile, die
-weder mit `http://` noch mit `https://` beginnt, schickt die Oberfläche gar nicht
-erst ab: Sie bleibt im Feld stehen und wird darunter genannt. Alles Übrige prüft der
-Dienst — ob der Name auflöst, ob er ins offene Netz zeigt, ob dort ein Dokument
-liegt —, und seine Meldung steht dann in der Zeile der Warteschlange. Welche Seiten
-er nicht brauchbar wandelt, steht unter [Grenzen](grenzen.md).
-
-Unter „Optionen" steht die Engine für den nächsten Lauf zur Wahl, als Gruppe von
-Schaltflächen mit einem Halbsatz zu jeder; das Zeichen dahinter öffnet eine längere
-Erklärung, mit der Maus oder per Tab. Vorgewählt ist MarkItDown, die schnelle
-Engine. Die Wahl bleibt im Browser gemerkt und steht nach dem nächsten Aufruf der
-Seite wieder da. Eine Engine, die gerade nicht in Frage kommt — nicht installiert,
-oder in der Warteschlange liegt eine Datei, die sie nicht liest —, bleibt sichtbar,
-ist aber nicht wählbar. „automatisch" überlässt die Wahl dem Dienst, wie im nächsten
-Abschnitt beschrieben.
-
-Eine laufende Zeile zählt mit, wie lange sie schon läuft. Wem es zu lange dauert,
-der drückt „Nicht mehr warten": Die Zeile steht danach auf „abgebrochen", die
-nächste wartende Datei rückt nach, und die Warteschlange zählt den Abbruch nicht
-als Fehlschlag. Der Knopf heißt genau deshalb so — er beendet die Anfrage des
-Browsers, nicht die Arbeit des Dienstes. Der wandelt die Datei im Hintergrund zu
-Ende und gibt seinen Platz erst dann oder an der [Zeitgrenze](grenzen.md) frei.
+Wie man sie bedient — Dateien ablegen, Webseiten wandeln, Optionen, Vorschau,
+Warnungen —, steht unter [Die Oberfläche](benutzung.md).
 
 ## Welche Engine kommt zum Zug?
 
