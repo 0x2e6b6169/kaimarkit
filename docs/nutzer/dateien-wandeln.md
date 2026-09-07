@@ -34,7 +34,7 @@ Jede Datei und jede Adresse bekommt eine eigene Zeile, in der Reihenfolge, in de
 Du sie hinzugefügt hast. Die Zeile erscheint sofort, auch wenn ihre Umwandlung
 noch nicht begonnen hat: Es laufen höchstens zwei auf einmal, die übrigen warten.
 
-Wie weit eine Zeile ist, sagt sie Dir als Zeichen und als Wort, damit auch ohne
+Wie weit eine Zeile ist, sagt sie als Zeichen und als Wort, damit auch ohne
 Farbunterschied dasselbe dasteht:
 
 - `◦ wartet` — noch nicht an der Reihe.
@@ -45,8 +45,8 @@ Farbunterschied dasselbe dasteht:
   Kasten, siehe [Warnungen und Fehler verstehen](warnungen-und-fehler.md).
 - `⊘ abgebrochen` — siehe [Nicht mehr warten](#nicht-mehr-warten).
 
-Eine gescheiterte Datei hält Dir die übrigen nicht auf. Ihre Meldung bleibt in
-ihrer eigenen Zeile, und die nächste Datei rückt nach. Über der Liste steht, wie
+Eine gescheiterte Datei hält die übrigen nicht auf. Ihre Meldung bleibt in ihrer
+eigenen Zeile, und die nächste Datei rückt nach. Über der Liste steht, wie
 viele von wie vielen fertig sind, und daneben die Zahl der Fehlschläge.
 
 Mit „Entfernen" nimmst Du eine Zeile aus der Liste. Läuft sie gerade, hört der
@@ -54,13 +54,13 @@ Browser zugleich auf, auf sie zu warten.
 
 ## Ansehen und herunterladen
 
-Bevor Du das Markdown weitergibst, sieh es Dir an: „Vorschau" an einer fertigen
-Zeile klappt das Ergebnis auf, und der Knopf heißt danach „Vorschau schließen".
+„Vorschau" an einer fertigen Zeile klappt das Ergebnis auf; der Knopf heißt
+danach „Vorschau schließen".
 
-Aufgeklappt hast Du zwei Reiter zur Wahl: „Vorschau" zeigt Dir das Markdown
-gesetzt, mit Überschriften und Tabellen; „Rohtext" zeigt es Zeichen für Zeichen,
-so wie es ein Sprachmodell bekommt. „Kopieren" legt Dir den Rohtext in die
-Zwischenablage und meldet, ob es geklappt hat.
+Aufgeklappt hast Du zwei Reiter zur Wahl: „Vorschau" zeigt das Markdown gesetzt,
+mit Überschriften und Tabellen; „Rohtext" zeigt es Zeichen für Zeichen, so wie es
+ein Sprachmodell bekommt. „Kopieren" legt den Rohtext in Deine Zwischenablage und
+meldet, ob es geklappt hat.
 
 Herunterladen kannst Du einzeln oder im Ganzen:
 
@@ -111,7 +111,7 @@ content-type: text/markdown; charset=utf-8
 
 Gab es Warnungen, kommt `x-warnings` dazu. Kopfzeilen vertragen kein UTF-8, deshalb
 steht der Text dort auf ASCII heruntergebrochen: Aus `lädt` wird `l?dt`. Brauchst Du
-den Wortlaut einer Warnung, hol ihn Dir aus der JSON-Antwort.
+den Wortlaut einer Warnung, hol ihn aus der JSON-Antwort.
 
 Willst Du statt der Datei alles, was auch die Zeile in der Warteschlange zeigt —
 Engine, Dauer, Warnungen —, verlang JSON:

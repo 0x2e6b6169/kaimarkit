@@ -5,7 +5,7 @@ das mehrzeilige Feld unter „Webseiten, eine Adresse je Zeile" ein — eine je 
 — und schick sie mit „Webseiten wandeln" ab; der Dienst holt die Seiten selbst.
 
 Eine Zeile, die weder mit `http://` noch mit `https://` beginnt, schickt die
-Oberfläche gar nicht erst ab. Sie bleibt Dir im Feld stehen und wird darunter
+Oberfläche gar nicht erst ab. Sie bleibt im Feld stehen und wird darunter
 genannt. Alles Weitere prüft der Dienst — ob der Name auflöst, ob er ins offene
 Netz zeigt, ob dort ein Dokument liegt —, und seine Meldung steht dann in der
 Zeile der Warteschlange.
@@ -40,13 +40,13 @@ curl -sf -H 'Content-Type: application/json' \
 }
 ```
 
-In `filename` steht derselbe Name, den Dir auch die Warteschlange anzeigt. Einen
+In `filename` steht derselbe Name, den auch die Warteschlange anzeigt. Einen
 Markdown-Zweig über `Accept`, wie ihn `/api/convert` kennt, gibt es hier nicht: Die
 Antwort ist immer JSON. Neben `url` nimmt der Rumpf `engine` und `ocr`, dieselben
 zwei Optionen wie beim Upload.
 
 Eine Zeile ohne `http://` oder `https://` schickt die Oberfläche gar nicht erst ab.
-Über die Schnittstelle antwortet der Dienst Dir darauf selbst, mit 400 und dem Code
+Über die Schnittstelle antwortet der Dienst darauf selbst, mit 400 und dem Code
 `invalid_url`:
 
 ```json

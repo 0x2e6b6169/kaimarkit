@@ -30,7 +30,7 @@ Umweg. So stehen zwei davon tatsächlich da:
 Der letzte Satz ist der wichtigste: Er sagt Dir, was zu tun ist. Manchmal ist es
 die andere Engine, manchmal der Schalter darüber, manchmal ein Blick ins Original.
 
-Denselben Wortlaut liefert Dir die Schnittstelle im Feld `warnings`:
+Denselben Wortlaut liefert die Schnittstelle im Feld `warnings`:
 
 ```bash
 curl -sf -F file=@bericht.docx -H 'Accept: application/json' $DIENST/api/convert
@@ -55,7 +55,7 @@ curl -sf -F file=@bericht.docx -H 'Accept: application/json' $DIENST/api/convert
 ## Es kam kein Ergebnis heraus
 
 Im roten Kasten an der Zeile steht die Meldung des Dienstes. Eine gescheiterte
-Datei hält Dir die übrigen nicht auf; die nächste rückt nach.
+Datei hält die übrigen nicht auf; die nächste rückt nach.
 
 Über die Schnittstelle bekommst Du dann keine 200-Antwort, sondern einen
 Fehlercode. Im Rumpf steht dieselbe Meldung, dazu ein Kürzel, an dem ein Programm
@@ -99,7 +99,7 @@ nur, wer ihn betreibt.
 
 Am unteren Rand der Seite steht klein die Version des Dienstes. Meldest Du dem
 Betreiber einen Fehler, nenn sie mit. Sie kommt aus `/api/health`, und derselbe
-Aufruf beantwortet Dir auch die Frage, ob der Dienst überhaupt noch da ist:
+Aufruf beantwortet auch die Frage, ob der Dienst überhaupt noch da ist:
 
 ```bash
 curl -sf $DIENST/api/health

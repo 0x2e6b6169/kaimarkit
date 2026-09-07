@@ -34,7 +34,7 @@ liest —, springt die Wahl auf „automatisch" zurück.
 ## Text in Bildern erkennen
 
 Steckt Dein Text in Bildern, schalte „Text in Bildern erkennen (OCR)" ein. Den
-Schalter zeigt Dir die Oberfläche nur, wenn der Dienst die Texterkennung anbietet.
+Schalter zeigt die Oberfläche nur, wenn der Dienst die Texterkennung anbietet.
 Rührst Du ihn nicht an, gilt die Voreinstellung des Dienstes; das steht dann auch
 daneben.
 
@@ -80,8 +80,8 @@ Kann sie das Format nicht, antwortet er mit 400, statt still eine andere zu nehm
 { "detail": "Engine pandoc kann .pdf nicht wandeln.", "code": "engine_unsuitable" }
 ```
 
-Was gerade zur Wahl steht, nennt Dir `/api/capabilities`. Aus derselben Auskunft
-baut die Oberfläche ihre Schaltergruppe:
+Was gerade zur Wahl steht, nennt `/api/capabilities`. Aus derselben Auskunft baut
+die Oberfläche ihre Schaltergruppe:
 
 ```bash
 curl -sf $DIENST/api/capabilities
@@ -103,11 +103,11 @@ curl -sf $DIENST/api/capabilities
 }
 ```
 
-Der Dienst nennt Dir alle Endungen, die er annimmt, dazu die geltenden Grenzen;
+Der Dienst nennt alle Endungen, die er annimmt, dazu die geltenden Grenzen;
 oben stehen zwei davon. Die drei Zustände in `engines` sind dieselben, die am
 Schalter stehen: `ready` ist wählbar, `warming` heißt dort „(lädt noch)",
 `unavailable` heißt „nicht installiert". Die Reihenfolge in `formats` ist die
 Präferenz: Bei `engine=auto` kommt der erste Eintrag zum Zug. In `ocr_available`
-steht, ob die Oberfläche Dir den Schalter zeigt.
+steht, ob die Oberfläche den Schalter zeigt.
 
 Alle Felder dieser Auskunft stehen unter [API](../admin/api.md).
