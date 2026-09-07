@@ -909,3 +909,4 @@
 {"timestamp":"2026-09-07T11:39:58.51506572+02:00","action":"edit","task_id":134,"detail":"DOC-24 · Nutzer- und Admin-Dokumentation sauber trennen"}
 {"timestamp":"2026-09-07T11:39:58.515345399+02:00","action":"release","task_id":134,"detail":"akar-44"}
 {"timestamp":"2026-09-07T11:43:21.009772531+02:00","action":"create","task_id":135,"detail":"DOC-25 · Stellen ausserhalb von docs/ nennen die alten Doku-Pfade"}
+{"timestamp":"2026-09-07T11:54:11.296519187+02:00","action":"create","task_id":136,"detail":"DOC-26 · Nutzer-Bereich vollstaendiger schreiben, API-Weg ergaenzen"}
