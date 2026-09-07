@@ -1,10 +1,11 @@
 ---
 id: 137
 title: BE-41 · ocr_available meldet die Voreinstellung, nicht die Verfuegbarkeit
-status: backlog
+status: todo
 priority: high
 created: 2026-09-07T12:08:28.338382941+02:00
-updated: 2026-09-07T12:08:28.338382941+02:00
+updated: 2026-09-07T12:37:42.655409792+02:00
+started: 2026-09-07T12:37:42.669814174+02:00
 assignee: sophie
 tags:
     - backend
