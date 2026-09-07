@@ -115,25 +115,30 @@ def _detour(suffix: str, ocr: bool) -> str:
 
     Drei Faelle, und sie schliessen einander aus. In einem Word-, PowerPoint-,
     Excel- oder HTML-Dokument liest Docling nie aus Bildern; dort hilft nur, dasselbe
-    Dokument als PDF abzugeben. Bei PDF und Bildern haengt es am Schalter: Steht er
-    aus, holt ein zweiter Lauf den Inhalt meist heraus; stand er schon an, ist nichts
-    mehr einzuschalten, und die Warnung verspricht auch nichts mehr.
+    Dokument als PDF abzugeben (BE-38, im Abbild gemessen). Bei PDF und Bilddateien
+    haengt es am Schalter: Steht er aus, holt ein zweiter Lauf den Text meist heraus;
+    stand er schon an, ist nichts mehr einzuschalten. Dann verspricht die Warnung auch
+    nichts mehr, sondern schickt den Leser ins Original — das Bild selbst nimmt Docling
+    ohnehin nie ins Markdown auf, es setzt ``PLACEHOLDER`` an seine Stelle.
+
+    Beide Umwege sind in diesem Stand begehbar: Die Enginewahl steht im Frontend, und
+    fuer ``.pdf`` ist Docling ohnehin die erste Wahl der Registry.
     """
     if suffix in NO_OCR_EXTENSIONS:
         return (
-            "Docling liest Text aus Bildern nur in PDF-Dateien."
-            " Wer ihn braucht, speichert das Dokument als PDF und lädt es mit"
-            " eingeschalteter Texterkennung erneut hoch."
+            "Text aus einem Bild liest Docling nur in einer PDF-Datei oder in einer"
+            " Bilddatei. Wer ihn braucht, speichert das Dokument als PDF und lädt es"
+            " mit eingeschalteter Texterkennung erneut hoch."
         )
     if not ocr:
         return (
-            "Ohne Texterkennung liest Docling keinen Text aus Bildern."
-            " Wer ihn braucht, schaltet die Texterkennung ein und lädt die Datei"
-            " erneut hoch."
+            "Ohne eingeschaltete Texterkennung liest Docling den Text aus einem Bild"
+            " nicht. Wer ihn braucht, schaltet die Texterkennung ein und lädt die"
+            " Datei erneut hoch."
         )
     return (
-        "Die Texterkennung war bereits eingeschaltet."
-        " Ein Blick ins Original zeigt, was an dieser Stelle stand."
+        "Auch mit eingeschalteter Texterkennung nimmt Docling das Bild selbst nicht"
+        " ins Markdown auf. Ein Blick ins Original zeigt, was an dieser Stelle stand."
     )
 
 

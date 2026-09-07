@@ -445,8 +445,8 @@ def test_placeholders_become_a_warning_with_their_count(
     assert result.warnings == [
         "Docling hat in bericht.pdf 3 Bilder durch Platzhalter ersetzt."
         " Ihr Inhalt fehlt im Markdown."
-        " Die Texterkennung war bereits eingeschaltet."
-        " Ein Blick ins Original zeigt, was an dieser Stelle stand."
+        " Auch mit eingeschalteter Texterkennung nimmt Docling das Bild selbst nicht"
+        " ins Markdown auf. Ein Blick ins Original zeigt, was an dieser Stelle stand."
     ]
 
 
@@ -461,8 +461,8 @@ def test_a_single_placeholder_is_counted_as_one(
     assert result.warnings == [
         "Docling hat in bericht.pdf ein Bild durch einen Platzhalter ersetzt."
         " Sein Inhalt fehlt im Markdown."
-        " Die Texterkennung war bereits eingeschaltet."
-        " Ein Blick ins Original zeigt, was an dieser Stelle stand."
+        " Auch mit eingeschalteter Texterkennung nimmt Docling das Bild selbst nicht"
+        " ins Markdown auf. Ein Blick ins Original zeigt, was an dieser Stelle stand."
     ]
 
 
@@ -501,9 +501,9 @@ def test_a_placeholder_in_a_word_file_names_the_way_over_pdf(
     assert result.warnings == [
         "Docling hat in bild.docx ein Bild durch einen Platzhalter ersetzt."
         " Sein Inhalt fehlt im Markdown."
-        " Docling liest Text aus Bildern nur in PDF-Dateien."
-        " Wer ihn braucht, speichert das Dokument als PDF und lädt es mit"
-        " eingeschalteter Texterkennung erneut hoch."
+        " Text aus einem Bild liest Docling nur in einer PDF-Datei oder in einer"
+        " Bilddatei. Wer ihn braucht, speichert das Dokument als PDF und lädt es"
+        " mit eingeschalteter Texterkennung erneut hoch."
     ]
 
 
@@ -519,9 +519,9 @@ def test_a_placeholder_without_ocr_names_the_switch(
     assert result.warnings == [
         "Docling hat in bericht.pdf ein Bild durch einen Platzhalter ersetzt."
         " Sein Inhalt fehlt im Markdown."
-        " Ohne Texterkennung liest Docling keinen Text aus Bildern."
-        " Wer ihn braucht, schaltet die Texterkennung ein und lädt die Datei"
-        " erneut hoch."
+        " Ohne eingeschaltete Texterkennung liest Docling den Text aus einem Bild"
+        " nicht. Wer ihn braucht, schaltet die Texterkennung ein und lädt die"
+        " Datei erneut hoch."
     ]
 
 
@@ -530,8 +530,8 @@ def test_a_placeholder_with_ocr_on_points_at_the_original(
 ) -> None:
     """Ein PDF mit Texterkennung: Es bleibt nichts mehr einzuschalten.
 
-    Die Warnung verspricht hier keinen Umweg, den es nicht gibt. Sie sagt, dass der
-    Schalter schon stand, und schickt den Leser ins Original.
+    Die Warnung verspricht hier keinen Umweg, den es nicht gibt. Sie sagt, warum das
+    Bild trotz Texterkennung fehlt, und schickt den Leser ins Original.
     """
     install(monkeypatch, FakePipeline(markdown="## Titel\n\n<!-- image -->\n"))
     converter = adapter.DoclingConverter()
@@ -541,6 +541,6 @@ def test_a_placeholder_with_ocr_on_points_at_the_original(
     assert result.warnings == [
         "Docling hat in bericht.pdf ein Bild durch einen Platzhalter ersetzt."
         " Sein Inhalt fehlt im Markdown."
-        " Die Texterkennung war bereits eingeschaltet."
-        " Ein Blick ins Original zeigt, was an dieser Stelle stand."
+        " Auch mit eingeschalteter Texterkennung nimmt Docling das Bild selbst nicht"
+        " ins Markdown auf. Ein Blick ins Original zeigt, was an dieser Stelle stand."
     ]
