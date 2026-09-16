@@ -29,8 +29,9 @@ Gerüst. Der Weg über curl funktioniert vollständig.
 ## Das Handbuch
 
 Die Dokumentation ist die einzige Quelle für Bedienung und Betrieb. Sie liegt unter
-[`docs/`](docs/index.md), im laufenden Container unter `/docs`, als Vorschau über
-`make docs-serve` auf <http://127.0.0.1:8001>.
+[`docs/`](docs/index.md), veröffentlicht unter
+<https://0x2e6b6169.github.io/kaimarkit/>, im laufenden Container unter `/docs`, als
+Vorschau über `make docs-serve` auf <http://127.0.0.1:8001>.
 
 - [Schnellstart](docs/admin/schnellstart.md) — vom Start des Containers bis zur ersten
   umgewandelten Datei

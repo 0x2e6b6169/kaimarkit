@@ -1,0 +1,97 @@
+# Veroeffentlicht die Dokumentation auf GitHub Pages.
+#
+# Dieselbe Arbeit wie "make docs-release VERSION=x.y", nur auf dem Laeufer:
+# mike baut die Seiten und legt sie versioniert im Zweig gh-pages ab. GitHub
+# Pages liefert genau diesen Zweig aus, und die Docs-Stufe des Abbilds holt ihn
+# mit "git archive gh-pages". Eine Quelle, zwei Abnehmer.
+#
+# Der Zweig gh-pages wird nie ausgecheckt; mike schreibt den Commit aus dem
+# Objektlager heraus. Deshalb genuegt es, ihn vorher zu holen.
+name: docs
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Fassung fuer mike, zweistellig (Beispiel: 0.3)"
+        required: true
+        type: string
+
+# Zwei Laeufe duerfen gh-pages nicht gleichzeitig beschreiben; der zweite wartet.
+concurrency:
+  group: docs-gh-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Seiten bauen
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: MkDocs und mike installieren
+        run: .github/scripts/install-docs-deps.sh
+
+      # --strict macht aus jedem toten Verweis und jeder Seite ausserhalb der
+      # Navigation einen Fehler. Laeuft auch auf main, damit ein Bruch beim
+      # Merge auffaellt und nicht erst beim Release.
+      - name: Bau pruefen
+        run: mkdocs build --strict --site-dir "$RUNNER_TEMP/site"
+
+  publish:
+    name: Auf GitHub Pages veroeffentlichen
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: MkDocs und mike installieren
+        run: .github/scripts/install-docs-deps.sh
+
+      # Die Dokumentation zaehlt zweistellig: Aus dem Tag v0.3.6 wird die
+      # Fassung 0.3. Ein Fehlerstand bekommt keine eigene Seitenreihe, sondern
+      # ueberschreibt die seines Zweigs.
+      - name: Fassung bestimmen
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            version="${{ inputs.version }}"
+          else
+            tag="${GITHUB_REF_NAME#v}"
+            version="${tag%.*}"
+          fi
+          case "$version" in
+            [0-9]*.[0-9]*) ;;
+            *) echo "Keine brauchbare Fassung: $version"; exit 1 ;;
+          esac
+          echo "value=$version" >>"$GITHUB_OUTPUT"
+          echo "Fassung: $version"
+
+      - name: Zweig gh-pages holen
+        # Vor dem ersten Release gibt es ihn nicht; dann legt mike ihn an.
+        run: git fetch origin gh-pages:gh-pages --depth=1 || true
+
+      - name: Veroeffentlichen
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mike deploy --push --update-aliases "$VERSION" latest
+          mike set-default --push latest
