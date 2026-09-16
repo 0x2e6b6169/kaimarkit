@@ -35,7 +35,8 @@ npm run typecheck
 
 # Dokumentation
 make docs-serve                                 # Vorschau auf :8001
-make docs-release VERSION=0.3                   # mike deploy, erst beim Release
+make docs-release VERSION=0.3                   # mike deploy von Hand; beim Tag
+                                                # v* macht es die Action "docs"
 
 # Betrieb
 make help                                       # alle Ziele

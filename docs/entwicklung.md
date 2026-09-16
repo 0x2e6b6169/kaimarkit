@@ -90,6 +90,29 @@ Testlauf ändert. `.dockerignore` schließt `__pycache__`, `.pytest_cache` und
 ohne Schrägstrich vergleicht nur die oberste Ebene des Kontextes und ließe
 `backend/app/__pycache__` durch.
 
+## Die Dokumentation veröffentlichen
+
+Veröffentlicht wird beim Release, nicht bei jedem Merge. Ein Tag `vX.Y.Z` startet die
+GitHub-Action `docs`: mike baut die Seiten, legt sie unter der zweistelligen Fassung
+`X.Y` im Zweig `gh-pages` ab und zieht den Alias `latest` mit. GitHub Pages liefert
+diesen Zweig aus, zu finden unter <https://0x2e6b6169.github.io/kaimarkit/>.
+
+Aus `v0.3.6` wird also die Fassung `0.3`. Ein Fehlerstand bekommt keine eigene
+Seitenreihe, sondern überschreibt die seines Zweigs; das Versionsmenü bleibt kurz.
+
+Dieselbe Action läuft auf Zuruf: Unter *Actions → docs → Run workflow* fragt sie nach
+der Fassung und veröffentlicht sie. Bei jedem Push auf `main` baut sie die Seiten
+außerdem mit `--strict`. Ein toter Verweis fällt damit beim Merge auf und nicht erst
+beim Release.
+
+`make docs-release VERSION=0.3` tut dasselbe vom Entwicklungsrechner aus und braucht
+Schreibrecht auf dem Repository. Der Weg bleibt für den Fall, dass die Action ausfällt;
+sonst genügt der Tag.
+
+Der Zweig `gh-pages` hat zwei Abnehmer. GitHub Pages liefert ihn aus, und die
+Docs-Stufe des Abbilds packt ihn mit `git archive` aus. Wer ihn von Hand ändert,
+ändert beides.
+
 ## Tests
 
 Die Suite läuft aus `backend/` heraus, in der pyenv-Umgebung `claude-code`:
