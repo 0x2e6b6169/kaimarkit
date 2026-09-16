@@ -4,7 +4,7 @@ title: 'DOC-1 · MkDocs, Material-Theme und mike: mkdocs.yml, Navigation, Seiten
 status: done
 priority: high
 created: 2026-08-31T10:20:23.564339142+02:00
-updated: 2026-08-31T10:48:45.960248605+02:00
+updated: 2026-09-16T09:03:53.108322407+02:00
 started: 2026-08-31T10:48:45.234369873+02:00
 completed: 2026-08-31T10:48:45.234369873+02:00
 assignee: akar
@@ -65,3 +65,36 @@ einem echten Namen veroeffentlicht, tauscht den Host aus.
 pyproject.toml, docker/ und die Betriebsinhalte (DOC-3) blieben unangetastet.
 mkdocs-material und mike sind in der pyenv-Umgebung claude-code bereits
 vorhanden; die Abhaengigkeitsgruppe docs legt BE-1 an.
+
+## Berichtigung (16. September 2026): site_url
+
+Im Rumpf stand als Vorgabe: **`site_url: /docs/`** — der Unterpfad, nicht die
+Wurzel, sonst verlinke der Versions-Dropdown auf `/0.3/` statt `/docs/0.3/` und
+laufe ins Leere. Die Begründung stimmt nicht.
+
+mkdocs-material baut die Einträge des Versionsmenüs zur Laufzeit aus der Basis der
+geöffneten Seite (`new URL("../versions.json", config.base)`); auch die Zuordnung
+derselben Seite in der anderen Fassung läuft über den gemeinsamen Präfix der
+sitemap.xml und ist gegen einen anderen Pfad unempfindlich. Im fertigen Bau steht
+der Wert aus `site_url` an genau zwei Stellen: im `<link rel="canonical">` jeder
+Seite und in der sitemap.xml. Gezählt am Bau vom 16. September: 14 kanonische
+Verweise, 14 Einträge in der sitemap, sonst keine Fundstelle. Die übrigen Treffer
+auf `kaimarkit.example.com` stehen im Fließtext von Traefik und Authelia und
+meinen den Namen, unter dem jemand seinen eigenen Dienst betreibt.
+
+Seit dem 16. September veröffentlicht die Action `docs` die Seiten auf GitHub
+Pages unter https://0x2e6b6169.github.io/kaimarkit/. Derselbe Zweig `gh-pages`
+speist die Docs-Stufe des Abbilds, die unter `/docs/` ausliefert. Zwei Adressen,
+ein Bau — `site_url` nennt nur eine, und das ist die öffentliche: Ein kanonischer
+Verweis zeigt auf die veröffentlichte Kopie, nicht auf einen Platzhalter-Host, den
+es nie gab.
+
+In `mkdocs.yml` steht deshalb jetzt `site_url: https://0x2e6b6169.github.io/kaimarkit/`
+und dazu das mike-Plugin mit `canonical_version: latest`, das die Fassung beim Lauf
+von mike anhängt — ohne das zeigte der kanonische Verweis auf eine Adresse ohne
+Fassung, die es dort nicht gibt. `version_selector: false`, weil Material seinen
+eigenen Wähler mitbringt.
+
+Die Vorgabe "Unterpfad statt Wurzel" ist damit gegenstandslos. Wer sie wieder
+einsetzt, macht den kanonischen Verweis falsch, ohne am Versionsmenü etwas zu
+ändern.

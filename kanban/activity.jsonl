@@ -930,3 +930,4 @@
 {"timestamp":"2026-09-07T13:11:37.361826839+02:00","action":"move","task_id":138,"detail":"in-progress -\u003e done"}
 {"timestamp":"2026-09-07T13:11:38.105716111+02:00","action":"edit","task_id":138,"detail":"DOC-27 · Nutzer-Bereich spricht den Leser an, statt sich selbst zu beschreiben"}
 {"timestamp":"2026-09-07T13:11:38.106102862+02:00","action":"release","task_id":138,"detail":"akar-46"}
+{"timestamp":"2026-09-16T09:03:53.109230722+02:00","action":"edit","task_id":20,"detail":"DOC-1 · MkDocs, Material-Theme und mike: mkdocs.yml, Navigation, Seitengeruest"}
