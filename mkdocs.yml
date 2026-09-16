@@ -8,7 +8,12 @@ site_description: Dokumente nach Markdown wandeln und den Kontext sehen, den ein
 # jeder Seite und in der sitemap.xml. Navigation und Versionsmenue rechnen zur
 # Laufzeit aus der Basis der geoeffneten Seite; welcher Pfad hier steht, aendert
 # an ihnen nichts.
-site_url: https://0x2e6b6169.github.io/kaimarkit/
+#
+# Deshalb steht "latest" mit drin: Unter dieser Adresse liegt die jeweils neueste
+# Fassung, und nur dorthin darf ein kanonischer Verweis zeigen. Das mike-Plugin
+# haengt die Fassung zwar selbst an — es schaltet dabei aber den Versionswaehler
+# von Material ab, denn dessen Vorlage fragt "mike.config.version_selector" ab.
+site_url: https://0x2e6b6169.github.io/kaimarkit/latest/
 docs_dir: docs
 site_dir: site
 
@@ -49,15 +54,6 @@ extra:
 plugins:
   - search:
       lang: de
-  # Nur wegen der kanonischen Adresse: Beim Lauf von mike haengt das Plugin die
-  # Fassung an site_url, sodass <link rel="canonical"> auf /latest/ zeigt und
-  # nicht auf eine Adresse ohne Fassung, die es auf GitHub Pages nicht gibt.
-  # Ohne mike — Vorschau und Rueckfall im Abbild — tut es nichts. Den
-  # Versionswaehler bringt Material selbst mit (extra.version.provider),
-  # deshalb bleibt der von mike aus; sonst stuenden zwei nebeneinander.
-  - mike:
-      canonical_version: latest
-      version_selector: false
 
 markdown_extensions:
   - admonition
