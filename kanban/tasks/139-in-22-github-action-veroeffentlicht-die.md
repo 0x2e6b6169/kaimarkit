@@ -4,7 +4,9 @@ title: IN-22 · GitHub Action veroeffentlicht die Dokumentation auf GitHub Pages
 status: done
 priority: medium
 created: 2026-09-16T09:16:27.448025802+02:00
-updated: 2026-09-16T09:16:48.151221362+02:00
+updated: 2026-09-16T09:17:28.993040187+02:00
+started: 2026-09-16T00:00:00Z
+completed: 2026-09-16T00:00:00Z
 assignee: akar
 tags:
     - docs
