@@ -1,0 +1,1310 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Dokumente nach Markdown wandeln und den Kontext sehen, den ein LLM bekommt">
+      
+      
+      
+        <link rel="canonical" href="https://kaimarkit.example.com/docs/0.3/admin/api/">
+      
+      
+        <link rel="prev" href="../grenzen/">
+      
+      
+        <link rel="next" href="../../entwicklung/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>API - kaimarkit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="kaimarkit" class="md-header__button md-logo" aria-label="kaimarkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            kaimarkit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Auf helle Darstellung umschalten"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Auf helle Darstellung umschalten" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Auf dunkle Darstellung umschalten"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Auf dunkle Darstellung umschalten" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Der Systemeinstellung folgen"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Der Systemeinstellung folgen" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="kaimarkit" class="md-nav__button md-logo" aria-label="kaimarkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    kaimarkit
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Für Nutzer
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Für Nutzer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/dateien-wandeln/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eine Datei wandeln
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/webseiten-wandeln/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eine Webseite wandeln
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/engine-und-texterkennung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine und Texterkennung wählen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/warnungen-und-fehler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Warnungen und Fehler verstehen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Für Admins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Für Admins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../schnellstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schnellstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lokal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lokaler Betrieb
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../konfiguration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../formate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formate und Engines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../traefik/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hinter Traefik
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authelia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anmeldung mit Authelia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grenzen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grenzen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lebt-der-dienst-get-apihealth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lebt der Dienst? — GET /api/health
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-der-dienst-kann-get-apicapabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was der Dienst kann — GET /api/capabilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eine-datei-wandeln-post-apiconvert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eine Datei wandeln — POST /api/convert
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mehrere-dateien-wandeln-post-apiconvertbatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mehrere Dateien wandeln — POST /api/convert/batch
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eine-webseite-wandeln-post-apiconverturl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eine Webseite wandeln — POST /api/convert/url
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-schnittstelle-maschinenlesbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die Schnittstelle maschinenlesbar
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entwicklung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entwicklung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lebt-der-dienst-get-apihealth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lebt der Dienst? — GET /api/health
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-der-dienst-kann-get-apicapabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was der Dienst kann — GET /api/capabilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eine-datei-wandeln-post-apiconvert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eine Datei wandeln — POST /api/convert
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mehrere-dateien-wandeln-post-apiconvertbatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mehrere Dateien wandeln — POST /api/convert/batch
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eine-webseite-wandeln-post-apiconverturl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eine Webseite wandeln — POST /api/convert/url
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-schnittstelle-maschinenlesbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die Schnittstelle maschinenlesbar
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="api">API</h1>
+<p>Die Endpunkte unter <code>/api</code> mit Beispielaufrufen für curl.</p>
+<p>Der verbindliche Wortlaut steht in <code>contracts/api.md</code>; diese Seite zeigt, wie man die
+Endpunkte benutzt. Jede Anfrage steht für sich: Der Dienst legt nichts ab, und die
+hochgeladene Datei ist gelöscht, sobald die Antwort steht. Eine Authentifizierung
+gibt es nicht; wer eine braucht, setzt <a href="../authelia/">Authelia</a> davor.</p>
+<div class="admonition note">
+<p class="admonition-title">Der Port in den Beispielen</p>
+<p>Alle Aufrufe hier nennen <code>localhost:8000</code>, den Port des Backends in der
+Entwicklung. Im Container liegt der Dienst auf <code>KAIMARKIT_HOST_PORT</code>,
+standardmäßig also auf <code>localhost:8080</code>. Im Container hört er unverändert auf
+8000 — veröffentlicht wird 8080.</p>
+</div>
+<p>Die Antwort auf einen Fehler hat immer denselben Rumpf, unabhängig vom Endpunkt:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span><span class="w"> </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fuer .xyz gibt es keine Engine."</span><span class="p">,</span><span class="w"> </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unsupported_format"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p><code>curl -sf</code> verschluckt diesen Rumpf. Wer die Meldung sehen will, lässt <code>-f</code> weg.</p>
+<h2 id="lebt-der-dienst-get-apihealth">Lebt der Dienst? — <code>GET /api/health</code></h2>
+<p>Antwortet sofort mit 200, auch während Docling im Hintergrund lädt. Der
+Container-Healthcheck hängt daran: Käme die Antwort erst nach den Modellen, gälte
+der Start als Fehlschlag.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>localhost:8000/api/health
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span><span class="w"> </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"v0.1.0-12-ga22a6c5"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>Die Version ist die des gebauten Abbilds: Der Bau setzt <code>KAIMARKIT_VERSION</code> auf das
+Ergebnis von <code>git describe --tags --always --dirty</code> — <code>v0.1.0</code> auf dem Tag,
+<code>v0.1.0-12-ga22a6c5</code> zwölf Commits dahinter, mit <code>-dirty</code> bei Änderungen im
+Arbeitsbaum. Fehlt die Variable, meldet der Dienst <code>__version__</code> aus
+<code>app/__init__.py</code>: dieselbe Nummer wie auf dem Tag, ohne das <code>v</code>.</p>
+<p>Die Auskunft sagt nichts darüber, ob eine Engine schon arbeiten kann. Das steht in
+<code>/api/capabilities</code>.</p>
+<h2 id="was-der-dienst-kann-get-apicapabilities">Was der Dienst kann — <code>GET /api/capabilities</code></h2>
+<p>Die Auskunft nennt die Endungen, die jetzt wirklich gehen, die Engines samt Zustand
+(<code>ready</code>, <code>warming</code>, <code>unavailable</code>), die geltenden Grenzen und die Standardengine.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>localhost:8000/api/capabilities<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+</code></pre></div>
+<p>Die Reihenfolge in <code>formats</code> ist die Präferenz: Bei <code>engine=auto</code> kommt der erste
+Eintrag zum Zug. Eine Engine, die noch lädt oder fehlt, erscheint dort nicht — das
+Frontend bietet deshalb nichts an, was ohnehin scheitern würde. Steht Docling auf
+<code>warming</code>, laden gerade die Modelle; ein paar Sekunden später steht <code>.pdf</code> wieder in
+der Liste.</p>
+<p>In <code>engines</code> stehen nur die drei wählbaren Engines. Markdown reicht der Dienst
+durch, und dafür gibt es nichts zu wählen: <code>formats</code> führt <code>.md</code> mit dem Namen
+<code>passthrough</code>, und derselbe Name steht danach im Feld <code>engine</code> des Ergebnisses.</p>
+<h2 id="eine-datei-wandeln-post-apiconvert">Eine Datei wandeln — <code>POST /api/convert</code></h2>
+<p><code>multipart/form-data</code> mit dem Feld <code>file</code>. Dazu wahlweise <code>engine</code> (ein Enginename
+oder <code>auto</code>) und <code>ocr</code> (überschreibt <code>KAIMARKIT_OCR_ENABLED</code>).</p>
+<p>Die Antwort richtet sich nach <code>Accept</code>. Ohne Angabe kommt das nackte Markdown mit
+<code>Content-Disposition</code>, die Engine steht in <code>X-Engine</code> und Anmerkungen stehen in
+<code>X-Warnings</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span>@bericht.pdf<span class="w"> </span>localhost:8000/api/convert<span class="w"> </span>-o<span class="w"> </span>bericht.md
+</code></pre></div>
+<p>Mit <code>Accept: application/json</code> kommt das vollständige Ergebnis samt <code>engine</code>,
+<code>warnings</code> und <code>duration_ms</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span>@bericht.pdf<span class="w"> </span>-F<span class="w"> </span><span class="nv">engine</span><span class="o">=</span>markitdown<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">     </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span>localhost:8000/api/convert
+</code></pre></div>
+<p>Eine ausdrücklich genannte Engine wird nie durch eine andere ersetzt. Kann sie das
+Format nicht, antwortet der Dienst mit 400, statt still etwas anderes zu nehmen. Bei
+<code>auto</code> dagegen rückt nach einem Fehlschlag die nächste Engine der Präferenzliste
+nach; warum die erste ausschied, steht danach in den Warnungen.</p>
+<p>Scheitert die Umwandlung, gibt es einen Fehlercode und keine leere Antwort:</p>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th><code>code</code></th>
+<th>Anlass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>413</td>
+<td><code>file_too_large</code></td>
+<td>über <code>KAIMARKIT_MAX_FILE_SIZE_MB</code></td>
+</tr>
+<tr>
+<td>415</td>
+<td><code>unsupported_format</code></td>
+<td>für diese Endung gibt es keine Engine</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>engine_unsuitable</code></td>
+<td>die verlangte Engine kann das Format nicht</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>engine_unavailable</code></td>
+<td>die verlangte Engine ist nicht installiert</td>
+</tr>
+<tr>
+<td>500</td>
+<td><code>conversion_failed</code></td>
+<td>die Engine ist an der Datei gescheitert</td>
+</tr>
+<tr>
+<td>504</td>
+<td><code>conversion_timeout</code></td>
+<td>über <code>KAIMARKIT_CONVERSION_TIMEOUT</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="mehrere-dateien-wandeln-post-apiconvertbatch">Mehrere Dateien wandeln — <code>POST /api/convert/batch</code></h2>
+<p>Dieselben Felder, nur <code>file</code> mehrfach. Höchstens <code>KAIMARKIT_MAX_FILES</code> Dateien je
+Aufruf. Der Endpunkt ist für Skripte gedacht; das Frontend ruft <code>/api/convert</code> je
+Datei auf, weil es Fortschritt und Vorschau einzeln zeigt.</p>
+<p>Ohne <code>Accept</code> kommt ein ZIP mit je einer <code>.md</code>-Datei:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span>@a.pdf<span class="w"> </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span>@b.epub<span class="w"> </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span>@c.docx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">     </span>localhost:8000/api/convert/batch<span class="w"> </span>-o<span class="w"> </span>ergebnis.zip
+</code></pre></div>
+<p>Im Archiv steht nur der blanke Name, nie ein Verzeichnis davor. Zwei gleich benannte
+Dateien aus verschiedenen Ordnern überschreiben einander deshalb nicht: Die zweite
+heißt <code>bericht-2.md</code>, die dritte <code>bericht-3.md</code>.</p>
+<p>Eine gescheiterte Datei nimmt die übrigen nicht mit. Sie fehlt im Archiv und
+bekommt stattdessen eine Zeile in <code>_errors.txt</code>, die nur dann darin liegt, wenn
+wirklich etwas schieflief. Jede Zeile nennt den Dateinamen und den Grund, den die
+Engine gemeldet hat:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kaputt.epub: Archiv unlesbar
+</code></pre></div>
+<p>Mit <code>Accept: application/json</code> kommt dieselbe Auskunft als Liste von Einträgen,
+dazu die Zählung:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span>@a.pdf<span class="w"> </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span>@b.epub<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">     </span>-H<span class="w"> </span><span class="s1">'Accept: application/json'</span><span class="w"> </span>localhost:8000/api/convert/batch
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">"entries"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"filename"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a.pdf"</span><span class="p">,</span><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span><span class="w"> </span><span class="nt">"markdown"</span><span class="p">:</span><span class="w"> </span><span class="s2">"# A"</span><span class="p">,</span><span class="w"> </span><span class="nt">"engine"</span><span class="p">:</span><span class="w"> </span><span class="s2">"docling"</span><span class="p">,</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">      </span><span class="nt">"warnings"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="nt">"duration_ms"</span><span class="p">:</span><span class="w"> </span><span class="mi">3120</span><span class="p">,</span><span class="w"> </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"filename"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b.epub"</span><span class="p">,</span><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"failed"</span><span class="p">,</span><span class="w"> </span><span class="nt">"markdown"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"engine"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">      </span><span class="nt">"warnings"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="nt">"duration_ms"</span><span class="p">:</span><span class="w"> </span><span class="mi">88</span><span class="p">,</span><span class="w"> </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Archiv unlesbar"</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span><span class="nt">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">  </span><span class="nt">"succeeded"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">  </span><span class="nt">"failed"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="p">}</span>
+</code></pre></div>
+<p>Der Aufruf antwortet mit 200, auch wenn jede einzelne Datei scheiterte — die Anfrage
+selbst war ja in Ordnung. Als Anfrage scheitert nur ein zu großer Stapel: mehr als
+<code>KAIMARKIT_MAX_FILES</code> Dateien enden mit 413 und <code>too_many_files</code>.</p>
+<h2 id="eine-webseite-wandeln-post-apiconverturl">Eine Webseite wandeln — <code>POST /api/convert/url</code></h2>
+<p>Hier lädt niemand etwas hoch: Der Dienst holt die Seite selbst und wandelt sie
+danach wie eine hochgeladene Datei. Der Rumpf ist JSON, eine Adresse je Aufruf.</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Typ</th>
+<th>Pflicht</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>url</code></td>
+<td>string</td>
+<td>ja</td>
+<td>die Adresse, <code>http</code> oder <code>https</code></td>
+</tr>
+<tr>
+<td><code>engine</code></td>
+<td>string</td>
+<td>nein</td>
+<td>ein Enginename oder <code>auto</code> (Standard)</td>
+</tr>
+<tr>
+<td><code>ocr</code></td>
+<td>boolean | null</td>
+<td>nein</td>
+<td>überschreibt <code>KAIMARKIT_OCR_ENABLED</code></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">     </span>-d<span class="w"> </span><span class="s1">'{"url": "https://example.com/"}'</span><span class="w"> </span>localhost:8000/api/convert/url
+</code></pre></div>
+<p>Die Antwort ist immer ein <code>ConversionEntry</code> als JSON. Den Markdown-Zweig über
+<code>Accept</code>, den <code>/api/convert</code> kennt, gibt es hier nicht.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">{</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="nt">"filename"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-domain.html"</span><span class="p">,</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="nt">"markdown"</span><span class="p">:</span><span class="w"> </span><span class="s2">"# Example Domain\n\nThis domain is for use in documentation examples ..."</span><span class="p">,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="nt">"engine"</span><span class="p">:</span><span class="w"> </span><span class="s2">"markitdown"</span><span class="p">,</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span><span class="nt">"warnings"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span><span class="nt">"duration_ms"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">  </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="p">}</span>
+</code></pre></div>
+<p>Den Dateinamen leitet der Dienst ab, statt ihn zu übernehmen. Er kommt aus dem
+<code>&lt;title&gt;</code> der Seite: Kleinbuchstaben, Umlaute umgeschrieben (<code>ä</code> → <code>ae</code>,
+<code>ß</code> → <code>ss</code>), alles außer <code>[a-z0-9]</code> zu <code>-</code>, höchstens 80 Zeichen. Fehlt ein Titel —
+bei einer PDF etwa —, entsteht der Name auf dieselbe Art aus Host und Pfad:
+<code>https://arxiv.org/pdf/2502.16161</code> wird zu <code>arxiv-org-pdf-2502-16161.pdf</code>. Die
+Endung ist die der geholten Datei; sie folgt dem <code>Content-Type</code> und sonst dem Pfad.
+Doppelt steht sie nie da: <code>…/resources/pdf/dummy.pdf</code> endet auf <code>-dummy.pdf</code>, nicht
+auf <code>-dummy-pdf.pdf</code>. Gleiche Namen nummeriert der Client, nicht der Dienst.</p>
+<p>Nach dem Holen geht die Datei denselben Weg wie ein Upload: Registry, Engine,
+Rückfall. Deshalb gelten dieselben Fehler wie bei <code>/api/convert</code>, und <code>invalid_url</code>
+kommt dazu:</p>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th><code>code</code></th>
+<th>Anlass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>400</td>
+<td><code>invalid_url</code></td>
+<td>kein öffentliches http(s), Host nicht auflösbar, Weiterleitung ins Private, mehr als fünf Weiterleitungen, oder die Gegenstelle antwortet nicht mit 2xx</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>engine_unsuitable</code></td>
+<td>die verlangte Engine kann das gelieferte Format nicht</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>engine_unavailable</code></td>
+<td>die verlangte Engine ist nicht installiert</td>
+</tr>
+<tr>
+<td>413</td>
+<td><code>file_too_large</code></td>
+<td>die Antwort überschreitet <code>KAIMARKIT_MAX_FILE_SIZE_MB</code></td>
+</tr>
+<tr>
+<td>415</td>
+<td><code>unsupported_format</code></td>
+<td>weder <code>Content-Type</code> noch Pfad führen auf eine bekannte Endung</td>
+</tr>
+<tr>
+<td>500</td>
+<td><code>conversion_failed</code></td>
+<td>die Engine ist an der Seite gescheitert</td>
+</tr>
+<tr>
+<td>504</td>
+<td><code>conversion_timeout</code></td>
+<td>über <code>KAIMARKIT_URL_TIMEOUT</code> beim Holen oder <code>KAIMARKIT_CONVERSION_TIMEOUT</code> beim Wandeln</td>
+</tr>
+</tbody>
+</table>
+<p>Eine gesperrte Adresse nennt die geprüfte Adresse mit. <code>http://127.0.0.1/</code> etwa
+antwortet mit 400:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">     </span>-d<span class="w"> </span><span class="s1">'{"url": "http://127.0.0.1/"}'</span><span class="w"> </span>localhost:8000/api/convert/url
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">{</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="s2">"127.0.0.1 zeigt auf 127.0.0.1, und das ist keine öffentliche Adresse."</span><span class="p">,</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"invalid_url"</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="p">}</span>
+</code></pre></div>
+<p>Den Namen umgeht das nicht: <code>http://localhost:8000/api/health</code> endet mit derselben
+Meldung, weil der Dienst den Namen auflöst, bevor er verbindet.</p>
+<p>Was der Dienst dabei bewusst nicht kann — Seiten hinter einer Anmeldung, Seiten, die
+ihren Inhalt erst per JavaScript aufbauen —, steht unter <a href="../grenzen/">Grenzen</a>.</p>
+<h2 id="die-schnittstelle-maschinenlesbar">Die Schnittstelle maschinenlesbar</h2>
+<p>FastAPI erzeugt die Beschreibung selbst. Sie liegt unter <code>/api/openapi.json</code>, die
+Oberfläche dazu unter <code>/api/docs</code> und <code>/api/redoc</code>. Alles Maschinelle liegt unter
+<code>/api</code>, weil <code>/docs</code> dieser Dokumentation gehört.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>localhost:8000/api/openapi.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.paths | keys'</span>
+</code></pre></div>
+<p>Verbindlich ist trotzdem <code>contracts/api.md</code>. Die erzeugte Beschreibung folgt dem
+Code; weichen beide voneinander ab, ist der Code falsch und nicht der Vertrag.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

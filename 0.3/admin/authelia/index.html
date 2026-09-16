@@ -1,0 +1,1452 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Dokumente nach Markdown wandeln und den Kontext sehen, den ein LLM bekommt">
+      
+      
+      
+        <link rel="canonical" href="https://kaimarkit.example.com/docs/0.3/admin/authelia/">
+      
+      
+        <link rel="prev" href="../traefik/">
+      
+      
+        <link rel="next" href="../grenzen/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Anmeldung mit Authelia - kaimarkit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#authelia" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="kaimarkit" class="md-header__button md-logo" aria-label="kaimarkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            kaimarkit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Anmeldung mit Authelia
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Auf helle Darstellung umschalten"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Auf helle Darstellung umschalten" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Auf dunkle Darstellung umschalten"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Auf dunkle Darstellung umschalten" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Der Systemeinstellung folgen"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Der Systemeinstellung folgen" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="kaimarkit" class="md-nav__button md-logo" aria-label="kaimarkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    kaimarkit
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Für Nutzer
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Für Nutzer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/dateien-wandeln/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eine Datei wandeln
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/webseiten-wandeln/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eine Webseite wandeln
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/engine-und-texterkennung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine und Texterkennung wählen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/warnungen-und-fehler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Warnungen und Fehler verstehen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Für Admins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Für Admins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../schnellstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schnellstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lokal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lokaler Betrieb
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../konfiguration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../formate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formate und Engines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../traefik/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hinter Traefik
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anmeldung mit Authelia
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anmeldung mit Authelia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#zwei-eingriffe-in-authelias-konfiguration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zwei Eingriffe in Authelias Konfiguration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-vorher-da-sein-muss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was vorher da sein muss
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#starten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Starten
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zwei-wege-zur-middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zwei Wege zur Middleware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Zwei Wege zur Middleware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#die-vorhandene-middleware-der-normalfall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die vorhandene Middleware — der Normalfall
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#die-eigene-middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die eigene Middleware
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-oder-file-der-zusatz-entscheidet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @docker oder @file — der Zusatz entscheidet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#der-name-der-eigenen-middleware-folgt-dem-namensraum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Der Name der eigenen Middleware folgt dem Namensraum
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-api-bleibt-erreichbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die API bleibt erreichbar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prufen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prüfen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#404-oder-400-der-statuscode-zeigt-die-richtung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        404 oder 400 — der Statuscode zeigt die Richtung
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grenzen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grenzen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entwicklung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entwicklung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#zwei-eingriffe-in-authelias-konfiguration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zwei Eingriffe in Authelias Konfiguration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-vorher-da-sein-muss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was vorher da sein muss
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#starten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Starten
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zwei-wege-zur-middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zwei Wege zur Middleware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Zwei Wege zur Middleware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#die-vorhandene-middleware-der-normalfall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die vorhandene Middleware — der Normalfall
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#die-eigene-middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die eigene Middleware
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-oder-file-der-zusatz-entscheidet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @docker oder @file — der Zusatz entscheidet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#der-name-der-eigenen-middleware-folgt-dem-namensraum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Der Name der eigenen Middleware folgt dem Namensraum
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-api-bleibt-erreichbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die API bleibt erreichbar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prufen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prüfen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#404-oder-400-der-statuscode-zeigt-die-richtung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        404 oder 400 — der Statuscode zeigt die Richtung
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="authelia">Authelia</h1>
+<p>Authelia setzt eine Anmeldung vor kaimarkit. Traefik fragt bei jeder Anfrage dort
+nach, ob die Sitzung gilt, und leitet sonst zur Anmeldeseite weiter. Das erledigt
+eine ForwardAuth-Middleware.</p>
+<p><code>docker-compose.authelia.yml</code> ist die dritte Schicht und setzt die Traefik-Schicht
+voraus: Die Middleware hängt an dem Router, den jene anlegt.</p>
+<div class="admonition note">
+<p class="admonition-title">Diese Datei startet Authelia nicht mit</p>
+<p>Sie erwartet einen laufenden Authelia-Dienst im Traefik-Netz und verweist nur
+auf ihn. Authelia einzurichten — Benutzerdatenbank, Zugriffsregeln, Sitzungen —
+steht in dessen eigener Dokumentation.</p>
+</div>
+<h2 id="zwei-eingriffe-in-authelias-konfiguration">Zwei Eingriffe in Authelias Konfiguration</h2>
+<p>Bevor <code>KAIMARKIT_DOMAIN</code> in <code>docker/.env</code> steht, gehören zwei Einträge in Authelias
+eigene Konfiguration. Beide liegen außerhalb von kaimarkit, und beide fallen erst im
+Betrieb auf — jedes Mal mit einer Antwort, die in die falsche Richtung zeigt.</p>
+<p><strong>Die Domäne muss unter Authelias Cookie-Domäne liegen.</strong> Eine Authelia ist für eine
+Domäne zuständig, etwa <code>example.com</code>; ihr Sitzungscookie gilt für diese und ihre
+Unterdomänen. Fragt Traefik für einen Host außerhalb davon nach, antwortet Authelia
+mit <strong>400</strong>, und Traefik reicht den Statuscode unverändert durch. Dann kommt keine
+Anfrage durch, und das schon vor der Anmeldung. <code>KAIMARKIT_DOMAIN</code> gehört also unter
+dieselbe Domäne wie das Anmeldeportal: <code>kaimarkit.example.com</code> zu
+<code>auth.example.com</code>.</p>
+<p><strong>Authelias <code>access_control</code> braucht eine Regel für diese Domäne.</strong> Fehlt sie, gilt
+die <code>default_policy</code>. Steht die auf <code>deny</code>, führt der Weg durch die Anmeldung und
+endet danach mit einer Verweigerung: Wer sich anmeldet, kommt trotzdem nicht hinein.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">access_control</span><span class="p">:</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kaimarkit.example.com</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">      </span><span class="nt">policy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">two_factor</span>
+</code></pre></div>
+<p>Welche <code>policy</code> dort steht und welche Bedingungen dazukommen, entscheidet, wer die
+Authelia betreibt; die Schreibweise der Regel steht in Authelias eigener
+Dokumentation.</p>
+<div class="admonition warning">
+<p class="admonition-title">Eine zweite Cookie-Domäne kostet ein zweites Portal</p>
+<p>Wer kaimarkit unter eine andere Domäne stellen will als die vorhandene Authelia,
+braucht dort eine zweite Cookie-Domäne — und die verlangt je Domäne eine eigene
+<code>authelia_url</code>. Also ein erreichbares Anmeldeportal unter der neuen Domäne, mit
+eigenem Zertifikat und eigenem Router. Der kürzere Weg ist meist, kaimarkit unter
+die vorhandene Domäne zu setzen.</p>
+</div>
+<h2 id="was-vorher-da-sein-muss">Was vorher da sein muss</h2>
+<p>Alles aus <a href="../traefik/">Traefik</a>, dazu:</p>
+<ul>
+<li>Ein laufender Authelia im selben Docker-Netz, unter seinem Containernamen
+  erreichbar.</li>
+<li>Eine Zugriffsregel in Authelias <code>access_control</code>, die <code>KAIMARKIT_DOMAIN</code> abdeckt,
+  und eine Cookie-Domäne, unter der dieser Name liegt — beides wie oben beschrieben.</li>
+<li>Ein DNS-Eintrag für die Anmeldeseite, etwa <code>auth.example.com</code>.</li>
+<li>Eine ForwardAuth-Middleware, die Traefik kennt. Bringt die vorhandene Authelia
+  keine mit, definiert diese Schicht eine eigene — siehe den nächsten Abschnitt.</li>
+</ul>
+<h2 id="starten">Starten</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cp<span class="w"> </span>docker/.env.example<span class="w"> </span>docker/.env
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># Heisst die Middleware der vorhandenen Authelia "authelia@docker", genuegt das.</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>make<span class="w"> </span>up-authelia
+</code></pre></div>
+<p>Ohne <code>make</code>, alle drei Dateien in dieser Reihenfolge:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker/docker-compose.yml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">               </span>-f<span class="w"> </span>docker/docker-compose.traefik.yml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">               </span>-f<span class="w"> </span>docker/docker-compose.authelia.yml<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--build
+</code></pre></div>
+<p>Die Reihenfolge entscheidet. Fehlt die mittlere Datei, gibt es keinen Router, an den
+sich die Middleware hängen könnte.</p>
+<h2 id="zwei-wege-zur-middleware">Zwei Wege zur Middleware</h2>
+<p>Eine ForwardAuth-Middleware muss irgendwo definiert sein. Entweder bringt die
+vorhandene Authelia sie mit, oder diese Schicht definiert eine eigene. Beides
+funktioniert; die Wahl fällt über <code>KAIMARKIT_MIDDLEWARES</code> und
+<code>KAIMARKIT_API_MIDDLEWARES</code>.</p>
+<h3 id="die-vorhandene-middleware-der-normalfall">Die vorhandene Middleware — der Normalfall</h3>
+<p>Wer Authelia betreibt, hat sie meist per Docker-Label an sich selbst beschriftet und
+schaltet sie so vor einen Dienst:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">traefik.http.routers.whoami-secure.middlewares</span><span class="p">:</span><span class="w"> </span><span class="s">"authelia@docker"</span>
+</code></pre></div>
+<p>Dann ist nichts weiter zu tun. Beide Variablen stehen voreingestellt auf
+<code>authelia@docker</code>, und <code>AUTHELIA_VERIFY_URL</code> und <code>AUTHELIA_RESPONSE_HEADERS</code> bleiben
+ungenutzt — kaimarkit hängt an derselben Middleware wie alles andere hinter dieser
+Authelia. Ändert sich dort etwas, ändert es sich an einer Stelle.</p>
+<p>Eine Bedingung: Der Zusatz hinter dem <code>@</code> muss stimmen. Er gehört nicht zum Namen,
+sondern nennt den Traefik-Anbieter, aus dem die Middleware stammt.</p>
+<h3 id="die-eigene-middleware">Die eigene Middleware</h3>
+<p>Wessen Authelia ihre Middleware nicht per Docker-Label mitbringt — weil sie aus einer
+Datei kommt, außerhalb von Docker läuft oder gar keine hat —, trägt
+<code>kaimarkit-auth@docker</code> ein und setzt dafür die beiden Variablen. Der Name folgt
+<code>KAIMARKIT_TRAEFIK_NAME</code>; steht dort etwas anderes als <code>kaimarkit</code>, heißt die
+Middleware <code>&lt;name&gt;-auth@docker</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>KAIMARKIT_MIDDLEWARES=kaimarkit-auth@docker
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>KAIMARKIT_API_MIDDLEWARES=kaimarkit-auth@docker
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>AUTHELIA_VERIFY_URL=http://authelia:9091/api/verify?rd=https://auth.example.com
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>AUTHELIA_RESPONSE_HEADERS=Remote-User,Remote-Groups,Remote-Name,Remote-Email
+</code></pre></div>
+<p><code>AUTHELIA_VERIFY_URL</code> nennt zwei verschiedene Adressen in einer Zeile. Vor dem
+Fragezeichen steht die Adresse, unter der Traefik Authelia im Docker-Netz erreicht —
+Containername und interner Port, unverschlüsselt, weil beide im selben Netz stehen.
+Der Parameter <code>rd</code> dagegen ist die Anmeldeseite, wie der Browser sie sieht: von außen
+erreichbar und mit TLS. Beide zeigen auf denselben Dienst, nur aus verschiedenen
+Blickwinkeln. Wer nur eine der beiden anpasst, bekommt entweder einen
+Verbindungsfehler oder eine Weiterleitung ins Leere.</p>
+<p><code>AUTHELIA_RESPONSE_HEADERS</code> legt fest, was Traefik von Authelia an die Anwendung
+durchreicht: <code>Remote-User</code>, <code>Remote-Groups</code>, <code>Remote-Name</code>, <code>Remote-Email</code>. kaimarkit
+wertet diese Kopfzeilen nicht aus. Sie stehen bereit, falls später jemand danach
+unterscheiden will.</p>
+<p>Wer den ersten Weg geht, sollte prüfen, dass seine vorhandene Middleware dieselben
+Kopfzeilen durchreicht — kaimarkit braucht sie zwar nicht, aber eine Authelia, die
+gar keine durchreicht, verrät später niemandem, wer angemeldet war.</p>
+<p>Die eigene Middleware bleibt immer definiert, auch wenn kein Router sie benutzt. Eine
+leere <code>AUTHELIA_VERIFY_URL</code> stört dabei nicht: Am 01.09.2026 führte Traefik 3.6.25
+die ungenutzte Definition unter <code>/api/http/middlewares</code> auf <code>enabled</code>, ohne Fehler
+und ohne Eintrag im Log.</p>
+<h2 id="docker-oder-file-der-zusatz-entscheidet"><code>@docker</code> oder <code>@file</code> — der Zusatz entscheidet</h2>
+<p>Traefik hängt an jeden Namen den Anbieter an, aus dem er stammt. Dieselbe Authelia
+heißt <code>authelia@docker</code>, wenn sie ihre Middleware per Container-Label definiert, und
+<code>authelia@file</code>, wenn sie aus einer statischen Konfigurationsdatei kommt. Unter dem
+falschen Zusatz findet Traefik sie nicht.</p>
+<p>Der Fehler sieht nicht nach einem Tippfehler aus, und er ist folgenreich: Der Router
+verschwindet. Am 01.09.2026 mit Traefik 3.6.25 gegen einen absichtlich falschen Wert
+<code>authelia@file</code> gemessen — der Router stand unter <code>/api/http/routers</code> auf <code>"status":
+"disabled"</code> mit dem Fehler <code>middleware "authelia@file" does not exist</code>, und der Pfad
+<code>/</code> antwortete mit 404. Der <code>/api</code>-Router blieb dabei unberührt: Er hat seine eigene
+Variable und antwortete weiter mit 401.</p>
+<div class="admonition success">
+<p class="admonition-title">Der falsche Name öffnet den Dienst nicht</p>
+<p>Das ist die beruhigende Hälfte: Traefik lässt einen Router mit unbekannter
+Middleware nicht ungeschützt laufen, sondern gar nicht. Wer sich vertippt,
+bekommt einen toten Dienst und merkt es sofort. Dasselbe gilt für die eigene
+Middleware mit leerer <code>AUTHELIA_VERIFY_URL</code>: Sie antwortet mit 500, nicht mit
+dem Inhalt.</p>
+</div>
+<p>Welche Namen der eigene Traefik kennt, sagt seine API:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>http://&lt;traefik-host&gt;:8080/api/http/middlewares<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">'.[].name'</span>
+</code></pre></div>
+<h2 id="der-name-der-eigenen-middleware-folgt-dem-namensraum">Der Name der eigenen Middleware folgt dem Namensraum</h2>
+<p><code>kaimarkit-auth</code> ist keine feste Zeichenkette, sondern
+<code>${KAIMARKIT_TRAEFIK_NAME}-auth</code>. Wer den <a href="../traefik/#der-namensraum-der-traefik-namen">Namensraum</a>
+umstellt, weil eine zweite Instanz hinter derselben Traefik hängt, benennt damit auch
+diese Middleware um — und muss sie unter dem neuen Namen in <code>KAIMARKIT_MIDDLEWARES</code>
+eintragen. Die Variable dort löst sich nicht von selbst mit auf.</p>
+<p>Eine Verkettung in <code>docker/.env</code> nimmt Compose an:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>KAIMARKIT_MIDDLEWARES=${KAIMARKIT_TRAEFIK_NAME}-auth@docker
+</code></pre></div>
+<p>Eine Bedingung hat sie: <code>KAIMARKIT_TRAEFIK_NAME</code> muss in der Datei <strong>weiter oben</strong>
+stehen. Rückwärts setzt Compose eine leere Zeichenkette ein, meldet dazu nur eine
+Warnung und lässt den Aufruf weiterlaufen — der Router hieße dann <code>-auth@docker</code> und
+verschwände. In <code>docker/.env.example</code> steht die Traefik-Gruppe vor der
+Authelia-Gruppe, die Reihenfolge stimmt also von selbst.</p>
+<p>Am Router steht kein fester Name. Dort entscheidet <code>KAIMARKIT_MIDDLEWARES</code>, und die
+eigene Middleware ist nur einer der zwei Werte, die dort sinnvoll sind.</p>
+<h2 id="die-api-bleibt-erreichbar">Die API bleibt erreichbar</h2>
+<p>Hinter Authelia bekommt jeder Aufruf ohne Browser-Sitzung eine Weiterleitung zum
+Login. Ein <code>curl</code> bekäme also die Anmeldeseite statt Markdown, und jedes Skript
+liefe ins Leere.</p>
+<p>Dagegen legt die Schicht einen zweiten Router allein für <code>/api</code> an:</p>
+<p><code>&lt;name&gt;</code> steht wieder für <code>KAIMARKIT_TRAEFIK_NAME</code>, voreingestellt <code>kaimarkit</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Label</th>
+<th>Wert</th>
+<th>Wozu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>…routers.&lt;name&gt;-api.rule</code></td>
+<td><code>Host(`${KAIMARKIT_DOMAIN}`) &amp;&amp; PathPrefix(`/api`)</code></td>
+<td>Nur die API.</td>
+</tr>
+<tr>
+<td><code>…routers.&lt;name&gt;-api.priority</code></td>
+<td><code>100</code></td>
+<td>Vorrang vor dem Router für alles Übrige.</td>
+</tr>
+<tr>
+<td><code>…routers.&lt;name&gt;-api.service</code></td>
+<td><code>&lt;name&gt;</code></td>
+<td>Derselbe Dienst wie beim ersten Router.</td>
+</tr>
+<tr>
+<td><code>…routers.&lt;name&gt;-api.middlewares</code></td>
+<td><code>${KAIMARKIT_API_MIDDLEWARES-authelia@docker}</code></td>
+<td>Der Schalter, um den es geht.</td>
+</tr>
+</tbody>
+</table>
+<p>Die feste Priorität ist Absicht. Ohne sie ordnet Traefik die Regeln nach Länge; das
+genügte hier zwar, weil die <code>/api</code>-Regel die längere ist, hinge aber am Wortlaut der
+anderen. Die Zahl macht den Vorrang davon unabhängig.</p>
+<p>Für <code>KAIMARKIT_API_MIDDLEWARES</code> gibt es drei sinnvolle Werte.</p>
+<p><strong>Ein Middlewarename</strong> — der Standard, voreingestellt <code>authelia@docker</code>. Auch die API
+verlangt eine Anmeldung, Skripte kommen nicht durch.</p>
+<p><strong>Leer lassen</strong> — die API steht offen, die Oberfläche bleibt geschützt. Traefik
+liest ein leeres <code>middlewares=</code> als „keine Middleware“: Der Router bleibt aktiv und
+meldet keinen Fehler. Am 31.08.2026 mit Traefik 3.6.7 geprüft — der Router stand auf
+<code>enabled</code>, die Middlewareliste war leer, und ein Aufruf auf <code>/api</code> kam durch, während
+derselbe Aufruf auf <code>/</code> an Authelia hängenblieb. Ein auskommentierter Block in der
+Compose-Datei erübrigt sich damit; die leere Variable genügt.</p>
+<p><strong>Eine engere Middleware</strong>, etwa <code>meine-allowlist@docker</code> — der Mittelweg: eine
+IP-Allowlist statt der Anmeldung. Sie muss anderswo definiert sein, sonst verwirft
+Traefik den Router.</p>
+<p><code>KAIMARKIT_MIDDLEWARES</code> kennt dieselben drei Werte, und ein leerer Wert bedeutet auch
+dort „keine Middleware“ — dann steht die Oberfläche offen. Das ergibt selten Sinn:
+Wer die Anmeldung vor der Oberfläche nicht braucht, braucht die Authelia-Schicht
+nicht und bleibt bei <a href="../traefik/">Traefik</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Offene API heißt offener Dienst</p>
+<p>Die gesamte Funktion von kaimarkit steckt in <code>/api</code>. Wer die Middleware
+entfernt, gibt sie preis — die Anmeldung schützt dann nur noch die Oberfläche.
+Das ist im internen Netz vertretbar und im offenen Internet nicht.</p>
+</div>
+<p>In der Compose-Datei steht der Wert in Anführungszeichen. Sie sorgen dafür, dass
+eine leere Variable als leere Zeichenkette ankommt; ein blanker Wert stünde in YAML
+für <code>null</code>.</p>
+<h2 id="prufen">Prüfen</h2>
+<p>Der Router und seine Middleware lassen sich unmittelbar ablesen:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>http://&lt;traefik-host&gt;:8080/api/http/routers<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.[] | select(.name | startswith("kaimarkit"))'</span>
+</code></pre></div>
+<p>Der Filter nennt den voreingestellten Namensraum; bei abweichendem
+<code>KAIMARKIT_TRAEFIK_NAME</code> gehört dessen Wert dorthin.</p>
+<p>Beide Router müssen dort mit <code>"status": "enabled"</code> stehen und im Feld <code>middlewares</code>
+den Namen führen, der in <code>docker/.env</code> steht. Steht einer auf <code>disabled</code>, nennt das
+Feld <code>error</code> die fehlende Middleware beim Namen.</p>
+<p>Dann die beiden Wege gegeneinander:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Eigene Domain einsetzen.</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>curl<span class="w"> </span>-si<span class="w"> </span>https://kaimarkit.example.com/<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="w">    </span><span class="c1"># 302 zur Anmeldeseite</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>curl<span class="w"> </span>-sf<span class="w"> </span>https://kaimarkit.example.com/api/health<span class="w">    </span><span class="c1"># bei leerer Variable: 200</span>
+</code></pre></div>
+<p>Die Wahl der Middleware ist am 01.09.2026 gegen Traefik 3.6.25 durchgemessen, jedes
+Mal an <code>/api/http/routers</code> abgelesen statt aus der Compose-Datei geschlossen:</p>
+<table>
+<thead>
+<tr>
+<th><code>KAIMARKIT_MIDDLEWARES</code></th>
+<th>Router</th>
+<th>Antwort auf <code>/</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>authelia@docker</code></td>
+<td><code>enabled</code>, <code>["authelia@docker"]</code></td>
+<td>401 von der ForwardAuth</td>
+</tr>
+<tr>
+<td><code>kaimarkit-auth@docker</code></td>
+<td><code>enabled</code>, <code>["kaimarkit-auth@docker"]</code></td>
+<td>401 von der ForwardAuth</td>
+</tr>
+<tr>
+<td><code>authelia@file</code> (nicht vorhanden)</td>
+<td><code>disabled</code>, Fehler <code>middleware … does not exist</code></td>
+<td>404</td>
+</tr>
+<tr>
+<td>leer</td>
+<td><code>enabled</code>, keine Middleware</td>
+<td>200, ungeschützt</td>
+</tr>
+</tbody>
+</table>
+<p>Die 401 stammt aus dem Messaufbau, in dem an Authelias Stelle ein Dienst stand, der
+jede Anfrage abweist. Eine echte Authelia antwortet an dieser Stelle mit 302 auf die
+Anmeldeseite. Beides heißt dasselbe: Die Anfrage erreichte kaimarkit nicht.</p>
+<p>Der vollständige Durchlauf ist am 31.08.2026 gegen Authelia 4.38.19 hinter Traefik
+3.6 gelaufen. Ein Aufruf ohne Sitzung endete mit 302 auf der Anmeldeseite, und zwar
+mit dem Rücksprungziel im Parameter <code>rd</code>. Nach der Anmeldung stand die Oberfläche unter
+<code>KAIMARKIT_DOMAIN</code> und füllte ihre Enginewahl aus <code>/api/capabilities</code> — der Aufruf
+kam also durch dieselbe Middleware. Nach dem Löschen des Sitzungscookies führte
+derselbe Weg wieder zur Anmeldeseite.</p>
+<h2 id="404-oder-400-der-statuscode-zeigt-die-richtung">404 oder 400 — der Statuscode zeigt die Richtung</h2>
+<p>Antwortet der Dienst überhaupt nicht, entscheidet der Statuscode, wo man sucht:</p>
+<ul>
+<li><strong>404</strong> — kein Router greift. Die Ursache liegt bei Traefik oder bei den Labels
+  dieser Schicht, etwa beim falschen Zusatz hinter dem <code>@</code>.</li>
+<li><strong>400</strong>, als Klartext <code>400 Bad Request</code> mit <code>content-length: 15</code> — etwas hat
+  geantwortet. Die Ursache liegt hinter der Middleware, also bei Authelia. Der
+  nächstliegende Grund ist eine Domäne außerhalb ihrer Cookie-Domäne.</li>
+</ul>
+<p>Authelia lässt sich direkt fragen, mit denselben Kopfzeilen, die Traefik ihr schickt:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--network<span class="w"> </span>&lt;traefik-netz&gt;<span class="w"> </span>curlimages/curl<span class="w"> </span>-s<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s1">'%{http_code}\n'</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"X-Forwarded-Proto: https"</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">"X-Forwarded-Host: &lt;domain&gt;"</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">"X-Forwarded-Uri: /"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span>http://&lt;authelia&gt;:9091/api/authz/forward-auth
+</code></pre></div>
+<p>Dieser Aufruf hat die Ursache am 01.09.2026 am VPS-Aufbau des Nutzers gezeigt: Für
+einen Host außerhalb der Cookie-Domäne antwortete Authelia mit <strong>400</strong>. Vorher waren
+Netz, Middlewarename, Entrypoint, Certresolver, Router-Status und DNS geprüft — alle
+in Ordnung. Der Statuscode allein zeigt in die falsche Richtung; erst die Frage an
+Authelia klärt sie.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

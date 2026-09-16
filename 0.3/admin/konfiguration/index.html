@@ -1,0 +1,1513 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Dokumente nach Markdown wandeln und den Kontext sehen, den ein LLM bekommt">
+      
+      
+      
+        <link rel="canonical" href="https://kaimarkit.example.com/docs/0.3/admin/konfiguration/">
+      
+      
+        <link rel="prev" href="../lokal/">
+      
+      
+        <link rel="next" href="../formate/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Konfiguration - kaimarkit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#konfiguration" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="kaimarkit" class="md-header__button md-logo" aria-label="kaimarkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            kaimarkit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Konfiguration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Auf helle Darstellung umschalten"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Auf helle Darstellung umschalten" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Auf dunkle Darstellung umschalten"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Auf dunkle Darstellung umschalten" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Der Systemeinstellung folgen"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Der Systemeinstellung folgen" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="kaimarkit" class="md-nav__button md-logo" aria-label="kaimarkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    kaimarkit
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Für Nutzer
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Für Nutzer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/dateien-wandeln/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eine Datei wandeln
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/webseiten-wandeln/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eine Webseite wandeln
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/engine-und-texterkennung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine und Texterkennung wählen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/warnungen-und-fehler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Warnungen und Fehler verstehen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Für Admins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Für Admins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../schnellstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schnellstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lokal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lokaler Betrieb
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quellen-und-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quellen und Build
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quellen und Build">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#welchen-stand-der-dienst-meldet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Welchen Stand der Dienst meldet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anwendung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anwendung
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Anwendung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#woran-man-merkt-dass-die-zeitgrenze-zu-knapp-ist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Woran man merkt, dass die Zeitgrenze zu knapp ist
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-das-abbild-fest-setzt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was das Abbild fest setzt
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Container
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traefik" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Traefik
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authelia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authelia
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../formate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formate und Engines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../traefik/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hinter Traefik
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authelia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anmeldung mit Authelia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grenzen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grenzen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entwicklung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entwicklung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quellen-und-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quellen und Build
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quellen und Build">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#welchen-stand-der-dienst-meldet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Welchen Stand der Dienst meldet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anwendung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anwendung
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Anwendung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#woran-man-merkt-dass-die-zeitgrenze-zu-knapp-ist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Woran man merkt, dass die Zeitgrenze zu knapp ist
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-das-abbild-fest-setzt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was das Abbild fest setzt
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Container
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traefik" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Traefik
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authelia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authelia
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="konfiguration">Konfiguration</h1>
+<p>Alles, was sich im Betrieb umstellen lässt, kommt aus der Umgebung. Die Vorlage steht
+in <code>docker/.env.example</code>. Kopieren, anpassen, fertig:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cp<span class="w"> </span>docker/.env.example<span class="w"> </span>docker/.env
+</code></pre></div>
+<p>Compose leitet sein Projektverzeichnis aus der ersten <code>-f</code>-Datei ab und liest deshalb
+<code>docker/.env</code> von selbst. Niemand muss die Datei angeben. Aus demselben Grund beziehen
+sich alle relativen Pfade darin auf <code>docker/</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Eine leere Variable bricht nichts ab</p>
+<p>Für eine fehlende oder leer gelassene Variable setzt Compose still eine leere
+Zeichenkette ein. Der Aufruf läuft weiter und scheitert erst an ganz anderer
+Stelle. Deshalb hat in <code>docker/.env.example</code> jede Variable einen Wert.</p>
+</div>
+<p>Diese Seite und <code>docker/.env.example</code> beschreiben dieselben Variablen. Wer eine
+ergänzt, umbenennt oder streicht, ändert beide zugleich. Ausgenommen ist der Abschnitt
+<a href="#was-das-abbild-fest-setzt">Was das Abbild fest setzt</a>: Diese Variablen stehen im
+Dockerfile und nicht in der Umgebungsdatei.</p>
+<h2 id="quellen-und-build">Quellen und Build</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Standard</th>
+<th>Wirkung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KAIMARKIT_BUILD_CONTEXT</code></td>
+<td><code>..</code></td>
+<td>Verzeichnis, aus dem gebaut wird. Relativ zu <code>docker/</code>, also die Projektwurzel.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_DOCKERFILE</code></td>
+<td><code>docker/Dockerfile</code></td>
+<td>Das Dockerfile, relativ zum Build-Kontext.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_PROJECT_NAME</code></td>
+<td><code>kaimarkit</code></td>
+<td>Name des Compose-Projekts. Ohne ihn hieße es <code>docker</code>, nach dem Verzeichnis der Compose-Datei.</td>
+</tr>
+<tr>
+<td><code>PANDOC_VERSION</code></td>
+<td><code>3.6.4</code></td>
+<td>Pandoc kommt als <code>.deb</code> von GitHub, die Version steht fest.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_VERSION</code></td>
+<td>aus <code>git describe</code></td>
+<td>Der Stand, aus dem gebaut wird. Steht in <code>docker/.env.example</code> auskommentiert.</td>
+</tr>
+</tbody>
+</table>
+<p>Wer aus einem zweiten Checkout baut, setzt die beiden ersten Variablen auf absolute
+Pfade; die Compose-Dateien bleiben dann unverändert. Zwei Feinheiten dabei:
+<code>KAIMARKIT_DOCKERFILE</code> muss relativ zu genau diesem Kontext liegen, und Docker sucht
+die <code>.dockerignore</code> in der Wurzel des dortigen Baums.</p>
+<h3 id="welchen-stand-der-dienst-meldet">Welchen Stand der Dienst meldet</h3>
+<p><code>KAIMARKIT_VERSION</code> sagt, was wirklich läuft. Der Wert erscheint unter
+<a href="../api/"><code>/api/health</code></a> und in der Fußzeile der Oberfläche. Ermittelt wird er
+einmal beim Bauen, auf der Maschine, die das <code>.git</code> hat:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>describe<span class="w"> </span>--tags<span class="w"> </span>--always<span class="w"> </span>--dirty
+</code></pre></div>
+<p>Auf dem Tag steht dort <code>v0.1.0</code>, zwölf Commits dahinter <code>v0.1.0-12-ga22a6c5</code>, und bei
+Änderungen im Arbeitsbaum kommt <code>-dirty</code> hinzu. Das Makefile ruft den Befehl auf und
+reicht das Ergebnis über <code>build.args</code> an den Bau weiter; das Abbild behält es als
+<code>ENV</code>. Der Container fragt nie selbst nach Git — er hat kein <code>.git</code>.</p>
+<p>Die Rückfallkette hat zwei Stufen:</p>
+<ol>
+<li><code>KAIMARKIT_VERSION</code> aus der Umgebung, wie der Bau sie gesetzt hat.</li>
+<li>Ist die Variable leer oder fehlt sie, gilt <code>__version__</code> aus
+   <code>backend/app/__init__.py</code>.</li>
+</ol>
+<p>Die zweite Stufe greift in drei Fällen, und alle drei kommen vor: ein Bau aus einem
+Tarball ohne <code>.git</code>, ein Klon ohne Tags (<code>--depth 1</code> ohne <code>--tags</code>) und eine Maschine
+ohne <code>git</code>. Keiner davon bricht den Bau ab. Wer in einem dieser Fälle trotzdem einen
+genauen Stand melden will, trägt ihn in <code>docker/.env</code> von Hand ein; das Makefile
+überschreibt ihn nicht, weil es einen leeren Wert gar nicht erst weitergibt. Umgekehrt
+gilt: Wo <code>git describe</code> etwas liefert, gewinnt es gegen den Eintrag in der Datei.</p>
+<h2 id="anwendung">Anwendung</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Standard</th>
+<th>Wirkung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KAIMARKIT_MAX_FILE_SIZE_MB</code></td>
+<td><code>50</code></td>
+<td>Größe einer einzelnen Datei.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_MAX_FILES</code></td>
+<td><code>20</code></td>
+<td>Dateien je Stapelaufruf.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_MAX_CONCURRENT</code></td>
+<td><code>2</code></td>
+<td>Gleichzeitige Umwandlungen.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_CONVERSION_TIMEOUT</code></td>
+<td><code>600</code></td>
+<td>Zeitgrenze je Datei in Sekunden.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_PANDOC_TIMEOUT</code></td>
+<td><code>60</code></td>
+<td>Zeitgrenze für den Pandoc-Unterprozess in Sekunden.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_URL_TIMEOUT</code></td>
+<td><code>30</code></td>
+<td>Zeitgrenze je Abruf für <code>/api/convert/url</code> in Sekunden, Weiterleitungen eingeschlossen.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_DEFAULT_ENGINE</code></td>
+<td><code>auto</code></td>
+<td><code>auto</code> folgt der Präferenzliste im Code. Ein Enginename (<code>markitdown</code>, <code>docling</code>, <code>pandoc</code>) zieht diese Engine überall nach vorn.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_ENABLE_FALLBACK</code></td>
+<td><code>true</code></td>
+<td>Bei <code>auto</code> die nächste geeignete Engine nehmen, wenn die erste scheitert.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_OCR_ENABLED</code></td>
+<td><code>true</code></td>
+<td>Docling schickt gescannte Seiten und Bilder durch die Texterkennung.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_OCR_LANGS</code></td>
+<td><code>de,en</code></td>
+<td>Sprachen der Texterkennung, als ISO-639-1-Kürzel und durch Komma getrennt.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_LOG_LEVEL</code></td>
+<td><code>info</code></td>
+<td>Ausführlichkeit der Ausgabe.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_WORKERS</code></td>
+<td><code>1</code></td>
+<td>Zahl der Uvicorn-Worker.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_STATIC_DIR</code></td>
+<td><code>/opt/kaimarkit/static</code></td>
+<td>Das gebaute Frontend im Container.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_DOCS_DIR</code></td>
+<td><code>/opt/kaimarkit/docs</code></td>
+<td>Diese Dokumentation im Container.</td>
+</tr>
+</tbody>
+</table>
+<p>Die Größe prüft der Dienst schon während des Empfangs. Eine Prüfung danach käme zu
+spät — dann läge die Datei bereits vollständig im Speicher. Was die Grenzen für Größe,
+Anzahl, Gleichzeitigkeit und Dauer im Einzelnen bewirken, steht unter
+<a href="../grenzen/">Grenzen</a>.</p>
+<p><code>KAIMARKIT_ENABLE_FALLBACK</code> gilt nur für <code>engine=auto</code>. Eine im Aufruf ausdrücklich
+genannte Engine ersetzt der Dienst nie durch eine andere. <code>KAIMARKIT_OCR_ENABLED</code>
+setzt den Standard; eine einzelne Anfrage überschreibt ihn mit dem Feld <code>ocr</code>.</p>
+<p><code>KAIMARKIT_OCR_LANGS</code> erwartet ISO-639-1-Kürzel. Der Docling-Adapter ruft
+ausdrücklich EasyOCR auf, und EasyOCR liest nur die zweibuchstabige Form. Tesseracts
+<code>deu,eng</code> gehört hier nicht hin.</p>
+<p>Jeder Worker hält eigene Docling-Modelle im Speicher, rund 2 GB. <code>KAIMARKIT_WORKERS</code>
+erst erhöhen, wenn genug RAM da ist, und <code>KAIMARKIT_MEM_LIMIT</code> mit anheben.</p>
+<p>Fehlt eines der beiden Verzeichnisse, hängt das Backend es nicht ein und läuft
+trotzdem: ohne gebautes Frontend und ohne Dokumentation, aber mit vollständiger API.</p>
+<h3 id="woran-man-merkt-dass-die-zeitgrenze-zu-knapp-ist">Woran man merkt, dass die Zeitgrenze zu knapp ist</h3>
+<p>Überschreitet eine Umwandlung <code>KAIMARKIT_CONVERSION_TIMEOUT</code>, antwortet der Dienst mit 504 und
+<code>conversion_timeout</code>, und die Oberfläche zeigt an der Datei „Die Umwandlung hat die
+Zeitgrenze von <em>n</em> s überschritten". Der Satz nennt den Grund, sieht aber aus wie ein
+Fehler des Dienstes. Er ist keiner: Der Dienst hat abgebrochen, weil die Einstellung
+es ihm sagt.</p>
+<p>Zwei Anzeichen unterscheiden die zu knappe Grenze von einer echten Störung. Erstens
+scheitert immer dieselbe Datei, und zwar nach immer derselben Zeit — auf die Sekunde
+der eingestellte Wert. Zweitens steht im Containerprotokoll keine Ausnahme, sondern
+Doclings eigene Zeile:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>INFO:docling.document_converter:Finished converting document rechnung.pdf in 326.06 sec.
+</code></pre></div>
+<p>Sie kommt oft erst nach der Fehlermeldung, weil die Engine weiterrechnet, wenn der
+Wartevorgang längst beendet ist (<a href="../grenzen/">Grenzen</a>). Diese Zahl ist die
+gesuchte: Wer die Zeitgrenze über sie setzt, lässt das Dokument durch.</p>
+<p>Die Zeit geht dabei fast vollständig in die Texterkennung gescannter Seiten. Ein PDF
+mit Textschicht wandelt derselbe Dienst in wenigen Sekunden um; eine gescannte Seite
+kostet auf einem Notebook mit zwei Kernen zwischen anderthalb und drei Minuten,
+dasselbe Dokument von Lauf zu Lauf verschieden. Wer regelmäßig gescannte Dokumente
+mit vielen Seiten durchschickt, rechnet mit rund zwei Minuten je Seite und setzt die
+Grenze entsprechend.</p>
+<h2 id="was-das-abbild-fest-setzt">Was das Abbild fest setzt</h2>
+<p>Drei Variablen für Docling stehen nicht in <code>docker/.env</code>, sondern im <code>ENV</code>-Block des
+Dockerfiles. Compose reicht sie nicht durch. Wer sie ändern will, baut das Abbild neu.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Wert im Abbild</th>
+<th>Wirkung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DOCLING_ARTIFACTS_PATH</code></td>
+<td><code>/opt/docling-models</code></td>
+<td>Das Verzeichnis, in dem Docling seine Layout- und Tabellenmodelle sucht. Die Build-Stufe <code>models</code> legt sie dort ab.</td>
+</tr>
+<tr>
+<td><code>HF_HOME</code></td>
+<td><code>/opt/docling-models</code></td>
+<td>Der Hugging-Face-Cache. Einen Teil der Gewichte holt Docling über ihn, deshalb liegt er neben den übrigen Modellen.</td>
+</tr>
+<tr>
+<td><code>HF_HUB_OFFLINE</code></td>
+<td><code>1</code></td>
+<td>Verbietet zur Laufzeit jeden Zugriff auf den Hugging-Face-Hub.</td>
+</tr>
+</tbody>
+</table>
+<p>Die drei gehören zusammen. Ohne <code>DOCLING_ARTIFACTS_PATH</code> sucht Docling die Modelle im
+Home-Verzeichnis des Benutzers, findet nichts und lädt sie nach. Das Nachladen
+beginnt schon beim Hochfahren, nicht erst bei der ersten Anfrage.
+<code>HF_HUB_OFFLINE=1</code> verhindert genau das: Der Download scheitert, Docling meldet sich
+als nicht verfügbar, und <code>engine=auto</code> nimmt die nächste Engine. Der Dienst antwortet
+weiter, aber ohne Doclings Tabellenerkennung.</p>
+<p>Wer eigene Modelle einhängt, setzt <code>DOCLING_ARTIFACTS_PATH</code> auf das eingehängte
+Verzeichnis und lässt <code>HF_HUB_OFFLINE=1</code> stehen. Dann kommt zur Laufzeit nichts aus
+dem Netz.</p>
+<h2 id="container">Container</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Standard</th>
+<th>Wirkung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KAIMARKIT_IMAGE</code></td>
+<td><code>kaimarkit</code></td>
+<td>Name des Abbilds.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_TAG</code></td>
+<td><code>local</code></td>
+<td>Version des Abbilds, der Docker-Tag.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_CONTAINER_NAME</code></td>
+<td><code>kaimarkit</code></td>
+<td>Name des Containers.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_RESTART_POLICY</code></td>
+<td><code>unless-stopped</code></td>
+<td>Wann Docker den Container neu startet.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_BIND_ADDR</code></td>
+<td><code>127.0.0.1</code></td>
+<td>Adresse, auf der der Host-Port liegt.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_HOST_PORT</code></td>
+<td><code>8080</code></td>
+<td>Host-Port. Im Container hört der Dienst immer auf 8000.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_MEM_LIMIT</code></td>
+<td><code>6g</code></td>
+<td>Speichergrenze des Containers. Unter <code>4g</code> wird es eng.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_HEALTH_START_PERIOD</code></td>
+<td><code>180s</code></td>
+<td>Anlaufzeit des Healthchecks.</td>
+</tr>
+</tbody>
+</table>
+<p><code>KAIMARKIT_BIND_ADDR=127.0.0.1</code> hält den Dienst auf dem eigenen Rechner. Für Zugriff
+aus dem Netz gibt es zwei Wege: <code>0.0.0.0</code> setzen, oder — besser — den
+<a href="../traefik/">Traefik-Aufbau</a> nehmen. Dort entfällt die Veröffentlichung auf dem Host
+ganz.</p>
+<p>Solange die Anlaufzeit läuft, zählt ein fehlgeschlagener Healthcheck nicht als
+ungesund. Sie deckt den Start des Dienstes ab, nicht das Vorladen der Modelle: Der
+Healthcheck ruft <code>GET /api/health</code>, und diese Antwort hängt nicht an Docling.
+<code>healthy</code> sagt also, dass der Dienst antwortet — nicht, dass das Vorladen fertig ist.
+Docling lädt daneben im Hintergrund weiter: rund achteinhalb Sekunden je Pipeline,
+und der Warmlauf baut zwei davon, eine mit Texterkennung und eine ohne. Solange die
+erste nicht steht, meldet <code>GET /api/capabilities</code> Docling als <code>warming</code>.</p>
+<p>Auf langsamen Datenträgern <code>KAIMARKIT_HEALTH_START_PERIOD</code> hochsetzen, sonst gilt
+der Container als ungesund, bevor er überhaupt fertig gestartet ist.</p>
+<h2 id="traefik">Traefik</h2>
+<p>Diese fünf Variablen braucht nur, wer <code>docker-compose.traefik.yml</code> mitgibt.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Standard</th>
+<th>Wirkung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TRAEFIK_NETWORK</code></td>
+<td><code>traefik-web</code></td>
+<td>Das Docker-Netz, in dem Traefik läuft. Es muss bereits existieren.</td>
+</tr>
+<tr>
+<td><code>TRAEFIK_ENTRYPOINT</code></td>
+<td><code>websecure</code></td>
+<td>Der Traefik-Entrypoint, an dem der Router hängt. Beispielwert.</td>
+</tr>
+<tr>
+<td><code>TRAEFIK_CERTRESOLVER</code></td>
+<td><code>myresolver</code></td>
+<td>Der Certresolver für das Zertifikat. Beispielwert.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_DOMAIN</code></td>
+<td><code>kaimarkit.example.com</code></td>
+<td>Der Hostname, unter dem der Dienst antwortet. Hinter Authelia muss er unter deren Cookie-Domäne liegen.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_TRAEFIK_NAME</code></td>
+<td><code>kaimarkit</code></td>
+<td>Namensraum der Traefik-Namen: Router, <code>…-api</code>, Dienst und die eigene Middleware <code>…-auth</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Der letzte Wert trennt zwei Instanzen hinter derselben Traefik. Diese Namen gelten je
+Traefik-Instanz, nicht je Container; zwei Aufbauten mit demselben Wert legen einander
+lahm. Was daraus im Einzelnen wird und wie sich das nachprüfen lässt, steht unter
+<a href="../traefik/#der-namensraum-der-traefik-namen">Traefik</a>.</p>
+<p><code>TRAEFIK_ENTRYPOINT</code> und <code>TRAEFIK_CERTRESOLVER</code> sind Beispielwerte und keine
+Voreinstellungen: Beide Namen stammen aus der statischen Konfiguration der
+vorhandenen Traefik und müssen dort genauso lauten.</p>
+<p>Der Compose-Dienst heißt unabhängig davon weiterhin <code>kaimarkit</code>. <code>docker compose logs
+kaimarkit</code> und die Makefile-Ziele bleiben also, wie sie sind.</p>
+<h2 id="authelia">Authelia</h2>
+<p>Diese vier Variablen braucht nur, wer zusätzlich <code>docker-compose.authelia.yml</code>
+mitgibt.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Standard</th>
+<th>Wirkung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KAIMARKIT_MIDDLEWARES</code></td>
+<td><code>authelia@docker</code></td>
+<td>Die Middlewares des Hauptrouters. Leer lassen gibt die Oberfläche frei.</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_API_MIDDLEWARES</code></td>
+<td><code>authelia@docker</code></td>
+<td>Die Middlewares des <code>/api</code>-Routers. Leer lassen gibt die API frei.</td>
+</tr>
+<tr>
+<td><code>AUTHELIA_VERIFY_URL</code></td>
+<td><code>http://authelia:9091/api/verify?rd=https://auth.example.com</code></td>
+<td>Die Adresse, an der die eigene ForwardAuth-Middleware jede Anfrage prüfen lässt.</td>
+</tr>
+<tr>
+<td><code>AUTHELIA_RESPONSE_HEADERS</code></td>
+<td><code>Remote-User,Remote-Groups,Remote-Name,Remote-Email</code></td>
+<td>Kopfzeilen, die Traefik von Authelia an die Anwendung durchreicht.</td>
+</tr>
+</tbody>
+</table>
+<p>Die ersten beiden entscheiden, welche Middleware die Router benutzen, und damit auch,
+ob die letzten beiden überhaupt gelesen werden. Voreingestellt verweisen sie auf
+<code>authelia@docker</code>: die Middleware, die eine per Docker-Label beschriftete Authelia an
+sich selbst definiert. Dann bleiben <code>AUTHELIA_VERIFY_URL</code> und
+<code>AUTHELIA_RESPONSE_HEADERS</code> ungenutzt.</p>
+<p>Wer stattdessen <code>kaimarkit-auth@docker</code> einträgt, benutzt die Middleware, die
+<code>docker-compose.authelia.yml</code> selbst definiert — und braucht dafür die beiden
+letzten. Deren Name folgt <code>KAIMARKIT_TRAEFIK_NAME</code>: Bei abweichendem Namensraum heißt
+sie <code>&lt;name&gt;-auth@docker</code>. Der Hostname in <code>AUTHELIA_VERIFY_URL</code> ist dann der Containername von
+Authelia im Traefik-Netz, der <code>rd</code>-Parameter dagegen die von außen erreichbare
+Anmeldeseite. Beide zeigen auf denselben Dienst, aber aus verschiedenen
+Blickwinkeln.</p>
+<p>Der Zusatz hinter dem <code>@</code> nennt den Traefik-Anbieter und gehört zum Wert: Eine
+Authelia, die ihre Middleware aus einer Datei bezieht, heißt <code>authelia@file</code>. Beide
+Wege, die Stolperstelle mit dem Anbieter und der Umstieg von einer früheren Fassung
+stehen unter <a href="../authelia/">Authelia</a>.</p>
+<p>Zwei Bedingungen betreffen nicht diese Variablen, sondern Authelias eigene
+Konfiguration: <code>KAIMARKIT_DOMAIN</code> muss unter deren Cookie-Domäne liegen, und deren
+<code>access_control</code> braucht eine Regel für diesen Namen. Fehlt das erste, antwortet
+Authelia mit 400, bevor sich jemand anmelden kann; fehlt das zweite, greift die
+<code>default_policy</code>. Beides steht ausführlich unter <a href="../authelia/">Authelia</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

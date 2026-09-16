@@ -1,0 +1,1246 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Dokumente nach Markdown wandeln und den Kontext sehen, den ein LLM bekommt">
+      
+      
+      
+        <link rel="canonical" href="https://kaimarkit.example.com/docs/0.3/admin/grenzen/">
+      
+      
+        <link rel="prev" href="../authelia/">
+      
+      
+        <link rel="next" href="../api/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Grenzen - kaimarkit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#grenzen" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="kaimarkit" class="md-header__button md-logo" aria-label="kaimarkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            kaimarkit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Grenzen
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Auf helle Darstellung umschalten"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Auf helle Darstellung umschalten" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Auf dunkle Darstellung umschalten"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Auf dunkle Darstellung umschalten" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Der Systemeinstellung folgen"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Der Systemeinstellung folgen" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="kaimarkit" class="md-nav__button md-logo" aria-label="kaimarkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    kaimarkit
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Für Nutzer
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Für Nutzer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/dateien-wandeln/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eine Datei wandeln
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/webseiten-wandeln/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eine Webseite wandeln
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/engine-und-texterkennung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine und Texterkennung wählen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nutzer/warnungen-und-fehler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Warnungen und Fehler verstehen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Für Admins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Für Admins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../schnellstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schnellstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lokal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lokaler Betrieb
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../konfiguration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../formate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formate und Engines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../traefik/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hinter Traefik
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authelia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anmeldung mit Authelia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grenzen
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grenzen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#funf-werte-begrenzen-einen-aufruf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fünf Werte begrenzen einen Aufruf
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-zeitgrenze-beendet-den-wartevorgang-nicht-die-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die Zeitgrenze beendet den Wartevorgang, nicht die Engine
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gescannte-seiten-ohne-ocr-bleiben-leer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gescannte Seiten ohne OCR bleiben leer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ocr-greift-nur-in-pdf-und-bilddateien" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OCR greift nur in PDF und Bilddateien
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bilder-werden-nicht-beschrieben" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bilder werden nicht beschrieben
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jeder-worker-halt-eigene-docling-modelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jeder Worker hält eigene Docling-Modelle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#webseiten-nur-offentlich-kein-javascript" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Webseiten: nur öffentlich, kein JavaScript
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-der-dienst-gar-nicht-tut" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was der Dienst gar nicht tut
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../entwicklung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entwicklung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#funf-werte-begrenzen-einen-aufruf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fünf Werte begrenzen einen Aufruf
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-zeitgrenze-beendet-den-wartevorgang-nicht-die-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Die Zeitgrenze beendet den Wartevorgang, nicht die Engine
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gescannte-seiten-ohne-ocr-bleiben-leer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gescannte Seiten ohne OCR bleiben leer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ocr-greift-nur-in-pdf-und-bilddateien" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OCR greift nur in PDF und Bilddateien
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bilder-werden-nicht-beschrieben" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bilder werden nicht beschrieben
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jeder-worker-halt-eigene-docling-modelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jeder Worker hält eigene Docling-Modelle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#webseiten-nur-offentlich-kein-javascript" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Webseiten: nur öffentlich, kein JavaScript
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-der-dienst-gar-nicht-tut" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was der Dienst gar nicht tut
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="grenzen">Grenzen</h1>
+<p>Was kaimarkit nicht kann und woran eine Umwandlung scheitert.</p>
+<h2 id="funf-werte-begrenzen-einen-aufruf">Fünf Werte begrenzen einen Aufruf</h2>
+<p>Alle fünf kommen aus der Umgebung. <code>docs/admin/konfiguration.md</code> beschreibt sie
+im Einzelnen, <code>docker/.env.example</code> nennt die Standardwerte.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Standard</th>
+<th>Was sie begrenzt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KAIMARKIT_MAX_FILE_SIZE_MB</code></td>
+<td>50</td>
+<td>Größe einer einzelnen Datei</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_MAX_FILES</code></td>
+<td>20</td>
+<td>Dateien je Stapelaufruf</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_MAX_CONCURRENT</code></td>
+<td>2</td>
+<td>gleichzeitige Umwandlungen</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_CONVERSION_TIMEOUT</code></td>
+<td>600</td>
+<td>Sekunden je Datei</td>
+</tr>
+<tr>
+<td><code>KAIMARKIT_URL_TIMEOUT</code></td>
+<td>30</td>
+<td>Sekunden je Abruf über <code>/api/convert/url</code></td>
+</tr>
+</tbody>
+</table>
+<p>Die Größe prüft der Dienst schon beim Empfang. Überschreitet die Datei das Limit,
+bricht er ab und antwortet mit 413 und <code>file_too_large</code>. Den Rest des Uploads liest
+er nicht mehr ein — eine Prüfung danach käme zu spät, dann läge die Datei bereits
+vollständig im Speicher.</p>
+<p>Solange eine Umwandlung läuft, liegt die Datei in einer temporären Datei. Danach
+löscht der Dienst sie, auch wenn die Engine gescheitert ist. Gespeichert wird
+nichts.</p>
+<h2 id="die-zeitgrenze-beendet-den-wartevorgang-nicht-die-engine">Die Zeitgrenze beendet den Wartevorgang, nicht die Engine</h2>
+<p>Dauert eine Umwandlung länger als <code>KAIMARKIT_CONVERSION_TIMEOUT</code>, antwortet der
+Dienst mit 504 und <code>conversion_timeout</code>. Die Engine arbeitet im Hintergrund weiter,
+bis sie von selbst fertig ist, und verbraucht so lange Rechenzeit. Häufen sich die
+Zeitüberschreitungen, sammeln sich diese Läufe an und der Dienst wird langsam;
+dann hilft nur ein Neustart des Containers.</p>
+<p>Eine Ausnahme ist Pandoc: Es läuft als eigener Prozess, und den beendet der
+Dienst nach <code>KAIMARKIT_PANDOC_TIMEOUT</code> tatsächlich.</p>
+<p>Wer regelmäßig an die Zeitgrenze stößt, setzt sie besser hoch, statt es mehrfach
+zu versuchen: Jeder Versuch legt einen weiteren Lauf obendrauf.</p>
+<h2 id="gescannte-seiten-ohne-ocr-bleiben-leer">Gescannte Seiten ohne OCR bleiben leer</h2>
+<p>Ein PDF aus dem Scanner enthält Bilder und keinen Text. MarkItDown liest darin
+nichts, weil es nichts zu lesen findet, und Pandoc kommt für PDF ohnehin nicht in
+Frage. Das ist kein Fehler: Die Umwandlung gelingt, das Markdown bleibt leer, und
+die Antwort nennt den Grund in <code>warnings</code>.</p>
+<p>Text aus solchen Dateien holt allein Docling, und nur mit eingeschalteter
+Texterkennung. <code>KAIMARKIT_OCR_ENABLED</code> setzt den Standard, das Feld <code>ocr</code> einer
+einzelnen Anfrage überschreibt ihn:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-sf<span class="w"> </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span>@scan.pdf<span class="w"> </span>-F<span class="w"> </span><span class="nv">engine</span><span class="o">=</span>docling<span class="w"> </span>-F<span class="w"> </span><span class="nv">ocr</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">     </span>localhost:8000/api/convert<span class="w"> </span>-o<span class="w"> </span>scan.md
+</code></pre></div>
+<p>Zwei Dinge kosten das. Die Texterkennung ist um ein Vielfaches langsamer als das
+Lesen einer Textebene, und ihre Sprachen müssen stimmen: <code>KAIMARKIT_OCR_LANGS</code> steht
+auf <code>de,en</code>, ein französisches Dokument braucht dort seinen eigenen Eintrag, <code>fr</code>.</p>
+<p>Läuft der Aufruf mit <code>engine=auto</code> und ist Docling noch nicht bereit, nimmt der
+Dienst für das PDF die nächste Engine der Liste — und die findet dann eben keinen
+Text. Wer sicher OCR will, nennt Docling ausdrücklich und wartet.</p>
+<h2 id="ocr-greift-nur-in-pdf-und-bilddateien">OCR greift nur in PDF und Bilddateien</h2>
+<p>Wer ein Word-Dokument mit einem abfotografierten Absatz hochlädt, bekommt diesen
+Absatz nicht — auch mit <code>ocr=true</code> nicht. Die Texterkennung erreicht zwei Arten von
+Dateien: PDF und die Bildformate <code>.png</code>, <code>.jpg</code>, <code>.jpeg</code> und <code>.tiff</code>. In <code>.docx</code>,
+<code>.pptx</code>, <code>.xlsx</code>, <code>.html</code> und <code>.epub</code> bleibt sie aus.</p>
+<p>Der Grund liegt in Docling. Ein PDF läuft dort durch eine eigene Pipeline, und nur
+diese baut das OCR-Modell; jedes andere Format geht an die einfache Pipeline, deren
+Optionen <code>do_ocr</code> gar nicht kennen. Es gibt also keinen Schalter, den man umlegen
+könnte: Weder das Feld <code>ocr</code> einer Anfrage noch <code>KAIMARKIT_OCR_ENABLED</code> wirkt auf
+diese Formate.</p>
+<p>In PDF reicht die Texterkennung dafür bis in eingebettete Bilder hinein. Ein Absatz,
+der nur als Bild in der Seite steht, erscheint mit <code>ocr=true</code> im Markdown und fehlt
+mit <code>ocr=false</code>. Gemessen im Container-Abbild mit docling 2.124.0; eine spätere
+Version kann das ändern.</p>
+<p>Der Umweg führt über PDF: das Dokument aus Word, LibreOffice oder dem Programm, aus
+dem es stammt, als PDF speichern und dieses PDF mit <code>engine=docling</code> und <code>ocr=true</code>
+abgeben.</p>
+<h2 id="bilder-werden-nicht-beschrieben">Bilder werden nicht beschrieben</h2>
+<p>Ein Bild im Dokument erscheint im Markdown als Platzhalter oder als Alt-Text, nie
+als Beschreibung seines Inhalts. Der Dienst schickt bewusst nichts an ein
+Sprachmodell — er soll den Kontext zeigen, den man einem Modell gibt, und ihn nicht
+selbst erzeugen. Ein Diagramm, dessen Aussage nur im Bild steht, geht dabei
+verloren.</p>
+<p>Bei einem PDF durch MarkItDown bleibt nicht einmal die Stelle übrig. Die Engine
+liest dort nur die Textebene und lässt jedes Bild ersatzlos weg; im Markdown steht
+danach weder Platzhalter noch Alt-Text. Der Dienst warnt deshalb bei jedem PDF, das
+durch MarkItDown läuft. Docling setzt stattdessen <code>&lt;!-- image --&gt;</code> ein und zählt die
+ersetzten Bilder.</p>
+<h2 id="jeder-worker-halt-eigene-docling-modelle">Jeder Worker hält eigene Docling-Modelle</h2>
+<p>Die Modelle liegen im Speicher des Prozesses, nicht daneben. Zwei Uvicorn-Worker
+halten sie deshalb zweimal, mit jeweils rund 2 GB. <code>KAIMARKIT_WORKERS</code> erst
+hochsetzen, wenn genug RAM da ist, und <code>KAIMARKIT_MEM_LIMIT</code> mit anheben — sonst
+schießt der Kernel den Container beim ersten großen PDF ab. Dass es das war, zeigt
+<code>docker inspect</code> als <code>OOMKilled</code>.</p>
+<p>Gleichzeitige Anfragen sind der falsche Grund für mehr Worker. Wie viele
+Umwandlungen nebeneinander laufen, regelt <code>KAIMARKIT_MAX_CONCURRENT</code> innerhalb eines
+Prozesses; das kostet keinen zweiten Satz Modelle.</p>
+<p>Wartezeit kostet auch der erste Aufruf. Docling beginnt seine Modelle zu laden,
+sobald der Dienst hochfährt, und lädt sie im Hintergrund; jeder Neustart fängt damit
+von vorn an. Bis das fertig ist, meldet die Auskunft <code>warming</code> und <code>engine=auto</code>
+nimmt für ein PDF MarkItDown.</p>
+<h2 id="webseiten-nur-offentlich-kein-javascript">Webseiten: nur öffentlich, kein JavaScript</h2>
+<p><code>POST /api/convert/url</code> holt genau eine Seite, und der Dienst prüft vorher, wohin
+er greift. Erlaubt sind <code>http</code> und <code>https</code>; jede andere Adresse endet mit 400 und
+<code>invalid_url</code>. Den Hostnamen löst er auf und prüft <strong>jede</strong> zurückgegebene Adresse:
+Loopback, private Netze, Link-local und alles andere, was nicht öffentlich
+erreichbar ist, weist er ab. Ein Name, der auf eine öffentliche und eine private
+Adresse zeigt, kommt ebenfalls nicht durch. <code>http://127.0.0.1/</code> etwa endet mit 400
+und <code>invalid_url</code>, und <code>http://localhost:8000/</code> genauso — der Name schützt nicht
+davor, weil der Dienst ihn auflöst, bevor er verbindet. Der Grund steht im Betrieb: Der Dienst
+teilt sich sein Docker-Netz mit Traefik und Authelia, und ein ungeprüfter Abruf
+wäre ein Sprungbrett dorthin — bis zu <code>169.254.169.254</code>, wo Cloud-Anbieter ihre
+Metadaten anbieten.</p>
+<p>Einer Weiterleitung folgt der Dienst höchstens fünfmal, und er prüft das Ziel vor
+jedem Sprung erneut. Wer öfter weiterleitet, bekommt <code>invalid_url</code>.</p>
+<p>Die geholte Antwort unterliegt derselben Größenprüfung wie ein Upload: Über
+<code>KAIMARKIT_MAX_FILE_SIZE_MB</code> bricht der Dienst mitten im Empfang ab und antwortet
+mit 413. Für den Abruf selbst gilt <code>KAIMARKIT_URL_TIMEOUT</code> — 30 Sekunden im
+Standard, alle Weiterleitungen eingeschlossen; danach 504. Die Umwandlung danach
+zählt wieder gegen <code>KAIMARKIT_CONVERSION_TIMEOUT</code>. Auch der Abruf belegt einen der
+<code>KAIMARKIT_MAX_CONCURRENT</code> Plätze: Wer zwanzig Adressen auf einmal schickt, öffnet
+nicht zwanzig Verbindungen zugleich.</p>
+<p>Zwei Arten von Seiten liefern trotzdem nichts Brauchbares:</p>
+<ul>
+<li><strong>Seiten hinter einer Anmeldung.</strong> Der Dienst schickt keine Cookies, keine
+  Kopfzeilen und keine Zugangsdaten mit. Er sieht, was ein fremder Browser ohne
+  Sitzung sieht — meist die Anmeldeseite, und die wandelt er dann auch.</li>
+<li><strong>Seiten, die ihren Inhalt erst im Browser aufbauen.</strong> Es läuft kein JavaScript.
+  Was der Server als HTML ausliefert, ist die Seite. Bei einer Anwendung, die ihren
+  Text erst nachlädt, bleibt ein fast leeres Markdown übrig.</li>
+</ul>
+<p>Die geholte Datei liegt wie ein Upload in einem eigenen temporären Verzeichnis, das
+nach der Antwort verschwindet — auch dann, wenn die Engine gescheitert ist.</p>
+<h2 id="was-der-dienst-gar-nicht-tut">Was der Dienst gar nicht tut</h2>
+<ul>
+<li><strong>Nichts aufheben.</strong> Es gibt keine Historie und keinen Zwischenspeicher. Wer ein
+  Ergebnis behalten will, lädt es herunter.</li>
+<li><strong>Niemanden erkennen.</strong> Die API kennt keine Anmeldung und keine Kennungen. Eine
+  Anmeldung kommt von außen davor, siehe <a href="../authelia/">Authelia</a>.</li>
+<li><strong>Nichts nachladen.</strong> Alle Modelle stecken im Abbild. Aus dem Netz holt der
+  Dienst zur Laufzeit nur, was ein Aufruf von <code>/api/convert/url</code> verlangt: die eine
+  Seite, von einer öffentlichen Adresse, und nichts von sich aus.</li>
+<li><strong>Nichts zurückschreiben.</strong> Der Weg führt nur in eine Richtung: nach Markdown.
+  Aus Markdown wieder ein PDF zu machen, ist nicht Aufgabe dieses Dienstes.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
