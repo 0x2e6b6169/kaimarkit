@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/entwicklung/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/entwicklung/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/admin/api/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/admin/api/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/admin/authelia/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/admin/authelia/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/admin/formate/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/admin/formate/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/admin/grenzen/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/admin/grenzen/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/admin/konfiguration/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/admin/konfiguration/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/admin/lokal/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/admin/lokal/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/admin/schnellstart/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/admin/schnellstart/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/admin/traefik/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/admin/traefik/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/nutzer/dateien-wandeln/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/nutzer/dateien-wandeln/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/nutzer/engine-und-texterkennung/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/nutzer/engine-und-texterkennung/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/nutzer/warnungen-und-fehler/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/nutzer/warnungen-und-fehler/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
     <url>
-         <loc>https://kaimarkit.example.com/docs/0.3/nutzer/webseiten-wandeln/</loc>
+         <loc>https://0x2e6b6169.github.io/kaimarkit/latest/nutzer/webseiten-wandeln/</loc>
          <lastmod>2026-09-16</lastmod>
     </url>
 </urlset>
