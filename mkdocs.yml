@@ -1,9 +1,14 @@
 site_name: kaimarkit
 site_description: Dokumente nach Markdown wandeln und den Kontext sehen, den ein LLM bekommt
-# Nur der Pfad zaehlt: Die Dokumentation liegt unter /docs/, nicht in der Wurzel.
-# Steht dort die Wurzel, verlinkt der Versions-Dropdown auf /0.3/ statt /docs/0.3/
-# und laeuft ins Leere. MkDocs verlangt ein Schema, deshalb der Platzhalter-Host.
-site_url: https://kaimarkit.example.com/docs/
+# Die veroeffentlichte Fassung steht auf GitHub Pages; der Container liefert
+# dieselben Dateien unter /docs/ aus. Ein site_url nennt nur eine der beiden
+# Adressen, und die oeffentliche ist die richtige.
+#
+# Der Wert steht im fertigen Bau an genau zwei Stellen: im <link rel="canonical">
+# jeder Seite und in der sitemap.xml. Navigation und Versionsmenue rechnen zur
+# Laufzeit aus der Basis der geoeffneten Seite; welcher Pfad hier steht, aendert
+# an ihnen nichts.
+site_url: https://0x2e6b6169.github.io/kaimarkit/
 docs_dir: docs
 site_dir: site
 
@@ -44,6 +49,15 @@ extra:
 plugins:
   - search:
       lang: de
+  # Nur wegen der kanonischen Adresse: Beim Lauf von mike haengt das Plugin die
+  # Fassung an site_url, sodass <link rel="canonical"> auf /latest/ zeigt und
+  # nicht auf eine Adresse ohne Fassung, die es auf GitHub Pages nicht gibt.
+  # Ohne mike — Vorschau und Rueckfall im Abbild — tut es nichts. Den
+  # Versionswaehler bringt Material selbst mit (extra.version.provider),
+  # deshalb bleibt der von mike aus; sonst stuenden zwei nebeneinander.
+  - mike:
+      canonical_version: latest
+      version_selector: false
 
 markdown_extensions:
   - admonition

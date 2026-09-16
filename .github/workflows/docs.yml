@@ -36,8 +36,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Die Abhaengigkeiten stehen in backend/pyproject.toml unter der Gruppe
+      # "docs" und werden von dort gelesen — derselbe Weg wie in der Docs-Stufe
+      # des Abbilds. "pip install backend[docs]" holte die Laufzeit mit, und die
+      # heisst hier docling samt Torch; der Laeufer baut Seiten, keine Modelle.
       - name: MkDocs und mike installieren
-        run: .github/scripts/install-docs-deps.sh
+        run: |
+          python -c "import tomllib; print('\n'.join(tomllib.load(open('backend/pyproject.toml','rb'))['project']['optional-dependencies']['docs']))" > "$RUNNER_TEMP/docs-requirements.txt"
+          pip install -r "$RUNNER_TEMP/docs-requirements.txt"
 
       # --strict macht aus jedem toten Verweis und jeder Seite ausserhalb der
       # Navigation einen Fehler. Laeuft auch auf main, damit ein Bruch beim
@@ -61,8 +67,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Die Abhaengigkeiten stehen in backend/pyproject.toml unter der Gruppe
+      # "docs" und werden von dort gelesen — derselbe Weg wie in der Docs-Stufe
+      # des Abbilds. "pip install backend[docs]" holte die Laufzeit mit, und die
+      # heisst hier docling samt Torch; der Laeufer baut Seiten, keine Modelle.
       - name: MkDocs und mike installieren
-        run: .github/scripts/install-docs-deps.sh
+        run: |
+          python -c "import tomllib; print('\n'.join(tomllib.load(open('backend/pyproject.toml','rb'))['project']['optional-dependencies']['docs']))" > "$RUNNER_TEMP/docs-requirements.txt"
+          pip install -r "$RUNNER_TEMP/docs-requirements.txt"
 
       # Die Dokumentation zaehlt zweistellig: Aus dem Tag v0.3.6 wird die
       # Fassung 0.3. Ein Fehlerstand bekommt keine eigene Seitenreihe, sondern
