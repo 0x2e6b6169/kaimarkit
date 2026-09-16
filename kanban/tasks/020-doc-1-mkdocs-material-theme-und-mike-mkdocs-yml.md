@@ -4,7 +4,7 @@ title: 'DOC-1 · MkDocs, Material-Theme und mike: mkdocs.yml, Navigation, Seiten
 status: done
 priority: high
 created: 2026-08-31T10:20:23.564339142+02:00
-updated: 2026-09-16T09:03:53.108322407+02:00
+updated: 2026-09-16T09:11:20.993693463+02:00
 started: 2026-08-31T10:48:45.234369873+02:00
 completed: 2026-08-31T10:48:45.234369873+02:00
 assignee: akar
@@ -98,3 +98,32 @@ eigenen Wähler mitbringt.
 Die Vorgabe "Unterpfad statt Wurzel" ist damit gegenstandslos. Wer sie wieder
 einsetzt, macht den kanonischen Verweis falsch, ohne am Versionsmenü etwas zu
 ändern.
+
+## Nachtrag (16. September 2026): mike hängt die Fassung selbst an
+
+Die Berichtigung oben nannte als Konfiguration `canonical_version: latest` zusammen
+mit `version_selector: false`. Das zweite Stück war falsch. Zwei Eigenheiten stecken
+dahinter, und beide fallen erst am veröffentlichten Stand auf.
+
+mike hängt sein Plugin beim Veröffentlichen selbst ein, sobald die Konfiguration es
+nicht aufführt (`mkdocs_utils.inject_plugin`). In jeder von mike gebauten Fassung
+steht die Version deshalb schon im `site_url` — auch ohne Eintrag in `mkdocs.yml`.
+Ein `site_url`, das `latest/` selbst mitbringt, ergibt darum `/kaimarkit/latest/0.3/`.
+Genau das stand kurzzeitig auf der veröffentlichten Seite.
+
+`version_selector: false` wiederum schaltet nicht nur den Wähler von mike ab, sondern
+auch den von Material: Dessen Vorlage setzt `_.version` nur, solange
+`not mike or mike.config.version_selector` gilt. Im Bau zeigt sich das als
+`"version": null` in der App-Konfiguration, im Browser fehlt das Menü ersatzlos.
+
+Richtig ist `site_url` ohne Fassung im Pfad, dazu das Plugin mit einer einzigen
+Einstellung:
+
+    plugins:
+      - mike:
+          canonical_version: latest
+
+Belegt am veröffentlichten Stand: `/latest/` und `/0.3/` nennen beide
+https://0x2e6b6169.github.io/kaimarkit/latest/… als kanonische Adresse, die
+App-Konfiguration führt `provider: mike`, und kein Verweis auf `version-select`
+steht im HTML.
