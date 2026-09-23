@@ -935,3 +935,6 @@
 {"timestamp":"2026-09-16T09:16:27.461691081+02:00","action":"create","task_id":139,"detail":"IN-22 · GitHub Action veroeffentlicht die Dokumentation auf GitHub Pages"}
 {"timestamp":"2026-09-16T09:16:48.154508364+02:00","action":"edit","task_id":139,"detail":"IN-22 · GitHub Action veroeffentlicht die Dokumentation auf GitHub Pages"}
 {"timestamp":"2026-09-16T09:17:28.99503038+02:00","action":"edit","task_id":139,"detail":"IN-22 · GitHub Action veroeffentlicht die Dokumentation auf GitHub Pages"}
+{"timestamp":"2026-09-23T10:00:00+02:00","action":"create","task_id":140,"detail":"BE-42 · PUT /api/process fuer Open WebUI als externe Dokumentenextraktion"}
+{"timestamp":"2026-09-23T11:30:00+02:00","action":"move","task_id":140,"detail":"in-progress -> done"}
+{"timestamp":"2026-09-23T11:30:00+02:00","action":"create","task_id":141,"detail":"IN-23 · Compose reicht KAIMARKIT_URL_TIMEOUT nicht in den Container"}
