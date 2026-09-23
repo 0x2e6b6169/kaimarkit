@@ -85,7 +85,7 @@ Nicht angefasst: `converters/`, die Präferenzlisten, `/api/convert`,
 `uploads.py` als `stored_stream()` herausgelöst; `stored_upload()` ruft ihn auf, der
 Endpunkt reicht `request.stream()` hinein. Die Größenprüfung greift also beim Empfang.
 
-Drei Entscheidungen, die das Issue offenließ:
+Vier Entscheidungen, die das Issue offenließ:
 
 - **Name ohne Endung.** Mit `X-Filename` ohne Endung kommt sie aus dem
   `Content-Type`. Führt der auf nichts, bleibt der Name ohne Endung, und der
