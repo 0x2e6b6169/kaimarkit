@@ -79,6 +79,21 @@ class BatchResponse(BaseModel):
     failed: int
 
 
+class ProcessResponse(BaseModel):
+    """Die Antwort von ``PUT /api/process``, im Format der externen Extraktion von Open WebUI.
+
+    ``metadata`` haelt nur Zeichenketten und Ganzzahlen: Open WebUI reicht die
+    Metadaten an seine Vektordatenbank weiter, und Chroma nimmt keine Listen.
+    Warnungen stehen deshalb als eine Zeichenkette darin, mit `` | `` verbunden.
+
+    ``frontend/src/types.ts`` kennt dieses Modell nicht, und das ist Absicht: Das
+    Frontend ruft den Endpunkt nie auf, er gehoert einem fremden Client.
+    """
+
+    page_content: str
+    metadata: dict[str, str | int]
+
+
 class Limits(BaseModel):
     max_file_size_mb: int
     max_files: int
