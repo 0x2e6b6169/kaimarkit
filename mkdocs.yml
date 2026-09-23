@@ -87,6 +87,7 @@ nav:
       - Formate und Engines: admin/formate.md
       - Hinter Traefik: admin/traefik.md
       - Anmeldung mit Authelia: admin/authelia.md
+      - Open WebUI anbinden: admin/openwebui.md
       - Grenzen: admin/grenzen.md
       - API: admin/api.md
   - Entwicklung: entwicklung.md
