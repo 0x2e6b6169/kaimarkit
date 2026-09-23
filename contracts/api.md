@@ -275,3 +275,78 @@ Antwort des fernen Servers unterliegt `KAIMARKIT_MAX_FILE_SIZE_MB` (413, abgebro
 beim Empfang), der Abruf `KAIMARKIT_URL_TIMEOUT` (504) und die Umwandlung
 `KAIMARKIT_CONVERSION_TIMEOUT` (504). Führt der `Content-Type` auf keine bekannte
 Endung und der Pfad auch nicht, antwortet der Dienst mit 415.
+
+---
+
+## `PUT /api/process`
+
+Die Tür für Open WebUI. Open WebUI gibt seine Dokumentenextraktion mit
+`CONTENT_EXTRACTION_ENGINE=external` an einen fremden Dienst ab und ruft dazu
+`PUT <EXTERNAL_DOCUMENT_LOADER_URL>/process` auf; mit
+`EXTERNAL_DOCUMENT_LOADER_URL=http://kaimarkit:8000/api` landet der Aufruf hier.
+
+**`frontend/src/types.ts` kennt diesen Endpunkt nicht, und das ist kein Bruch des
+Dreiklangs:** Das Frontend ruft ihn nie auf, er gehört einem fremden Client. Sein
+Modell `ProcessResponse` steht nur hier und in `backend/app/models.py`.
+
+**Anfrage.** Der Rumpf ist die Datei selbst, kein `multipart/form-data`.
+
+| Kopf | Pflicht | Bedeutung |
+|---|---|---|
+| `X-Filename` | nein | Name der Datei, prozentkodiert (`urllib.parse.quote`) |
+| `Content-Type` | nein | MIME-Typ der Datei |
+| `Authorization` | nein | wird ignoriert; der Dienst kennt keine Anmeldung |
+
+Die Endung aus `X-Filename` wählt die Engine wie bei `/api/convert`. Fehlt der Kopf
+oder hat der Name keine Endung, kommt sie aus dem `Content-Type`, mit derselben
+Zuordnung wie bei `/api/convert/url`. Fehlt der Kopf und führt der `Content-Type` auf
+keine Endung, antwortet der Dienst mit 415.
+
+Engine und Texterkennung lassen sich je Anfrage nicht wählen. Open WebUI hängt
+`/process` an die eingetragene Adresse; ein Anhängsel wie `?engine=docling` stünde
+vor dem Pfad. Es gelten `KAIMARKIT_DEFAULT_ENGINE` und `KAIMARKIT_OCR_ENABLED`.
+
+**Textrückfall.** Führt die Endung auf keine Engine (`.py`, `.yaml`, ein Name ohne
+Endung) und steht `KAIMARKIT_PROCESS_TEXT_FALLBACK` auf `true`, liest der Dienst den
+Rumpf als UTF-8. Gelingt das ohne ungültige Bytes und ohne Nullbytes, ist der Text
+das Ergebnis, `engine` ist `passthrough`, und eine Warnung nennt den Grund. Sonst
+bleibt es bei 415. Der Rückfall gilt nur hier: Open WebUI schickt jede hochgeladene
+Datei, und ein 415 ließe dort den Upload scheitern. `/api/convert` weist Unbekanntes
+weiter ab, weil dort ein Mensch die Datei gewählt hat.
+
+**Antwort**, 200:
+
+```json
+{
+  "page_content": "# Bericht\n\n...",
+  "metadata": {
+    "filename": "bericht für alle.docx",
+    "engine": "markitdown",
+    "duration_ms": 412,
+    "warnings": "Engine docling ist gescheitert: ... | Seite 4 enthielt ein Bild ..."
+  }
+}
+```
+
+| Feld | Typ | Immer da | Bedeutung |
+|---|---|---|---|
+| `page_content` | string | ja | das Markdown |
+| `metadata.filename` | string | ja | Name der Datei, dekodiert und gesäubert |
+| `metadata.engine` | string | ja | welche Engine es erzeugt hat, auch `passthrough` |
+| `metadata.duration_ms` | integer | ja | Dauer der Umwandlung |
+| `metadata.warnings` | string | nein | alle Warnungen, mit ` \| ` verbunden; fehlt, wenn es keine gab |
+
+`metadata` enthält ausschließlich Zeichenketten und Ganzzahlen. Open WebUI reicht
+die Metadaten an seine Vektordatenbank weiter, und Chroma nimmt nur `str`, `int`,
+`float` und `bool` — eine Liste ließe den Upload erst beim Einbetten scheitern.
+
+**Fehler** im Umschlag `ErrorResponse`. Open WebUI zeigt ihn als
+`Error loading document: <status> <text>`.
+
+| HTTP | `code` | Anlass |
+|---|---|---|
+| 400 | `engine_unavailable` | für diese Endung ist gerade keine Engine bereit |
+| 413 | `file_too_large` | über `KAIMARKIT_MAX_FILE_SIZE_MB`, abgebrochen beim Empfang |
+| 415 | `unsupported_format` | leerer Rumpf; keine erkennbare Endung; keine Engine und kein Textrückfall |
+| 500 | `conversion_failed` | die Engine scheiterte |
+| 504 | `conversion_timeout` | über `KAIMARKIT_CONVERSION_TIMEOUT` |

@@ -68,9 +68,30 @@ class StoredUpload:
 async def stored_upload(upload: UploadFile) -> AsyncIterator[StoredUpload]:
     """Nimmt einen Upload in Bloecken entgegen und raeumt ihn danach weg.
 
+    Den Empfang selbst erledigt ``stored_stream``; hier wird nur das
+    ``UploadFile`` zu einem Strom von Bloecken.
+    """
+
+    async def chunks() -> AsyncIterator[bytes]:
+        while chunk := await upload.read(CHUNK_SIZE):
+            yield chunk
+
+    async with stored_stream(chunks(), upload.filename) as stored:
+        yield stored
+
+
+@asynccontextmanager
+async def stored_stream(
+    chunks: AsyncIterator[bytes], name: str | None
+) -> AsyncIterator[StoredUpload]:
+    """Schreibt einen Strom von Bloecken in eine temporaere Datei und raeumt sie danach weg.
+
     Die Groesse wird waehrend des Empfangs geprueft, nicht danach: Wer erst nach
     dem vollstaendigen Einlesen misst, hat die Datei bereits im Speicher. Sobald
     ``KAIMARKIT_MAX_FILE_SIZE_MB`` ueberschritten ist, bricht der Empfang ab.
+
+    Der Strom kommt aus einem ``UploadFile`` (``/api/convert``) oder aus
+    ``request.stream()`` (``/api/process``, wo der Rumpf die Datei selbst ist).
 
     Die Datei behaelt ihren gesaeuberten Namen und bekommt dafuer ein eigenes
     Verzeichnis. Der Grund steht in den Meldungen der Engines: Sie nennen die
@@ -79,13 +100,13 @@ async def stored_upload(upload: UploadFile) -> AsyncIterator[StoredUpload]:
     der Dienst speichert nichts.
     """
     settings = get_settings()
-    filename = sanitize_filename(upload.filename)
+    filename = sanitize_filename(name)
     spool = TemporaryDirectory()
     path = Path(spool.name) / filename
     try:
         with path.open("wb") as sink:
             written = 0
-            while chunk := await upload.read(CHUNK_SIZE):
+            async for chunk in chunks:
                 written += len(chunk)
                 if written > settings.max_file_size_bytes:
                     raise FileTooLarge(f"{filename} überschreitet {settings.max_file_size_mb} MB")

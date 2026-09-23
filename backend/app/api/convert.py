@@ -1,7 +1,9 @@
 """Die Konvertierungsendpunkte.
 
-Hier stehen ``/api/convert`` fuer eine einzelne Datei und ``/api/convert/batch``
-fuer den Stapel.
+Hier stehen ``/api/convert`` fuer eine einzelne Datei, ``/api/convert/batch``
+fuer den Stapel, ``/api/convert/url`` fuer eine Seite aus dem Netz und
+``/api/process`` fuer Open WebUI, das seine Dokumentenextraktion an kaimarkit
+abgibt.
 
 Der Endpunkt kennt keine Engine. Er nimmt den Upload entgegen, laesst die Registry
 waehlen und wandeln und formt das Ergebnis in die Antwort, die der Aufrufer im
@@ -12,27 +14,28 @@ waehlen und wandeln und formt das Ergebnis in die Antwort, die der Aufrufer im
 from __future__ import annotations
 
 import time
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 from typing import Annotated
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 
-from fastapi import APIRouter, File, Form, Header, Response, UploadFile
+from fastapi import APIRouter, File, Form, Header, Request, Response, UploadFile
 from fastapi.responses import StreamingResponse
 
 from ..config import get_settings
-from ..converters.base import ConvertOptions
-from ..converters.registry import convert_with_fallback
-from ..errors import ConversionError, TooManyFiles
-from ..fetching import fetched_page
+from ..converters.base import ConversionResult, ConvertOptions
+from ..converters.registry import PASSTHROUGH, convert_with_fallback, preferences_for
+from ..errors import ConversionError, TooManyFiles, UnsupportedFormat
+from ..fetching import extension_for, fetched_page
 from ..models import (
     BatchResponse,
     ConversionEntry,
     ConversionStatus,
     ErrorResponse,
+    ProcessResponse,
     UrlConvertRequest,
 )
 from ..packaging import build_archive
-from ..uploads import run_conversion, sanitize_filename, stored_upload
+from ..uploads import run_conversion, sanitize_filename, stored_stream, stored_upload
 
 router = APIRouter(tags=["convert"])
 
@@ -108,6 +111,29 @@ URL_RESPONSES: dict[int | str, dict[str, object]] = {
         "model": ErrorResponse,
         "description": "`conversion_timeout` — ueber `KAIMARKIT_URL_TIMEOUT` beim Holen "
         "oder `KAIMARKIT_CONVERSION_TIMEOUT` beim Wandeln.",
+    },
+}
+
+#: Wie ``/convert``, aber ohne ``engine_unsuitable``: Hier waehlt niemand eine Engine.
+PROCESS_RESPONSES: dict[int | str, dict[str, object]] = {
+    400: {
+        "model": ErrorResponse,
+        "description": "`engine_unavailable` — fuer diese Endung ist gerade keine Engine "
+        "bereit.",
+    },
+    413: {
+        "model": ErrorResponse,
+        "description": "`file_too_large` — ueber `KAIMARKIT_MAX_FILE_SIZE_MB`.",
+    },
+    415: {
+        "model": ErrorResponse,
+        "description": "`unsupported_format` — leerer Rumpf, keine erkennbare Endung, oder "
+        "die Endung fuehrt auf keine Engine und der Textrueckfall greift nicht.",
+    },
+    500: {"model": ErrorResponse, "description": "`conversion_failed` — die Engine scheiterte."},
+    504: {
+        "model": ErrorResponse,
+        "description": "`conversion_timeout` — ueber `KAIMARKIT_CONVERSION_TIMEOUT`.",
     },
 }
 
@@ -228,6 +254,103 @@ async def convert_url(request: UrlConvertRequest) -> ConversionEntry:
         warnings=result.warnings,
         duration_ms=result.duration_ms,
         error=None,
+    )
+
+
+@router.put(
+    "/process",
+    response_model=ProcessResponse,
+    responses=PROCESS_RESPONSES,
+)
+async def process(
+    request: Request,
+    content_type: Annotated[str | None, Header(description="MIME-Typ der Datei.")] = None,
+    x_filename: Annotated[
+        str | None, Header(description="Name der Datei, prozentkodiert.")
+    ] = None,
+) -> ProcessResponse:
+    """Wandelt eine Datei fuer Open WebUI (``CONTENT_EXTRACTION_ENGINE=external``).
+
+    Der Rumpf ist die Datei selbst, kein Formular. Den Namen schickt Open WebUI
+    prozentkodiert in ``X-Filename``; seine Endung waehlt die Engine wie bei
+    ``/convert``. Engine und Texterkennung lassen sich hier nicht waehlen, es
+    gelten ``KAIMARKIT_DEFAULT_ENGINE`` und ``KAIMARKIT_OCR_ENABLED``.
+
+    Fuehrt die Endung auf keine Engine, geht der Rumpf mit
+    ``KAIMARKIT_PROCESS_TEXT_FALLBACK`` als Text zurueck, sofern er sich als
+    UTF-8 lesen laesst. Open WebUI schickt jede hochgeladene Datei hierher, auch
+    Quelltext; ein 415 liesse den Upload dort scheitern.
+    """
+    filename = _process_name(x_filename, content_type)
+    ext = PurePosixPath(filename).suffix.lower()
+    as_text = not preferences_for(ext) and get_settings().process_text_fallback
+
+    async with stored_stream(request.stream(), filename) as stored:
+        if stored.path.stat().st_size == 0:
+            raise UnsupportedFormat(f"{stored.filename} ist leer: Der Rumpf enthielt keine Datei.")
+        if as_text:
+            result = await run_conversion(lambda: _as_text(stored.path, ext))
+        else:
+            result = await run_conversion(
+                lambda: convert_with_fallback(stored.path, ConvertOptions())
+            )
+        filename = stored.filename
+
+    metadata: dict[str, str | int] = {
+        "filename": filename,
+        "engine": result.engine,
+        "duration_ms": result.duration_ms,
+    }
+    if result.warnings:
+        metadata["warnings"] = " | ".join(result.warnings)
+    return ProcessResponse(page_content=result.markdown, metadata=metadata)
+
+
+def _process_name(x_filename: str | None, content_type: str | None) -> str:
+    """Der gesaeuberte Name aus ``X-Filename``, notfalls mit der Endung aus dem MIME-Typ.
+
+    Fehlt der Kopf und fuehrt der MIME-Typ auf keine Endung, gibt es nichts, woran
+    sich eine Engine waehlen liesse: 415. Nennt der Kopf einen Namen ohne Endung,
+    bleibt er ohne — ueber ihn entscheidet danach der Textrueckfall.
+    """
+    name = sanitize_filename(unquote(x_filename) if x_filename else None)
+    if PurePosixPath(name).suffix:
+        return name
+    try:
+        ext = extension_for(content_type, name)
+    except UnsupportedFormat:
+        if x_filename:
+            return name
+        raise
+    return sanitize_filename(name + ext)
+
+
+def _as_text(path: Path, ext: str) -> ConversionResult:
+    """Der Rumpf als Text, wenn er sauberes UTF-8 ohne Nullbytes ist; sonst 415.
+
+    Strenges Dekodieren statt ``errors="replace"``: Ein Ersatzzeichen hiesse, dass
+    Binaerdaten als Text beim Modell ankaemen. Nullbytes sind gueltiges UTF-8,
+    stehen aber in keiner Textdatei.
+    """
+    started = time.perf_counter()
+    unsupported = UnsupportedFormat(
+        f"Für {ext or 'Dateien ohne Endung'} gibt es keine Engine, "
+        "und der Inhalt ist kein UTF-8-Text."
+    )
+    try:
+        text = path.read_bytes().decode("utf-8")
+    except UnicodeDecodeError:
+        raise unsupported from None
+    if "\x00" in text:
+        raise unsupported
+    return ConversionResult(
+        markdown=text,
+        engine=PASSTHROUGH,
+        warnings=[
+            f"Für {ext or 'Dateien ohne Endung'} gibt es keine Engine; "
+            "der Inhalt wurde als Text durchgereicht."
+        ],
+        duration_ms=int((time.perf_counter() - started) * 1000),
     )
 
 
