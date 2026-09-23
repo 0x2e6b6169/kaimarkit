@@ -45,6 +45,10 @@ class Settings(BaseSettings):
     # ISO 639-1: der Docling-Adapter ruft EasyOCR auf, und die erwartet diese
     # Kuerzel. Tesseracts ``deu,eng`` erkennt sie nicht.
     ocr_langs: str = "de,en"
+    # Nur ``PUT /api/process``: Fuehrt die Endung auf keine Engine, geht der Rumpf
+    # als UTF-8-Text zurueck statt als 415. Open WebUI schickt jede hochgeladene
+    # Datei, auch ``.py`` und ``.yaml``; ein 415 liesse dort den Upload scheitern.
+    process_text_fallback: bool = True
 
     # Betrieb
     log_level: str = "info"

@@ -227,6 +227,44 @@ Meldung, weil der Dienst den Namen auflöst, bevor er verbindet.
 Was der Dienst dabei bewusst nicht kann — Seiten hinter einer Anmeldung, Seiten, die
 ihren Inhalt erst per JavaScript aufbauen —, steht unter [Grenzen](grenzen.md).
 
+## Für Open WebUI — `PUT /api/process`
+
+Diesen Endpunkt ruft Open WebUI auf, wenn es seine Dokumentenextraktion an
+kaimarkit abgibt. Wie man das einrichtet, steht unter [Open WebUI](openwebui.md).
+Der Rumpf ist die Datei selbst, kein Formular; den Namen trägt der Kopf
+`X-Filename`, prozentkodiert. Mit curl sieht derselbe Aufruf so aus:
+
+```bash
+curl -sf -X PUT --data-binary @bericht.docx \
+     -H 'X-Filename: bericht.docx' localhost:8000/api/process
+```
+
+```json
+{
+  "page_content": "# Bericht\n\n...",
+  "metadata": { "filename": "bericht.docx", "engine": "markitdown", "duration_ms": 85 }
+}
+```
+
+Die Endung aus `X-Filename` wählt die Engine. Fehlt der Kopf, entscheidet der
+`Content-Type` wie bei `/api/convert/url`. Engine und Texterkennung lassen sich hier
+nicht wählen; es gelten `KAIMARKIT_DEFAULT_ENGINE` und `KAIMARKIT_OCR_ENABLED`.
+Warnungen stehen in `metadata.warnings` als eine Zeichenkette, mit ` | ` verbunden —
+`metadata` hält nur Zeichenketten und Zahlen, weil Open WebUI sie an seine
+Vektordatenbank weiterreicht.
+
+Anders als `/api/convert` weist dieser Endpunkt eine unbekannte Endung nicht sofort
+ab. Ist der Inhalt sauberes UTF-8, kommt er als Text zurück, mit `engine:
+passthrough` und einer Warnung. Das schaltet `KAIMARKIT_PROCESS_TEXT_FALLBACK` ab.
+
+| HTTP | `code` | Anlass |
+|---|---|---|
+| 400 | `engine_unavailable` | für diese Endung ist gerade keine Engine bereit |
+| 413 | `file_too_large` | über `KAIMARKIT_MAX_FILE_SIZE_MB` |
+| 415 | `unsupported_format` | leerer Rumpf, keine erkennbare Endung, oder keine Engine und kein Text |
+| 500 | `conversion_failed` | die Engine ist an der Datei gescheitert |
+| 504 | `conversion_timeout` | über `KAIMARKIT_CONVERSION_TIMEOUT` |
+
 ## Die Schnittstelle maschinenlesbar
 
 FastAPI erzeugt die Beschreibung selbst. Sie liegt unter `/api/openapi.json`, die

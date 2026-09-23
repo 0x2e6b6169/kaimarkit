@@ -78,6 +78,7 @@ gilt: Wo `git describe` etwas liefert, gewinnt es gegen den Eintrag in der Datei
 | `KAIMARKIT_ENABLE_FALLBACK` | `true` | Bei `auto` die nächste geeignete Engine nehmen, wenn die erste scheitert. |
 | `KAIMARKIT_OCR_ENABLED` | `true` | Docling schickt gescannte Seiten und Bilder durch die Texterkennung. |
 | `KAIMARKIT_OCR_LANGS` | `de,en` | Sprachen der Texterkennung, als ISO-639-1-Kürzel und durch Komma getrennt. |
+| `KAIMARKIT_PROCESS_TEXT_FALLBACK` | `true` | Nur `PUT /api/process`: Eine Datei, deren Endung keine Engine kennt, geht als Text zurück, wenn sie sauberes UTF-8 ist. Siehe [Open WebUI](openwebui.md). |
 | `KAIMARKIT_LOG_LEVEL` | `info` | Ausführlichkeit der Ausgabe. |
 | `KAIMARKIT_WORKERS` | `1` | Zahl der Uvicorn-Worker. |
 | `KAIMARKIT_STATIC_DIR` | `/opt/kaimarkit/static` | Das gebaute Frontend im Container. |
